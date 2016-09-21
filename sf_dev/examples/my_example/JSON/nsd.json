@@ -1,0 +1,29 @@
+{
+  "name": "NSExample",
+  "vendor": "netgroup",
+  "version": "1.0",
+  "vnfd": [
+    "vnf1",
+    "vnf2",
+    "vnf3"
+  ],
+  "vld": [
+    "vl1",
+    "vl2",
+    "vl3",
+    "vl4"
+  ],
+  "vnf_dependency": [
+  ],
+  "connection_point": [
+    {
+      "id": "cp01",
+      "type": "nic"
+    },
+    {
+      "id": "cp02",
+      "type": "nic"
+    }
+  ],
+  "service_deployment_flavour": []
+}

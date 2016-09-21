@@ -1,0 +1,17 @@
+site_name: Superfluidity T3D
+pages:
+pages:
+- Home: index.md
+- Installation: installation.md
+- Use it:
+  - Start: useit.md
+  - Network Service : nsd.md
+  - Virtual Network Function: vnf.md
+- About:
+  - Relase Note: about/relasenote.md
+  - License: about/license.md
+theme: readthedocs
+#- Installation: installation.md
+#- NSD: nsd.md
+#- VNF: vnf.md
+#- About: about.md

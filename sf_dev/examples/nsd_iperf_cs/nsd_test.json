@@ -1,0 +1,674 @@
+{
+    "edges": {
+        "bind9&&icscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "useFloatingIpsForEntries",
+                        "realm",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "bind9&&pcscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "useFloatingIpsForEntries",
+                        "realm",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "icscf&&scscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "fhoss&&icscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "icscf&&bind9": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "bind9&&fhoss": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "useFloatingIpsForEntries",
+                        "realm",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "pcscf&&bind9": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "icscf&&fhoss": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "diameter_p",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "scscf&&icscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "bind9&&scscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "useFloatingIpsForEntries",
+                        "realm",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "scscf&&fhoss": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "diameter_p",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "fhoss&&scscf": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "scscf&&bind9": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "port",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        },
+        "fhoss&&bind9": {
+            "links": [
+                {
+                    "CANE": "l_vnf",
+                    "id": "",
+                    "parameters": [
+                        "name",
+                        "mgmt",
+                        "mgmt_floatingIp"
+                    ],
+                    "view": "l_vnf"
+                }
+            ]
+        }
+    },
+    "vertices": {
+        "bind9": {
+            "info": {
+                "frozen": false,
+                "property": {
+                    "custom_label": ""
+                }
+            },
+            "type": "vnf",
+            "pos": {
+                "y": 0,
+                "x": 0
+            },
+            "vnfd": {
+                "endpoint": "generic",
+                "vendor": "fokus",
+                "name": "bind9",
+                "deployment_flavour": [
+                    {
+                        "flavour_key": "m1.small"
+                    }
+                ],
+                "version": "0.1",
+                "virtual_link": [
+                    {
+                        "name": "mgmt"
+                    }
+                ],
+                "vdu": [
+                    {
+                        "vm_image": [],
+                        "vimInstanceName": [
+                            "vim-instance"
+                        ],
+                        "scale_in_out": 1,
+                        "vnfc": [
+                            {
+                                "connection_point": [
+                                    {
+                                        "virtual_link_reference": "mgmt",
+                                        "floatingIp": "random"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "type": "bind9",
+                "id": "029ca1c4-3d05-4327-baa8-74345e0ad6aa",
+                "lifecycle_event": [
+                    {
+                        "lifecycle_events": [
+                            "fhoss_relation_joined.sh",
+                            "icscf_relation_joined.sh",
+                            "scscf_relation_joined.sh",
+                            "pcscf_relation_joined.sh",
+                            "mmechess_relation_joined.sh"
+                        ],
+                        "event": "CONFIGURE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "bind9_install.sh"
+                        ],
+                        "event": "INSTANTIATE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "generate_zone_file.sh",
+                            "bind9_restart.sh"
+                        ],
+                        "event": "START"
+                    }
+                ],
+                "configurations": {
+                    "configurationParameters": [
+                        {
+                            "confKey": "realm",
+                            "value": "epc.mnc001.mcc001.3gppnetwork.org"
+                        },
+                        {
+                            "confKey": "useFloatingIpsForEntries",
+                            "value": "true"
+                        }
+                    ],
+                    "name": "client-configuration"
+                }
+            },
+            "v": {
+                "y": 0,
+                "x": 0
+            }
+        },
+        "pcscf": {
+            "info": {
+                "frozen": false,
+                "property": {
+                    "custom_label": ""
+                }
+            },
+            "type": "vnf",
+            "pos": {
+                "y": 0,
+                "x": 0
+            },
+            "vnfd": {
+                "endpoint": "generic",
+                "vendor": "fokus",
+                "name": "pcscf",
+                "deployment_flavour": [
+                    {
+                        "flavour_key": "m1.small"
+                    }
+                ],
+                "version": "0.1",
+                "virtual_link": [
+                    {
+                        "name": "mgmt"
+                    }
+                ],
+                "vdu": [
+                    {
+                        "vm_image": [],
+                        "vimInstanceName": [
+                            "vim-instance"
+                        ],
+                        "scale_in_out": 1,
+                        "vnfc": [
+                            {
+                                "connection_point": [
+                                    {
+                                        "virtual_link_reference": "mgmt",
+                                        "floatingIp": "random"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "type": "pcscf",
+                "id": "b624a70f-d81b-4170-b90c-639ac47f5784",
+                "lifecycle_event": [
+                    {
+                        "lifecycle_events": [
+                            "bind9_relation_joined.sh"
+                        ],
+                        "event": "CONFIGURE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "pcscf_install.sh"
+                        ],
+                        "event": "INSTANTIATE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "pcscf_generate_config.sh",
+                            "pcscf_start.sh"
+                        ],
+                        "event": "START"
+                    }
+                ],
+                "configurations": {
+                    "configurationParameters": [
+                        {
+                            "confKey": "port",
+                            "value": "4060"
+                        },
+                        {
+                            "confKey": "name",
+                            "value": "pcscf"
+                        }
+                    ],
+                    "name": "client-configuration"
+                }
+            },
+            "v": {
+                "y": 0,
+                "x": 0
+            }
+        },
+        "icscf": {
+            "info": {
+                "frozen": false,
+                "property": {
+                    "custom_label": ""
+                }
+            },
+            "type": "vnf",
+            "pos": {
+                "y": 0,
+                "x": 0
+            },
+            "vnfd": {
+                "endpoint": "generic",
+                "vendor": "fokus",
+                "name": "icscf",
+                "deployment_flavour": [
+                    {
+                        "flavour_key": "m1.small"
+                    }
+                ],
+                "version": "0.1",
+                "virtual_link": [
+                    {
+                        "name": "mgmt"
+                    }
+                ],
+                "vdu": [
+                    {
+                        "vm_image": [],
+                        "vimInstanceName": [
+                            "vim-instance"
+                        ],
+                        "scale_in_out": 1,
+                        "vnfc": [
+                            {
+                                "connection_point": [
+                                    {
+                                        "virtual_link_reference": "mgmt",
+                                        "floatingIp": "random"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "type": "icscf",
+                "id": "a34849f8-3e27-4d1a-8be0-0ce25d29ea6f",
+                "lifecycle_event": [
+                    {
+                        "lifecycle_events": [
+                            "bind9_relation_joined.sh",
+                            "fhoss_relation_joined.sh",
+                            "scscf_relation_joined.sh"
+                        ],
+                        "event": "CONFIGURE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "icscf_install.sh"
+                        ],
+                        "event": "INSTANTIATE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "icscf_generate_config.sh",
+                            "icscf_start.sh"
+                        ],
+                        "event": "START"
+                    }
+                ],
+                "configurations": {
+                    "configurationParameters": [
+                        {
+                            "confKey": "port",
+                            "value": "5060"
+                        },
+                        {
+                            "confKey": "name",
+                            "value": "icscf"
+                        },
+                        {
+                            "confKey": "diameter_p",
+                            "value": "3869"
+                        }
+                    ],
+                    "name": "client-configuration"
+                }
+            },
+            "v": {
+                "y": 0,
+                "x": 0
+            }
+        },
+        "fhoss": {
+            "info": {
+                "frozen": false,
+                "property": {
+                    "custom_label": ""
+                }
+            },
+            "type": "vnf",
+            "pos": {
+                "y": 0,
+                "x": 0
+            },
+            "vnfd": {
+                "endpoint": "generic",
+                "vendor": "fokus",
+                "name": "fhoss",
+                "deployment_flavour": [
+                    {
+                        "flavour_key": "m1.small"
+                    }
+                ],
+                "version": "0.1",
+                "virtual_link": [
+                    {
+                        "name": "mgmt"
+                    }
+                ],
+                "vdu": [
+                    {
+                        "vm_image": [],
+                        "vimInstanceName": [
+                            "vim-instance"
+                        ],
+                        "scale_in_out": 1,
+                        "vnfc": [
+                            {
+                                "connection_point": [
+                                    {
+                                        "virtual_link_reference": "mgmt",
+                                        "floatingIp": "random"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "type": "fhoss",
+                "id": "140b446e-af2c-4517-9bdf-1b20209ef465",
+                "lifecycle_event": [
+                    {
+                        "lifecycle_events": [
+                            "bind9_relation_joined.sh",
+                            "icscf_relation_joined.sh",
+                            "scscf_relation_joined.sh"
+                        ],
+                        "event": "CONFIGURE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "fhoss_install.sh"
+                        ],
+                        "event": "INSTANTIATE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "fhoss_generate_config.sh",
+                            "fhoss_start.sh"
+                        ],
+                        "event": "START"
+                    }
+                ],
+                "configurations": {
+                    "configurationParameters": [
+                        {
+                            "confKey": "diameter_p",
+                            "value": "3868"
+                        },
+                        {
+                            "confKey": "name",
+                            "value": "hss"
+                        }
+                    ],
+                    "name": "client-configuration"
+                }
+            },
+            "v": {
+                "y": 0,
+                "x": 0
+            }
+        },
+        "scscf": {
+            "info": {
+                "frozen": false,
+                "property": {
+                    "custom_label": ""
+                }
+            },
+            "type": "vnf",
+            "pos": {
+                "y": 0,
+                "x": 0
+            },
+            "vnfd": {
+                "endpoint": "generic",
+                "vendor": "fokus",
+                "name": "scscf",
+                "deployment_flavour": [
+                    {
+                        "flavour_key": "m1.small"
+                    }
+                ],
+                "version": "0.1",
+                "virtual_link": [
+                    {
+                        "name": "mgmt"
+                    }
+                ],
+                "vdu": [
+                    {
+                        "vm_image": [],
+                        "vimInstanceName": [
+                            "vim-instance"
+                        ],
+                        "scale_in_out": 1,
+                        "vnfc": [
+                            {
+                                "connection_point": [
+                                    {
+                                        "virtual_link_reference": "mgmt",
+                                        "floatingIp": "random"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "type": "scscf",
+                "id": "dc9842d3-bb57-4145-aae6-6d29cfc001f4",
+                "lifecycle_event": [
+                    {
+                        "lifecycle_events": [
+                            "bind9_relation_joined.sh",
+                            "fhoss_relation_joined.sh",
+                            "icscf_relation_joined.sh"
+                        ],
+                        "event": "CONFIGURE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "scscf_install.sh"
+                        ],
+                        "event": "INSTANTIATE"
+                    },
+                    {
+                        "lifecycle_events": [
+                            "scscf_generate_config.sh",
+                            "scscf_start.sh"
+                        ],
+                        "event": "START"
+                    }
+                ],
+                "configurations": {
+                    "configurationParameters": [
+                        {
+                            "confKey": "port",
+                            "value": "6060"
+                        },
+                        {
+                            "confKey": "name",
+                            "value": "scscf"
+                        },
+                        {
+                            "confKey": "diameter_p",
+                            "value": "3870"
+                        }
+                    ],
+                    "name": "client-configuration"
+                }
+            },
+            "v": {
+                "y": 0,
+                "x": 0
+            }
+        }
+    },
+    "graph_parameters": {}
+}
