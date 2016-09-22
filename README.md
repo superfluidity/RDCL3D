@@ -1,4 +1,4 @@
-{{ project_name|title }} Project
+RDCLs Playground - RFB Description and Composition Languages Playground 
 ========================================
 
 About
@@ -62,7 +62,7 @@ or:
 Development (TODO)
 -------
 
-In order to keep your environment consistent, itâ€™s a good idea to â€œfreezeâ€ the current state of the environment packages. 
+In order to keep your environment consistent, it’s a good idea to “freeze” the current state of the environment packages. 
 To do this, run
 
     $ pip freeze > requirements.txt
