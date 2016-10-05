@@ -24,8 +24,10 @@ def importproject(dir_project, type):
 
     #import network service description
     #in root directory file name nsd.json / nsd.yaml
-    nsd_object = my_util.loadjsonfile(dir_project+'/nsd.json')
-    project['nsd'] = nsd_object
+    for nsd_filename in glob.glob(os.path.join(dir_project, '*.json')):
+        print nsd_filename
+        nsd_object = my_util.loadjsonfile(nsd_filename)
+        project['nsd'][nsd_object['name']] = nsd_object
 
     #import virtual link descriptions
     #each file in root_path/VLD/*.json

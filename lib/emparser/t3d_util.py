@@ -50,11 +50,11 @@ class T3DUtil:
 
 
 
-    def __build_edges_ns_vld(self, vldid, json_project, graph_object):
+    def __build_edges_ns_vld(self, nsdid, vldid, json_project, graph_object):
 
         for vl_cp in json_project['vld'][vldid]['connection']:
             #cerco connessione con ns:connection_point
-            for ns_cp in json_project['nsd']['connection_point']:
+            for ns_cp in json_project['nsd'][nsdid]['connection_point']:
                 if vl_cp == ns_cp['id']:
                     edge_identifier = vldid + '&&' + vl_cp
                     if edge_identifier not in graph_object['edges'].keys():
@@ -148,20 +148,22 @@ class T3DUtil:
         try:
             self.log.debug('build t3d graph from project json')
 
-            for nscp in json_project['nsd']['connection_point']:
-                id_nscp = 'id'
-                graph_object['vertices'][nscp[id_nscp]] = self.__build_node_ns_cp(nscp)
+            for current_nsd in json_project['nsd']:
+                print current_nsd, json_project['nsd'][current_nsd]['connection_point']
+                for nscp in json_project['nsd'][current_nsd]['connection_point']:
+                    id_nscp = 'id'
+                    graph_object['vertices'][nscp[id_nscp]] = self.__build_node_ns_cp(nscp)
 
-            for vldid in json_project['nsd']['vld']:
-                vld = json_project['vld'][vldid]
-                graph_object['vertices'][vldid] = self.__build_node_ns_vld(vld)
-                graph_object = self.__build_edges_ns_vld(vldid, json_project, graph_object)
-                # graph_object = self.__build_nodes_ns(graph_object, json_project)
-                # graph_object = self.__build_edges(graph_object, json_project)
+                for vldid in json_project['nsd'][current_nsd]['vld']:
+                    vld = json_project['vld'][vldid]
+                    graph_object['vertices'][vldid] = self.__build_node_ns_vld(vld)
+                    graph_object = self.__build_edges_ns_vld(current_nsd, vldid, json_project, graph_object)
+                    # graph_object = self.__build_nodes_ns(graph_object, json_project)
+                    # graph_object = self.__build_edges(graph_object, json_project)
 
-            for vnfdid in json_project['nsd']['vnfd']:
-                vnfd = json_project['vnfd'][vnfdid]
-                graph_object = self.__parse_ns_vnfd(vnfdid, vnfd, graph_object)
+                for vnfdid in json_project['nsd'][current_nsd]['vnfd']:
+                    vnfd = json_project['vnfd'][vnfdid]
+                    graph_object = self.__parse_ns_vnfd(vnfdid, vnfd, graph_object)
 
         except Exception as e:
             self.log.error('Exception build_graph_from_project')

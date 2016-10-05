@@ -39,7 +39,9 @@ def create_new_project(request):
         try:
             data_project = emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON',
                                              'json')
+            print data_project
             project = Project.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
+
             return render(request, 'new_project.html', {'project_id': project.id})
         except Exception as e:
             print e
@@ -70,7 +72,7 @@ def open_project(request, project_id = None):
         project_overview = projects[0].get_overview_data()
         return render(request, 'project_details.html', {'project_overview': project_overview, 'project_id': project_id})
     except Exception as e: ##TODO error page
-        return render(request, 'project_details.html', {'project_overview': {}, 'project_id': project_id})
+        return render(request, 'error.html', {'project_overview': {}, 'project_id': project_id})
 
 
 def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):

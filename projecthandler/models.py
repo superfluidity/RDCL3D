@@ -24,7 +24,7 @@ class Project(models.Model):
             'name': self.name,
             'updated_date': self.updated_date,
             'info': self.info,
-            'nsd': 1,
+            'nsd': len(self.data_project['nsd'].keys()) if 'nsd' in self.data_project else 0,
             'vnffgd': len(self.data_project['vnffgd'].keys()) if 'vnffgd' in self.data_project else 0,
             'vld': len(self.data_project['vld'].keys()) if 'vld' in self.data_project else 0,
             'vnfd': len(self.data_project['vnfd'].keys()) if 'vnfd' in self.data_project else 0,
@@ -36,10 +36,11 @@ class Project(models.Model):
     def get_descriptors(self, type_descriptor):
         try:
             ##FIXME nsd dovrebbe essere in forma dict come gli altri
-            if(type_descriptor == 'nsd'):
-                result = {self.data_project['nsd']['name']: self.data_project['nsd']}
-            else:
-                result = self.data_project[type_descriptor]
+            #if(type_descriptor == 'nsd'):
+            #    result = {self.data_project['nsd']['name']: self.data_project['nsd']}
+            #else:
+            #    result = self.data_project[type_descriptor]
+            result = self.data_project[type_descriptor]
         except Exception as e:
             result = {}
         return result
