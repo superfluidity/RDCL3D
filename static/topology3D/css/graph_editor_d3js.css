@@ -1,0 +1,212 @@
+.draggable_node {
+    cursor: move;
+    border: 1.5px dashed #000000;
+    width: 47px;
+    height: 47px;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+}
+
+.nodetext {
+    pointer-events: none;
+    font: 10px sans-serif;
+ }
+
+
+.node_path {
+  opacity: 1;
+  stroke: #2F3550;
+  stroke-width: 1;
+}
+
+.node_path:hover {
+  opacity: 2;
+  stroke: #2F3550;
+  stroke-width: 3;
+}
+
+.node_path:hover text{
+  opacity: 0.4;
+
+}
+
+.drag_box {
+    width: 15%;
+    position: absolute;
+    padding-top: 40px;
+    z-index: 1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0 px;
+    padding-right: 20px;
+    right: 0;
+}
+
+.canvas-label {
+    cursor: default;
+    padding: 0 6px;
+    line-height: 22px;
+    position: absolute;
+
+    padding-top: 40px;
+    padding-bottom: 35px;
+
+    /* top: 7px; */
+    /* right: 6px; */
+    z-index: 1;
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+    /* border-radius: 20px; */
+
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.menu-top {
+  position: relative;
+  top: 0px;
+  width: 100%;
+  padding-top: 6px;
+  pointer-events: none;
+}
+
+.menu-bottom {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding-bottom: 10px;
+  pointer-events: none;
+}
+
+.menu-left {
+  position: relative;
+  float: left;
+  padding: 4px 4px 0px 10px;
+  pointer-events: all;
+}
+
+.menu-right {
+  position: relative;
+  float: right;
+  padding: 4px 10px 0px 4px;
+  pointer-events: all;
+}
+
+textarea {
+  font-family: "Lucida Console", Monaco, monospace;
+  height: 350px !important;
+  resize: none;
+}
+
+.modal-dialog {
+  width: 96%;
+  max-width: 1100px;
+}
+
+.form-group {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+}
+
+.modal-body {
+  overflow-y: auto;
+}
+
+#shareURL {
+  cursor: pointer;
+}
+
+.dropdown-menu > li > a, .dropdown-menu > li > label {
+  cursor: pointer;
+}
+
+.dropdown-menu > li > label > input[type='radio'], .dropdown-menu > li > label > input[type='checkbox'] {
+    /*display: none;*/
+}
+
+.dropdown-menu > li > label {
+  display: block;
+  padding: 3px 20px;
+  margin-bottom: 0px;
+  clear: both;
+  white-space: nowrap;
+  font-weight: normal;
+}
+
+.dropdown-menu > li > label:hover, .dropdown-menu > li > label:focus, .dropdown-menu > li > label:active {
+  background-color: #F5F5F5;
+}
+
+.dropdown-menu > li.active, .dropdown-menu > li.active :hover, .dropdown-menu > li.active :active {
+  color: white;
+  background-color: #428BCA;
+}
+
+/* loader spining thingi */
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+ 
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+  
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+ 
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}
+
+/* enable absolute positioning for inner addon buttons */
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .inner-item {
+  position: absolute;
+  padding: 8px;
+}
+
+/* align icon */
+.left-addon .inner-item  { left:  0px;}
+.right-addon .inner-item { right: 6px;}
+.inner-item-bottom { bottom: 0px;}
+.inner-item-top { top: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+.inner-item {
+    color: lightgray;
+}
+
+.inner-item-button {
+    cursor: pointer;
+}
+
+.inner-item-button:hover {
+    color:gray;
+}

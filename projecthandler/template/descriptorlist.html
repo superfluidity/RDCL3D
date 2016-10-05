@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<div class="col-md-12">
+
+    <div class="box">
+        <div class="box-header with-border">
+                  <h3 class="box-title">{{descriptor_type}} Descriptors</h3>
+            <div class="box-tools">
+                <a href="javascript:void(0)" class="btn btn-block btn-primary"><i class="fa fa-plus"></i><span> Create {{descriptor_type}}</span></a>
+            </div>
+        </div>
+        <div class="box-body">
+            {% if descriptor_type == 'nsd' %}
+                {% include 'descriptorlist_nsd.html' %}
+            {% else %}
+            <table id="descriptors_table" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+
+                        <th>Id</th>
+                        <th>Vendor</th>
+                        <th>Version</th>
+                        <th>Description Version</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                {% for k,v in descriptors.items %}
+                    <tr>
+
+                        <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')" >{{ k }}</a></td>
+                        <td>{{ v.vendor }}</td>
+                        <td>{{ v.version  }}</td>
+                        <td>{{ v.description_version  }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="col-md-12">
+
+    <div class="box">
+        <div class="box-header with-border">
+                  <h3 class="box-title">Projects</h3>
+            <div class="box-tools">
+                <a href="projects/new/" class="btn btn-block btn-primary"><i class="fa fa-plus"></i><span> New Project</span></a>
+            </div>
+        </div>
+        <div class="box-body">
+			<table id="projects_table" class="table table-bordered table-striped">
+				<thead>
+					<tr>
+
+						<th>Name</th>
+						<th>Info</th>
+						<th>Modification Date</th>
+						<th>Creation Date</th>
+
+						<th>Owner</th>
+						<th>Validated</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for p in projects %}
+					<tr>
+
+						<td>
+							<a href="javascript:openProject('{{ p.id }}')" >{{ p.name }}</a>
+						</td>
+						<td>{{ p.info }}</td>
+
+						<td>{{ p.updated_date }}</td>
+						<td>{{ p.created_date }}</td>
+						<td>{{ p.owner.username }}</td>
+						<td>
+							{% if p.validated %}
+							<span class="label label-success">
+								{{ p.validated }}
+							</span>
+							{% else %}
+							<span class="label label-danger">
+								{{ p.validated }}
+							</span>
+							{% endif %}
+						</td>
+
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>

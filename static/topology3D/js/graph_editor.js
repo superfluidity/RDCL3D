@@ -448,11 +448,12 @@ var GraphEditor = this.GraphEditor = function GraphEditor(div, options) {
                     y: SIZE.y / 2 - (2 * SIZE.y / 7) * Math.cos(2 * Math.PI * y / counter)
                 });
                 y++;
+                console.log("CRISTO")
             }
             else{
                 nodes[i].info['frozen'] = false;
             }
-
+            console.log(nodes[i].info['frozen'])
         }
         draw();
     }
@@ -552,7 +553,10 @@ var GraphEditor = this.GraphEditor = function GraphEditor(div, options) {
         }
 
         for (i = 0, l = nodes.length; i < l; ++i) {
-            nodes[i].run(SPEED);
+            if(nodes[i].get_frozen() === false){
+                nodes[i].run(SPEED);
+            }
+
         }
     }
 
@@ -837,7 +841,8 @@ var GraphEditor = this.GraphEditor = function GraphEditor(div, options) {
 
     ///#
     function display_vertex(vert) {
-
+        console.log("display_vertex", JSON.stringify(vert.get_pos()))
+        //console.log("display_vertex", vert.pos.x, vert.pos.y)
         var imageObj = new Image();
         var node_label;
         var halo_present = false;
@@ -911,7 +916,7 @@ var GraphEditor = this.GraphEditor = function GraphEditor(div, options) {
         }
 
         for (i = 0; i < nodes.length; i += 1) {
-
+            console.log("display_graph", i, JSON.stringify(nodes[i].get_pos()))
             if (domainctrl.isVisible(nodes[i], curLayer.getCurLayer())) {
 
                 display_vertex(nodes[i]);

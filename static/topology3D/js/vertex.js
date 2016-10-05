@@ -66,39 +66,21 @@ dreamer.Vertex = (function (global) {
         return this.info.frozen;
     };
     Vertex.prototype.run = function (SPEED) {
+        console.log("run", SPEED * this.v.x, SPEED * this.v.y)
         this.pos.x += Math.min(Math.max(SPEED * this.v.x, -20), 20);
         this.pos.y += Math.min(Math.max(SPEED * this.v.y, -20), 20);
         this.v.x *= 0.5;
         this.v.y *= 0.5;
+        console.log(JSON.stringify(this), this.pos.x, this.pos.y, this.v.x, this.v.y)
     };
 
     Vertex.prototype.getVertexInfo = function () {
         return this.info;
     };
 
-
-
    Vertex.prototype.getType = function () {
         return this.info['type'];
     };
-/* 
-    Vertex.prototype.setType = function (type) {
-        this.info.type = type;
-    };
-    Vertex.prototype.getLoopback = function () {
-        return this.info.loopback;
-    };
-
-    Vertex.prototype.setLoopback = function (loopback) {
-        this.info.loopback = loopback;
-    };
-
-
-    var info = function (vertinfo) {
-        this.frozen = vertinfo.frozen;
-        this.loopback = vertinfo.loopback;
-        this.type = vertinfo.type;
-    };*/
 
 
     return Vertex;

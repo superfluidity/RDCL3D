@@ -1,0 +1,26 @@
+<table id="descriptors_table" class="table table-bordered table-striped">
+    <thead>
+    <tr>
+
+        <th></th>
+        <th>Id</th>
+        <th>Vendor</th>
+        <th>Version</th>
+        <th>Description Version</th>
+        <th><i class="fa fa-sitemap"></i><span> Graph</span></th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for k,v in descriptors.items %}
+    <tr>
+        <td></td>
+        <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')">{{ k }}</a></td>
+        <td>{{ v.vendor }}</td>
+        <td>{{ v.version }}</td>
+        <td>{{ v.description_version }}</td>
+        <th><a href='/projects/{{project_id}}/graph'><span> Show</span></a></th>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

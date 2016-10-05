@@ -1,0 +1,66 @@
+<div class="btn-group-vertical canvas-label">
+
+    <button id="topology_zoom_plus" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+    <button id="topology_zoom_minus" type="button" class="btn btn-primary"><i class="fa fa-minus"></i></button>
+
+    <button id="topology_play" type="button" class="btn btn-primary"><i class="fa fa-play"></i></button>
+    <button id="topology_pause" type="button" class="btn btn-primary"><i class="fa fa-pause"></i></button>
+
+    <button id="topology_settings" type="button" class="btn btn-primary"><i class="fa fa-gear"></i></button>
+    <button id="topology_info_button" type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#myModalTopologyInfo"><i class="fa fa-info"></i></button>
+
+</div>
+
+<div class="drag_box">
+    <div class="box box-solid ">
+        <div class="box-header with-border">
+              <h3 class="box-title">Add Elements</h3>
+
+              <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+        <div class="box-body">
+            <!-- the events -->
+            <div id="draggable-container">
+                <div class="external-event bg-green ui-draggable ui-draggable-handle" style="position: relative; background-color: #F27220 !important;">
+                    CP
+                </div>
+                <div class="external-event bg-yellow ui-draggable ui-draggable-handle" style="position: relative; background-color: #54A698 !important;">
+                    VNF
+                </div>
+                <div class="external-event bg-aqua ui-draggable ui-draggable-handle" style="position: relative; background-color: #196B90 !important;">
+                    VL
+                </div>
+
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<div>
+    <!-- Popover settings content -->
+    <div id="popover_settings_content" style="display: none; width: 100%; height: 100%;">
+        <div id="popover_settings_body">
+            <!-- checkbox -->
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox">
+                    Checkbox 1
+                </label>
+            </div>
+
+
+        </div>
+    </div>
+    <!-- Popover settings title -->
+    <div id="popover_settings_title" style="display: none; width: 100%; height: 100%;">
+        <b>Topology Settings</b>
+    </div>
+</div>
+
+

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     'sf_user',
     'sf_dev',
+    'projecthandler',
 
     'topology_mpv',
 ]

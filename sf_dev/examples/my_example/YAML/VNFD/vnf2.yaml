@@ -1,0 +1,38 @@
+connection_point:
+- id: cp21
+  type: ''
+  virtual_link_reference: vl21
+description_version: '0.1'
+id: vnf2
+vdu:
+- computation_requirement: ''
+  id: vdu21
+  virtual_memory_resource_element: ''
+  virtual_network_bandwidth_resource: ''
+  vnfc:
+  - connection_point:
+    - id: cp22
+      type: NIC
+      virtual_link_reference: vl21
+    id: vnfc21
+  - connection_point:
+    - id: cp23
+      type: NIC
+      virtual_link_reference: vl21
+    id: vnfc22
+  - connection_point:
+    - id: cp24
+      type: NIC
+      virtual_link_reference: vl21
+    id: vnfc23
+vendor: netgroup
+version: '0.1'
+virtual_link:
+- connection_points_references:
+  - cp21
+  - cp22
+  - cp23
+  - cp24
+  connectivity_type: ' E-Line'
+  id: vl21
+  root_requirement: ''

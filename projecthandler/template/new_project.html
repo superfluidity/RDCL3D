@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+    <link rel="stylesheet" href="{% static "adminlte/plugins/select2/select2.css" %}">
+{% endblock %}
+
+{% block left_sidebar %}
+    <!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="globalmenu">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li><a href='{% url "home" %}'><i class="fa fa-dashboard"></i><span>Home</span></a></li>
+            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text"></i><span>New Project</span></a></li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+<div class="row">
+<div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">New Project</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form" method="post">
+              {% csrf_token %}
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="projectName">Project Name</label>
+                  <input type="text" class="form-control" name="name" id="projectName" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                  <label for="projectInfo">Info</label>
+                  <input type="text" class="form-control" name="info" id="projectInfo" placeholder="Info">
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="file_checkbox"> Upload Files
+                  </label>
+                </div>
+                <div class="form-group" id="files_form" style="display:none;">
+                  <label for="files_input">Select Project Descriptor Files</label>
+                  <input type="file" id="files_input" multiple webkitdirectory onchange="handleFiles(this.files)">
+
+                  <table  class="table table-condensed">
+                    <tbody id="file_table_body">
+                      <tr>
+                        <th></th>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Type</th>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+                <!-- /.box-body -->
+
+                <div class="box-footer">
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- /.box -->
+
+        </div>
+</div>
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+    <script src="{% static "topology3D/js/lib/jquery-ui.js" %}"></script>
+
+
+    <script src="{% static "adminlte/plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "adminlte/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
+
+
+
+    <!-- d3.js -->
+    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
+
+    <!-- Select2 -->
+    <script src="{% static "adminlte/plugins/select2/select2.full.min.js" %}"></script>
+
+    <script>
+
+function handleFiles(files){
+console.log(files);
+$('#file_table_body').empty()
+for (var i = 0; i < files.length; i++) {
+    console.log(i, files[i].size)
+    var file = files[i];
+    if (files[i].type == "application/json" || files[i].type == "") {
+      $('#file_table_body')
+        .append($('<tr>')
+          //.append('<td><a href="javascript:removeFile(' + i + ')"><i class="fa fa-remove"></i></a></td>')
+          .append('<td><i class="fa fa-remove"></i></td>')
+          .append('<td>' + files[i].name + '</td>')
+          .append('<td>' + files[i].size + '</td>')
+          .append('<td>JSON</td>'))
+    }
+    else{
+
+    }
+
+
+  }
+}
+
+function removeFile(file_id){
+
+
+}
+
+
+
+$(document).ready(function () {
+    $('#file_checkbox').change(function () {
+      $('#files_form').fadeToggle();
+    });
+
+    {% if project_id %}
+      window.location.href='{% url "projects:open_project" project_id %}';
+    {% endif %}
+});
+
+
+
+    </script>
+{% endblock %}
+

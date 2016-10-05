@@ -1,0 +1,11 @@
+connection:
+- cp02
+- cp33
+connectivity_type: E-LAN
+descriptor_version: '0.1'
+id: vl4
+leaf_requirement: ''
+number_of_endpoints: 2
+root_requirement: ''
+test_access: none
+vendor: netgroup

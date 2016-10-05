@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+    <link rel="stylesheet" href="{% static "adminlte/plugins/select2/select2.css" %}">
+{% endblock %}
+
+{% block left_sidebar %}
+    {% include 'project_base_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+<div class="row">
+    {% include "descriptorlist.html" %}
+</div>
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+    <script src="{% static "topology3D/js/lib/jquery-ui.js" %}"></script>
+
+
+    <script src="{% static "adminlte/plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "adminlte/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
+
+
+
+    <!-- d3.js -->
+    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
+
+    <!-- Select2 -->
+    <script src="{% static "adminlte/plugins/select2/select2.full.min.js" %}"></script>
+
+    <script>
+
+
+function openDescriptorView(project_id, descriptor_type, descriptor_id){
+console.log("openDescriptorView", project_id, descriptor_type, descriptor_id);
+    window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/' + descriptor_id;
+
+}
+
+$(document).ready(function () {
+
+
+});
+
+
+
+    </script>
+{% endblock %}
+

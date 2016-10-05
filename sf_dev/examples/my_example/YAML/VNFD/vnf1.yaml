@@ -1,0 +1,34 @@
+connection_point:
+- id: cp11
+  type: ''
+  virtual_link_reference: vl11
+- id: cp12
+  type: ''
+  virtual_link_reference: vl11
+- id: cp13
+  type: ''
+  virtual_link_reference: vl11
+description_version: '0.1'
+id: vnf1
+vdu:
+- computation_requirement: ''
+  id: vdu11
+  virtual_memory_resource_element: ''
+  virtual_network_bandwidth_resource: ''
+  vnfc:
+  - connection_point:
+    - id: cp14
+      type: NIC
+      virtual_link_reference: vl11
+    id: vnfc11
+vendor: netgroup
+version: '0.1'
+virtual_link:
+- connection_points_references:
+  - cp11
+  - cp12
+  - cp13
+  - cp14
+  connectivity_type: ' E-Line'
+  id: vl11
+  root_requirement: ''

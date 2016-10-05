@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+    <link rel="stylesheet" href="{% static "adminlte/plugins/select2/select2.css" %}">
+{% endblock %}
+
+{% block left_sidebar %}
+    <!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="globalmenu">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li><a href='{% url "home" %}'><i class="fa fa-dashboard"></i><span>Home</span></a></li>
+            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text"></i><span>New Project</span></a></li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+
+    <div id="table_container">
+
+    </div>
+
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+    <script src="{% static "topology3D/js/lib/jquery-ui.js" %}"></script>
+
+
+    <script src="{% static "adminlte/plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "adminlte/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
+
+
+
+    <!-- d3.js -->
+    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
+
+    <!-- Select2 -->
+    <script src="{% static "adminlte/plugins/select2/select2.full.min.js" %}"></script>
+
+    <script>
+    function openProject(pId){
+        window.location.href='projects/' + pId;
+    }
+
+    function update() {
+    	$.ajax({
+			url: 'projects/table',
+			type: 'GET',
+			dataType: 'json',
+			data: { },
+			error: function() {
+				console.log("Error on server!");
+			},
+			success: function(data) {
+				$('#table_container').html(data.html);
+				//dispatch(data.state);
+			}
+		});
+    }
+    update();
+
+
+
+    </script>
+{% endblock %}

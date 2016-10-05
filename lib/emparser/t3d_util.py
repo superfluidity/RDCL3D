@@ -7,19 +7,15 @@ from util import Util
 class T3DUtil:
 
     node_t3d_base = {
-        'pos': {
-            'x': 0,
-            'y': 0
-        },
-        'v': {
-            'x': 0,
-            'y': 0
+        'v':{
+            'x': 0.1,
+            'y': 0.1
         },
         'info': {
-            'frozen': 'false',
+            'frozen': False,
             'property': {
-                "custom_label": "",
-                'role': 'circular'
+                'custom_label': '',
+                'role': ''
             },
             'type': ''
         }
@@ -42,11 +38,13 @@ class T3DUtil:
 
         node['cp_info'] = cpdata
         node['info']['type'] = 'ns_cp'
+        node['info']['property']['role'] = 'circular'
         return node
 
     def __build_node_ns_vld(self, vldata):
         node = copy.deepcopy(self.node_t3d_base)
         node['info']['type'] = 'ns_vl'
+        node['info']['property']['role'] = 'circular'
         node['vl_info'] = vldata
         return node
 
@@ -87,6 +85,7 @@ class T3DUtil:
     def __parse_ns_vnfd(self, vnfdid, vnfd, graph_object):
         vnfd_node = copy.deepcopy(self.node_t3d_base)
         vnfd_node['info']['type'] = 'vnf'
+        vnfd_node['info']['property']['role'] = 'circular'
         graph_object['vertices'][vnfdid] = vnfd_node
         for vnfd_cp in vnfd['connection_point']:
             vnfd_cp_node = copy.deepcopy(self.node_t3d_base)

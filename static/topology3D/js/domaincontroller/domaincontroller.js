@@ -639,25 +639,33 @@ dreamer.DomainController = (function() {
                 maxy = Math.max(maxy, graph.vertices[vertex].pos['y']);
                 minx = Math.min(minx, graph.vertices[vertex].pos['x']);
                 miny = Math.min(miny, graph.vertices[vertex].pos['y']);
+                console.log(maxx, maxy, minx, miny)
                 dx = maxx - minx;
                 dy = maxy - miny;
+                console.log(dx, dy)
             } else {
                 nopos = true;
             }
             vertnumber++;
         }
 
+
         for (var vertex in graph.vertices) {
 
 
             if (nopos == false) {
+
                 newx = (graph.vertices[vertex].pos['x'] - minx) / dx;
+
                 newx = newx * 8 * size.x / 10 + size.x / 10;
+
                 newy = (graph.vertices[vertex].pos['y'] - miny) / dy;
                 newy = newy * 8 * size.y / 10 + size.y / 10;
+                console.log(newx, newy)
             } else {
                 newx = size.x / 2 + (2 * size.x / 5) * Math.sin(2 * Math.PI * vertex / vertnumber);
                 newy = size.y / 2 - (2 * size.y / 5) * Math.cos(2 * Math.PI * vertex / vertnumber);
+                console.log("nopos", newx, newy, size.x, size.y);
             }
 
 

@@ -16,12 +16,16 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth import views
+from sf_user import views as user_views
+from sf_t3d import views
 
-
+app_name = 'base'
 urlpatterns = [
     url(r'^dev/', include('sf_dev.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', views.login, {'template_name': 'login.html'}),
+    url(r'^auth/$', user_views.login_view),
     url(r'^mpv/', include('topology_mpv.urls')),
+    url(r'^projects/', include('projecthandler.urls',namespace='projects'), name='projects_base'),
+    url(r'^home', views.home, name='home'),
+
 ]
