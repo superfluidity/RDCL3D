@@ -17,6 +17,9 @@ class Project(models.Model):
     data_project = jsonfield.JSONField(default={'nsd':{}, 'vld':{}, 'vnfd':{}, 'vnffgd': {}})
     validated = models.BooleanField(default=False)
 
+    def get_dataproject(self):
+        return self.data_project
+
     def get_overview_data(self):
         print  len(self.data_project['vnffgd'].keys()) if 'vnffgd' in self.data_project else 0
         result = {

@@ -1,7 +1,7 @@
 {
   "id": "vnf1",
   "vendor": "netgroup",
-  "description_version": "0.1",
+  "descriptor_version": "0.1",
   "version": "0.1",
   "vdu": [
     {

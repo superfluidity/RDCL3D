@@ -129,7 +129,7 @@
         }
 
     var yaml_editor_settings = {
-            mode: "yaml",
+            mode: "yaml-frontmatter",
             showCursorWhenSelecting: true,
             autofocus: true,
             lineNumbers: true,
@@ -149,7 +149,7 @@
                     cm.foldCode(cm.getCursor());
                 }
             },
-            theme: "neat",
+            //theme: "neat",
             keyMap: "sublime",
         }
 var editorJSON;
@@ -160,7 +160,7 @@ $(document).ready(function () {
                     myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
                 }, json_editor_settings );
 
-   editorJSON.setValue(JSON.stringify({{ descriptor_string |safe }}, null,"\t"));
+   editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
 
    editorJSON.refresh();
 
@@ -168,6 +168,8 @@ $(document).ready(function () {
    var editorYaml = CodeMirror(function(elt) {
                     myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
                 }, yaml_editor_settings );
+   var des_strings = {{ descriptor_strings|safe }};
+   editorYaml.setValue(des_strings.descriptor_string_yaml);
    editorYaml.refresh();
 });
 

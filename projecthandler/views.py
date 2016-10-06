@@ -45,7 +45,7 @@ def create_new_project(request):
             return render(request, 'new_project.html', {'project_id': project.id})
         except Exception as e:
             print e
-            return render(request, 'new_project.html', {'error_msg': 'Error creating project! Please retry.'})
+            return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
 
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
@@ -71,8 +71,8 @@ def open_project(request, project_id = None):
         projects = Project.objects.filter(id=project_id)
         project_overview = projects[0].get_overview_data()
         return render(request, 'project_details.html', {'project_overview': project_overview, 'project_id': project_id})
-    except Exception as e: ##TODO error page
-        return render(request, 'error.html', {'project_overview': {}, 'project_id': project_id})
+    except Exception as e:
+        return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
 
 
 def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):
@@ -85,8 +85,12 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id)
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
+        utility = Util()
+        descriptor_string_json = json.dumps(descriptor)
+        descriptor_string_yaml = utility.json2yaml(descriptor)
+        print type(descriptor_string_yaml)
         #print descriptor
-        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor': descriptor, 'descriptor_string': json.dumps(descriptor)})
+        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
 
 def show_descriptors(request, project_id = None, descriptor_type = None):
     csrf_token_value = get_token(request)
@@ -109,7 +113,8 @@ def graph(request, project_id = None):
 
 def graph_data(request, project_id = None):
     test_t3d = T3DUtil()
-    project = emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
+    projects = Project.objects.filter(id=project_id)
+    project = projects[0].get_dataproject() #emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     # print response
     response =  HttpResponse(json.dumps(topology), content_type="application/json")
