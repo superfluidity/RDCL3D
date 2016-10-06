@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
-from projecthandler.models import Project
+from projecthandler.models import EtsiManoProject
 from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
@@ -25,7 +25,7 @@ def create_project(request): #TODO remove test
 
     user = CustomUser.objects.get(id=request.user.id)
     jsonField = jsonfield.JSONField()
-    projects = Project.objects.create(name="Prova1", owner=user, validated=True)
+    projects = EtsiManoProject.objects.create(name="Prova1", owner=user, validated=True)
 
     return JsonResponse({'html': []});
 
@@ -40,7 +40,7 @@ def create_new_project(request):
             data_project = emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON',
                                              'json')
             print data_project
-            project = Project.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
+            project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
 
             return render(request, 'new_project.html', {'project_id': project.id})
         except Exception as e:
@@ -55,7 +55,7 @@ def create_new_project(request):
 def user_projects(request):
     csrf_token_value = get_token(request)
     user = CustomUser.objects.get(id=request.user.id)
-    projects = Project.objects.filter(owner=user)
+    projects = EtsiManoProject.objects.filter(owner=user)
 
     #print list(projects)
     html = render_to_string('projectlist.html', {
@@ -68,10 +68,13 @@ def user_projects(request):
 def open_project(request, project_id = None):
     print project_id
     try:
-        projects = Project.objects.filter(id=project_id)
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        print "projects", projects[0]
         project_overview = projects[0].get_overview_data()
+        print "project_overview", project_overview
         return render(request, 'project_details.html', {'project_overview': project_overview, 'project_id': project_id})
     except Exception as e:
+        print e
         return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
 
 
@@ -83,7 +86,7 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
 
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
-        projects = Project.objects.filter(id=project_id)
+        projects = EtsiManoProject.objects.filter(id=project_id)
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
         utility = Util()
         descriptor_string_json = json.dumps(descriptor)
@@ -96,7 +99,7 @@ def show_descriptors(request, project_id = None, descriptor_type = None):
     csrf_token_value = get_token(request)
     print "project_id", project_id
     #user = CustomUser.objects.get(id=request.user.id)
-    projects = Project.objects.filter(id=project_id)
+    projects = EtsiManoProject.objects.filter(id=project_id)
 
     return render(request, 'project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
@@ -107,13 +110,13 @@ def show_descriptors(request, project_id = None, descriptor_type = None):
 
 def graph(request, project_id = None):
     csrf_token_value = get_token(request)
-    projects = Project.objects.filter(id=project_id)
+    projects = EtsiManoProject.objects.filter(id=project_id)
 
     return render(request, 'project_graph.html', {'project': projects[0], 'project_id': project_id})
 
 def graph_data(request, project_id = None):
     test_t3d = T3DUtil()
-    projects = Project.objects.filter(id=project_id)
+    projects = EtsiManoProject.objects.filter(id=project_id)
     project = projects[0].get_dataproject() #emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     # print response

@@ -144,14 +144,3 @@ class CustomUser(AbstractCustomUser):
             return "Full operator"
         elif self.is_basic_user:
             return "Basic user"
-
-# class UserGroup(models.Model):
-#     name = models.CharField(_("name"), max_length=100)
-#     description = models.CharField(_("description"), max_length=1000)
-#
-#     def __unicode__(self):
-#         return "%s" % self.name
-#
-#     def get_gcm_users(self):
-#         return self.customuser_set.filter(is_active=True, gcmdevice__active=True,
-#                                           gcmdevice__registration_id__isnull=False)
