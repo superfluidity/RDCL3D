@@ -5,7 +5,6 @@ from projecthandler import views
 
 urlpatterns = [
     url(r'^table/', views.user_projects, name='projects_list'),
-    url(r'^create_test/', views.create_project),
     url(r'^new/', views.create_new_project, name='new_project'),
     url(r'^(?P<project_id>\d+)/$', views.open_project, name='open_project'),
     url(r'^(?P<project_id>\d+)/graph(/$)', views.graph, name='graph_view'),

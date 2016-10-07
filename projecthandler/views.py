@@ -8,6 +8,8 @@ from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
 from lib.emparser import emparser
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import json
@@ -16,20 +18,12 @@ import jsonfield
 # Create your views here.
 
 
+@login_required
 def home(request):
-
     return render(request, 'home.html', {})
 
-def create_project(request): #TODO remove test
-    csrf_token_value = get_token(request)
 
-    user = CustomUser.objects.get(id=request.user.id)
-    jsonField = jsonfield.JSONField()
-    projects = EtsiManoProject.objects.create(name="Prova1", owner=user, validated=True)
-
-    return JsonResponse({'html': []});
-
-
+@login_required
 def create_new_project(request):
 
     if request.method == 'POST':
@@ -52,6 +46,7 @@ def create_new_project(request):
         return render(request, 'new_project.html', {})
 
 
+@login_required
 def user_projects(request):
     csrf_token_value = get_token(request)
     user = CustomUser.objects.get(id=request.user.id)
@@ -65,6 +60,8 @@ def user_projects(request):
     #if request.is_ajax():
     return JsonResponse({'html': html});
 
+
+@login_required
 def open_project(request, project_id = None):
     print project_id
     try:
@@ -78,6 +75,7 @@ def open_project(request, project_id = None):
         return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
 
 
+@login_required
 def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):
     print project_id, descriptor_id
     if request.method == 'POST':
@@ -95,6 +93,8 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
         #print descriptor
         return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
 
+
+@login_required
 def show_descriptors(request, project_id = None, descriptor_type = None):
     csrf_token_value = get_token(request)
     print "project_id", project_id
@@ -108,12 +108,16 @@ def show_descriptors(request, project_id = None, descriptor_type = None):
         'descriptor_type': descriptor_type
     })
 
+
+@login_required
 def graph(request, project_id = None):
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
 
     return render(request, 'project_graph.html', {'project': projects[0], 'project_id': project_id})
 
+
+@login_required
 def graph_data(request, project_id = None):
     test_t3d = T3DUtil()
     projects = EtsiManoProject.objects.filter(id=project_id)
@@ -124,6 +128,8 @@ def graph_data(request, project_id = None):
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
+
+@login_required
 def downlaod(request, project_id = None):
     csrf_token_value = get_token(request)
     if request.method == 'POST':

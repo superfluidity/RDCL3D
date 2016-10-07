@@ -19,7 +19,7 @@ def login_view(request):
             if user.is_authenticated():
                 login(request, user)
                 if next == "":
-                    return HttpResponseRedirect('/dev/d3js') ##FIXME
+                    return HttpResponseRedirect('/home')
                 else:
                     return HttpResponseRedirect(next)
         else:

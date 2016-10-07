@@ -29,11 +29,11 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "sf_user.CustomUser"
 
-SITE_NAME = "SF_T3D"
-SHORT_SITE_NAME = "SFT"
+SITE_NAME = "RDCLs"
+SHORT_SITE_NAME = "RDCL"
 
-LOGIN_URL = '/'
-LOGOUT_URL = '/logout'
+LOGIN_URL = '/auth'
+LOGOUT_URL = '/auth'
 
 VERSION = "0.0.1"
 
@@ -71,7 +71,10 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'template')
+            os.path.join(BASE_DIR, 'template'),
+            #os.path.join(BASE_DIR, 'projecthandler', 'template'),
+            #os.path.join(BASE_DIR, 'sf_dev', 'template'),
+
         ],
         'APP_DIRS': True,
         'OPTIONS': {

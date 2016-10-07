@@ -23,7 +23,7 @@ app_name = 'base'
 urlpatterns = [
     url(r'^dev/', include('sf_dev.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^auth/$', user_views.login_view),
+    url(r'^auth', user_views.login_view),
     url(r'^mpv/', include('topology_mpv.urls')),
     url(r'^projects/', include('projecthandler.urls',namespace='projects'), name='projects_base'),
     url(r'^home', views.home, name='home'),
