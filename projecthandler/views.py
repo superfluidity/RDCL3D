@@ -125,4 +125,18 @@ def graph_data(request, project_id = None):
     return response
 
 def downlaod(request, project_id = None):
-    return render(request, 'download_etsi.html', {'project_id': project_id})
+    csrf_token_value = get_token(request)
+    if request.method == 'POST':
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        in_memory = projects[0].get_zip_archive()
+        #in_memory.seek(0)
+
+        response = HttpResponse(content_type="application/zip")
+        response["Content-Disposition"] = "attachment; filename=export_"+ project_id+".zip"
+        ret_zip = in_memory.getvalue()
+        in_memory.close()
+        response.write(ret_zip)
+        return response
+
+    elif request.method == 'GET':
+        return render(request, 'download_etsi.html', {'project_id': project_id})
