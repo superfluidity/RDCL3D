@@ -14,16 +14,46 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
+    {% if project_id  %}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">Project {{project_id}}</a></li>
-    <li>Descriptors {{descriptor_type}}</li>
-
+    <li>Delete Project</li>
+    {% endif %}
 {% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
 <div class="row">
-    {% include "descriptorlist.html" %}
+    {% if project_id  %}
+        <div class="col-sm-5">
+      <div class="box box-danger">
+        <div class="box-header with-border">
+              <i class="fa fa-warning"></i>
+
+              <h3 class="box-title">Warning</h3>
+        </div>
+          <div class="box-body">
+              <form role="form" method="post">
+                  {% csrf_token %}
+                  <div class="box-body">
+
+                        <p>The Project <strong>{{project_name}}</strong> will be deleted!</p>
+
+
+                      <!-- /.box-body -->
+
+                  </div>
+                   <div class="box-footer">
+                          <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+              </form>
+
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div>
+    {% endif %}
 </div>
+
 {% endblock %}
 
 {% block resource_block %}
@@ -45,14 +75,12 @@
     <script>
 
 
-function openDescriptorView(project_id, descriptor_type, descriptor_id){
-console.log("openDescriptorView", project_id, descriptor_type, descriptor_id);
-    window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/' + descriptor_id;
 
-}
 
 $(document).ready(function () {
-
+    {% if project_id == None %}
+      window.location.href='{% url "home"  %}';
+    {% endif %}
 
 });
 

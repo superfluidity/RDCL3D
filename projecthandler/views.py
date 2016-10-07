@@ -9,13 +9,9 @@ from lib.emparser.t3d_util import T3DUtil
 from lib.emparser import emparser
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 import json
 
-import jsonfield
-# Create your views here.
 
 
 @login_required
@@ -76,6 +72,29 @@ def open_project(request, project_id = None):
 
 
 @login_required
+def delete_project(request, project_id = None):
+    print project_id
+    if request.method == 'POST':
+
+        try:
+            EtsiManoProject.objects.filter(id=project_id).delete()
+            return render(request, 'project_delete.html', {})
+        except Exception as e:
+            print e
+            return render(request, 'error.html', {'error_msg': 'Error deleting Project.'})
+
+    elif request.method == 'GET':
+        try:
+            projects = EtsiManoProject.objects.filter(id=project_id)
+            print "projects", projects[0]
+            project_overview = projects[0].get_overview_data()
+            print "project_overview", project_overview
+            return render(request, 'project_delete.html', {'project_id': project_id, 'project_name': project_overview['name']})
+        except Exception as e:
+            print e
+            return render(request, 'error.html', {'error_msg': 'Project not found.'})
+
+@login_required
 def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):
     print project_id, descriptor_id
     if request.method == 'POST':
@@ -91,7 +110,7 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
         descriptor_string_yaml = utility.json2yaml(descriptor)
         print type(descriptor_string_yaml)
         #print descriptor
-        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
+        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
 
 
 @login_required

@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "sf_user.CustomUser"
 
-SITE_NAME = "RDCLs"
+SITE_NAME = "RCDL 3D"
 SHORT_SITE_NAME = "RDCL"
 
 LOGIN_URL = '/auth'

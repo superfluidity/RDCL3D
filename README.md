@@ -42,7 +42,9 @@ To setup a local development environment::
 
 #### For the first time:
 
-    ./manage.py migrate
+    $ python manage.py makemigrations
+
+    $ python manage.py migrate
 
 #### you must create a new super user:
 
@@ -62,7 +64,7 @@ or:
 Development (TODO)
 -------
 
-In order to keep your environment consistent, it’s a good idea to “freeze” the current state of the environment packages. 
+In order to keep your environment consistent, itï¿½s a good idea to ï¿½freezeï¿½ the current state of the environment packages. 
 To do this, run
 
     $ pip freeze > requirements.txt

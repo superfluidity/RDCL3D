@@ -14,15 +14,15 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
-    <li><a href='/projects/{{project_id}}/'>Project {{project_id}}</a></li>
-    <li><a href='/projects/{{project_id}}/downlaod'>Download</a></li>
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">Project {{project_id}}</a></li>
+    <li>Download Projec</li>
 {% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
 <div class="row">
     <div class="col-sm-6">
-      <div class="box box-danger">
+      <div class="box box-warning">
         <div class="box-header with-border">
           <h3 class="box-title">Source Code</h3>
           <span class="label label-danger pull-right"><i class="fa fa-database"></i></span>
@@ -49,10 +49,11 @@
 
                       <!-- /.box-body -->
 
-                      <div class="box-footer">
+
+                  </div>
+                  <div class="box-footer">
                           <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Download</button>
                       </div>
-                  </div>
               </form>
 
 

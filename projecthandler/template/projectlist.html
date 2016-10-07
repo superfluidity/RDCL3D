@@ -19,6 +19,7 @@
 
 						<th>Owner</th>
 						<th>Validated</th>
+						<th><i class="fa fa-trash-o"></i></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -44,6 +45,7 @@
 							</span>
 							{% endif %}
 						</td>
+						<td><a href="{% url 'projects:delete_project' project_id=p.id %}"> Delete</a></td>
 
 					</tr>
 				{% endfor %}
