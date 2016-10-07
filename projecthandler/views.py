@@ -125,5 +125,4 @@ def graph_data(request, project_id = None):
     return response
 
 def downlaod(request, project_id = None):
-    #return HttpResponseRedirect(reverse("projets:download", args=[project_id]))
-    return JsonResponse({'html': 'downlaod'});
+    return render(request, 'download_etsi.html', {'project_id': project_id})
