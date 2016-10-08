@@ -1,7 +1,24 @@
 {% extends 'base.html' %}
 
-{% block content_body %}
+{% block title_header_big %}
+    {{ block.super }}
+    Error Page
+{% endblock %}
 
+{% block content_body %}
+<div class="error-page">
+        <h2 class="headline text-yellow"> Error</h2>
+
+        <div class="error-content">
+          <h3><i class="fa fa-warning text-yellow"></i> {{error_message}}</h3>
+
+          <p>
+            Meanwhile, you may <a href='{% url "home" %}'>return to dashboard</a> .
+          </p>
+
+        </div>
+        <!-- /.error-content -->
+      </div>
 {% endblock %}
 
 {% block resource_block %}
