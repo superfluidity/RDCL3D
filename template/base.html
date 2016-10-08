@@ -121,8 +121,14 @@
           <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1 id="title_header">
+                    {% block title_header_big %}
 
-                    <small></small>
+                    {% endblock %}
+                    <small>
+                        {% block title_header_small %}
+
+                        {% endblock %}
+                    </small>
                 </h1>
                 <ol class="breadcrumb">
                     {% block breadcrumb_body %}

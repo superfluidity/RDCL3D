@@ -25,3 +25,14 @@ def login_view(request):
         else:
             error_message = 'Login failed!'
     return render(request, 'login.html', {'error_message':error_message} )
+
+def register_view(request):
+    logout(request)
+    extra_data = {}
+    next = ""
+    if request.GET:
+        next = request.GET['next']
+    error_message = ''
+    if request.POST:
+        print "new user"
+    return render(request, 'register_user.html', {'error_message':error_message} )

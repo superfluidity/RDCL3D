@@ -27,9 +27,9 @@ def create_new_project(request):
         name =request.POST.get('name', '')
         info = request.POST.get('info', '')
         try:
-            data_project = emparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON',
+            ##FIXME da rimuovere usata solo per develop
+            data_project = emparser.importproject('sf_dev/examples/my_example/JSON',
                                              'json')
-            print data_project
             project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
 
             return render(request, 'new_project.html', {'project_id': project.id})
@@ -59,12 +59,9 @@ def user_projects(request):
 
 @login_required
 def open_project(request, project_id = None):
-    print project_id
     try:
         projects = EtsiManoProject.objects.filter(id=project_id)
-        print "projects", projects[0]
         project_overview = projects[0].get_overview_data()
-        print "project_overview", project_overview
         return render(request, 'project_details.html', {'project_overview': project_overview, 'project_id': project_id})
     except Exception as e:
         print e
@@ -73,7 +70,6 @@ def open_project(request, project_id = None):
 
 @login_required
 def delete_project(request, project_id = None):
-    print project_id
     if request.method == 'POST':
 
         try:
@@ -96,7 +92,6 @@ def delete_project(request, project_id = None):
 
 @login_required
 def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):
-    print project_id, descriptor_id
     if request.method == 'POST':
 
         return JsonResponse({'html': 'edit_descriptor'})
@@ -108,7 +103,6 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
         utility = Util()
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = utility.json2yaml(descriptor)
-        print type(descriptor_string_yaml)
         #print descriptor
         return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
 
@@ -116,7 +110,6 @@ def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor
 @login_required
 def show_descriptors(request, project_id = None, descriptor_type = None):
     csrf_token_value = get_token(request)
-    print "project_id", project_id
     #user = CustomUser.objects.get(id=request.user.id)
     projects = EtsiManoProject.objects.filter(id=project_id)
 
@@ -133,7 +126,7 @@ def graph(request, project_id = None):
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
 
-    return render(request, 'project_graph.html', {'project': projects[0], 'project_id': project_id})
+    return render(request, 'project_graph.html', {'project_id': project_id})
 
 
 @login_required
