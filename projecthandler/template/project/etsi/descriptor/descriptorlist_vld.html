@@ -4,17 +4,19 @@
 
         <th>Id</th>
         <th>Vendor</th>
-        <th>Version</th>
-        <th><span> Action</span></th>
+        <th>Description Version</th>
+        <th>Action</th>
+
 
     </tr>
     </thead>
     <tbody>
     {% for k,v in descriptors.items %}
     <tr>
+
         <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')">{{ k }}</a></td>
         <td>{{ v.vendor }}</td>
-        <td>{{ v.version }}</td>
+        <td>{{ v.descriptor_version }}</td>
         <td>
             <div class="btn-group">
                   <button type="button" class="btn btn-default">Action</button>
@@ -24,7 +26,6 @@
                   </button>
                   <ul class="dropdown-menu" role="menu">
                     <li><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')"><i class="fa fa-pencil fa-fw"></i>Edit</a></li>
-                    <li><a href='/projects/{{project_id}}/graph'><i class="fa fa-sitemap fa-fw"></i>Show graph</a></li>
                       <li class="divider"></li>
                     <li><a href="#"><i class="fa fa-trash-o fa-fw"></i>Delete</a></li>
                   </ul>

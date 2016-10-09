@@ -5,38 +5,16 @@
         <div class="box-header with-border">
                   <h3 class="box-title">{{descriptor_type}} Descriptors</h3>
             <div class="box-tools">
-                <a href="javascript:void(0)" class="btn btn-block btn-primary"><i class="fa fa-plus"></i><span> Create {{descriptor_type}}</span></a>
+                <a href="javascript:void(0)" class="btn btn-block btn-primary btn-sm"><i class="fa fa-plus"></i><span> Create {{descriptor_type}}</span></a>
             </div>
         </div>
         <div class="box-body">
             {% if descriptor_type == 'nsd' %}
                 {% include 'descriptorlist_nsd.html' %}
-            {% else %}
-            <table id="descriptors_table" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-
-                        <th>Id</th>
-                        <th>Vendor</th>
-                        <th>Version</th>
-                        <th>Description Version</th>
-
-
-                    </tr>
-                </thead>
-                <tbody>
-                {% for k,v in descriptors.items %}
-                    <tr>
-
-                        <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')" >{{ k }}</a></td>
-                        <td>{{ v.vendor }}</td>
-                        <td>{{ v.version  }}</td>
-                        <td>{{ v.descriptor_version  }}</td>
-
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% elif descriptor_type == 'vld' %}
+                {% include 'descriptorlist_vld.html' %}
+            {% elif descriptor_type == 'vnfd' %}
+                {% include 'descriptorlist_vnfd.html' %}
             {% endif %}
         </div>
     </div>

@@ -5,16 +5,20 @@
         <th>Id</th>
         <th>Vendor</th>
         <th>Version</th>
-        <th><span> Action</span></th>
+        <th>Description Version</th>
+        <th>Action</th>
+
 
     </tr>
     </thead>
     <tbody>
     {% for k,v in descriptors.items %}
     <tr>
+
         <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')">{{ k }}</a></td>
         <td>{{ v.vendor }}</td>
         <td>{{ v.version }}</td>
+        <td>{{ v.descriptor_version }}</td>
         <td>
             <div class="btn-group">
                   <button type="button" class="btn btn-default">Action</button>
