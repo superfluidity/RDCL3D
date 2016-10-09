@@ -73,6 +73,10 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'template'),
             os.path.join(BASE_DIR, 'projecthandler', 'template'),
+            os.path.join(BASE_DIR, 'projecthandler', 'template', 'download'),
+            os.path.join(BASE_DIR, 'projecthandler', 'template', 'project'),
+            os.path.join(BASE_DIR, 'projecthandler', 'template', 'project', 'etsi'),
+            os.path.join(BASE_DIR, 'projecthandler', 'template', 'project', 'etsi', 'descriptor'),
             os.path.join(BASE_DIR, 'sf_dev', 'template'),
 
         ],

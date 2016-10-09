@@ -15,45 +15,30 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">Project {{project_id}}</a></li>
-    <li>Download Projec</li>
+    <li>Export Project</li>
 {% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
 <div class="row">
     <div class="col-sm-6">
-      <div class="box box-warning">
+      <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Source Code</h3>
-          <span class="label label-danger pull-right"><i class="fa fa-database"></i></span>
+          <h3 class="box-title">Export project files</h3>
+          <span class="label label-default pull-right"><i class="fa fa-download"></i></span>
         </div><!-- /.box-header -->
           <div class="box-body">
               <form role="form" method="post">
                   {% csrf_token %}
                   <div class="box-body">
-                      <p>Download all descriptor files. </p>
-                      <div class="form-group">
-                          <label>Select file type:</label>
-                          <div class="radio">
-                              <label>
-                                  <input type="radio" id="yaml_checkbox" value="yaml" disabled> YAML
-                              </label>
-                          </div>
-                          <div class="radio">
-                              <label>
-                                  <input type="radio" id="json_checkbox" value="json" selected> JSON
-                              </label>
-                          </div>
-
-                      </div>
+                      <p>Download the archive of all descriptor files. </p>
 
                       <!-- /.box-body -->
-
-
                   </div>
                   <div class="box-footer">
-                          <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Download</button>
-                      </div>
+                      <button type="submit" class="btn btn-primary" value="json"><i class="fa fa-file-archive-o"></i> Download JSON</button>
+                      <button type="submit" class="btn btn-primary" value="yaml" disabled><i class="fa fa-file-archive-o" ></i> Download YAML</button>
+                  </div>
               </form>
 
 
