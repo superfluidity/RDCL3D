@@ -184,11 +184,12 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
 
 @login_required
 def create_descriptor(request, project_id=None, descriptor_type=None):
-    print request
+    print request.POST.get('type'), request.POST.get('text')
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
-    result = True #projects[0].create_descriptor(descriptor_type)
-    return render(request, 'project_descriptors.html', {
+    result = projects[0].create_descriptor(descriptor_type,request.POST.get('text'))
+    data = {}
+    data['data'] =  {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
         "csrf_token_value": csrf_token_value,
@@ -196,4 +197,8 @@ def create_descriptor(request, project_id=None, descriptor_type=None):
         'alert_message': {
             'success': result,
             'message': "Descriptor created" if result else 'Error in creation'}
-    })
+    }
+    data['url'] = '/projects/'+project_id+'/descriptors/'+descriptor_type+'/'
+    response = HttpResponse(json.dumps(data), content_type="application/json")
+    response["Access-Control-Allow-Origin"] = "*"
+    return  response

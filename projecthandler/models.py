@@ -80,8 +80,21 @@ class EtsiManoProject(Project):
         except Exception as e:
             print 'exception',e
             result = False
-
         return result
+
+    def create_descriptor(self, type_descriptor, text):
+        #FIXME descripion_id and check text
+        try:
+            current_data = json.loads(self.data_project)
+            current_data[type_descriptor][1] = text
+            self.data_project = current_data#jsonfield.JSONField(json.dumps(current_data))
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result
+
 
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False

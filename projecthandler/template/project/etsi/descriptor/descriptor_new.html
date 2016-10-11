@@ -156,6 +156,8 @@
 
 
     var json_editor_settings = {
+
+            id: "code_editor_json",
             mode: "javascript",
             showCursorWhenSelecting: true,
             autofocus: true,
@@ -206,34 +208,46 @@
         }
         var editorJSON;
         $(document).ready(function () {
-           //var cmjsoneditor = CodeMirror.fromTextArea(document.getElementById("code_editor"), json_editor_settings);
-           var myJsonTextArea = document.getElementById("code_editor_json");
-           editorJSON = CodeMirror(function(elt) {
-                            myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
-                        }, json_editor_settings );
 
-           editorJSON.setValue(JSON.stringify({}, null,"\t"));
-
-           editorJSON.refresh();
 
         });
 
 
         function create(){
             var id = $('.nav-tabs .active').attr('id');
-            var type ;
+            var type, text ;
             switch(id) {
                 case 'yaml_li':
                     type = 'yaml'
+                    text = document.getElementById('code_editor_yaml').value;
                     break;
                 case 'json_li':
                     type = 'json'
+                    text = document.getElementById('code_editor_json').value;
                     break;
                 case 'file_li':
                     type = 'file'
                     break;
             }
-            console.log(type);
+            console.log(text);
+            $.ajax({
+                    url: '/projects/{{project_id}}/descriptors/{{descriptor_type}}/create',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { 'csrfmiddlewaretoken' : '{{csrf_token}}',
+                            'type': type,
+                            'text': text
+                     },
+                    error: function(e) {
+                        console.log("Error on server!",e);
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        window.location.href='/projects/{{project_id}}/descriptors/{{descriptor_type}}/'
+                        // Here ETL should have changed state in "process network configuration", so let's update
+
+                    }
+                });
         }
 
 
