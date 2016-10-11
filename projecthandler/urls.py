@@ -17,6 +17,5 @@ urlpatterns = [
         name='delete_descriptor'),
     url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/new$', views.new_descriptor,
              name='new_descriptor'),
-    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/create$', views.create_descriptor,
-             name='create_descriptor'),
+
 ]

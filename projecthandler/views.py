@@ -178,27 +178,23 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
 
 @login_required
 def new_descriptor(request, project_id=None, descriptor_type=None):
-    return render(request, 'descriptor_new.html', {
-        'project_id': project_id,
-        'descriptor_type':descriptor_type})
+    if request.method == 'GET':
+        return render(request, 'descriptor_new.html', {
+            'project_id': project_id,
+            'descriptor_type':descriptor_type})
+    elif request.method == 'POST':
+        csrf_token_value = get_token(request)
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        result = projects[0].create_descriptor(descriptor_type, request.POST.get('text'), request.POST.get('type'))
+        response_data = {
+            'project_id': project_id,
+            'descriptor_type': descriptor_type,
+            'alert_message': {
+                'success': result,
+                'message': "Descriptor created" if result else 'Error in creation'}
+            }
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps(response_data), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
-@login_required
-def create_descriptor(request, project_id=None, descriptor_type=None):
-    print request.POST.get('type'), request.POST.get('text')
-    csrf_token_value = get_token(request)
-    projects = EtsiManoProject.objects.filter(id=project_id)
-    result = projects[0].create_descriptor(descriptor_type,request.POST.get('text'), request.POST.get('type'))
-    data = {}
-    data['data'] =  {
-        'descriptors': projects[0].get_descriptors(descriptor_type),
-        'project_id': project_id,
-        "csrf_token_value": csrf_token_value,
-        'descriptor_type': descriptor_type,
-        'alert_message': {
-            'success': result,
-            'message': "Descriptor created" if result else 'Error in creation'}
-    }
-    data['url'] = '/projects/'+project_id+'/descriptors/'+descriptor_type+'/'
-    response = HttpResponse(json.dumps(data), content_type="application/json")
-    response["Access-Control-Allow-Origin"] = "*"
-    return  response
