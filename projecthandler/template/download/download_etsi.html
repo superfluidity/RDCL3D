@@ -22,28 +22,30 @@
   	{{ block.super }}
 <div class="row">
     <div class="col-sm-6">
-      <div class="box box-default">
+      <div class="box box-solid box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Export project files</h3>
-          <span class="label label-default pull-right"><i class="fa fa-download"></i></span>
+          <span class="label label-primary pull-right"><i class="fa fa-download"></i></span>
         </div><!-- /.box-header -->
-          <div class="box-body">
-              <form role="form" method="post">
+          <form role="form" method="post">
                   {% csrf_token %}
-                  <div class="box-body">
+          <div class="box-body">
+
+
                       <p>Download the archive of all descriptor files. </p>
 
-                      <!-- /.box-body -->
-                  </div>
-                  <div class="box-footer">
+
+
+
+
+        </div><!-- /.box-body -->
+          <div class="box-footer">
                       <button type="submit" class="btn btn-primary" value="json"><i class="fa fa-file-archive-o"></i> Download JSON</button>
                       <button type="submit" class="btn btn-primary" value="yaml" disabled><i class="fa fa-file-archive-o" ></i> Download YAML</button>
                   </div>
               </form>
-
-
-        </div><!-- /.box-body -->
       </div><!-- /.box -->
+
     </div>
 </div>
 

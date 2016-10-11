@@ -69,7 +69,6 @@ class EtsiManoProject(Project):
         return result
 
     def delete_descriptor(self,type_descriptor, descriptor_id ):
-        result = {}
         try:
             print descriptor_id, type_descriptor
             current_data = json.loads(self.data_project)
@@ -83,11 +82,14 @@ class EtsiManoProject(Project):
         return result
 
     def create_descriptor(self, type_descriptor, text):
-        #FIXME descripion_id and check text
+        #TODO just with JSON
         try:
+            print type_descriptor
             current_data = json.loads(self.data_project)
-            current_data[type_descriptor][1] = text
-            self.data_project = current_data#jsonfield.JSONField(json.dumps(current_data))
+            new_descriptor = json.loads(text)
+            new_descriptor_id = new_descriptor['id'] if type_descriptor != "nsd" else new_descriptor['name']
+            current_data[type_descriptor][new_descriptor_id] = new_descriptor
+            self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
