@@ -6,6 +6,8 @@ import jsonfield
 from StringIO import StringIO
 import zipfile
 import json
+import yaml
+from lib.emparser.util import Util
 # Create your models here.
 
 
@@ -81,12 +83,17 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    def create_descriptor(self, type_descriptor, text):
-        #TODO just with JSON
+    def create_descriptor(self, type_descriptor, text, data_type):
+
         try:
-            print type_descriptor
+            print type_descriptor, data_type
             current_data = json.loads(self.data_project)
-            new_descriptor = json.loads(text)
+            if data_type == 'json':
+                new_descriptor = json.loads(text)
+            else:
+                utility = Util()
+                yaml_object = yaml.load(text)
+                new_descriptor = json.loads(utility.yaml2json(yaml_object))
             new_descriptor_id = new_descriptor['id'] if type_descriptor != "nsd" else new_descriptor['name']
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data

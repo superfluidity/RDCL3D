@@ -187,7 +187,7 @@ def create_descriptor(request, project_id=None, descriptor_type=None):
     print request.POST.get('type'), request.POST.get('text')
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
-    result = projects[0].create_descriptor(descriptor_type,request.POST.get('text'))
+    result = projects[0].create_descriptor(descriptor_type,request.POST.get('text'), request.POST.get('type'))
     data = {}
     data['data'] =  {
         'descriptors': projects[0].get_descriptors(descriptor_type),

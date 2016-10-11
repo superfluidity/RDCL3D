@@ -12,7 +12,7 @@ class Util:
         logging.basicConfig(level=logging.DEBUG)
         self.log = logging.getLogger('UtilLogger')
 
-    def yaml2json(self, object_yaml, name_output):
+    def yaml2json(self, object_yaml):
         self.log.debug('yaml2json')
         return json.dumps(object_yaml, sort_keys=True, indent=2)
 
