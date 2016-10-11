@@ -175,3 +175,25 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
             'success': result,
             'message': "Delete succeeded!" if result else 'Error in delete'}
     })
+
+@login_required
+def new_descriptor(request, project_id=None, descriptor_type=None):
+    return render(request, 'descriptor_new.html', {
+        'project_id': project_id,
+        'descriptor_type':descriptor_type})
+
+@login_required
+def create_descriptor(request, project_id=None, descriptor_type=None):
+    print request
+    csrf_token_value = get_token(request)
+    projects = EtsiManoProject.objects.filter(id=project_id)
+    result = True #projects[0].create_descriptor(descriptor_type)
+    return render(request, 'project_descriptors.html', {
+        'descriptors': projects[0].get_descriptors(descriptor_type),
+        'project_id': project_id,
+        "csrf_token_value": csrf_token_value,
+        'descriptor_type': descriptor_type,
+        'alert_message': {
+            'success': result,
+            'message': "Descriptor created" if result else 'Error in creation'}
+    })
