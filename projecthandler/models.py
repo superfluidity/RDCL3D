@@ -68,6 +68,21 @@ class EtsiManoProject(Project):
 
         return result
 
+    def delete_descriptor(self,type_descriptor, descriptor_id ):
+        result = {}
+        try:
+            print descriptor_id, type_descriptor
+            current_data = json.loads(self.data_project)
+            del (current_data[type_descriptor][descriptor_id])
+            self.data_project = current_data#jsonfield.JSONField(json.dumps(current_data))
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+
+        return result
+
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
 

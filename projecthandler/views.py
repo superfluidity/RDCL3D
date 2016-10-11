@@ -158,3 +158,20 @@ def downlaod(request, project_id = None):
 
     elif request.method == 'GET':
         return render(request, 'download_etsi.html', {'project_id': project_id})
+
+
+@login_required
+def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor_id=None):
+    print project_id, descriptor_type, descriptor_id
+    csrf_token_value = get_token(request)
+    projects = EtsiManoProject.objects.filter(id=project_id)
+    result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
+    return render(request, 'project_descriptors.html', {
+        'descriptors': projects[0].get_descriptors(descriptor_type),
+        'project_id': project_id,
+        "csrf_token_value": csrf_token_value,
+        'descriptor_type': descriptor_type,
+        'alert_message':{
+            'success': result,
+            'message': "Delete succeeded!" if result else 'Error in delete'}
+    })
