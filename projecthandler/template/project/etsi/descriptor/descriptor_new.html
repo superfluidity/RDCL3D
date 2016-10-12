@@ -38,14 +38,14 @@
                     <div class="col-md-12">
                     <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-file-code-o"></i> YAML</a></li>
-                        <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-file-code-o"></i> JSON</a></li>
-                        <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-file-code-o"></i> Upload File</a></li>
-                        <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" data-target="#myModalSave" onclick="create()"><i class="fa fa-save"></i> Create</button></li>
+                        <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
+                        <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
+                        <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
+                        <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm" onclick="create()"><i class="fa fa-save"></i> Create</button></li>
                     </ul>
                     <div class="tab-content">
                         <!-- /.tab-pane -->
-                        <div class="tab-pane" id="yaml">
+                        <div class="tab-pane active" id="yaml">
                             <textarea id="code_editor_yaml">
 
                             </textarea>
@@ -60,19 +60,8 @@
 
                         <div class="tab-pane" id="upload">
                             <div class="form-group" id="files_form" style="">
-                                <label for="files_input">Select Project Descriptor Files</label>
-                                <input type="file" id="files_input" multiple webkitdirectory onchange="handleFiles(this.files)">
-
-                                <table class="table table-condensed">
-                                    <tbody id="file_table_body">
-                                    <tr>
-                                        <th></th>
-                                        <th>File Name</th>
-                                        <th>Size</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <label for="files_input">Select Project Descriptor File</label>
+                                <input type="file" id="files_input"  onchange="handleFiles(this.files)">
 
                             </div>
                         </div>
@@ -133,30 +122,12 @@
 
     function handleFiles(files){
         console.log(files);
-        $('#file_table_body').empty()
-        for (var i = 0; i < files.length; i++) {
-            console.log(i, files[i].size)
-            var file = files[i];
-            if (files[i].type == "application/json" || files[i].type == "") {
-              $('#file_table_body')
-                .append($('<tr>')
-                  //.append('<td><a href="javascript:removeFile(' + i + ')"><i class="fa fa-remove"></i></a></td>')
-                  .append('<td><i class="fa fa-remove"></i></td>')
-                  .append('<td>' + files[i].name + '</td>')
-                  .append('<td>' + files[i].size + '</td>')
-                  .append('<td>JSON</td>'))
-            }
-            else{
 
-            }
-
-          }
     }
 
 
 
     var json_editor_settings = {
-
             id: "code_editor_json",
             mode: "javascript",
             showCursorWhenSelecting: true,
@@ -215,15 +186,26 @@
                         }, json_editor_settings );
 
            editorJSON.setValue("");
+            var that = this;
 
-           editorJSON.refresh();
+
+
 
            var myYamlTextArea = document.getElementById("code_editor_yaml");
            editorYaml = CodeMirror(function(elt) {
                             myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
                         }, yaml_editor_settings );
 
-           editorYaml.refresh();
+           editorYaml.setValue("");
+
+
+            setTimeout(function() {
+                console.log("YAML/JSON refresh");
+
+                editorYaml.refresh();
+                editorJSON.refresh();
+            },1);
+
 
         });
 

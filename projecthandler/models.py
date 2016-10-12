@@ -70,12 +70,12 @@ class EtsiManoProject(Project):
 
         return result
 
-    def delete_descriptor(self,type_descriptor, descriptor_id ):
+    def delete_descriptor(self,type_descriptor, descriptor_id):
         try:
             print descriptor_id, type_descriptor
             current_data = json.loads(self.data_project)
             del (current_data[type_descriptor][descriptor_id])
-            self.data_project = current_data#jsonfield.JSONField(json.dumps(current_data))
+            self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
@@ -83,16 +83,35 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    def create_descriptor(self, type_descriptor, text, data_type):
+    def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
+        try:
+            print descriptor_id, type_descriptor
+            current_data = json.loads(self.data_project)
+            if data_type == 'json':
+                new_descriptor = json.loads(new_data)
+            else:
+                utility = Util()
+                yaml_object = yaml.load(new_data)
+                new_descriptor = json.loads(utility.yaml2json(yaml_object))
+            current_data[type_descriptor][descriptor_id] = new_descriptor
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def create_descriptor(self, type_descriptor, new_data, data_type):
 
         try:
             print type_descriptor, data_type
             current_data = json.loads(self.data_project)
             if data_type == 'json':
-                new_descriptor = json.loads(text)
+                new_descriptor = json.loads(new_data)
             else:
                 utility = Util()
-                yaml_object = yaml.load(text)
+                yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(utility.yaml2json(yaml_object))
             new_descriptor_id = new_descriptor['id'] if type_descriptor != "nsd" else new_descriptor['name']
             current_data[type_descriptor][new_descriptor_id] = new_descriptor

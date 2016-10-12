@@ -91,23 +91,6 @@ def delete_project(request, project_id = None):
             return render(request, 'error.html', {'error_msg': 'Project not found.'})
 
 @login_required
-def edit_descriptor(request, project_id = None, descriptor_id = None, descriptor_type = None):
-    if request.method == 'POST':
-
-        return JsonResponse({'html': 'edit_descriptor'})
-
-    elif request.method == 'GET':
-        csrf_token_value = get_token(request)
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
-        utility = Util()
-        descriptor_string_json = json.dumps(descriptor)
-        descriptor_string_yaml = utility.json2yaml(descriptor)
-        #print descriptor
-        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
-
-
-@login_required
 def show_descriptors(request, project_id = None, descriptor_type = None):
     csrf_token_value = get_token(request)
     #user = CustomUser.objects.get(id=request.user.id)
@@ -147,7 +130,6 @@ def downlaod(request, project_id = None):
     if request.method == 'POST':
         projects = EtsiManoProject.objects.filter(id=project_id)
         in_memory = projects[0].get_zip_archive()
-        #in_memory.seek(0)
 
         response = HttpResponse(content_type="application/zip")
         response["Content-Disposition"] = "attachment; filename=export_"+ project_id+".zip"
@@ -198,3 +180,31 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
+
+@login_required
+def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_type=None):
+
+    if request.method == 'POST':
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        result = projects[0].edit_descriptor(descriptor_type, descriptor_id, request.POST.get('text'), request.POST.get('type'))
+        response_data = {
+            'project_id': project_id,
+            'descriptor_type': descriptor_type,
+            'alert_message': {
+                'success': result,
+                'message': "Descriptor modified." if result else 'Error during descriptor editing.'}
+        }
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps(response_data), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+    elif request.method == 'GET':
+        csrf_token_value = get_token(request)
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
+        utility = Util()
+        descriptor_string_json = json.dumps(descriptor)
+        descriptor_string_yaml = utility.json2yaml(descriptor)
+        #print descriptor
+        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
