@@ -102,7 +102,8 @@
     <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
 
     <script>
-
+var editorJSON;
+var editorYaml;
 
     var json_editor_settings = {
             mode: "javascript",
@@ -153,7 +154,7 @@
             //theme: "neat",
             keyMap: "sublime",
         }
-var editorJSON;
+
 $(document).ready(function () {
    //var cmjsoneditor = CodeMirror.fromTextArea(document.getElementById("code_editor"), json_editor_settings);
    var myJsonTextArea = document.getElementById("code_editor_json");
@@ -165,7 +166,7 @@ $(document).ready(function () {
 
 
    var myYamlTextArea = document.getElementById("code_editor_yaml");
-   var editorYaml = CodeMirror(function(elt) {
+   editorYaml = CodeMirror(function(elt) {
                     myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
                 }, yaml_editor_settings );
    var des_strings = {{ descriptor_strings|safe }};
@@ -187,7 +188,7 @@ function update(){
             switch(id) {
                 case 'yaml_li':
                     type = 'yaml';
-                    text = editorYAML.getValue();
+                    text = editorYaml.getValue();
                     break;
                 case 'json_li':
                     type = 'json';
