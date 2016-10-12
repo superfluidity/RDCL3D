@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static "codemirror/theme/neat.css" %}">
     <link rel="stylesheet" href="{% static "codemirror/addon/dialog/dialog.css" %}">
     <link rel="stylesheet" href="{% static "codemirror/addon/display/fullscreen.css" %}">
-
+     <link rel="stylesheet" href="{% static "css/drag_drop.css" %}">
     <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 {% endblock %}
 
@@ -31,55 +31,71 @@
   	{{ block.super }}
 <div class="box">
     {% csrf_token %}
-        <div class="box-header with-border">
-                  <h3 class="box-title">Create new {{descriptor_type}} descriptor</h3>
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
+    <div class="box-header with-border">
+        <h3 class="box-title">Create new {{descriptor_type}} descriptor</h3>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
                     <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
-                        <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
-                        <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
-                        <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm" onclick="create()"><i class="fa fa-save"></i> Create</button></li>
-                    </ul>
-                    <div class="tab-content">
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane active" id="yaml">
+                        <ul class="nav nav-tabs">
+                            <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i
+                                    class="fa fa-clipboard"></i> Paste YAML</a></li>
+                            <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste
+                                JSON</a></li>
+                            <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload
+                                File</a></li>
+                            <li class="pull-right">
+                                <button type="button" class="btn btn-block btn-primary btn-sm" onclick="create()"><i
+                                        class="fa fa-save"></i> Upload
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane active" id="yaml">
                             <textarea id="code_editor_yaml">
 
                             </textarea>
-                        </div>
-                        <!-- /.tab-pane-->
+                            </div>
+                            <!-- /.tab-pane-->
 
-                        <div class="tab-pane" id="json">
+                            <div class="tab-pane" id="json">
                             <textarea id="code_editor_json">
 
                             </textarea>
-                        </div>
-
-                        <div class="tab-pane" id="upload">
-                            <div class="form-group" id="files_form" style="">
-                                <label for="files_input">Select Project Descriptor File</label>
-                                <input type="file" id="files_input"  onchange="handleFiles(this.files)">
-
                             </div>
+
+                            <div class="tab-pane" id="upload">
+
+                                <!-- Standar Form -->
+                                <h4>Select Project Descriptor File from your computer</h4>
+                                <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <input type="file" name="files[]" id="js-upload-files" multiple>
+                                        </div>
+
+                                    </div>
+                                </form>
+
+                                <!-- Drop Zone -->
+                                <h4>Or drag and drop file below</h4>
+                                <div class="upload-drop-zone" id="drop-zone">
+                                    Just drag and drop file here
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
                         </div>
-                        <!-- /.tab-pane -->
-                    </div>
-                    <!-- /.tab-content -->
-
-
-
-
-                </div>
+                        <!-- /.tab-content -->
 
                     </div>
-                </div>
-                 </div>
 
-                    </div>
                 </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- /.box-body -->
 
