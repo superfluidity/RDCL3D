@@ -16,11 +16,13 @@ def importproject(dir_project, type):
     project = {
         'nsd': {},
         'vld': {},
-        'vnfd': {}
+        'vnfd': {},
+        'vnffgd': {}
     }
     my_util = Util()
     VLD_PATH = dir_project+'/VLD'
     VNFD_PATH = dir_project+'/VNFD'
+    VNFFGD_PATH = dir_project + '/VNFFGD'
 
     #import network service description
     #in root directory file name nsd.json / nsd.yaml
@@ -43,6 +45,13 @@ def importproject(dir_project, type):
         log.debug(vnfd_filename)
         vnfd_object = my_util.loadjsonfile(vnfd_filename)
         project['vnfd'][vnfd_object['id']] = vnfd_object
+
+    # import vnffgd descriptions
+    # each file in root_path/VFND/*.json
+    for vnffgd_filename in glob.glob(os.path.join(VNFFGD_PATH, '*.json')):
+        log.debug(vnffgd_filename)
+        vnffgd_object = my_util.loadjsonfile(vnffgd_filename)
+        project['vnffgd'][vnffgd_object['id']] = vnffgd_object
 
     #log.debug('\n' + json.dumps(project))
     return project

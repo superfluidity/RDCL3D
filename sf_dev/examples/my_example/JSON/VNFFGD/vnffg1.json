@@ -1,7 +1,7 @@
 {
   "id": "vnffg1",
   "vendor": "netgroup",
-  "descriptor_version ": "0.1",
+  "descriptor_version": "0.1",
   "version": "0.1",
   "number_of_endpoints": 8 ,
   "number_of_virtual_links": 4 ,
