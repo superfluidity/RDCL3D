@@ -1,0 +1,38 @@
+{
+  "id": "vnffg1",
+  "vendor": "netgroup",
+  "descriptor_version ": "0.1",
+  "version": "0.1",
+  "number_of_endpoints": 8 ,
+  "number_of_virtual_links": 4 ,
+  "dependent_virtual_link": "vl01",
+  "network_forwarding_path": [
+    {
+      "id": "nfp1",
+      "policy": "A policy or rule to apply to the NFP",
+      "connection": [
+        [0, "cp01"],
+        [1, "cp11"],
+        [2, "cp14"],
+        [3, "cp13"],
+        [4, "cp31"],
+        [5, "cp33"],
+        [6, "cp03"]
+      ]
+    }
+  ] ,
+  "connection_point":[
+    "cp01",
+    "cp11",
+    "cp14",
+    "cp13",
+    "cp31",
+    "cp33",
+    "cp03"
+  ] ,
+  "constituent_vnfs":[
+    "vnf1",
+    "vnf3"
+  ],
+  "vnffgd_security": "signature"
+}
