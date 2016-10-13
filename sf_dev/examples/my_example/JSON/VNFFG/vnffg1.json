@@ -5,7 +5,13 @@
   "version": "0.1",
   "number_of_endpoints": 8 ,
   "number_of_virtual_links": 4 ,
-  "dependent_virtual_link": "vl01",
+  "dependent_virtual_link": [
+    "vl01",
+    "vl11",
+    "vl02",
+    "vl31",
+    "vl04"
+  ],
   "network_forwarding_path": [
     {
       "id": "nfp1",
