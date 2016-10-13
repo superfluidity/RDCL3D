@@ -140,8 +140,22 @@
         console.log(files);
 
     }
+    var dropZone = document.getElementById('drop-zone');
+    dropZone.ondrop = function(e) {
+        e.preventDefault();
+        this.className = 'upload-drop-zone';
+        create(e.dataTransfer.files);
+    }
 
+    dropZone.ondragover = function() {
+        this.className = 'upload-drop-zone drop';
+        return false;
+    }
 
+    dropZone.ondragleave = function() {
+        this.className = 'upload-drop-zone';
+        return false;
+    }
 
     var json_editor_settings = {
             id: "code_editor_json",
@@ -226,9 +240,11 @@
         });
 
 
-        function create(){
+        function create(fs){
             var id = $('.nav-tabs .active').attr('id');
+            if (fs) id = 'file_li'
             var type, text ;
+            var data = new FormData();
             switch(id) {
                 case 'yaml_li':
                     type = 'yaml';
@@ -240,22 +256,39 @@
                     break;
                 case 'file_li':
                     type = 'file'
+
+                    var files = fs? fs : document.getElementById('js-upload-files').files;
+                    if (!files || !files.length) {
+                      files = document.getElementById('drop-zone').files
+                      if(!files || !files.length){
+                        alert("Seletc a file")
+                        return
+                      }
+                    }
+                    var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                    if(!(extension == 'json' || extension =='yaml')){
+                        alert("The file must be .json or .yaml");
+                        return
+                    }
+
+                     data.append('file', files[0]);
                     break;
             }
+            data.append('csrfmiddlewaretoken','{{csrf_token}}');
+            data.append('type', type);
+            data.append('text', text);
             console.log(text);
             $.ajax({
                     url: "new",
                     type: 'POST',
-                    dataType: 'json',
-                    data: { 'csrfmiddlewaretoken' : '{{csrf_token}}',
-                            'type': type,
-                            'text': text
-                     },
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
                     success: function(result) {
                         window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
                     },
                     error: function(result) {
-                        console.log(result)
                         alert("some error");
                     }
                 });

@@ -10,6 +10,7 @@ from lib.emparser import emparser
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django import forms
 import json
 
 
@@ -167,7 +168,13 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     elif request.method == 'POST':
         csrf_token_value = get_token(request)
         projects = EtsiManoProject.objects.filter(id=project_id)
-        result = projects[0].create_descriptor(descriptor_type, request.POST.get('text'), request.POST.get('type'))
+        if(request.POST.get('type') =="file"):
+            file = request.FILES['file']
+            text = file.read()
+            type = file.name.split(".")[-1]
+            result = projects[0].create_descriptor(descriptor_type, text, type)
+        else:
+            result = projects[0].create_descriptor(descriptor_type, request.POST.get('text'), request.POST.get('type'))
         response_data = {
             'project_id': project_id,
             'descriptor_type': descriptor_type,
@@ -183,7 +190,6 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
 
 @login_required
 def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_type=None):
-
     if request.method == 'POST':
         projects = EtsiManoProject.objects.filter(id=project_id)
         result = projects[0].edit_descriptor(descriptor_type, descriptor_id, request.POST.get('text'), request.POST.get('type'))
