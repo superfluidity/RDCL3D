@@ -2,6 +2,7 @@ import json
 import yaml
 import pyaml
 import logging
+import jsonschema
 
 _lib_name = 'Util'
 
@@ -84,3 +85,12 @@ class Util:
         except Exception as e:
             self.log.error('Exception writeyamlfile')
             raise
+
+    def validate_json_schema(self, type_descriptor, data):
+        try:
+            schema = self.loadjsonfile("lib/emparser/schemas/"+type_descriptor+".json")
+            jsonschema.validate(data, schema)
+            return True
+        except Exception as e:
+            self.log.error('Exception validate json schema')
+            return False

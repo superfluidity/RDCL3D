@@ -59,7 +59,7 @@ class ModelController():
                 result['error']['messages'] = result['error']['messages'] + resvedges['error']['messages']
             else:
                 result.update(resvedges)
-        resmodel = self.a.validate(jsontopology)
+        resmodel = self.a.validate_json_schema(jsontopology)
         if (resmodel.has_key('error')):
             if (result.has_key('error')):
                 result['error']['messages'] = result['error']['messages'] + resmodel['error']['messages']
