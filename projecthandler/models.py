@@ -116,6 +116,8 @@ class EtsiManoProject(Project):
                 new_descriptor = json.loads(utility.yaml2json(yaml_object))
             validate = utility.validate_json_schema(type_descriptor, new_descriptor)
             new_descriptor_id = new_descriptor['id'] if type_descriptor != "nsd" else new_descriptor['name']
+            if not type_descriptor in current_data:
+                current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data
             self.validated = validate
