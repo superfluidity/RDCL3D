@@ -4,7 +4,7 @@
   "descriptor_version": "0.1",
   "version": "0.1",
   "number_of_endpoints": 8 ,
-  "number_of_virtual_links": 4 ,
+  "number_of_virtual_links": 5 ,
   "dependent_virtual_link": [
     "vl01",
     "vl11",

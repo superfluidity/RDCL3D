@@ -72,13 +72,14 @@
 
 
 .canvas-label {
+    top: 148px;
     cursor: default;
     padding: 0 6px;
     line-height: 22px;
     position: absolute;
 
-    padding-top: 40px;
-    padding-bottom: 35px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 
     /* top: 7px; */
     /* right: 6px; */

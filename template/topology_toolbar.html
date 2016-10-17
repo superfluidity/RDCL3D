@@ -3,8 +3,8 @@
     <button id="topology_zoom_plus" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></button>
     <button id="topology_zoom_minus" type="button" class="btn btn-primary"><i class="fa fa-minus"></i></button>
 
-    <button id="topology_play" type="button" class="btn btn-primary"><i class="fa fa-play"></i></button>
-    <button id="topology_pause" type="button" class="btn btn-primary"><i class="fa fa-pause"></i></button>
+    <button id="topology_play" type="button" class="btn btn-primary" onclick="handleForce(this)"><i class="fa fa-play"></i></button>
+    <button id="topology_pause" type="button" class="btn btn-primary" onclick="handleForce(this)"><i class="fa fa-pause"></i></button>
 
     <button id="topology_settings" type="button" class="btn btn-primary"><i class="fa fa-gear"></i></button>
     <button id="topology_info_button" type="button" class="btn btn-primary" data-toggle="modal"
@@ -25,13 +25,14 @@
         <div class="box-body">
             <!-- the events -->
             <div id="draggable-container">
-                <div class="external-event bg-green ui-draggable ui-draggable-handle" style="position: relative; background-color: #F27220 !important;">
+
+                <div class="external-event bg-green" id="cp" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_cp')" style="background-color: #F27220 !important;">
                     CP
                 </div>
-                <div class="external-event bg-yellow ui-draggable ui-draggable-handle" style="position: relative; background-color: #54A698 !important;">
+                <div class="external-event bg-yellow" id="vnf" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'vnf')" style="background-color: #54A698 !important;">
                     VNF
                 </div>
-                <div class="external-event bg-aqua ui-draggable ui-draggable-handle" style="position: relative; background-color: #196B90 !important;">
+                <div class="external-event bg-aqua" id="vl" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_vl')" style="background-color: #196B90 !important;">
                     VL
                 </div>
 

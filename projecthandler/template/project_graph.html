@@ -72,9 +72,46 @@
         width: window.innerWidth,
         height: window.innerHeight
     });
+     /*
+    $('#graph_ed_container').droppable({
+        drop: function(){
+            console.log("droppable");
+            graph_editor.addNode();
+        }
+    });
+   */
+    var dropZone = document.getElementById('graph_ed_container');
+    dropZone.ondrop = function(e) {
+        e.preventDefault();
+        var nodetype = e.dataTransfer.getData("text/plain");
+        if(nodetype){
+            graph_editor.addNode({'id':  nodetype + "_" + Date.now(), 'info': { 'type': nodetype } });
+        }
+      //
+    }
 
+    dropZone.ondragover = function(ev) {
+        console.log("ondragover");
+        return false;
+    }
 
+    dropZone.ondragleave = function() {
+        console.log("ondragleave");
+        return false;
+    }
 
+    function handleForce(el){
+        console.log("handleForce", JSON.stringify(el.id));
+
+            graph_editor.handleForce((el.id == "topology_play")? true: false);
+
+    }
+    $(document).ready(function () {
+        for (var nsd in level){
+              console.log(nsd)
+             $("#ns_dropdown").append('<li><a '+"id="+nsd +' onclick="nsChange(this.id)">'+nsd+'</a></li>');
+         }
+     });
     </script>
 {% endblock %}
 

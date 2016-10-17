@@ -6,22 +6,6 @@ var level = {}
 dreamer.GraphEditor = (function(global) {
     'use strict';
 
-    var modelToController = {
-        "oshi": "Oshi",
-        "openflow": "OpenFlow",
-        "ciscoapic": "CiscoApic",
-        "ciscocucm": "CiscoCucm",
-        "ciscocucmone": "CiscoCucmOne",
-        "etlunified": "EtlUnified",
-        "skypefb": "SkypeFB",
-        "etlunifiedreduc": "EtlUnifiedReduc",
-        "etsimano": "Etsimano"
-    }
-
-    var Vertex = dreamer.Vertex;
-    var Edge = dreamer.Edge;
-    var GraphParameters = dreamer.GraphParameters;
-    var CurLayer = dreamer.CurLayer;
 
     var default_node_color = "#ccc";
     var default_node_label_color = "white";
@@ -34,9 +18,11 @@ dreamer.GraphEditor = (function(global) {
 
 
 
-    // Constructor
+    /**
+     * Constructor
+     */
     function GraphEditor(args) {
-        log(JSON.stringify(args))
+        // log(JSON.stringify(args))
 
         this.width = args.width || 500;
         this.height = args.height || 500;
@@ -53,18 +39,23 @@ dreamer.GraphEditor = (function(global) {
         var min_zoom = 0.1;
         var max_zoom = 7;
 
-        this.node_filter_cb = args.node_filter_cb || function(d){
+        this.node_filter_cb = args.node_filter_cb || function(d) {
             //console.log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
-            if  (["vnf", "ns_cp", "ns_vl"].indexOf(d.info.type) > -1)
+            if (["vnf", "ns_cp", "ns_vl"].indexOf(d.info.type) > -1)
                 return true
             return false;
         };
 
-        this.link_filter_cb = args.link_filter_cb || function(d){
+        this.link_filter_cb = args.link_filter_cb || function(d) {
             return d.view == 'nsd';
         };
 
-        var type_property = {
+        this.type_property = {
+            "unrecognized": {
+                "shape": d3.symbolCircle,
+                "color": "white",
+                "size": 20
+            },
             "ns_vl": {
                 "shape": d3.symbolDiamond,
                 "color": "#196B90",
@@ -107,6 +98,11 @@ dreamer.GraphEditor = (function(global) {
             }
         };
 
+        // graoh data initailization
+        this.d3_graph = {
+            nodes: [],
+            links: []
+        };
 
         this.force = d3.forceSimulation()
             .force("link", d3.forceLink().distance(160).strength(3).id(function(d) {
@@ -124,24 +120,22 @@ dreamer.GraphEditor = (function(global) {
             .range([8, 24]);
 
         this.svg = d3.select("#graph_ed_container").append("svg")
+            .attr("id", "graph_svg")
             .attr("width", this.width)
             .attr("height", this.height);
-        //this.g = this.svg.append("g");
+
         var self = this;
+
         d3.json("graph_data", function(error, data) {
-            log(data)
-            var _self = self;
-            var d3_graph = {
-                nodes: [],
-                links: []
-            };
+            // if(error == false)
+
             for (var e in data.edges) {
                 //log(data.edges[e])
                 data.edges[e].links.forEach(function(l) {
                     //log(l.id)
                     var a = e.split("&&");
                     // Add the edge to the array
-                    d3_graph.links.push({
+                    self.d3_graph.links.push({
                         source: a[0],
                         target: a[1],
                         view: l.view
@@ -151,154 +145,294 @@ dreamer.GraphEditor = (function(global) {
             };
             //log(d3_graph.links)
             for (var v in data.vertices) {
-                //log(data.edges[e])
-                data.vertices[v]["id"] = v
-                d3_graph.nodes.push(data.vertices[v]);
+
+                data.vertices[v]["id"] = v;
+                //log(data.vertices[v])
+                self.d3_graph.nodes.push(data.vertices[v]);
 
             };
-            //log(JSON.stringify(d3_graph.links))
 
-
-
-
-            var link = self.svg.append("g")
-                .attr("class", "links")
-                .attr("width", self.width)
-                .attr("height", self.height)
-                .selectAll("line")
-                .data(d3_graph.links
-                    .filter(self.link_filter_cb)
-                    )
-                .enter().append("line")
-                .attr("class", "link")
-                .style("stroke-width", nominal_stroke)
-                .style("stroke", function(d) {
-                    return default_link_color;
-                });
-
-            var node = self.svg.append("g")
-                .attr("class", "nodes")
-                .attr("width", self.width)
-                .attr("height", self.height)
-                .selectAll("node")
-                .data(d3_graph.nodes
-                    .filter(self.node_filter_cb))
-                .enter()
-                .append("g")
-                .attr("class", "node")
-                .append("svg:path")
-                .attr("class", "node_path")
-                .attr("id", function(d){
-                    return "path_"+ d.id;
-                })
-                .attr("d", d3.symbol()
-                    .size(function(d) {
-                        return Math.PI * Math.pow(type_property[d.info.type].size, 2.2);
-                    })
-                    .type(function(d) {
-                        return type_property[d.info.type].shape;
-                    })
-                )
-                .style("fill", function(d) {
-                    return type_property[d.info.type].color;
-                })
-                .attr("transform", function() {
-                    return "rotate(-45)";
-
-                })
-                .attr("stroke-width", 2.4)
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended));
-
-
-            var text = self.svg.selectAll(".text")
-                .data(d3_graph.nodes
-                    .filter(self.node_filter_cb))
-                .enter().append("text")
-                .attr("class", "nodetext")
-                .attr("dy", ".35em")
-                .attr("pointer-events", "none")
-                .style("font-size", nominal_text_size + "px")
-                .style("fill", default_node_label_color)
-	            .style("text-anchor", "middle")
-	            .text(function(d) { return d.id; });
-
-
-            self.force
-                .nodes(d3_graph.nodes)
-                .on("tick", ticked);
-
-
-            self.force.force("link")
-                .links(d3_graph.links);
-
-
-
-            function ticked() {
-                link
-                    .attr("x1", function(d) {
-                        return d.source.x;
-                    })
-                    .attr("y1", function(d) {
-                        return d.source.y;
-                    })
-                    .attr("x2", function(d) {
-                        return d.target.x;
-                    })
-                    .attr("y2", function(d) {
-                        return d.target.y;
-                    });
-
-                node.attr("transform", function(d) {
-                    return "translate(" + d.x + "," + d.y + ")rotate(-90)";
-                });
-
-                text.attr("transform", function(d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-            }
-
-            function dragstarted(d) {
-                if (!d3.event.active) self.force.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-
-            function dragged(d) {
-                d.fx = d3.event.x;
-                d.fy = d3.event.y;
-            }
-
-            function dragended(d) {
-                if (!d3.event.active) self.force.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
             level = data.level
             for (var nsd in level){
                 console.log(nsd)
                 $("#ns_dropdown").append('<li><a '+"id="+nsd +' onclick="nsChange(this.id)">'+nsd+'</a></li>');
             }
+
+            self.update();
+            self.startForce();
         });
-
-
 
     }
 
-    GraphEditor.prototype.updateData = function(args) {
+    /**
+     * Start or Stop force layout
+     * @param {boolean} Required. Value true: start, false: stop
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.handleForce = function(start) {
+        if(start){
+            this.force.restart();
+        }
+        else{
+            this.force.stop();
+        }
+    };
+
+
+    /**
+     * Add a new node to the graph.
+     * @param {Object} Required. An object that specifies tha data of the new node.
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.addNode = function(args) {
+
+        if(args.id && args.info && args.info.type){
+            this.d3_graph.nodes.push(args);
+            this.cleanAll();
+            this.update();
+            this.startForce();
+            return true;
+        }
+
+        return false;
+
+    };
+
+    /**
+     * Remove a node from graph and related links.
+     * @param {String} Required. Id of node to remove.
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.removeNode = function(node_id) {
+
+    };
+
+    /**
+     * Add a new link to graph.
+     * @param {Object} Required. An object that specifies tha data of the new Link.
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.addLink = function(args) {
+
+    };
+
+    /**
+     * Remove a link from graph.
+     * @param {Object} Required. An object that specifies tha data of link to remove.
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.removeLink = function(args) {
 
     };
 
 
+    /**
+     * Force a refresh of GraphView
+     * @returns {}
+     */
+    GraphEditor.prototype.refresh = function() {
+
+    };
+
+
+    /**
+     * Update the data of graph.
+     * @param {Object} Required. An object that specifies tha data of the graph.
+     * @returns {}
+     */
+    GraphEditor.prototype.update = function() {
+
+        //log(data)
+        var self = this;
+
+        this.link = this.svg
+            .selectAll(".line")
+            .data(self.d3_graph.links
+                .filter(this.link_filter_cb)
+            )
+            .enter().append("line")
+            .attr("class", "link")
+            .attr("class", "cleanable")
+            .style("stroke-width", nominal_stroke)
+            .style("stroke", function(d) {
+                return default_link_color;
+            });
+        //this.link.exit().remove();
+        this.node = this.svg
+            .selectAll(".node")
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .attr("class", "cleanable")
+            .append("svg:path")
+            .attr("class", "node_path")
+
+            .attr("id", function(d) {
+                return "path_" + d.id;
+            })
+            .attr("d", d3.symbol()
+                .size(function(d) {
+                    return Math.PI * Math.pow(self.type_property[d.info.type].size, 2.2);
+                })
+                .type(function(d) {
+                    return self.type_property[d.info.type].shape;
+                })
+            )
+            .style("fill", function(d) {
+                return self.type_property[d.info.type].color;
+            })
+            .attr("transform", function() {
+                return "rotate(-45)";
+
+            })
+            .attr("stroke-width", 2.4)
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+
+
+        this.text = this.svg.selectAll(".text")
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
+            .enter().append("text")
+            .attr("class", "nodetext")
+            .attr("class", "cleanable")
+            .attr("dy", ".35em")
+            .attr("pointer-events", "none")
+            .style("font-size", nominal_text_size + "px")
+            .style("fill", default_node_label_color)
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return d.id;
+            });
+
+       // this.text.exit().remove();
+
+
+        function dragstarted(d) {
+            if (!d3.event.active) self.force.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) self.force.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    };
+
+    /**
+     *  Start force layout on Graph.
+     *
+     */
+    GraphEditor.prototype.startForce = function() {
+        //this.force.stop();
+        var self = this
+        this.force
+            .nodes(this.d3_graph.nodes)
+            .on("tick", ticked);
+
+
+        this.force
+            .force("link")
+            .links(this.d3_graph.links);
+
+        function ticked() {
+            console.log("ticked");
+            self.node.attr("transform", function(d) {
+
+                return "translate(" + d.x + "," + d.y + ")rotate(-90)";
+            });
+
+            self.link
+                .attr("x1", function(d) {
+                    return d.source.x;
+                })
+                .attr("y1", function(d) {
+                    return d.source.y;
+                })
+                .attr("x2", function(d) {
+                    return d.target.x;
+                })
+                .attr("y2", function(d) {
+                    return d.target.y;
+                });
+
+
+
+            self.text.attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        }
+    };
+
+    /**
+     *  Export Graph data.
+     *  @returns {Object} Graph object.
+     */
+    GraphEditor.prototype.exportJSON = function() {
+
+    };
+
+    /**
+     *  Get the data tree of availables views
+     *  @returns {Object} object.
+     */
+     GraphEditor.prototype.getTreeViews = function() {
+
+     };
+
+     /**
+     *  Get the the type of Availables Nodes Of View
+     *  @returns {Object} object.
+     */
+     GraphEditor.prototype.getAvailablesNodesOfView = function() {
+
+     };
+
+    /**
+     * This method attaches an event handler.
+     * @param {String} Required. A String that specifies the name of the event.
+     * @param {Function} Required. Specifies the function to run when the event occurs.
+     * @returns {}
+     */
+    GraphEditor.prototype.addListener = function(event_name, cb) {
+
+    }
+
+    /**
+     * This method removes an event handler that has been attached with the addListener() method.
+     * @param {String} Required. A String that specifies the name of the event to remove.
+     * @param {Function} Required. Specifies the function to remove.
+     * @returns {}
+     */
+    GraphEditor.prototype.removeListener = function(event_name, cb) {
+
+    }
+
+    /**
+     *  Remove all the graph objects from the view
+     */
     GraphEditor.prototype.cleanAll = function() {
         this.svg.selectAll('.cleanable').remove();
+
     };
 
 
 
-
+    /**
+     *  Internal function
+     */
     function log(text) {
         console.log("::GraphEditor::", text);
     }
@@ -312,5 +446,3 @@ dreamer.GraphEditor = (function(global) {
 if (typeof module === 'object') {
     module.exports = dreamer.GraphEditor;
 }
-
-
