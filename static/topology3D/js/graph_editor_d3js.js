@@ -152,11 +152,7 @@ dreamer.GraphEditor = (function(global) {
 
             };
 
-            level = data.level
-            for (var nsd in level){
-                console.log(nsd)
-                $("#ns_dropdown").append('<li><a '+"id="+nsd +' onclick="nsChange(this.id)">'+nsd+'</a></li>');
-            }
+
 
             self.update();
             self.startForce();
