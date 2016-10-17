@@ -13,6 +13,9 @@
     "vl3",
     "vl4"
   ],
+  "vnffgd":[
+    "vnffg1"
+  ] ,
   "vnf_dependency": [
   ],
   "connection_point": [

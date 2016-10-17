@@ -1,0 +1,101 @@
+<div class="level_box">
+    <div class="box box-solid ">
+
+        <div class="box-header with-border">
+            <span class="level_title">Level: </span>
+            <div class="btn-group">
+                <button id="ns_button" type="button" class="btn btn-default">NS</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul id="ns_dropdown" class="dropdown-menu" role="menu">
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="vnf_button" type="button" class="btn btn-default">VNF</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul id="vnf_dropdown"class="dropdown-menu" role="menu">
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="vnffg_button" type="button" class="btn btn-default">VNFFG</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul id="vnffg_dropdown" class="dropdown-menu" role="menu">
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="vl_button" type="button" class="btn btn-default">VL</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul id="vl_dropdown" class="dropdown-menu" role="menu">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+var level =  {"NSExample": {"vnf": ["vnf1", "vnf2", "vnf3"], "vnffg": ["vnffg1"], "vl": ["vl1", "vl2", "vl3", "vl4"]}};
+
+function nsChange(e){
+    $("#ns_button").text(e);
+    $("#vnf_dropdown").empty()
+    if(level[e].vnf){
+       for(var i in level[e].vnf){
+         $("#vnf_dropdown").append('<li><a '+"id="+level[e].vnf[i] +' onclick="vnfChange(this.id)">'+level[e].vnf[i]+'</a></li>');
+       }
+       $("#vnf_dropdown").append('<li><a id="None" onclick="vnfChange(this.id)">None</a></li>');
+    }
+    $("#vl_dropdown").empty()
+    if(level[e].vl){
+       for(var i in level[e].vl){
+         $("#vl_dropdown").append('<li><a '+"id="+level[e].vl[i] +' onclick="vlChange(this.id)">'+level[e].vl[i]+'</a></li>');
+       }
+       $("#vl_dropdown").append('<li><a id="None" onclick="vlChange(this.id)">None</a></li>');
+    }
+    $("#vnffg_dropdown").empty()
+    if(level[e].vnffg){
+       for(var i in level[e].vnffg){
+         $("#vnffg_dropdown").append('<li><a '+"id="+level[e].vnffg[i] +' onclick="vnffgChange(this.id)">'+level[e].vnffg[i]+'</a></li>');
+       }
+       $("#vnffg_dropdown").append('<li><a id="None" onclick="vnffgChange(this.id)">None</a></li>');
+    }
+}
+
+function vnfChange(e){
+    if(e==='None'){
+        $("#vnf_button").text("VNF");
+    }else{
+        $("#vnf_button").text(e);
+    }
+    console.log('vnfChange ',e)
+}
+
+function vlChange(e){
+    if(e==='None'){
+        $("#vl_button").text("VL");
+    }else{
+        $("#vl_button").text(e);
+    }
+    console.log('vlChange ',e)
+}
+
+function vnffgChange(e){
+    if(e==='None'){
+        $("#vnffg_button").text("VNFFG");
+    }else{
+        $("#vnffg_button").text(e);
+    }
+    console.log('vnffgChange ',e)
+}
+</script>

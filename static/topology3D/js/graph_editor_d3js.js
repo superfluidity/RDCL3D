@@ -1,6 +1,7 @@
 if (typeof dreamer === 'undefined') {
     var dreamer = {};
 }
+var level = {}
 
 dreamer.GraphEditor = (function(global) {
     'use strict';
@@ -157,6 +158,9 @@ dreamer.GraphEditor = (function(global) {
             };
             //log(JSON.stringify(d3_graph.links))
 
+
+
+
             var link = self.svg.append("g")
                 .attr("class", "links")
                 .attr("width", self.width)
@@ -272,6 +276,11 @@ dreamer.GraphEditor = (function(global) {
                 d.fx = null;
                 d.fy = null;
             }
+            level = data.level
+            for (var nsd in level){
+                console.log(nsd)
+                $("#ns_dropdown").append('<li><a '+"id="+nsd +' onclick="nsChange(this.id)">'+nsd+'</a></li>');
+            }
         });
 
 
@@ -303,3 +312,5 @@ dreamer.GraphEditor = (function(global) {
 if (typeof module === 'object') {
     module.exports = dreamer.GraphEditor;
 }
+
+

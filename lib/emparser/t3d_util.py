@@ -140,31 +140,45 @@ class T3DUtil:
         return graph_object
 
     def build_graph_from_project(self, json_project):
+        print "json_project ",json_project
         graph_object = {
             'vertices': {},
             'edges': {},
-            'graph_parameters': {}
+            'graph_parameters': {},
+            'level':{}
         }
         try:
             self.log.debug('build t3d graph from project json')
 
             for current_nsd in json_project['nsd']:
                 print current_nsd, json_project['nsd'][current_nsd]['connection_point']
-                for nscp in json_project['nsd'][current_nsd]['connection_point']:
-                    id_nscp = 'id'
-                    graph_object['vertices'][nscp[id_nscp]] = self.__build_node_ns_cp(nscp)
-
-                for vldid in json_project['nsd'][current_nsd]['vld']:
-                    vld = json_project['vld'][vldid]
-                    graph_object['vertices'][vldid] = self.__build_node_ns_vld(vld)
-                    graph_object = self.__build_edges_ns_vld(current_nsd, vldid, json_project, graph_object)
-                    # graph_object = self.__build_nodes_ns(graph_object, json_project)
-                    # graph_object = self.__build_edges(graph_object, json_project)
-
-                for vnfdid in json_project['nsd'][current_nsd]['vnfd']:
-                    vnfd = json_project['vnfd'][vnfdid]
-                    graph_object = self.__parse_ns_vnfd(vnfdid, vnfd, graph_object)
-
+                graph_object['level'][current_nsd] = {}
+                if( 'connection_point' in json_project['nsd'][current_nsd]):
+                    for nscp in json_project['nsd'][current_nsd]['connection_point']:
+                        id_nscp = 'id'
+                        graph_object['vertices'][nscp[id_nscp]] = self.__build_node_ns_cp(nscp)
+                if('vld' in json_project['nsd'][current_nsd]):
+                    for vldid in json_project['nsd'][current_nsd]['vld']:
+                        if not 'vl' in graph_object['level'][current_nsd] :
+                            graph_object['level'][current_nsd]['vl'] = []
+                        graph_object['level'][current_nsd]['vl'].append(vldid)
+                        vld = json_project['vld'][vldid]
+                        graph_object['vertices'][vldid] = self.__build_node_ns_vld(vld)
+                        graph_object = self.__build_edges_ns_vld(current_nsd, vldid, json_project, graph_object)
+                        # graph_object = self.__build_nodes_ns(graph_object, json_project)
+                        # graph_object = self.__build_edges(graph_object, json_project)
+                if ('vnfd' in json_project['nsd'][current_nsd]):
+                    for vnfdid in json_project['nsd'][current_nsd]['vnfd']:
+                        if not 'vnf' in graph_object['level'][current_nsd] :
+                            graph_object['level'][current_nsd]['vnf'] = []
+                        graph_object['level'][current_nsd]['vnf'].append(vnfdid)
+                        vnfd = json_project['vnfd'][vnfdid]
+                        graph_object = self.__parse_ns_vnfd(vnfdid, vnfd, graph_object)
+                if ('vnffgd' in json_project['nsd'][current_nsd]):
+                    for vnffgid in json_project['nsd'][current_nsd]['vnffgd']:
+                        if not 'vnffg' in graph_object['level'][current_nsd] :
+                            graph_object['level'][current_nsd]['vnffg'] = []
+                        graph_object['level'][current_nsd]['vnffg'].append(vnffgid)
         except Exception as e:
             self.log.error('Exception build_graph_from_project')
             raise

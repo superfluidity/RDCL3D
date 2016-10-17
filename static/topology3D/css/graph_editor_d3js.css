@@ -48,6 +48,29 @@
     right: 0;
 }
 
+
+.level_box {
+    position: absolute;
+    padding-top: 10px;
+    left: 40%;
+    z-index: 1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0 px;
+}
+
+.level_title{
+    padding-right: 10px;
+    font-size: 15pt;
+    vertical-align: middle;
+
+}
+
+
 .canvas-label {
     cursor: default;
     padding: 0 6px;
