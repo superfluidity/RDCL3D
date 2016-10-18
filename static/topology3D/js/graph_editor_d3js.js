@@ -129,6 +129,9 @@ dreamer.GraphEditor = (function(global) {
         d3.json("graph_data", function(error, data) {
             // if(error == false)
 
+            self.d3_graph.nodes = data.vertices
+            self.d3_graph.links = data.edges;
+            /*
             for (var e in data.edges) {
                 //log(data.edges[e])
                 data.edges[e].links.forEach(function(l) {
@@ -152,7 +155,7 @@ dreamer.GraphEditor = (function(global) {
 
             };
 
-
+            */
 
             self.update();
             self.startForce();
@@ -424,7 +427,35 @@ dreamer.GraphEditor = (function(global) {
 
     };
 
+    /** Get project object descriptor from the graph
+    */
+    GraphEditor.prototype.getProjectDescriptor = function(){
+         var self = this;
+         var project = {nsd: {}, vld :{}, vnfd:{}, vnffgd:{}}
+         console.log(self.d3_graph.nodes)
+         self.d3_graph.nodes.forEach(function(l) {
+            switch(l.info.type){
+                case 'ns':
+                    project.nsd[l.id] = l.descriptor
+                    break
+                    project.vld[l.descriptor.id] = l.descriptor
+                    break
+                case 'vnf':
+                    project.vnfd[l.descriptor.id] = l.descriptor
+                    break
+                case 'vnf_vl':
+                    project.vld[l.descriptor.id] = l.descriptor
+                    break
+                 case 'vnffg':
+                    project.vnffgd[l.descriptor.id] = l.descriptor
+                    break
 
+            }
+         });
+
+         //log(self.d3_graph.links);
+         log(project)
+    };
 
     /**
      *  Internal function
