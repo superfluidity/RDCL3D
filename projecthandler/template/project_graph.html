@@ -33,6 +33,7 @@
     </div>
 </div>
 
+{% include 'modals/edit_descriptor.html' %}
 
 {% endblock %}
 
@@ -164,6 +165,11 @@ function vnffgChange(e){
               console.log(nsd)
              $("#ns_dropdown").append('<li><a '+"id="+nsd +' onclick="nsChange(this.id)">'+nsd+'</a></li>');
          }
+
+         graph_editor.addListener("node_selected", function(a, args){
+            //console.log("node_selected", a, args);
+            $('#modal_edit_descriptor').modal('show');
+         });
      });
     </script>
 {% endblock %}

@@ -15,7 +15,7 @@ dreamer.GraphEditor = (function(global) {
     var nominal_stroke = 1.5;
     var max_stroke = 4.5;
     var max_base_node_size = 36;
-
+    var EventHandler = dreamer.Event;
 
 
     /**
@@ -26,6 +26,9 @@ dreamer.GraphEditor = (function(global) {
 
         this.width = args.width || 500;
         this.height = args.height || 500;
+
+        this.forceSimulationActive = true;
+
 
         this.focus_node = null;
         this.highlight_node = null;
@@ -38,6 +41,8 @@ dreamer.GraphEditor = (function(global) {
 
         var min_zoom = 0.1;
         var max_zoom = 7;
+
+        this.eventHandler = new EventHandler();
 
         this.node_filter_cb = args.node_filter_cb || function(d) {
             //console.log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
@@ -54,47 +59,47 @@ dreamer.GraphEditor = (function(global) {
             "unrecognized": {
                 "shape": d3.symbolCircle,
                 "color": "white",
-                "size": 20
+                "size": 15
             },
             "ns_vl": {
                 "shape": d3.symbolDiamond,
                 "color": "#196B90",
-                "size": 20
+                "size": 15
             },
             "ns_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#F27220",
-                "size": 20
+                "size": 15
             },
             "vnf": {
                 "shape": d3.symbolSquare,
                 "color": "#54A698",
-                "size": 28
+                "size": 20
             },
             "vnf_vl": {
                 "shape": d3.symbolDiamond,
                 "color": "#313679",
-                "size": 18
+                "size": 13
             },
             "vnfc_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#343D41",
-                "size": 18
+                "size": 13
             },
             "vnf_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#4E6293",
-                "size": 18
+                "size": 15
             },
             "vnfc": {
                 "shape": d3.symbolSquare,
                 "color": "#1D74C2",
-                "size": 28
+                "size": 20
             },
             "vdu": {
                 "shape": d3.symbolSquare,
                 "color": "#4B7C91",
-                "size": 28
+                "size": 20
             }
         };
 
@@ -105,7 +110,8 @@ dreamer.GraphEditor = (function(global) {
         };
 
         this.force = d3.forceSimulation()
-            .force("link", d3.forceLink().distance(160).strength(3).id(function(d) {
+            .force("link", d3.forceLink().distance(100).strength(3).id(function(d,i) {
+               // console.log(d,i)
                 return d.id;
             }))
             .force("charge", d3.forceManyBody())
@@ -170,10 +176,15 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.handleForce = function(start) {
         if(start){
+
             this.force.restart();
+            this.forceSimulationActive = true
         }
         else{
+
             this.force.stop();
+            this.forceSimulationActive = false;
+
         }
     };
 
@@ -187,6 +198,7 @@ dreamer.GraphEditor = (function(global) {
 
         if(args.id && args.info && args.info.type){
             this.d3_graph.nodes.push(args);
+
             this.cleanAll();
             this.update();
             this.startForce();
@@ -198,12 +210,48 @@ dreamer.GraphEditor = (function(global) {
     };
 
     /**
+     * Update the data properties of the node
+     * @param {Object} Required. An object that specifies tha data of the node.
+     * @returns {boolean}
+     */
+    GraphEditor.prototype.updateDataNode = function(args) {
+
+    };
+
+    /**
      * Remove a node from graph and related links.
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
     GraphEditor.prototype.removeNode = function(node_id) {
+        if(node_id != undefined){
+            this.d3_graph['nodes'].forEach(function(n, index, object) {
+                if(n.id == node_id){
+                    object.splice(index, 1);
 
+                }
+
+            });
+
+            //TODO trovare una metodo piu efficace
+            var self = this;
+            var links_to_remove = [];
+            this.d3_graph['links'].forEach(function(l, index, object) {
+                if(node_id === l.source.id || node_id === l.target.id){
+                    links_to_remove.push(index);
+                }
+
+            });
+            var links_removed = 0;
+            links_to_remove.forEach(function(l_index){
+                self.d3_graph['links'].splice(l_index - links_removed, 1);
+                links_removed++;
+            });
+
+
+            return true;
+        }
+        return false;
     };
 
     /**
@@ -292,7 +340,31 @@ dreamer.GraphEditor = (function(global) {
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        this.node.on("contextmenu", function (d, i) {
+            d3.event.preventDefault();
+           // react on right-clicking
+           console.log("contextmenu node");
+           self.eventHandler.fire("node_selected", d);
 
+        })
+        .on("mouseover", function (d) {
+            self.link.style('stroke-width', function(l) {
+				    if (d === l.source || d === l.target)
+				    return 4;
+				  else
+				    return 2;
+				});
+		})
+        .on("mouseout", function (d) {
+			self.link.style('stroke-width', 2);
+		});
+
+        this.link.on("contextmenu", function (d, i) {
+            d3.event.preventDefault();
+           // react on right-clicking
+           console.log("contextmenu link");
+
+        });
 
         this.text = this.svg.selectAll(".text")
             .data(self.d3_graph.nodes
@@ -309,13 +381,14 @@ dreamer.GraphEditor = (function(global) {
                 return d.id;
             });
 
-       // this.text.exit().remove();
 
 
         function dragstarted(d) {
-            if (!d3.event.active) self.force.alphaTarget(0.3).restart();
+            d.draggednode = true;
+            if (!d3.event.active ) self.force.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
+
         }
 
         function dragged(d) {
@@ -324,10 +397,12 @@ dreamer.GraphEditor = (function(global) {
         }
 
         function dragended(d) {
-            if (!d3.event.active) self.force.alphaTarget(0);
+             d.draggednode = false;
+            if (!d3.event.active ) self.force.alphaTarget(0);
             d.fx = null;
             d.fy = null;
         }
+
     };
 
     /**
@@ -347,9 +422,7 @@ dreamer.GraphEditor = (function(global) {
             .links(this.d3_graph.links);
 
         function ticked() {
-            console.log("ticked");
             self.node.attr("transform", function(d) {
-
                 return "translate(" + d.x + "," + d.y + ")rotate(-90)";
             });
 
@@ -370,9 +443,11 @@ dreamer.GraphEditor = (function(global) {
 
 
             self.text.attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+                //if((d.draggednode == true && self.forceSimulationActive) || self.forceSimulationActive == false)
+                    return "translate(" + d.x + "," + d.y + ")";
+
             });
-        }
+        };
     };
 
     /**
@@ -406,7 +481,7 @@ dreamer.GraphEditor = (function(global) {
      * @returns {}
      */
     GraphEditor.prototype.addListener = function(event_name, cb) {
-
+        this.eventHandler.addL(event_name, cb);
     }
 
     /**
