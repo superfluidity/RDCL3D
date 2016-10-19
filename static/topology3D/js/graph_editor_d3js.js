@@ -6,15 +6,13 @@ var level = {}
 dreamer.GraphEditor = (function(global) {
     'use strict';
 
+    var DEBUG = true;
+    var SHIFT_BUTTON = 16;
 
-    var default_node_color = "#ccc";
     var default_node_label_color = "white";
     var default_link_color = "#888";
     var nominal_text_size = 15;
-    var max_text_size = 24;
     var nominal_stroke = 1.5;
-    var max_stroke = 4.5;
-    var max_base_node_size = 36;
     var EventHandler = dreamer.Event;
 
 
@@ -29,23 +27,20 @@ dreamer.GraphEditor = (function(global) {
 
         this.forceSimulationActive = true;
 
-
-        this.focus_node = null;
-        this.highlight_node = null;
-
-        this.text_center = false;
-        this.outline = false
-
-        this.min_score = 0;
-        this.max_score = 1;
-
         var min_zoom = 0.1;
         var max_zoom = 7;
 
+
         this.eventHandler = new EventHandler();
 
+        this.lastKeyDown = -1;
+
+        this._selected_node = undefined;
+
+        this.current_view_id = 'nsd';
+
         this.node_filter_cb = args.node_filter_cb || function(d) {
-            //console.log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
+            //log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
             if (["vnf", "ns_cp", "ns_vl"].indexOf(d.info.type) > -1)
                 return true
             return false;
@@ -111,12 +106,13 @@ dreamer.GraphEditor = (function(global) {
 
         this.force = d3.forceSimulation()
             .force("link", d3.forceLink().distance(100).strength(3).id(function(d,i) {
-               // console.log(d,i)
+               // log(d,i)
                 return d.id;
             }))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
+        var self = this;
         // this.force.linkStrength(1);
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
@@ -130,7 +126,20 @@ dreamer.GraphEditor = (function(global) {
             .attr("width", this.width)
             .attr("height", this.height);
 
-        var self = this;
+        d3.select(window)
+        .on('keydown', function(){
+            log('keydown ' + d3.event.keyCode);
+            //d3.event.preventDefault();
+            if(self.lastKeyDown !== -1) return;
+            self.lastKeyDown = d3.event.keyCode;
+
+        })
+        .on('keyup', function(){
+            log('keyup');
+            self.lastKeyDown = -1;
+        });
+
+
 
         d3.json("graph_data", function(error, data) {
             // if(error == false)
@@ -163,7 +172,7 @@ dreamer.GraphEditor = (function(global) {
 
             */
 
-            self.update();
+            self.refresh();
             self.startForce();
         });
 
@@ -200,7 +209,7 @@ dreamer.GraphEditor = (function(global) {
             this.d3_graph.nodes.push(args);
 
             this.cleanAll();
-            this.update();
+            this.refresh();
             this.startForce();
             return true;
         }
@@ -259,8 +268,18 @@ dreamer.GraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new Link.
      * @returns {boolean}
      */
-    GraphEditor.prototype.addLink = function(args) {
+    GraphEditor.prototype.addLink = function(link) {
+        log("addLink")
+        if(link.source && link.target){
+            this.d3_graph.links.push(link);
 
+            this.cleanAll();
+            this.refresh();
+            this.startForce();
+            return true;
+        }
+
+        return false;
     };
 
     /**
@@ -273,21 +292,12 @@ dreamer.GraphEditor = (function(global) {
     };
 
 
+
     /**
      * Force a refresh of GraphView
      * @returns {}
      */
     GraphEditor.prototype.refresh = function() {
-
-    };
-
-
-    /**
-     * Update the data of graph.
-     * @param {Object} Required. An object that specifies tha data of the graph.
-     * @returns {}
-     */
-    GraphEditor.prototype.update = function() {
 
         //log(data)
         var self = this;
@@ -343,7 +353,7 @@ dreamer.GraphEditor = (function(global) {
         this.node.on("contextmenu", function (d, i) {
             d3.event.preventDefault();
            // react on right-clicking
-           console.log("contextmenu node");
+           log("contextmenu node");
            self.eventHandler.fire("node_selected", d);
 
         })
@@ -357,12 +367,37 @@ dreamer.GraphEditor = (function(global) {
 		})
         .on("mouseout", function (d) {
 			self.link.style('stroke-width', 2);
-		});
+		})
+        .on('click', function(d) {
+            d3.event.preventDefault();
+            console.log('click', d);
+            if(self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined){
+                log("click shift from node -> " + self._selected_node)
+
+                var source_id = self._selected_node;
+                var target_id = d.id;
+                var new_link = {
+                    source: source_id,
+                    target: target_id,
+                    view: self.current_view_id
+                };
+                self.addLink(new_link);
+                self._deselectAllNodes();
+            }else{
+                self._selectNodeExclusive(this, d);
+            }
+
+        })
+        .on('dblclick', function(d) {
+            d3.event.preventDefault();
+            log('dblclick');
+        });
 
         this.link.on("contextmenu", function (d, i) {
             d3.event.preventDefault();
            // react on right-clicking
-           console.log("contextmenu link");
+           console.log("contextmenu link", d, i);
+
 
         });
 
@@ -507,7 +542,7 @@ dreamer.GraphEditor = (function(global) {
     GraphEditor.prototype.getProjectDescriptor = function(){
          var self = this;
          var project = {nsd: {}, vld :{}, vnfd:{}, vnffgd:{}}
-         console.log(self.d3_graph.nodes)
+         log(self.d3_graph.nodes)
          self.d3_graph.nodes.forEach(function(l) {
             switch(l.info.type){
                 case 'ns':
@@ -532,12 +567,71 @@ dreamer.GraphEditor = (function(global) {
          log(project)
     };
 
+
+
+
     /**
-     *  Internal function
+     *  Internal functions
      */
-    function log(text) {
-        console.log("::GraphEditor::", text);
-    }
+
+    /**
+     *
+     *
+     */
+    GraphEditor.prototype._setupBehaviorsOnEvents = function(){
+        log("_setupBehaviorsOnEvents");
+        this.behavioursOnEvents = {
+            'nodes': {
+                'click': function(event){
+
+                },
+                'dblclick': function(event){
+
+                }
+            },
+            'links': {
+                'click': function(event){
+
+                },
+                'dblclick': function(event){
+
+                }
+            }
+        };
+    };
+
+     /**
+     *  Deselect previously selected nodes
+     *
+     */
+    GraphEditor.prototype._deselectAllNodes = function(){
+        log("_deselectAllNodes");
+        this.node.classed("node_selected", false);
+        this._selected_node = undefined;
+    };
+
+    /**
+     *  Select node in exclusive mode
+     *  @param {Object} Required. Element selected on click event
+     */
+    GraphEditor.prototype._selectNodeExclusive = function(node_instance, node_id){
+        log("_selectNodeExclusive ");
+        var activeClass = "node_selected";
+        var alreadyIsActive = d3.select(node_instance).classed(activeClass);
+        this._deselectAllNodes();
+        d3.select(node_instance).classed(activeClass, !alreadyIsActive);
+        this._selected_node = (alreadyIsActive) ? undefined : node_id;
+    };
+
+     /**
+      * Log utility
+      */
+     function log(text) {
+        if(DEBUG)
+            console.log("::GraphEditor::", text);
+     }
+
+
 
 
     return GraphEditor;
