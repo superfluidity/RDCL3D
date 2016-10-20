@@ -1,0 +1,183 @@
+{
+  "nsdIdentifier": "NSExample",
+  "designer": "netgroup",
+  "version": "1.0",
+  "nsdName": "NSExample",
+  "nsdInvariantId": "NSExampleInvariant" ,
+  "vnfdId": [
+    "vnf1",
+    "vnf2",
+    "vnf3"
+  ],
+  "sapd":[
+    {
+      "cpdId": "sap1",
+      "layerProtocol": "E-LAN",
+      "cpRole": "root",
+      "description": "description",
+      "sapAddressAssignment": true,
+      "associatedCpdId": "VnfExtCp11"
+    },
+     {
+      "cpdId": "sap2",
+      "layerProtocol": "E-LAN",
+      "cpRole": "root",
+      "description": "description",
+      "sapAddressAssignment": true,
+       "associatedCpdId": "VnfExtCp33"
+    }
+
+  ],
+  "virtualLinkDesc": [
+    {
+      "virtualLinkDescId": "vl1",
+      "vitualLinkDescProvider": "netgroup",
+      "virtuaLinkDescVersion": "0.1",
+      "connectivityType": {
+        "layerProtocol": "E-LAN",
+        "flowPattern": "line"
+      },
+      "virtualLinkDf": [
+        {
+          "flavourId": "flavourId",
+          "qos":{
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "serviceAvaibilityLevel": "Level 1"
+        }
+
+      ]
+    },
+    {
+      "virtualLinkDescId": "vl2",
+      "vitualLinkDescProvider": "netgroup",
+      "virtuaLinkDescVersion": "0.1",
+      "connectivityType": {
+        "layerProtocol": "E-LAN",
+        "flowPattern": "line"
+      },
+      "virtualLinkDf": [
+        {
+          "flavourId": "flavourId",
+          "qos":{
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "serviceAvaibilityLevel": "Level 1"
+        }
+
+      ]
+    },
+    {
+      "virtualLinkDescId": "vl3",
+      "vitualLinkDescProvider": "netgroup",
+      "virtuaLinkDescVersion": "0.1",
+      "connectivityType": {
+        "layerProtocol": "E-LAN",
+        "flowPattern": "line"
+      },
+      "virtualLinkDf": [
+        {
+          "flavourId": "flavourId",
+          "qos":{
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "serviceAvaibilityLevel": "Level 1"
+        }
+
+      ]
+    },
+    {
+      "virtualLinkDescId": "vl4",
+      "vitualLinkDescProvider": "netgroup",
+      "virtuaLinkDescVersion": "0.1",
+      "connectivityType": {
+        "layerProtocol": "E-LAN",
+        "flowPattern": "line"
+      },
+      "virtualLinkDf": [
+        {
+          "flavourId": "flavourId",
+          "qos":{
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "serviceAvaibilityLevel": "Level 1"
+        }
+
+      ]
+    }
+  ],
+  "vnffgd":[
+    {
+      "vnffgdId": "vnffg1",
+      "vnfdId":[
+        "vnf1",
+        "vnf2",
+        "vnf3"
+      ],
+      "virtualLinkDescId":[
+        "vl01",
+        "vl02",
+        "vl03"
+      ],
+      "cpdPoolId":[
+        {
+          "cpdPoolId": "cpdPoolId",
+          "cpdId":[
+             "sap1",
+             "VnfExtCp11",
+             "VnfExtCp12",
+             "VnfExtCp32",
+             "VnfExtCp33",
+             "sap2"
+          ]
+        }
+
+      ],
+      "nfpd":[
+        {
+          "nfpId": "nfpId1",
+          "nfpRule": "nfpRule",
+          "cpd":[
+             "VnfExtCp11",
+             "VnfExtCp12",
+             "VnfExtCp32",
+             "VnfExtCp33"
+          ]
+        },
+         {
+          "nfpId": "nfpId2",
+          "nfpRule": "nfpRule",
+          "cpd":[
+             "VnfExtCp11",
+             "VnfExtCp13",
+             "VnfExtCp31",
+             "VnfExtCp33"
+          ]
+        },
+        {
+          "nfpId": "nfpId3",
+          "nfpRule": "nfpRule",
+          "cpd":[
+             "VnfExtCp11",
+             "VnfExtCp13",
+             "VnfExtCp21"
+             "VnfExtCp31",
+             "VnfExtCp33"
+          ]
+        }
+      ]
+    }
+  ]
+}

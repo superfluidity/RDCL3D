@@ -1,0 +1,274 @@
+{
+  "nsdIdentifier": "NSExample",
+  "designer": "netgroup",
+  "version": "1.0",
+  "nsdName": "NSExample",
+  "nsdInvariantId": "NSExampleInvariant" ,
+  "nestedNsdId": [
+
+  ],
+  "vnfdId": [
+    "vnf1",
+    "vnf2",
+    "vnf3"
+  ],
+  "pnfdId":[
+
+  ],
+  "sapd":[
+    {
+      "cpdId": "cp1",
+      "layerProtocol": "E-LAN",
+      "cpRole": "root or leaf",
+      "description": "description",
+      "sapAddressAssignment": true,
+      "nsVirtualLinkDescId": "vl",
+      "associatedCpdId": "cp"
+    }
+
+  ],
+  "virtualLinkDesc": [
+    { "virtualLinkDescId": "vl1",
+      "vitualLinkDescProvider": "netgroup",
+      "virtuaLinkDescVersion": "0.1",
+      "connectivityType": {
+        "layerProtocol": "E-LAN",
+        "flowPattern": "line"
+      },
+      "virtualLinkDf": [
+        {
+          "flavourId": "flavourId",
+          "qos":{
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "serviceAvaibilityLevel": "Level 1"
+        }
+
+      ],
+      "testAccess": [
+        "STRING"
+      ],
+      "description": "descrizione",
+      "security":  {
+        "signature": "signature",
+        "algorithm": "algorith",
+        "certificate": "certificate"
+      }
+    }
+  ],
+  "vnffgd":[
+    {
+      "vnffgdId": "vnffg1",
+      "vnfdId":[
+        "vnf1",
+        "vnf3"
+      ],
+      "pnfdId":[
+
+      ],
+      "virtualLinkDescId":[
+        "vl01",
+        "vl11",
+        "vl02",
+        "vl31",
+        "vl04"
+      ],
+      "cpdPoolId":[
+        {
+          "cpdPoolId": "cpdPoolId",
+          "cpdId":[
+             "cp01",
+             "cp11",
+             "cp14",
+             "cp13",
+             "cp31",
+             "cp33",
+             "cp03"
+          ]
+        }
+
+      ],
+      "nfpd":[
+        {
+          "nfpId": "nfpId",
+          "nfpRule": "nfpRule",
+          "cpd":[
+
+          ]
+        }
+      ]
+
+    }
+  ] ,
+  "monitoredInfo":[
+    {
+      "vnfIndicatorInfo":{
+        "vnfdId": "vnfd",
+        "vnfIndicator": "VnfIndicator"
+      },
+      "monitoringParameter":{
+        "monitoringParamaterId": "id",
+        "name": "nomeMonitoring",
+        "performanceMetric": "metrics"
+      }
+
+    }
+
+  ],
+  "autoScalingRule":[
+
+  ],
+  "lifeCycleManagementScript": "scipt",
+  "nsDf":[
+    {
+      "nsDfId": "nsDfId",
+      "flavourKey": "stringkey",
+      "vnfProfile":[
+        {
+          "vnfProfileId": "vnfProfileId",
+          "vnfdId": "vnfdId",
+          "flavourId": "Reference to VnfDf",
+          "instantiationLevel": "instantiationLevel",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 3,
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "affinityOrAntiAffinity": "Enum",
+              "scope": "Enum"
+
+            }
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+            {
+              "groupId": "groupId",
+              "affinityOrAntiAffiinty": "Enum",
+              "scope": "Enum"
+            }
+
+          ],
+          "nsVirtualLinkConnectivity":[
+            {
+              "virtualLinkProfileId": "virtualLinkProfileId",
+              "cpdId": [
+                "cpdId",
+                "SapId"
+              ]
+            }
+
+          ]
+
+        }
+      ],
+      "pnfProfile":[
+        {
+          "pnfProfileId": "pnfProfileId",
+          "pnfdId": "pnfdId",
+          "pnfVirtualLinkConnectivity": [
+
+          ]
+        }
+
+      ],
+      "virtualLinkProfile":[
+        {
+          "virtualLinkProfileId": "virtualLinkProfileId",
+          "virtualLinkDescId": "vld",
+          "flavourId": "flavourId",
+          "localAffinityOrAntiAffinityRule":[
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+             {
+              "groupId": "groupId",
+              "affinityOrAntiAffiinty": "Enum",
+              "scope": "Enum"
+            }
+
+          ],
+          "maxBitrateRequirements":{
+            "root": "throughput of link",
+            "leaf": "throughput of link"
+          },
+          "minBitrateRequirements":{
+            "root": "throughput of link",
+            "leaf": "throughput of link"
+          }
+
+        }
+
+      ],
+      "scalingAspect":[
+        {
+          "nsScalingAspectId": "nsScalingAspectId",
+          "nsScaleLevelId": "NsLevel"
+        }
+
+      ],
+      "affinityOrAntiAffinityGroup": [
+        {
+          "groupId": "groupId",
+          "affinityOrAntiAffiinty": "Enum",
+          "scope": "Enum"
+        }
+      ],
+      "nsInstantiationLevel":[
+        {
+          "nsLevelId": "nsLevelId",
+          "description": "description",
+          "vnfToLevelMapping":[
+
+          ],
+          "virtualLinkToLevelMapping":[
+
+          ],
+          "nsToLevelMapping":[
+
+          ]
+
+        }
+
+      ],
+      "defaultNsInstantiationLevelId": "Identifier (Reference to NsLevel) ",
+      "nsProfile":[
+        {
+          "nsProfileId": "nsProfileId",
+          "nsdId": "nsdId",
+          "nsDfId": "nsDfId",
+          "nsInstantiationLevelId": "Nslevel",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 5,
+          "affinityOrAntiaffinityGroupId": [
+             {
+                "groupId": "groupId",
+                "affinityOrAntiAffiinty": "Enum",
+                "scope": "Enum"
+              }
+          ]
+
+        }
+
+      ],
+      "dependencies":[
+        {
+          "primaryId":[
+
+          ],
+          "secondaryId":[
+
+          ]
+        }
+
+      ]
+
+    }
+  ],
+  "security": {
+    "signature": "signature",
+    "algorithm": "algorith",
+    "certificate": "certificate"
+  }
+}

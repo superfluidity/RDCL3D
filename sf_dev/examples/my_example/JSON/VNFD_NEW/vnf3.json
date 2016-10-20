@@ -1,0 +1,81 @@
+{  "vnfdId": "vnf3",
+  "vnfProvider": "netgroup",
+  "vnfProductName": "vnf3",
+  "vnfSoftwareVersion": "0.1",
+  "vnfdVersion": "0.1",
+  "vdu":[
+    {
+      "vduId":"vdu31",
+      "name": "vdu31",
+        "intCpd":[
+        {
+          "cpdId": "VduCp31",
+          "layerProtocol": "E-LAN",
+          "cpRole": "leaf",
+          "intVirtualLinkDesc": "intVirtualLink31"
+        }
+      ]
+      }
+  ],
+  "intVirtualLinkDesc":[
+    {
+      "virtualLinkDescId": "intVirtualLink31",
+      "virtualLinkDescFlavour": [
+        {
+              "flavourId": "flavourId",
+              "bitrateRequirements": {
+                "root": 7,
+                "leaf": 13
+              },
+              "qos": {
+                "latency": 500,
+                "packetDelayVariation": 50,
+                "packetLossRatio": 5,
+                "priority": 1
+            },
+            "connectivityType": {
+              "layerProtocol": "Enum",
+              "flowPattern": ""
+
+            },
+            "testAccess":"",
+            "description": "",
+            "monitoringParameter":  {
+              "id": "id",
+              "name": "name",
+              "performanceMetric": "performanceMetric"
+            }
+
+          }
+      ],
+      "connectivityType": {
+        "layerProtocol": "Enum",
+        "flowPattern": ""
+      }
+    }
+
+  ],
+  "vnfExtCpd":[
+    {
+      "cpdId": "VnfExtCp31",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp32",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp33",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    }
+  ]
+}
