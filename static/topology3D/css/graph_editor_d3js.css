@@ -42,6 +42,12 @@
   stroke-width: 1;
 }
 
+.node_selected {
+  opacity: 2 !important;
+  stroke: #2F3550 !important;
+  stroke-width: 3 !important;
+}
+
 .node_path:hover {
   opacity: 2;
   stroke: #2F3550;
