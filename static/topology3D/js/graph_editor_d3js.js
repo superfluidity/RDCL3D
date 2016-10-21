@@ -14,6 +14,14 @@ dreamer.GraphEditor = (function(global) {
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
     var EventHandler = dreamer.Event;
+    /*
+    var default_node_properties = {
+        "shape": d3.symbolCircle,
+        "color": "white",
+        "size": 15,
+        "label_color": "white",
+        "label_text_size": 15
+    };*/
 
 
     /**
@@ -57,7 +65,7 @@ dreamer.GraphEditor = (function(global) {
                 "size": 15
             },
             "ns_vl": {
-                "shape": d3.symbolDiamond,
+                "shape": d3.symbolCircle,
                 "color": "#196B90",
                 "size": 15
             },
@@ -67,19 +75,19 @@ dreamer.GraphEditor = (function(global) {
                 "size": 15
             },
             "vnf": {
-                "shape": d3.symbolSquare,
+                "shape": d3.symbolCircle,
                 "color": "#54A698",
-                "size": 20
+                "size": 15
             },
             "vnf_vl": {
-                "shape": d3.symbolDiamond,
+                "shape": d3.symbolCircle,
                 "color": "#313679",
-                "size": 13
+                "size": 15
             },
             "vnfc_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#343D41",
-                "size": 13
+                "size": 15
             },
             "vnf_cp": {
                 "shape": d3.symbolCircle,
@@ -87,14 +95,14 @@ dreamer.GraphEditor = (function(global) {
                 "size": 15
             },
             "vnfc": {
-                "shape": d3.symbolSquare,
+                "shape": d3.symbolCircle,
                 "color": "#1D74C2",
-                "size": 20
+                "size": 15
             },
             "vdu": {
-                "shape": d3.symbolSquare,
+                "shape": d3.symbolCircle,
                 "color": "#4B7C91",
-                "size": 20
+                "size": 15
             }
         };
 
@@ -105,8 +113,8 @@ dreamer.GraphEditor = (function(global) {
         };
 
         this.force = d3.forceSimulation()
-            .force("link", d3.forceLink().distance(100).strength(3).id(function(d,i) {
-               // log(d,i)
+            .force("link", d3.forceLink().distance(100).strength(3).id(function(d, i) {
+                // log(d,i)
                 return d.id;
             }))
             .force("charge", d3.forceManyBody())
@@ -127,17 +135,17 @@ dreamer.GraphEditor = (function(global) {
             .attr("height", this.height);
 
         d3.select(window)
-        .on('keydown', function(){
-            log('keydown ' + d3.event.keyCode);
-            //d3.event.preventDefault();
-            if(self.lastKeyDown !== -1) return;
-            self.lastKeyDown = d3.event.keyCode;
+            .on('keydown', function() {
+                log('keydown ' + d3.event.keyCode);
+                //d3.event.preventDefault();
+                if (self.lastKeyDown !== -1) return;
+                self.lastKeyDown = d3.event.keyCode;
 
-        })
-        .on('keyup', function(){
-            log('keyup');
-            self.lastKeyDown = -1;
-        });
+            })
+            .on('keyup', function() {
+                log('keyup');
+                self.lastKeyDown = -1;
+            });
 
 
 
@@ -184,12 +192,11 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-        if(start){
+        if (start) {
 
             this.force.restart();
             this.forceSimulationActive = true
-        }
-        else{
+        } else {
 
             this.force.stop();
             this.forceSimulationActive = false;
@@ -205,12 +212,14 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.addNode = function(args) {
 
-        if(args.id && args.info && args.info.type){
-            this.d3_graph.nodes.push(args);
-
+        if (args.id && args.info && args.info.type) {
+             this.force.stop();
             this.cleanAll();
+            this.d3_graph.nodes.push(args);
             this.refresh();
             this.startForce();
+             this.force.restart();
+            //
             return true;
         }
 
@@ -233,9 +242,9 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.removeNode = function(node_id) {
-        if(node_id != undefined){
+        if (node_id != undefined) {
             this.d3_graph['nodes'].forEach(function(n, index, object) {
-                if(n.id == node_id){
+                if (n.id == node_id) {
                     object.splice(index, 1);
 
                 }
@@ -246,13 +255,13 @@ dreamer.GraphEditor = (function(global) {
             var self = this;
             var links_to_remove = [];
             this.d3_graph['links'].forEach(function(l, index, object) {
-                if(node_id === l.source.id || node_id === l.target.id){
+                if (node_id === l.source.id || node_id === l.target.id) {
                     links_to_remove.push(index);
                 }
 
             });
             var links_removed = 0;
-            links_to_remove.forEach(function(l_index){
+            links_to_remove.forEach(function(l_index) {
                 self.d3_graph['links'].splice(l_index - links_removed, 1);
                 links_removed++;
             });
@@ -270,7 +279,7 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.addLink = function(link) {
         log("addLink")
-        if(link.source && link.target){
+        if (link.source && link.target) {
             this.d3_graph.links.push(link);
 
             this.cleanAll();
@@ -284,11 +293,26 @@ dreamer.GraphEditor = (function(global) {
 
     /**
      * Remove a link from graph.
-     * @param {Object} Required. An object that specifies tha data of link to remove.
+     * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    GraphEditor.prototype.removeLink = function(args) {
+    GraphEditor.prototype.removeLink = function(link_id) {
+        var self = this;
+        if (link_id) {
+            this.d3_graph['links'].forEach(function(l, index, object) {
+                if (link_id === l.index) {
+                    object.splice(index, 1);
 
+                    self.cleanAll();
+                    self.refresh();
+                    self.startForce();
+                    return true;
+                }
+
+            });
+        }
+
+        return false;
     };
 
 
@@ -326,7 +350,7 @@ dreamer.GraphEditor = (function(global) {
             .append("svg:path")
             .attr("class", "node_path")
 
-            .attr("id", function(d) {
+        .attr("id", function(d) {
                 return "path_" + d.id;
             })
             .attr("d", d3.symbol()
@@ -350,54 +374,54 @@ dreamer.GraphEditor = (function(global) {
                 .on("drag", dragged)
                 .on("end", dragended));
 
-        this.node.on("contextmenu", function (d, i) {
+        this.node.on("contextmenu", function(d, i) {
+                d3.event.preventDefault();
+                // react on right-clicking
+                log("contextmenu node");
+                self.eventHandler.fire("node_selected", d);
+
+            })
+            .on("mouseover", function(d) {
+                self.link.style('stroke-width', function(l) {
+                    if (d === l.source || d === l.target)
+                        return 4;
+                    else
+                        return 2;
+                });
+            })
+            .on("mouseout", function(d) {
+                self.link.style('stroke-width', 2);
+            })
+            .on('click', function(d) {
+                d3.event.preventDefault();
+                console.log('click', d);
+                if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
+                    log("click shift from node -> " + self._selected_node)
+
+                    var source_id = self._selected_node;
+                    var target_id = d.id;
+                    var new_link = {
+                        source: source_id,
+                        target: target_id,
+                        view: self.current_view_id
+                    };
+                    self.addLink(new_link);
+                    self._deselectAllNodes();
+                } else {
+                    self._selectNodeExclusive(this, d);
+                }
+
+            })
+            .on('dblclick', function(d) {
+                d3.event.preventDefault();
+                log('dblclick');
+            });
+
+        this.link.on("contextmenu", function(d, i) {
             d3.event.preventDefault();
-           // react on right-clicking
-           log("contextmenu node");
-           self.eventHandler.fire("node_selected", d);
-
-        })
-        .on("mouseover", function (d) {
-            self.link.style('stroke-width', function(l) {
-				    if (d === l.source || d === l.target)
-				    return 4;
-				  else
-				    return 2;
-				});
-		})
-        .on("mouseout", function (d) {
-			self.link.style('stroke-width', 2);
-		})
-        .on('click', function(d) {
-            d3.event.preventDefault();
-            console.log('click', d);
-            if(self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined){
-                log("click shift from node -> " + self._selected_node)
-
-                var source_id = self._selected_node;
-                var target_id = d.id;
-                var new_link = {
-                    source: source_id,
-                    target: target_id,
-                    view: self.current_view_id
-                };
-                self.addLink(new_link);
-                self._deselectAllNodes();
-            }else{
-                self._selectNodeExclusive(this, d);
-            }
-
-        })
-        .on('dblclick', function(d) {
-            d3.event.preventDefault();
-            log('dblclick');
-        });
-
-        this.link.on("contextmenu", function (d, i) {
-            d3.event.preventDefault();
-           // react on right-clicking
-           console.log("contextmenu link", d, i);
-
+            // react on right-clicking
+            console.log("contextmenu link", d, i);
+            self.removeLink(i);
 
         });
 
@@ -420,7 +444,7 @@ dreamer.GraphEditor = (function(global) {
 
         function dragstarted(d) {
             d.draggednode = true;
-            if (!d3.event.active ) self.force.alphaTarget(0.3).restart();
+            if (!d3.event.active) self.force.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
 
@@ -432,8 +456,8 @@ dreamer.GraphEditor = (function(global) {
         }
 
         function dragended(d) {
-             d.draggednode = false;
-            if (!d3.event.active ) self.force.alphaTarget(0);
+            d.draggednode = false;
+            if (!d3.event.active) self.force.alphaTarget(0);
             d.fx = null;
             d.fy = null;
         }
@@ -460,6 +484,7 @@ dreamer.GraphEditor = (function(global) {
             self.node.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")rotate(-90)";
             });
+            var sub_self = self;
 
             self.link
                 .attr("x1", function(d) {
@@ -479,9 +504,10 @@ dreamer.GraphEditor = (function(global) {
 
             self.text.attr("transform", function(d) {
                 //if((d.draggednode == true && self.forceSimulationActive) || self.forceSimulationActive == false)
-                    return "translate(" + d.x + "," + d.y + ")";
+                return "translate(" + d.x + "," + d.y + ")";
 
             });
+
         };
     };
 
@@ -497,17 +523,17 @@ dreamer.GraphEditor = (function(global) {
      *  Get the data tree of availables views
      *  @returns {Object} object.
      */
-     GraphEditor.prototype.getTreeViews = function() {
+    GraphEditor.prototype.getTreeViews = function() {
 
-     };
+    };
 
-     /**
+    /**
      *  Get the the type of Availables Nodes Of View
      *  @returns {Object} object.
      */
-     GraphEditor.prototype.getAvailablesNodesOfView = function() {
+    GraphEditor.prototype.getAvailablesNodesOfView = function() {
 
-     };
+    };
 
     /**
      * This method attaches an event handler.
@@ -538,13 +564,18 @@ dreamer.GraphEditor = (function(global) {
     };
 
     /** Get project object descriptor from the graph
-    */
-    GraphEditor.prototype.getProjectDescriptor = function(){
-         var self = this;
-         var project = {nsd: {}, vld :{}, vnfd:{}, vnffgd:{}}
-         log(self.d3_graph.nodes)
-         self.d3_graph.nodes.forEach(function(l) {
-            switch(l.info.type){
+     */
+    GraphEditor.prototype.getProjectDescriptor = function() {
+        var self = this;
+        var project = {
+            nsd: {},
+            vld: {},
+            vnfd: {},
+            vnffgd: {}
+        }
+        log(self.d3_graph.nodes)
+        self.d3_graph.nodes.forEach(function(l) {
+            switch (l.info.type) {
                 case 'ns':
                     project.nsd[l.id] = l.descriptor
                     break
@@ -556,15 +587,15 @@ dreamer.GraphEditor = (function(global) {
                 case 'vnf_vl':
                     project.vld[l.descriptor.id] = l.descriptor
                     break
-                 case 'vnffg':
+                case 'vnffg':
                     project.vnffgd[l.descriptor.id] = l.descriptor
                     break
 
             }
-         });
+        });
 
-         //log(self.d3_graph.links);
-         log(project)
+        //log(self.d3_graph.links);
+        log(project)
     };
 
 
@@ -578,33 +609,33 @@ dreamer.GraphEditor = (function(global) {
      *
      *
      */
-    GraphEditor.prototype._setupBehaviorsOnEvents = function(){
+    GraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
         this.behavioursOnEvents = {
             'nodes': {
-                'click': function(event){
+                'click': function(event) {
 
                 },
-                'dblclick': function(event){
+                'dblclick': function(event) {
 
                 }
             },
             'links': {
-                'click': function(event){
+                'click': function(event) {
 
                 },
-                'dblclick': function(event){
+                'dblclick': function(event) {
 
                 }
             }
         };
     };
 
-     /**
+    /**
      *  Deselect previously selected nodes
      *
      */
-    GraphEditor.prototype._deselectAllNodes = function(){
+    GraphEditor.prototype._deselectAllNodes = function() {
         log("_deselectAllNodes");
         this.node.classed("node_selected", false);
         this._selected_node = undefined;
@@ -614,7 +645,7 @@ dreamer.GraphEditor = (function(global) {
      *  Select node in exclusive mode
      *  @param {Object} Required. Element selected on click event
      */
-    GraphEditor.prototype._selectNodeExclusive = function(node_instance, node_id){
+    GraphEditor.prototype._selectNodeExclusive = function(node_instance, node_id) {
         log("_selectNodeExclusive ");
         var activeClass = "node_selected";
         var alreadyIsActive = d3.select(node_instance).classed(activeClass);
@@ -623,13 +654,13 @@ dreamer.GraphEditor = (function(global) {
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
 
-     /**
-      * Log utility
-      */
-     function log(text) {
-        if(DEBUG)
+    /**
+     * Log utility
+     */
+    function log(text) {
+        if (DEBUG)
             console.log("::GraphEditor::", text);
-     }
+    }
 
 
 

@@ -39,19 +39,9 @@
 
 {% block resource_block %}
   	{{ block.super }}
-    <script src="{% static "topology3D/js/lib/jquery-ui.js" %}"></script>
 
-    <script src="{% static "topology3D/js/config.js" %}"></script>
-    <script src="{% static "topology3D/js/vmmcontroller.js" %}"></script>
-    <script src="{% static "topology3D/js/vertex.js" %}"></script>
-    <script src="{% static "topology3D/js/domaincontroller/domaincontroller.js" %}"></script>
-    <script src="{% static "topology3D/js/domaincontroller/etsimano.js" %}"></script>
-    <script src="{% static "topology3D/js/link.js" %}"></script>
-    <script src="{% static "topology3D/js/layer.js" %}"></script>
+
     <script src="{% static "topology3D/js/event.js" %}"></script>
-    <script src="{% static "topology3D/js/algebra.js" %}"></script>
-    <script src="{% static "topology3D/js/graph_parameters.js" %}"></script>
-    <script src="{% static "topology3D/js/edge.js" %}"></script>
     <script src="{% static "topology3D/js/graph_editor_d3js.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
@@ -77,10 +67,11 @@
     dropZone.ondrop = function(e) {
         e.preventDefault();
         var nodetype = e.dataTransfer.getData("text/plain");
+        console.log(e);
         if(nodetype){
-            graph_editor.addNode({'id':  nodetype + "_" + Date.now(), 'info': { 'type': nodetype } });
+            graph_editor.addNode({'id':  nodetype + "_" + Date.now(), 'info': { 'type': nodetype }, 'x': e.layerX, 'y': e.layerY });
         }
-      //
+
     }
 
     dropZone.ondragover = function(ev) {

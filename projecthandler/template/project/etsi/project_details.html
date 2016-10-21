@@ -33,16 +33,22 @@
     <div class="col-md-6">
         <div class="box box-widget ">
             <div class="box-body">
-              <ul class="nav nav-stacked">
-                  <li><a href="#">Project Name: <span class="pull-right">{{project_overview.name}}</span></a></li>
-                  <li><a href="#">Info: <span class="pull-right">{{project_overview.info}}</span></a></li>
-                  <li><a href="#">Last updated: <span class="pull-right">{{project_overview.updated_date}}</span></a></li>
-                  <li><a href="#">Owner: <span class="pull-right">{{project_overview.owner}}</span></a></li>
-                  {% if project_overview.validated %}
-                    <li><a href="#">Validated: <span class="pull-right badge bg-green">{{project_overview.validated}}</span></a></li>
-                  {% else %}
-                    <li><a href="#">Validated: <span class="pull-right badge bg-red">{{project_overview.validated}}</span></a></li>
-                  {% endif %}
+              <ul class="list-group list-group-unbordered">
+                  <li class="list-group-item"><b>Project Name:</b><a > <span class="pull-right">{{project_overview.name}}</span></a></li>
+                  <li class="list-group-item"><b>Info:</b><a > <span class="pull-right">{{project_overview.info}}</span></a></li>
+                  <li class="list-group-item"><b>Last updated:</b><a > <span class="pull-right">{{project_overview.updated_date}}</span></a></li>
+                  <li class="list-group-item"><b>Owner:</b><a > <span class="pull-right">{{project_overview.owner}}</span></a></li>
+
+                    <li class="list-group-item"><b>Validated:</b><a >
+                        {% if project_overview.validated %}
+                         <span class="pull-right badge bg-green">{{project_overview.validated}}</span>
+                             {% else %}
+                        <span class="pull-right badge bg-red">{{project_overview.validated}}</span>
+                        {% endif %}
+                           </a>
+
+                    </li>
+
               </ul>
 
             </div>
