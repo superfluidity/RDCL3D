@@ -1,0 +1,372 @@
+@startuml
+
+title IFA Class Diagram
+
+package "IFA 014" {
+    class Nsd {
+        [6.2.2.2]
+    }
+    class Sapd {
+        [6.2.3]
+    }
+    class SecurityParameters {
+        [6.2.5]
+    }
+    class MonitoredData {
+        [6.2.6]
+    }
+    class NsDf {
+        [6.3.2]
+    }
+    class Vnffgd {
+        [6.4.2]
+    }
+    class Nfpd {
+        [6.4.3]
+    }
+    class CpdPool {
+        [6.4.4]
+    }
+    class NsVirtualLinkDesc {
+        [6.5.2]
+    }
+    class Pnfd {
+        [6.6.2]
+    }
+    class PnfExtCpd {
+        [6.6.4]
+    }
+    class Rule {
+    }
+    class VnfIndicatorData {
+        [6.2.7]
+    }
+    class MonitoringParameter {
+        [6.2.8]
+    }
+    class VnfProfile {
+        [6.3.3]
+    }
+    class VirtualLinkProfile {
+        [6.3.4]
+    }
+    class AffinityOrAntiAffinityGroup {
+        [6.3.5]
+    }
+    class PnfProfile {
+        [6.3.6]
+    }
+    class NsVirtualLinkConnectivity {
+        [6.3.7]
+    }
+    class LocalAffinityOrAntiAffinityRule {
+        [6.3.8]
+    }
+    class NsLevel {
+        [6.3.9]
+    }
+    class NsScaleInfo {
+        [6.3.10]
+    }
+    class NsProfile {
+        [6.3.11]
+    }
+    /' instantiation order '/
+    class Dependencies {
+        [6.3.12]
+    }
+    class ConnectivityType {
+        [6.5.3]
+    }
+    class VirtualLinkDf {
+        [6.5.4]
+    }
+    class LinkBitrateRequirements {
+        [6.5.5]
+    }
+    class QoS {
+        [6.5.6]
+    }
+    class NsScalingAspect {
+        [6.7.2]
+    }
+    class VnfToLevelMapping {
+        [6.7.4]
+    }
+    class VirtualLinkToLevelMapping {
+        [6.7.4]
+    }
+    class NsToLevelMapping {
+        [6.7.6]
+    }
+}
+package "IFA 011" {
+    class Vnfd {
+        [7.1.2]
+    }
+    class VnfExtCpd {
+        [7.1.3]
+    }
+    class VnfdElementGroup {
+        [7.1.4]
+    }
+    class Vdu {
+        [7.1.6]
+    }
+    class VduCpd {
+        [7.1.6.4]
+    }
+    class VnfIndicator {
+    }
+    class AddressData {
+        [7.1.3.3]
+    }
+    class L3AddressData {
+        [7.1.3.3]
+    }
+    class VnfLcmOperationsConfiguration {
+        [7.1.5.2]
+    }
+    class InstantiateVnfOpConfig {
+        [7.1.5.3]
+    }
+    class ScaleVnfOpConfig {
+        [7.1.5.4]
+    }
+    class ScaleVnfToLevelOpConfig {
+        [7.1.5.5]
+    }
+    class HealVnfOpConfig {
+        [7.1.5.6]
+    }
+    class TerminateVnfOpConfig {
+        [7.1.5.7]
+    }
+    class OperateVnfOpConfig {
+        [7.1.5.8]
+    }
+    class SwImageDesc {
+        [7.1.6.5]
+    }
+    class VirtualNetworkInterfaceRequirements {
+        [7.1.6.6]
+    }
+    class VnfcConfigurableProperties {
+        [7.1.6.7]
+    }
+    class VnfVirtualLinkDesc {
+        [7.1.7]
+    }
+    class ConnectivityType {
+        [7.1.7.3]
+    }
+    class VnfDf {
+        [7.1.8.2]
+    }
+    class VduProfile {
+        [7.1.8.3]
+    }
+    class VnfVirtualLinkProfile {
+        [7.1.8.4]
+    }
+    class VnfLinkBitrateRequirements {
+        [7.1.8.6]
+    }
+    class InstantiationLevel {
+        [7.1.8.7]
+    }
+    class ScaleInfo {
+        [7.1.8.8]
+    }
+    class VduLevel {
+        [7.1.8.9]
+    }
+    class VnfQoS {
+        [7.1.8.10]
+    }
+    class VnfLocalAffinityOrAntiAffinityRule {
+        [7.1.8.11]
+    }
+    class VnfAffinityOrAntiAffinityGroup {
+        [7.1.8.12]
+    }
+    class VirtualComputeDesc {
+        [7.1.9.2.2]
+    }
+    class VirtualCpuData {
+        [7.1.9.2.3]
+    }
+    class VirtualCpuPinningData {
+        [7.1.9.2.4]
+    }
+    class VirtualMemoryData {
+        [7.1.9.3.2]
+    }
+    class VirtualStorageDesc {
+        [7.1.9.4.2]
+    }
+    class RequestedAdditionalCapabilityData {
+        [7.1.9.6.2]
+    }
+    class ScalingAspect {
+        [7.1.10.2]
+    }
+    class VnfMonitoringParameter {
+        [7.1.11.3.2]
+    }
+    class VnfConfigurableProperties {
+        [7.1.12.2]
+    }
+    class LifeCycleManagementScript {
+        [7.1.13.2]
+    }
+    class VnfInfoModifiableAttributes {
+        [7.1.14.2]
+    }
+    class VirtualLinkDescFlavour {
+        [7.1.8.5]
+    }
+}
+
+    Nsd                           o-- "0..*" Nsd                
+    Nsd                           o-- "0..*" Vnfd               
+    Nsd                           o-- "0..*" Pnfd               
+    Nsd                           *-- "0..*" Sapd               
+    Nsd                           *-- "0..*" NsVirtualLinkDesc  
+    Nsd                           *-- "0..*" Vnffgd             
+    Nsd                           *-- "0..*" MonitoredData      
+    Nsd                           *-- "0..*" Rule
+    Nsd                           *-- "1..*" NsDf               
+    Nsd                           *-- "1"    SecurityParameters 
+    Sapd                          o-- "0..1" NsVirtualLinkDesc  
+    Sapd                          o-- "0..1" VnfExtCpd          
+    Sapd                          o-- "0..1" PnfExtCpd          
+    MonitoredData                 *-- "0..1" VnfIndicatorData
+    MonitoredData                 *-- "0..1" MonitoringParameter
+    VnfIndicatorData              o-- "1"    Vnfd
+    VnfIndicatorData              o-- "1"    VnfIndicator
+    NsDf                          *-- "0..*" VnfProfile
+    NsDf                          *-- "0..*" PnfProfile
+    NsDf                          *-- "0..*" VirtualLinkProfile
+    NsDf                          *-- "0..*" NsScalingAspect
+    NsDf                          *-- "0..*" AffinityOrAntiAffinityGroup
+    NsDf                          *-- "1..*" NsLevel
+    NsDf                          o-- "0..1" NsLevel
+    NsDf                          *-- "0..*" NsProfile
+    NsDf                          *-- "0..*" Dependencies
+    VnfProfile                    o-- "1"    Vnfd
+    VnfProfile                    o-- "1"    VnfDf
+    VnfProfile                    *-- "0..*" LocalAffinityOrAntiAffinityRule
+    VnfProfile                    o-- "0..*" AffinityOrAntiAffinityGroup
+    VnfProfile                    *-- "1..*" NsVirtualLinkConnectivity
+    VirtualLinkProfile            o-- "1"    NsVirtualLinkDesc
+    VirtualLinkProfile            o-- "1"    VirtualLinkDf
+    VirtualLinkProfile            *-- "0..*" LocalAffinityOrAntiAffinityRule
+    VirtualLinkProfile            o-- "0..*" AffinityOrAntiAffinityGroup
+    VirtualLinkProfile            *-- "1"    LinkBitrateRequirements
+    VirtualLinkProfile            *-- "1"    LinkBitrateRequirements
+    PnfProfile                    o-- "1"    Pnfd
+    PnfProfile                    *-- "1..*" NsVirtualLinkConnectivity
+    NsVirtualLinkConnectivity     o-- "1"    VirtualLinkProfile
+    NsVirtualLinkConnectivity     o-- "1..*" VnfExtCpd
+    NsVirtualLinkConnectivity     o-- "1..*" PnfExtCpd
+    NsVirtualLinkConnectivity     o-- "1..*" Sapd
+    NsLevel                       o-- "0..*" VnfToLevelMapping
+    NsLevel                       o-- "0..*" VirtualLinkToLevelMapping
+    NsLevel                       o-- "0..*" NsToLevelMapping
+    NsScaleInfo                   o-- "1"    NsScalingAspect
+    NsScaleInfo                   o-- "1"    NsLevel
+    NsProfile                     o-- "1"    Nsd
+    NsProfile                     o-- "1"    NsDf
+    NsProfile                     o-- "0..1" NsLevel
+    NsProfile                     o-- "0..*" AffinityOrAntiAffinityGroup
+    Dependencies                  o-- "1..*" VnfProfile
+    Dependencies                  o-- "1..*" NsProfile
+    VirtualLinkDf                 *-- "0..1" QoS
+    Vnffgd                        o-- "1..*" Vnfd               
+    Vnffgd                        o-- "0..*" Pnfd               
+    Vnffgd                        o-- "1..*" NsVirtualLinkDesc  
+    Vnffgd                        o-- "1..*" CpdPool            
+    Vnffgd                        *-- "0..*" Nfpd               
+    Nfpd                          *-- "0..1" Rule
+    Nfpd                          o-- "1..*" PnfExtCpd          
+    Nfpd                          o-- "1..*" Sapd               
+    Nfpd                          o-- "1..*" VnfExtCpd          
+    CpdPool                       o-- "1..*" PnfExtCpd          
+    CpdPool                       o-- "1..*" Sapd               
+    CpdPool                       o-- "1..*" VnfExtCpd          
+    NsVirtualLinkDesc             *-- "1"    ConnectivityType
+    NsVirtualLinkDesc             *-- "1..*" VirtualLinkDf
+    NsVirtualLinkDesc             *-- "0..1" SecurityParameters 
+    Pnfd                          *-- "1..*" PnfExtCpd          
+    Pnfd                          *-- "0..1" SecurityParameters
+    NsScalingAspect               *-- "1..*" NsLevel
+    VnfToLevelMapping             o-- "1"    VnfProfile
+    VirtualLinkToLevelMapping     o-- "1"    VirtualLinkProfile
+    VirtualLinkToLevelMapping     o-- "1"    LinkBitrateRequirements
+    NsToLevelMapping              o-- "1"    NsProfile
+    Vnfd                          *-- "1..*" Vdu                
+    Vnfd                          *-- "0..*" VirtualComputeDesc
+    Vnfd                          *-- "0..*" VirtualStorageDesc
+    Vnfd                          *-- "0..*" VnfVirtualLinkDesc 
+    Vnfd                          *-- "1..*" VnfExtCpd          
+    Vnfd                          *-- "1..*" VnfDf
+    Vnfd                          *-- "0..1" VnfConfigurableProperties
+    Vnfd                          *-- "1"    VnfInfoModifiableAttributes
+    Vnfd                          *-- "0..*" LifeCycleManagementScript
+    Vnfd                          *-- "0..*" VnfdElementGroup   
+    Vnfd                          *-- "0..*" VnfIndicator
+    Vnfd                          *-- "0..*" Rule
+    VnfExtCpd                     o-- "0..1" VnfVirtualLinkDesc 
+    VnfExtCpd                     o-- "0..1" VduCpd             
+    VnfExtCpd                     *-- "0..*" VirtualNetworkInterfaceRequirements
+    AddressData                   *-- "0..1" L3AddressData
+    VnfdElementGroup              o-- "0..*" Vdu                
+    VnfdElementGroup              o-- "0..*" VnfVirtualLinkDesc 
+    VnfLcmOperationsConfiguration *-- "0..1" InstantiateVnfOpConfig
+    VnfLcmOperationsConfiguration *-- "0..1" ScaleVnfOpConfig
+    VnfLcmOperationsConfiguration *-- "0..1" ScaleVnfToLevelOpConfig
+    VnfLcmOperationsConfiguration *-- "0..1" HealVnfOpConfig
+    VnfLcmOperationsConfiguration *-- "0..1" TerminateVnfOpConfig
+    VnfLcmOperationsConfiguration *-- "0..1" OperateVnfOpConfig
+    Vdu                           *-- "1..*" VduCpd             
+    Vdu                           o-- "1"    VirtualComputeDesc
+    Vdu                           o-- "0..*" VirtualStorageDesc
+    Vdu                           *-- "0..1" SwImageDesc
+    Vdu                           *-- "0..*" VnfMonitoringParameter
+    Vdu                           *-- "1"    VnfcConfigurableProperties
+    VduCpd                        o-- "0..1" VnfVirtualLinkDesc 
+    VduCpd                        *-- "0..*" VirtualNetworkInterfaceRequirements
+    VduCpd                        *-- "0..*" AddressData
+    VnfVirtualLinkDesc            *-- "1..*" VirtualLinkDescFlavour
+    VnfVirtualLinkDesc            *-- "1"    ConnectivityType
+    VnfVirtualLinkDesc            *-- "0..*" VnfMonitoringParameter
+    VnfDf                         *-- "1..*" VduProfile
+    VnfDf                         *-- "0..*" VnfVirtualLinkProfile
+    VnfDf                         *-- "1..*" InstantiationLevel
+    VnfDf                         *-- "1"    VnfLcmOperationsConfiguration
+    VnfDf                         *-- "0..*" VnfAffinityOrAntiAffinityGroup
+    VnfDf                         *-- "0..*" VnfMonitoringParameter
+    VnfDf                         *-- "0..*" ScalingAspect
+    VduProfile                    o-- "1"    Vdu
+    VduProfile                    *-- "0..*" VnfLocalAffinityOrAntiAffinityRule
+    VduProfile                    o-- "0..*" VnfAffinityOrAntiAffinityGroup
+    VnfVirtualLinkProfile         o-- "1"    VnfVirtualLinkDesc
+    VnfVirtualLinkProfile         o-- "1"    VirtualLinkDescFlavour
+    VnfVirtualLinkProfile         *-- "0..*" VnfLocalAffinityOrAntiAffinityRule
+    VnfVirtualLinkProfile         o-- "0..*" VnfAffinityOrAntiAffinityGroup
+    VirtualLinkDescFlavour        *-- "0..1" VnfLinkBitrateRequirements
+    VirtualLinkDescFlavour        *-- "0..1" VnfQoS
+    InstantiationLevel            *-- "1..*" VduLevel
+    InstantiationLevel            *-- "0..*" ScaleInfo
+    VduLevel                      o-- "1"    Vdu
+    VirtualComputeDesc            *-- "0..*" RequestedAdditionalCapabilityData
+    VirtualComputeDesc            *-- "1"    VirtualMemoryData
+    VirtualComputeDesc            *-- "1"    VirtualCpuData
+    VirtualCpuData                *-- "0..1" VirtualCpuPinningData
+    VirtualStorageDesc            o-- "0..1" SwImageDesc
+    ScalingAspect                 o-- "0..1" VnfdElementGroup
+
+@enduml
+
+
