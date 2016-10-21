@@ -43,6 +43,7 @@
 
     <script src="{% static "topology3D/js/event.js" %}"></script>
     <script src="{% static "topology3D/js/graph_editor.js" %}"></script>
+    <script src="{% static "topology3D/js/etsi_graph_editor.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
 
@@ -64,7 +65,8 @@
     };
 
 
-    var graph_editor = new dreamer.GraphEditor({
+    var graph_editor = new dreamer.ManoGraphEditor();
+    graph_editor.init({
         width: window.innerWidth,
         height: window.innerHeight
     });
@@ -99,7 +101,6 @@
 
     function handleForce(el) {
         console.log("handleForce", JSON.stringify(el.id));
-        graph_editor.getProjectDescriptors();
         graph_editor.handleForce((el.id == "topology_play") ? true : false);
 
     }
