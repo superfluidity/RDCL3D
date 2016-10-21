@@ -42,7 +42,7 @@
 
 
     <script src="{% static "topology3D/js/event.js" %}"></script>
-    <script src="{% static "topology3D/js/graph_editor_d3js.js" %}"></script>
+    <script src="{% static "topology3D/js/graph_editor.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
 
@@ -55,7 +55,13 @@
     <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
 
     <script>
-    var level =  {"NSExample": {"vnf": ["vnf1", "vnf2", "vnf3"], "vnffg": ["vnffg1"], "vl": ["vl1", "vl2", "vl3", "vl4"]}};
+    var level = {
+        "NSExample": {
+            "vnf": ["vnf1", "vnf2", "vnf3"],
+            "vnffg": ["vnffg1"],
+            "vl": ["vl1", "vl2", "vl3", "vl4"]
+        }
+    };
 
 
     var graph_editor = new dreamer.GraphEditor({
@@ -68,8 +74,15 @@
         e.preventDefault();
         var nodetype = e.dataTransfer.getData("text/plain");
         console.log(e);
-        if(nodetype){
-            graph_editor.addNode({'id':  nodetype + "_" + Date.now(), 'info': { 'type': nodetype }, 'x': e.layerX, 'y': e.layerY });
+        if (nodetype) {
+            graph_editor.addNode({
+                'id': nodetype + "_" + Date.now(),
+                'info': {
+                    'type': nodetype
+                },
+                'x': e.layerX,
+                'y': e.layerY
+            });
         }
 
     }
@@ -84,21 +97,21 @@
         return false;
     }
 
-    function handleForce(el){
+    function handleForce(el) {
         console.log("handleForce", JSON.stringify(el.id));
-
-            graph_editor.handleForce((el.id == "topology_play")? true: false);
+        graph_editor.getProjectDescriptors();
+        graph_editor.handleForce((el.id == "topology_play") ? true : false);
 
     }
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
 
-         graph_editor.addListener("node_selected", function(a, args){
+        graph_editor.addListener("right_click_node", function(a, args) {
             //console.log("node_selected", a, args);
             $('#modal_edit_descriptor').modal('show');
-         });
-     });
+        });
+    });
     </script>
 {% endblock %}
 
