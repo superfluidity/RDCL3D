@@ -28,24 +28,30 @@ dreamer.GraphEditor = (function(global) {
      * Constructor
      */
     function GraphEditor(args) {
-        // log(JSON.stringify(args))
+        log("Constructor");
+        this.eventHandler = new EventHandler();
+        this.lastKeyDown = -1;
+        this._selected_node = undefined;
+        this.current_view_id = 'nsd'; //TODO change value
+        // graph data initailization
+        this.d3_graph = {
+            nodes: [],
+            links: []
+        };
+        /*
 
+        */
+    }
+
+    GraphEditor.prototype.init = function(args){
+        args = args || {}
         this.width = args.width || 500;
         this.height = args.height || 500;
-
         this.forceSimulationActive = true;
 
         var min_zoom = 0.1;
         var max_zoom = 7;
 
-
-        this.eventHandler = new EventHandler();
-
-        this.lastKeyDown = -1;
-
-        this._selected_node = undefined;
-
-        this.current_view_id = 'nsd';
 
         this.node_filter_cb = args.node_filter_cb || function(d) {
             //log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
@@ -106,11 +112,7 @@ dreamer.GraphEditor = (function(global) {
             }
         };
 
-        // graoh data initailization
-        this.d3_graph = {
-            nodes: [],
-            links: []
-        };
+
 
         this.force = d3.forceSimulation()
             .force("link", d3.forceLink().distance(100).strength(3).id(function(d, i) {
@@ -159,7 +161,6 @@ dreamer.GraphEditor = (function(global) {
             self.refresh();
             self.startForce();
         });
-
     }
 
     /**
