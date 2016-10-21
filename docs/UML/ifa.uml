@@ -3,214 +3,253 @@
 title IFA Class Diagram
 
 package "IFA 014" {
-    class Nsd {
-        [6.2.2.2]
+    package "NSD" {
+        class Nsd {
+            [6.2.2]
+        }
+        class Sapd {
+            [6.2.3]
+        }
+        class SecurityParameters {
+            [6.2.5]
+        }
+        class MonitoredData {
+            [6.2.6]
+        }
+        class VnfIndicatorData {
+            [6.2.7]
+        }
+        class MonitoringParameter {
+            [6.2.8]
+        }
     }
-    class Sapd {
-        [6.2.3]
+    package "NSDF" {
+        class NsDf {
+            [6.3.2]
+        }
+        class VnfProfile {
+            [6.3.3]
+        }
+        class VirtualLinkProfile {
+            [6.3.4]
+        }
+        class AffinityOrAntiAffinityGroup {
+            [6.3.5]
+        }
+        class PnfProfile {
+            [6.3.6]
+        }
+        class NsVirtualLinkConnectivity {
+            [6.3.7]
+        }
+        class LocalAffinityOrAntiAffinityRule {
+            [6.3.8]
+        }
+        class NsLevel {
+            [6.3.9]
+        }
+        class NsScaleInfo {
+            [6.3.10]
+        }
+        class NsProfile {
+            [6.3.11]
+        }
+        /' instantiation order '/
+        class Dependencies {
+            [6.3.12]
+        }
     }
-    class SecurityParameters {
-        [6.2.5]
+    package "VNFFGD" {
+        class Vnffgd {
+            [6.4.2]
+        }
+        class Nfpd {
+            [6.4.3]
+        }
+        class CpdPool {
+            [6.4.4]
+        }
     }
-    class MonitoredData {
-        [6.2.6]
+    package "NSVLD" {
+        class NsVirtualLinkDesc {
+            [6.5.2]
+        }
+        class ConnectivityType {
+            [6.5.3]
+        }
+        class VirtualLinkDf {
+            [6.5.4]
+        }
+        class LinkBitrateRequirements {
+            [6.5.5]
+        }
+        class QoS {
+            [6.5.6]
+        }
     }
-    class NsDf {
-        [6.3.2]
+    package "PNFD" {
+        class Pnfd {
+            [6.6.2]
+        }
+        class PnfExtCpd {
+            [6.6.4]
+        }
     }
-    class Vnffgd {
-        [6.4.2]
-    }
-    class Nfpd {
-        [6.4.3]
-    }
-    class CpdPool {
-        [6.4.4]
-    }
-    class NsVirtualLinkDesc {
-        [6.5.2]
-    }
-    class Pnfd {
-        [6.6.2]
-    }
-    class PnfExtCpd {
-        [6.6.4]
-    }
-    class VnfIndicatorData {
-        [6.2.7]
-    }
-    class MonitoringParameter {
-        [6.2.8]
-    }
-    class VnfProfile {
-        [6.3.3]
-    }
-    class VirtualLinkProfile {
-        [6.3.4]
-    }
-    class AffinityOrAntiAffinityGroup {
-        [6.3.5]
-    }
-    class PnfProfile {
-        [6.3.6]
-    }
-    class NsVirtualLinkConnectivity {
-        [6.3.7]
-    }
-    class LocalAffinityOrAntiAffinityRule {
-        [6.3.8]
-    }
-    class NsLevel {
-        [6.3.9]
-    }
-    class NsScaleInfo {
-        [6.3.10]
-    }
-    class NsProfile {
-        [6.3.11]
-    }
-    /' instantiation order '/
-    class Dependencies {
-        [6.3.12]
-    }
-    class ConnectivityType {
-        [6.5.3]
-    }
-    class VirtualLinkDf {
-        [6.5.4]
-    }
-    class LinkBitrateRequirements {
-        [6.5.5]
-    }
-    class QoS {
-        [6.5.6]
-    }
-    class NsScalingAspect {
-        [6.7.2]
-    }
-    class VnfToLevelMapping {
-        [6.7.4]
-    }
-    class VirtualLinkToLevelMapping {
-        [6.7.4]
-    }
-    class NsToLevelMapping {
-        [6.7.6]
+    package "Scaling" {
+        class NsScalingAspect {
+            [6.7.2]
+        }
+        class VnfToLevelMapping {
+            [6.7.4]
+        }
+        class VirtualLinkToLevelMapping {
+            [6.7.4]
+        }
+        class NsToLevelMapping {
+            [6.7.6]
+        }
     }
 }
+
 package "IFA 011" {
-    class Vnfd {
-        [7.1.2]
-    }
-    class VnfExtCpd {
-        [7.1.3]
+    package "VNFD" {
+        class Vnfd {
+            [7.1.2]
+        }
+        class VnfExtCpd {
+            [7.1.3.2]
+        }
+        class AddressData {
+            [7.1.3.3]
+        }
+        class L3AddressData {
+            [7.1.3.3]
+        }
     }
     class VnfdElementGroup {
         [7.1.4]
     }
-    class Vdu {
-        [7.1.6]
+    package "VNFLifecycle" {
+        class VnfLcmOperationsConfiguration {
+            [7.1.5.2]
+        }
+        class InstantiateVnfOpConfig {
+            [7.1.5.3]
+        }
+        class ScaleVnfOpConfig {
+            [7.1.5.4]
+        }
+        class ScaleVnfToLevelOpConfig {
+            [7.1.5.5]
+        }
+        class HealVnfOpConfig {
+            [7.1.5.6]
+        }
+        class TerminateVnfOpConfig {
+            [7.1.5.7]
+        }
+        class OperateVnfOpConfig {
+            [7.1.5.8]
+        }
     }
-    class VduCpd {
-        [7.1.6.4]
+    package "VDU" {
+        class Vdu {
+            [7.1.6.2]
+        }
+        class VduCpd {
+            [7.1.6.4]
+        }
+        class SwImageDesc {
+            [7.1.6.5]
+        }
+        class VirtualNetworkInterfaceRequirements {
+            [7.1.6.6]
+        }
+        class VnfcConfigurableProperties {
+            [7.1.6.7]
+        }
     }
-    class VnfIndicator {
+    package "VLD" {
+        class VnfVirtualLinkDesc {
+            [7.1.7.2]
+        }
+        class ConnectivityType {
+            [7.1.7.3]
+        }
     }
-    class AddressData {
-        [7.1.3.3]
+    package "VNFDF" {
+        class VnfDf {
+            [7.1.8.2]
+        }
+        class VduProfile {
+            [7.1.8.3]
+        }
+        class VnfVirtualLinkProfile {
+            [7.1.8.4]
+        }
+        class VirtualLinkDescFlavour {
+            [7.1.8.5]
+        }
+        class VnfLinkBitrateRequirements {
+            [7.1.8.6]
+        }
+        class InstantiationLevel {
+            [7.1.8.7]
+        }
+        class ScaleInfo {
+            [7.1.8.8]
+        }
+        class VduLevel {
+            [7.1.8.9]
+        }
+        class VnfQoS {
+            [7.1.8.10]
+        }
+        class VnfLocalAffinityOrAntiAffinityRule {
+            [7.1.8.11]
+        }
+        class VnfAffinityOrAntiAffinityGroup {
+            [7.1.8.12]
+        }
     }
-    class L3AddressData {
-        [7.1.3.3]
+    package "VResources" {
+        package "VCPU" {
+            class VirtualComputeDesc {
+                [7.1.9.2.2]
+            }
+            class VirtualCpuData {
+                [7.1.9.2.3]
+            }
+            class VirtualCpuPinningData {
+                [7.1.9.2.4]
+            }
+        }
+        package "VMEM" {
+            class VirtualMemoryData {
+                [7.1.9.3.2]
+            }
+        }
+        package "VStorage" {
+            class VirtualStorageDesc {
+                [7.1.9.4.2]
+            }
+        }
+        class RequestedAdditionalCapabilityData {
+            [7.1.9.5]
+        }
     }
-    class VnfLcmOperationsConfiguration {
-        [7.1.5.2]
+    package "Scaling" {
+        class ScalingAspect {
+            [7.1.10.2]
+        }
     }
-    class InstantiateVnfOpConfig {
-        [7.1.5.3]
-    }
-    class ScaleVnfOpConfig {
-        [7.1.5.4]
-    }
-    class ScaleVnfToLevelOpConfig {
-        [7.1.5.5]
-    }
-    class HealVnfOpConfig {
-        [7.1.5.6]
-    }
-    class TerminateVnfOpConfig {
-        [7.1.5.7]
-    }
-    class OperateVnfOpConfig {
-        [7.1.5.8]
-    }
-    class SwImageDesc {
-        [7.1.6.5]
-    }
-    class VirtualNetworkInterfaceRequirements {
-        [7.1.6.6]
-    }
-    class VnfcConfigurableProperties {
-        [7.1.6.7]
-    }
-    class VnfVirtualLinkDesc {
-        [7.1.7]
-    }
-    class ConnectivityType {
-        [7.1.7.3]
-    }
-    class VnfDf {
-        [7.1.8.2]
-    }
-    class VduProfile {
-        [7.1.8.3]
-    }
-    class VnfVirtualLinkProfile {
-        [7.1.8.4]
-    }
-    class VnfLinkBitrateRequirements {
-        [7.1.8.6]
-    }
-    class InstantiationLevel {
-        [7.1.8.7]
-    }
-    class ScaleInfo {
-        [7.1.8.8]
-    }
-    class VduLevel {
-        [7.1.8.9]
-    }
-    class VnfQoS {
-        [7.1.8.10]
-    }
-    class VnfLocalAffinityOrAntiAffinityRule {
-        [7.1.8.11]
-    }
-    class VnfAffinityOrAntiAffinityGroup {
-        [7.1.8.12]
-    }
-    class VirtualComputeDesc {
-        [7.1.9.2.2]
-    }
-    class VirtualCpuData {
-        [7.1.9.2.3]
-    }
-    class VirtualCpuPinningData {
-        [7.1.9.2.4]
-    }
-    class VirtualMemoryData {
-        [7.1.9.3.2]
-    }
-    class VirtualStorageDesc {
-        [7.1.9.4.2]
-    }
-    class RequestedAdditionalCapabilityData {
-        [7.1.9.6.2]
-    }
-    class ScalingAspect {
-        [7.1.10.2]
-    }
-    class VnfMonitoringParameter {
-        [7.1.11.3.2]
+    package "Monitoring" {
+        class VnfIndicator {
+            [7.1.11.2]
+        }
+        class VnfMonitoringParameter {
+            [7.1.11.3]
+        }
     }
     class VnfConfigurableProperties {
         [7.1.12.2]
@@ -220,9 +259,6 @@ package "IFA 011" {
     }
     class VnfInfoModifiableAttributes {
         [7.1.14.2]
-    }
-    class VirtualLinkDescFlavour {
-        [7.1.8.5]
     }
 }
 
