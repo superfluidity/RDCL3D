@@ -154,9 +154,9 @@
       "flavourKey": "stringkey",
       "vnfProfile":[
         {
-          "vnfProfileId": "vnfProfileId",
-          "vnfdId": "vnfdId",
-          "flavourId": "Reference to VnfDf",
+          "vnfProfileId": "vnfProfile1",
+          "vnfdId": "vnf1",
+          "flavourId": "vnfdf1",
           "instantiationLevel": "instantiationLevel",
           "minNumberOfInstances": 1,
           "maxNumberOfInstances": 3,
@@ -180,36 +180,98 @@
             {
               "virtualLinkProfileId": "virtualLinkProfileId1",
               "cpdId": [
-                "VnfExtCp11",
-                "sap1"
+                "VnfExtCp11"
               ]
             },
             {
               "virtualLinkProfileId": "virtualLinkProfileId2",
               "cpdId": [
-                "VnfExtCp13",
-                "VnfExtCp21",
-                "VnfExtCp31",
-                "sap1"
+                "VnfExtCp13"
               ]
             },
             {
               "virtualLinkProfileId": "virtualLinkProfileId3",
               "cpdId": [
-                "VnfExtCp12",
+                "VnfExtCp12"
+              ]
+            }
+          ]
+        },
+         {
+          "vnfProfileId": "vnfProfile2",
+          "vnfdId": "vnf2",
+          "flavourId": "vnfdf2",
+          "instantiationLevel": "instantiationLevel",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 3,
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "affinityOrAntiAffinity": "Enum",
+              "scope": "Enum"
+
+            }
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+            {
+              "groupId": "groupId",
+              "affinityOrAntiAffiinty": "Enum",
+              "scope": "Enum"
+            }
+
+          ],
+          "nsVirtualLinkConnectivity":[
+            {
+              "virtualLinkProfileId": "virtualLinkProfileId2",
+              "cpdId": [
+                "VnfExtCp21"
+              ]
+            }
+          ]
+        },
+         {
+          "vnfProfileId": "vnfProfile3",
+          "vnfdId": "vnf3",
+          "flavourId": "vnfdf3",
+          "instantiationLevel": "instantiationLevel",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 3,
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "affinityOrAntiAffinity": "Enum",
+              "scope": "Enum"
+
+            }
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+            {
+              "groupId": "groupId",
+              "affinityOrAntiAffiinty": "Enum",
+              "scope": "Enum"
+            }
+
+          ],
+          "nsVirtualLinkConnectivity":[
+            {
+              "virtualLinkProfileId": "virtualLinkProfileId2",
+              "cpdId": [
+                "VnfExtCp31"
+              ]
+            },
+            {
+              "virtualLinkProfileId": "virtualLinkProfileId3",
+              "cpdId": [
                 "VnfExtCp32"
               ]
             },
             {
               "virtualLinkProfileId": "virtualLinkProfileId4",
               "cpdId": [
-                "VnfExtCp33",
-                "sap2"
+                "VnfExtCp33"
               ]
             }
-
           ]
-
         }
       ],
       "virtualLinkProfile":[
