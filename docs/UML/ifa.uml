@@ -36,8 +36,6 @@ package "IFA 014" {
     class PnfExtCpd {
         [6.6.4]
     }
-    class Rule {
-    }
     class VnfIndicatorData {
         [6.2.7]
     }
@@ -235,7 +233,6 @@ package "IFA 011" {
     Nsd                           *-- "0..*" NsVirtualLinkDesc  
     Nsd                           *-- "0..*" Vnffgd             
     Nsd                           *-- "0..*" MonitoredData      
-    Nsd                           *-- "0..*" Rule
     Nsd                           *-- "1..*" NsDf               
     Nsd                           *-- "1"    SecurityParameters 
     Sapd                          o-- "0..1" NsVirtualLinkDesc  
@@ -288,7 +285,6 @@ package "IFA 011" {
     Vnffgd                        o-- "1..*" NsVirtualLinkDesc  
     Vnffgd                        o-- "1..*" CpdPool            
     Vnffgd                        *-- "0..*" Nfpd               
-    Nfpd                          *-- "0..1" Rule
     Nfpd                          o-- "1..*" PnfExtCpd          
     Nfpd                          o-- "1..*" Sapd               
     Nfpd                          o-- "1..*" VnfExtCpd          
@@ -316,7 +312,6 @@ package "IFA 011" {
     Vnfd                          *-- "0..*" LifeCycleManagementScript
     Vnfd                          *-- "0..*" VnfdElementGroup   
     Vnfd                          *-- "0..*" VnfIndicator
-    Vnfd                          *-- "0..*" Rule
     VnfExtCpd                     o-- "0..1" VnfVirtualLinkDesc 
     VnfExtCpd                     o-- "0..1" VduCpd             
     VnfExtCpd                     *-- "0..*" VirtualNetworkInterfaceRequirements
