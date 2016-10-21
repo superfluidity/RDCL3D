@@ -126,9 +126,6 @@ package "IFA 011" {
             [7.1.3.3]
         }
     }
-    class VnfdElementGroup {
-        [7.1.4]
-    }
     package "VNFLifecycle" {
         class VnfLcmOperationsConfiguration {
             [7.1.5.2]
@@ -213,34 +210,23 @@ package "IFA 011" {
         }
     }
     package "VResources" {
-        package "VCPU" {
-            class VirtualComputeDesc {
-                [7.1.9.2.2]
-            }
-            class VirtualCpuData {
-                [7.1.9.2.3]
-            }
-            class VirtualCpuPinningData {
-                [7.1.9.2.4]
-            }
+        class VirtualComputeDesc {
+            [7.1.9.2.2]
         }
-        package "VMEM" {
-            class VirtualMemoryData {
-                [7.1.9.3.2]
-            }
+        class VirtualCpuData {
+            [7.1.9.2.3]
         }
-        package "VStorage" {
-            class VirtualStorageDesc {
-                [7.1.9.4.2]
-            }
+        class VirtualCpuPinningData {
+            [7.1.9.2.4]
+        }
+        class VirtualMemoryData {
+            [7.1.9.3.2]
+        }
+        class VirtualStorageDesc {
+            [7.1.9.4.2]
         }
         class RequestedAdditionalCapabilityData {
             [7.1.9.5]
-        }
-    }
-    package "Scaling" {
-        class ScalingAspect {
-            [7.1.10.2]
         }
     }
     package "Monitoring" {
@@ -250,6 +236,12 @@ package "IFA 011" {
         class VnfMonitoringParameter {
             [7.1.11.3]
         }
+    }
+    class VnfdElementGroup {
+        [7.1.4]
+    }
+    class ScalingAspect {
+        [7.1.10.2]
     }
     class VnfConfigurableProperties {
         [7.1.12.2]
