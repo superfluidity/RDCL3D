@@ -103,7 +103,7 @@ package "IFA 014" {
             [6.7.4]
         }
         class VirtualLinkToLevelMapping {
-            [6.7.4]
+            [6.7.5]
         }
         class NsToLevelMapping {
             [6.7.6]
