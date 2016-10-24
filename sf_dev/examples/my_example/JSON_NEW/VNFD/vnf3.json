@@ -1,50 +1,25 @@
-{
-  "vnfdId": "vnf2",
+{  "vnfdId": "vnf3",
   "vnfProvider": "netgroup",
-  "vnfProductName": "vnf2",
+  "vnfProductName": "vnf3",
   "vnfSoftwareVersion": "0.1",
   "vnfdVersion": "0.1",
   "vdu":[
     {
-      "vduId":"vdu21",
-      "name": "vdu21",
+      "vduId":"vdu31",
+      "name": "vdu31",
         "intCpd":[
         {
-          "cpdId": "VduCp21",
+          "cpdId": "VduCp31",
           "layerProtocol": "E-LAN",
           "cpRole": "leaf",
-          "intVirtualLinkDesc": "intVirtualLink21"
-        }
-      ]
-      },
-    {
-      "vduId":"vdu22",
-      "name": "vdu22",
-        "intCpd":[
-        {
-          "cpdId": "VduCp22",
-          "layerProtocol": "E-LAN",
-          "cpRole": "leaf",
-          "intVirtualLinkDesc": "intVirtualLink21"
-        }
-      ]
-      },
-     {
-      "vduId":"vdu23",
-      "name": "vdu23",
-        "intCpd":[
-        {
-          "cpdId": "VduCp23",
-          "layerProtocol": "E-LAN",
-          "cpRole": "leaf",
-          "intVirtualLinkDesc": "intVirtualLink21"
+          "intVirtualLinkDesc": "intVirtualLink31"
         }
       ]
       }
   ],
   "intVirtualLinkDesc":[
     {
-      "virtualLinkDescId": "intVirtualLink21",
+      "virtualLinkDescId": "intVirtualLink31",
       "virtualLinkDescFlavour": [
         {
               "flavourId": "flavourId",
@@ -82,51 +57,34 @@
   ],
   "vnfExtCpd":[
     {
-      "cpdId": "VnfExtCp21",
+      "cpdId": "VnfExtCp31",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp32",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp33",
       "layerProtocol": "E-LAN",
       "cpRole": "leaf",
       "description": "description",
       "intVirtualLinkDesc": "intVirtualLink11"
     }
   ],
-  ,
   "deploymentFlavour":[
     {
-      "flavourId": "vnfdf2",
+      "flavourId": "vnfdf3",
       "description": "description",
       "vduProfile":[
         {
-          "vduId": "vdu21",
-          "minNumberOfInstances": 1,
-          "maxNumberOfInstances": 5,
-          "localAffinityOrAntiAffinityRule":[
-            {
-              "type": "Enum",
-              "scope": "enum"
-            }
-
-          ],
-          "affinityOrAntiAffinityGroupId":[
-            "affinityOrAntiAffinityGroupId"
-          ]
-        },
-        {
-          "vduId": "vdu22",
-          "minNumberOfInstances": 1,
-          "maxNumberOfInstances": 5,
-          "localAffinityOrAntiAffinityRule":[
-            {
-              "type": "Enum",
-              "scope": "enum"
-            }
-
-          ],
-          "affinityOrAntiAffinityGroupId":[
-            "affinityOrAntiAffinityGroupId"
-          ]
-        },
-        {
-          "vduId": "vdu23",
+          "vduId": "vdu31",
           "minNumberOfInstances": 1,
           "maxNumberOfInstances": 5,
           "localAffinityOrAntiAffinityRule":[
@@ -143,7 +101,7 @@
       ],
       "virtualLinkProfile":[
         {
-          "vnfVirtualLinkDescId": "intVirtualLink21",
+          "vnfVirtualLinkDescId": "intVirtualLink31",
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
             {

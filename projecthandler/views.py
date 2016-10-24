@@ -29,7 +29,7 @@ def create_new_project(request):
         info = request.POST.get('info', '')
         try:
             ##FIXME da rimuovere usata solo per develop
-            data_project = emparser.importproject('sf_dev/examples/my_example/JSON',
+            data_project = emparser.importproject('sf_dev/examples/my_example/JSON_NEW',
                                              'json')
             project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
 

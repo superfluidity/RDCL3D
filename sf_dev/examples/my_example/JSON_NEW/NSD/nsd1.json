@@ -15,6 +15,7 @@
       "layerProtocol": "E-LAN",
       "cpRole": "root",
       "description": "description",
+      "nsVirtualLinkDescId": "vl1",
       "sapAddressAssignment": true,
       "associatedCpdId": "VnfExtCp11"
     },
@@ -24,7 +25,8 @@
       "cpRole": "root",
       "description": "description",
       "sapAddressAssignment": true,
-       "associatedCpdId": "VnfExtCp33"
+      "nsVirtualLinkDescId": "vl4",
+      "associatedCpdId": "VnfExtCp33"
     }
 
   ],
@@ -276,7 +278,7 @@
       ],
       "virtualLinkProfile":[
         {
-          "virtualLinkProfileId": "virtualLinkProfile1",
+          "virtualLinkProfileId": "virtualLinkProfileId1",
           "virtualLinkDescId": "vl1",
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
@@ -293,7 +295,7 @@
 
         },
           {
-          "virtualLinkProfileId": "virtualLinkProfile2",
+          "virtualLinkProfileId": "virtualLinkProfileId2",
           "virtualLinkDescId": "vl2",
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
@@ -310,7 +312,7 @@
 
         },
           {
-          "virtualLinkProfileId": "virtualLinkProfile3",
+          "virtualLinkProfileId": "virtualLinkProfileId3",
           "virtualLinkDescId": "vl3",
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
@@ -327,7 +329,7 @@
 
         },
           {
-          "virtualLinkProfileId": "virtualLinkProfile4",
+          "virtualLinkProfileId": "virtualLinkProfileId4",
           "virtualLinkDescId": "vl4",
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[

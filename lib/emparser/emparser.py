@@ -15,43 +15,25 @@ log = logging.getLogger('EmpLogger')
 def importproject(dir_project, type):
     project = {
         'nsd': {},
-        'vld': {},
-        'vnfd': {},
-        'vnffgd': {}
+        'vnfd': {}
     }
     my_util = Util()
-    VLD_PATH = dir_project+'/VLD'
+    NSD_PATH = dir_project+'/NSD'
     VNFD_PATH = dir_project+'/VNFD'
-    VNFFGD_PATH = dir_project + '/VNFFGD'
 
     #import network service description
     #in root directory file name nsd.json / nsd.yaml
-    for nsd_filename in glob.glob(os.path.join(dir_project, '*.json')):
+    for nsd_filename in glob.glob(os.path.join(NSD_PATH, '*.json')):
         print nsd_filename
         nsd_object = my_util.loadjsonfile(nsd_filename)
-        project['nsd'][nsd_object['name']] = nsd_object
-
-    #import virtual link descriptions
-    #each file in root_path/VLD/*.json
-
-    for vld_filename in glob.glob(os.path.join(VLD_PATH, '*.json')):
-        #log.debug(vld_filename)
-        vld_object = my_util.loadjsonfile(vld_filename)
-        project['vld'][vld_object['id']]= vld_object
+        project['nsd'][nsd_object['nsdIdentifier']] = nsd_object
 
     # import vnf descriptions
     # each file in root_path/VFND/*.json
     for vnfd_filename in glob.glob(os.path.join(VNFD_PATH, '*.json')):
         log.debug(vnfd_filename)
         vnfd_object = my_util.loadjsonfile(vnfd_filename)
-        project['vnfd'][vnfd_object['id']] = vnfd_object
-
-    # import vnffgd descriptions
-    # each file in root_path/VFND/*.json
-    for vnffgd_filename in glob.glob(os.path.join(VNFFGD_PATH, '*.json')):
-        log.debug(vnffgd_filename)
-        vnffgd_object = my_util.loadjsonfile(vnffgd_filename)
-        project['vnffgd'][vnffgd_object['id']] = vnffgd_object
+        project['vnfd'][vnfd_object['vnfdId']] = vnfd_object
 
     #log.debug('\n' + json.dumps(project))
     return project

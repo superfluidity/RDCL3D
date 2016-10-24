@@ -59,7 +59,7 @@ class Util:
 
             return json_object
         except Exception as e:
-            self.log.error('Exception loadJsonFile')
+            self.log.error('Exception loadJsonFile', e)
         raise
 
     def writejsonfile(self, name, json_object):
