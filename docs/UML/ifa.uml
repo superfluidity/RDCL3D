@@ -3,252 +3,591 @@
 title IFA Class Diagram
 
 package "IFA 014" {
+
     package "NSD" {
+
+        /' The NSD information element is a deployment template whose instances
+        are used by the NFVO for the lifecycle management of NSs. '/
         class Nsd {
             [6.2.2]
         }
+
+        /' The SAPD information element specifies the information used to
+        instantiate the service access points of an NS. '/
         class Sapd {
             [6.2.3]
         }
+
+        /' The SecurityParameters information element contains the signature of
+        a NSD, VLD, PNFD or VNFFGD instance together with information required
+        to validate the signature. '/
         class SecurityParameters {
             [6.2.5]
         }
+
+        /' The MonitoredData information element identifies information to be
+        monitored during the lifetime of a network service instance. '/
         class MonitoredData {
             [6.2.6]
         }
+
+        /' The VnfIndicatorData information identifies a VNF indicator in a
+        VNFD. [It contains a reference to a Vnfd and a reference to a
+        VnfIndicator] '/
         class VnfIndicatorData {
             [6.2.7]
         }
+
+        /' The MonitoringParameter information specifies a virtualised resource
+        related performance metric to be monitored. '/
         class MonitoringParameter {
             [6.2.8]
         }
     }
+
     package "NSDF" {
+
+        /' The NsDf information element specifies the properties of a variant
+        of an NS. '/
         class NsDf {
             [6.3.2]
         }
+
+        /' The VnfProfile information element specifies a profile for
+        instantiating VNFs of a particular NS DF according to a specific VNFD
+        and VNF DF. '/
         class VnfProfile {
             [6.3.3]
         }
+
+        /' The VirtualLinkProfile information element specifies a profile for
+        instantiating VLs of a particular NS DF according to a specific VLD and
+        VL DF.  '/
         class VirtualLinkProfile {
             [6.3.4]
         }
+
+        /'The AffinityOrAntiAffinityGroup describes the affinity or
+        anti-affinity relationship applicable between the VNF instances created
+        using different VnfProfiles, the Virtual Link instances created using
+        different VlProfiles or the nested NS instances created using different
+        NsProfiles.  '/
         class AffinityOrAntiAffinityGroup {
             [6.3.5]
         }
+
+        /' The PnfProfile information element describes additional data for a
+        given PNF instance used in a DF.  '/
         class PnfProfile {
             [6.3.6]
         }
+
+        /' The NsVirtuallLinkConnectivity information element describes
+        connection information between a connection point and a NS virtual
+        Link.  '/
         class NsVirtualLinkConnectivity {
             [6.3.7]
         }
+
+        /' The LocalAffinityOrAntiAffinityRule information element specifies
+        affinity or anti-affinity rules applicable to VNFs or VLs instantiated
+        from the same VNFD or VLD. '/
         class LocalAffinityOrAntiAffinityRule {
             [6.3.8]
         }
+
+        /' The NsLevel information element describes the details of an NS
+        level. An NS level consists of a list of involved entities, i.e. VNFs,
+        VLs and/or nested NSs. For each involved VNF/nested NS, the number of
+        instances required by the NS level is specified. For each involved VL,
+        the bitrate requirements corresponding to the NS level are specified.
+
+        NS levels shall be used in the context of NS instantiation and in this
+        case they are referred to as NS instantiation levels.  Every VNF, VL
+        and nested NS whose descriptor is referenced by the NS DF shall be
+        involved in an NS instantiation level of the parent NS. If no instances
+        of a given VNF/nested NS have to be deployed at NS instantiation time,
+        the numberOfInstances attribute in the corresponding
+        VnfToLevelMapping/NsToLevelMapping information element shall be set to
+        0.
+
+        NS levels may be used in the context of NS scaling and in this case
+        they are referred to as NS scale levels. Only a subset of the VNFs, VLs
+        and nested NSs whose descriptor is referenced by the NS DF may be
+        involved in an NS scale level of the parent NS. '/
         class NsLevel {
             [6.3.9]
         }
+
+        /' The NsScaleInfo information element represents a scale level for a
+        particular scaling aspect. '/
         class NsScaleInfo {
             [6.3.10]
         }
+
+        /' The NsProfile information element specifies the profile to be used
+        for a nested NS. '/
         class NsProfile {
             [6.3.11]
         }
-        /' instantiation order '/
+
+        /' The Dependencies information element provides indications on the
+        order in which VNFs associated to different VNF Profiles and/or nested
+        NSs associated to different NS Profiles are to be instantiated. '/
         class Dependencies {
             [6.3.12]
         }
+
     }
+
     package "VNFFGD" {
+
+        /' The Vnffgd information element specifies a topology of connectivity
+        of a NS and optionally forwarding rules applicable to the traffic
+        conveyed over this topology.  '/
         class Vnffgd {
             [6.4.2]
         }
+
+        /' The Nfpd information element associates traffic flow criteria to a
+        list of descriptors associated to the connection points and service
+        access points to be visited by traffic flows matching these criteria.
+        '/
         class Nfpd {
             [6.4.3]
         }
+
+        /' The CpdPool information element specifies a pool of descriptors of
+        connection points and service access points.  '/
         class CpdPool {
             [6.4.4]
         }
+
     }
+
     package "NSVLD" {
+
+        /' The NsVirtualLinkDesc information element provides general
+        information enabling the instantiation of virtual links.'/
         class NsVirtualLinkDesc {
             [6.5.2]
         }
+
+        /' The ConnectivityType information element specifies the protocol
+        exposed by a VL and the flow pattern supported by the VL. '/
         class ConnectivityType {
             [6.5.3]
         }
+
+        /' The VirtualLinkDf information element specifies properties for
+        instantiating a VL according to a specific flavour.  '/
         class VirtualLinkDf {
             [6.5.4]
         }
+
+        /'The LinkBitrateRequirements information element describes the
+        requirements in terms of bitrate for a VL.  '/
         class LinkBitrateRequirements {
             [6.5.5]
         }
+
+        /' The QoS information element specifies quality of service parameters
+        applicable to a VL.  '/
         class QoS {
             [6.5.6]
         }
+
     }
+
     package "PNFD" {
+
+        /'The Pnfd information element is a deployment template enabling
+        on-boarding PNFs and referencing them from an NSD. It focuses on
+        connectivity aspects only.  '/
         class Pnfd {
             [6.6.2]
         }
+
+        /' A PnfExtCpd is a type of Cpd and describes the characteristics of an
+        external interface, a.k.an external CP, where to connect the PNF to a
+        VL. '/
         class PnfExtCpd {
             [6.6.4]
         }
+
     }
+
     package "Scaling" {
+
+        /' The NsScalingAspect information element describes the details of an
+        NS scaling aspect. An NS scaling aspect is an abstraction representing
+        a particular "dimension" or "property" along which a given NS can be
+        scaled. Defining NS levels, in this context also known as NS scale
+        levels, within an NS scaling aspect allows to scale NS instances "by
+        steps", i.e. to increase/decrease their capacity in a discrete manner
+        moving from one NS scale level to another. Scaling by a single step
+        does not imply that exactly one instance of each entity involved in the
+        NS scale level is created or removed.  '/
         class NsScalingAspect {
             [6.7.2]
         }
+
+        /' The VnfToLevelMapping information element specifies the profile to
+        be used for a VNF involved in a given NS level and the required number
+        of instances.  '/
         class VnfToLevelMapping {
             [6.7.4]
         }
+
+        /' The VirtualLinkToLevelMapping information element specifies the
+        profile to be used for a VL involved in a given NS level and bitrate
+        requirements.  '/
         class VirtualLinkToLevelMapping {
             [6.7.5]
         }
+
+        /' The NsToLevelMapping information element specifies the profile to be
+        used for a nested NS involved in a given NS level and the required
+        number of instances.  '/
         class NsToLevelMapping {
             [6.7.6]
         }
+
     }
+
 }
 
 package "IFA 011" {
+
     package "VNFD" {
+
+        /' A VNFD is a deployment template which describes a VNF in terms of
+        deployment and operational behaviour requirements. It also contains
+        connectivity, interface and virtualised resource requirements.  '/
         class Vnfd {
             [7.1.2]
         }
+
+        /' A VnfExtCpd is a type of Cpd and describes an external interface,
+        a.k.a external CP, exposed by this VNF enabling connection with a VL.
+
+        When the VnfExtCpd is mapped to a VduCpd, the values for the attributes
+        type, subType and description shall be identical for both elements. '/
         class VnfExtCpd {
             [7.1.3.2]
         }
+
+        /' The AddressData information element supports providing information
+        about the addressing scheme and parameters applicable to a CP.  '/
         class AddressData {
             [7.1.3.3]
         }
+
+        /' The L3AddressData information element supports providing information
+        about Layer 3 level addressing scheme and parameters applicable to a
+        CP.  '/
         class L3AddressData {
             [7.1.3.3]
         }
+
     }
+
+    /' This clause defines information elements which represent information
+    to configure lifecycle management operations as specified in ETSI GS
+    NFV-IFA 007 [i.3].  '/
     package "VNFLifecycle" {
+
+        /' This information element is a container for all attributes that
+        affect the invocation of the VNF Lifecycle Management operations,
+        structured by operation.  '/
         class VnfLcmOperationsConfiguration {
             [7.1.5.2]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the InstantiateVnf operation.  '/
         class InstantiateVnfOpConfig {
             [7.1.5.3]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the ScaleVnf operation.  '/
         class ScaleVnfOpConfig {
             [7.1.5.4]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the ScaleVnfToLevel operation.  '/
         class ScaleVnfToLevelOpConfig {
             [7.1.5.5]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the HealVnf operation.  '/
         class HealVnfOpConfig {
             [7.1.5.6]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the TerminateVnf operation.  '/
         class TerminateVnfOpConfig {
             [7.1.5.7]
         }
+
+        /' This information element defines attributes that affect the
+        invocation of the OperateVnf operation.  '/
         class OperateVnfOpConfig {
             [7.1.5.8]
         }
+
     }
+
     package "VDU" {
+
+        /' The Virtualisation Deployment Unit (VDU) is a construct supporting
+        the description of the deployment and operational behaviour of a VNFC.
+
+        A VNFC instance created based on the VDU maps to a single
+        virtualisation container (e.g. a VM).  '/
         class Vdu {
             [7.1.6.2]
         }
+
+        /' A VduCpd information element is a type of Cpd and describes network
+        connectivity between a VNFC instance (based on this VDU) and an
+        internal VL.  '/
         class VduCpd {
             [7.1.6.4]
         }
+
+        /' This information element describes requested additional capability
+        for a particular VDU. Such a capability may be for acceleration or
+        specific tasks.  '/
         class SwImageDesc {
             [7.1.6.5]
         }
+
+        /' This information element specifies requirements on a virtual network
+        interface.  '/
         class VirtualNetworkInterfaceRequirements {
             [7.1.6.6]
         }
+
+        /' This information element defines the configurable properties of a
+        VNFC. For a VNFC instance, the value of these properties can be
+        modified through the VNFM.  '/
         class VnfcConfigurableProperties {
             [7.1.6.7]
         }
     }
     package "VLD" {
+
+        /' The VnfVirtualLinkDesc information element supports providing
+        information about an internal VNF VL.  '/
         class VnfVirtualLinkDesc {
             [7.1.7.2]
         }
+
+        /' The contents of a ConnectivityType type shall comply with the
+        indications provided in table 7.1.7.3.2-1:
+
+        layerProtocol: Identifies the protocol this VL gives access to
+        (Ethernet, MPLS, ODU2, IPV4, IPV6, Pseudo-Wire).
+
+        flowPattern: Identifies the flow pattern of the connectivity (Line,
+        Tree, Mesh).
+        '/
         class ConnectivityType {
             [7.1.7.3]
         }
     }
     package "VNFDF" {
+
+        /' The VnfDf describes a specific deployment version of a VNF.  '/
         class VnfDf {
             [7.1.8.2]
         }
+
+        /' The VduProfile describes additional instantiation data for a given
+        VDU used in a DF.  '/
         class VduProfile {
             [7.1.8.3]
         }
+
+        /' The VirtualLinkProfile describes additional instantiation data for a
+        given VL used in a DF.  '/
         class VnfVirtualLinkProfile {
             [7.1.8.4]
         }
+
+        /' The VirtualLinkDescFlavour describes additional instantiation data
+        for a given internal VL used in a DF.  '/
         class VirtualLinkDescFlavour {
             [7.1.8.5]
         }
+
+        /' The LinkBitrateRequirements information element describes the
+        requirements in terms of bitrate for a VL.  '/
         class VnfLinkBitrateRequirements {
             [7.1.8.6]
         }
+
+        /' The InstantiationLevel information element describes a given level
+        of resources to be instantiated within a DF in term of the number of
+        VNFC instances to be created from each VDU.
+
+        All the VDUs referenced in the level shall be part of the corresponding
+        DF and their number shall be within the range (min/max) for this DF.
+        '/
         class InstantiationLevel {
             [7.1.8.7]
         }
+
+        /' The ScaleInfo information element represents a scale level for a
+        particular scaling aspect. '/
         class ScaleInfo {
             [7.1.8.8]
         }
+
+        /' The VduLevel information element indicates for a given VDU in a
+        given level the number of instances to deploy.  '/
         class VduLevel {
             [7.1.8.9]
         }
+
+        /' The QoS information element describes QoS data for a given VL used
+        in a DF. '/
         class VnfQoS {
             [7.1.8.10]
         }
+
+        /' The LocalAffinityOrAntiAffinityRule describes the affinity or
+        anti-affinity rule applicable between the virtualization containers to
+        be created based on a particular VDU, or between internal VLs to be
+        created based on a particular VnfVirtualLinkDesc.
+
+        Per VNF, the affinity/anti-affinity rules defined using this
+        information element, using the AffinityOrAntiAffinityGroup information
+        element, and using the placement constraints in the
+        GrantLifecycleOperation as defined in ETSI GS NFV-IFA 007 [i.3] should
+        be conflict-free. In case of conflicts, the placement constraints in
+        the GrantLifecycleOperation shall take precedence.
+        '/
         class VnfLocalAffinityOrAntiAffinityRule {
             [7.1.8.11]
         }
+
+        /' The AffinityOrAntiAffinityGroup describes the affinity or
+        anti-affinity relationship applicable between the virtualization
+        containers to be created based on different VDUs, or between internal
+        VLs to be created based on different VnfVirtualLinkDesc(s).
+
+        Per VNF, the affinity/anti-affinity rules defined using this
+        information element, using the LocalAffinityOrAntiAffinityRule
+        information element, and using the placement constraints in the
+        GrantLifecycleOperation as defined in ETSI GS NFV-IFA 007 [i.3] should
+        be conflict-free. In case of conflicts, the placement constraints in
+        the GrantLifecycleOperation shall take precedence. '/
         class VnfAffinityOrAntiAffinityGroup {
             [7.1.8.12]
         }
     }
+
+    /' The clauses below define the information elements related to Virtual
+    CPU.  '/
     package "VResources" {
+
+        /' The VirtualComputeDesc information element supports the
+        specification of requirements related to virtual compute resources. 
+
+        If the VIM supports the concept of virtual compute resource flavours,
+        it is assumed that a flavour is selected or created based on the
+        information in the VirtualComputeDesc information element. '/
         class VirtualComputeDesc {
             [7.1.9.2.2]
         }
+
+        /' The VirtualCpuData information element supports the specification of
+        requirements related to virtual CPU(s) of a virtual compute resource. '/
         class VirtualCpuData {
             [7.1.9.2.3]
         }
+
+        /' The VirtualCpuPinningData information element supports the
+        specification of requirements related to the virtual CPU pinning
+        configuration of a virtual compute resource. '/
         class VirtualCpuPinningData {
             [7.1.9.2.4]
         }
+
+        /' The VirtualMemoryData information element supports the specification
+        of requirements related to virtual memory of a virtual compute
+        resource. '/
         class VirtualMemoryData {
             [7.1.9.3.2]
         }
+
+
+        /' The VirtualStorageDesc information element supports the
+        specifications of requirements related to virtual storage resources. '/
         class VirtualStorageDesc {
             [7.1.9.4.2]
         }
+
+        /' This information element describes requested additional capability
+        for a particular VDU. Such a capability may be for acceleration or
+        specific tasks. '/
         class RequestedAdditionalCapabilityData {
             [7.1.9.5]
         }
     }
     package "Monitoring" {
+
+        /' The VnfIndicator information element defines the indicator the VNF
+        supports. '/
         class VnfIndicator {
             [7.1.11.2]
         }
+
+        /' This information element specifies the virtualised resource related
+        performance metrics to be monitored. '/
         class VnfMonitoringParameter {
             [7.1.11.3]
         }
     }
+
+    /' A VNFD Element Group is a mechanism for associating elements of a VNFD
+    (Vdus and VnfVirtualLinkDesc(s)) for a certain purpose, for example,
+    scaling aspects.
+    A given element can belong to multiple groups.
+    '/
     class VnfdElementGroup {
         [7.1.4]
     }
+
+
+    /' The ScalingAspect information element describes the details of an aspect
+    used for horizontal scaling. '/
     class ScalingAspect {
         [7.1.10.2]
     }
+
+    /' This information element defines the configurable properties of a VNF
+    (e.g. related to auto scaling and auto healing).  For a VNF instance, the
+    value of these properties can be modified by the VNFM. '/
     class VnfConfigurableProperties {
         [7.1.12.2]
     }
+
+    /' Clause 7.1.13.2 defines the information elements related to the
+    lifecycle management script for the VNF. '/
     class LifeCycleManagementScript {
         [7.1.13.2]
     }
+
+    /' This information element defines the VNF-specific extension and metadata
+    attributes of the VnfInfo that are writeable via the ModifyVnfInfo
+    operation. '/
     class VnfInfoModifiableAttributes {
         [7.1.14.2]
     }
