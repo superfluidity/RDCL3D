@@ -34,9 +34,10 @@ class UMLClass(UMLElement):
 
     def toNotation(self):
         "convert this class into an ElementTree object for the notation XML"
+        self.shapeeid = randomeid()
         k = ET.Element('children', attrib={
             'xmi:type': "notation:Shape",
-            'xmi:id': randomeid(),
+            'xmi:id': self.shapeeid,
             'type': "Class_Shape"
             })
 
@@ -229,8 +230,8 @@ class UMLAssociation(UMLElement):
             'xmi:type': "notation:Connector",
             'xmi:id': randomeid(),
             'type': "Association_Edge",
-            'source': self.link[0].eid,
-            'target': self.link[1].eid
+            'source': self.link[0].shapeeid, #ref to the shape element
+            'target': self.link[1].shapeeid  #ref to the shape element
             })
 
         c = ET.SubElement(v, 'children', attrib={
