@@ -86,7 +86,7 @@
       "layerProtocol": "E-LAN",
       "cpRole": "leaf",
       "description": "description",
-      "intVirtualLinkDesc": "intVirtualLink11"
+      "intVirtualLinkDesc": "intVirtualLink21"
     }
   ],
   "deploymentFlavour":[

@@ -171,12 +171,21 @@ dreamer.GraphEditor = (function(global) {
     GraphEditor.prototype.handleForce = function(start) {
         if (start) {
 
+            this.node.each(function(d) {
+                d.fx= null;
+                d.fy= null;
+            });
             this.force.restart();
-            this.forceSimulationActive = true
+            this.forceSimulationActive = true;
+
         } else {
 
             this.force.stop();
             this.forceSimulationActive = false;
+            this.node.each(function(d) {
+                d.fx= d.x;
+                d.fy= d.y;
+            });
 
         }
     };
@@ -439,8 +448,15 @@ dreamer.GraphEditor = (function(global) {
         function dragended(d) {
             d.draggednode = false;
             if (!d3.event.active) self.force.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
+             if(self.forceSimulationActive){
+                d.fx = null;
+                d.fy = null;
+            }else{
+                d.fx = d.x;
+                d.fy = d.y;
+                self.force.stop();
+                self.forceSimulationActive = false;
+            }
         }
 
     };

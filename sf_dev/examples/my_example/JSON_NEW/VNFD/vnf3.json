@@ -61,21 +61,21 @@
       "layerProtocol": "E-LAN",
       "cpRole": "leaf",
       "description": "description",
-      "intVirtualLinkDesc": "intVirtualLink11"
+      "intVirtualLinkDesc": "intVirtualLink31"
     },
     {
       "cpdId": "VnfExtCp32",
       "layerProtocol": "E-LAN",
       "cpRole": "leaf",
       "description": "description",
-      "intVirtualLinkDesc": "intVirtualLink11"
+      "intVirtualLinkDesc": "intVirtualLink31"
     },
     {
       "cpdId": "VnfExtCp33",
       "layerProtocol": "E-LAN",
       "cpRole": "leaf",
       "description": "description",
-      "intVirtualLinkDesc": "intVirtualLink11"
+      "intVirtualLinkDesc": "intVirtualLink31"
     }
   ],
   "deploymentFlavour":[

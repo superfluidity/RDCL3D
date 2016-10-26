@@ -34,18 +34,17 @@
     <div class="col-md-12">
     <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-        <li class="active" id="form_li"><a href="#form" data-toggle="tab"><i class="fa fa-television"></i> Form View</a></li>
-        <li id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-file-code-o"></i> YAML</a></li>
+        <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-file-code-o"></i> YAML</a></li>
         <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-file-code-o"></i> JSON</a></li>
+        <li id="form_li"><a href="#form" data-toggle="tab"><i class="fa fa-television"></i> Form View</a></li>
+
         <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="update()"><i class="fa fa-save"></i> Confirm</button></li>
     </ul>
     <div class="tab-content">
 
-        <div class="active tab-pane" id="form">
-            {% include "descriptor_form_view.html" %}
-        </div>
+
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="yaml">
+        <div class="active tab-pane" id="yaml">
 			<textarea id="code_editor_yaml">
             </textarea>
         </div>
@@ -55,6 +54,9 @@
 			<textarea id="code_editor_json">
 
             </textarea>
+        </div>
+        <div class="tab-pane" id="form">
+            {% include "descriptor_form_view.html" %}
         </div>
         <!-- /.tab-pane -->
     </div>

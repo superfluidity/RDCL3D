@@ -169,28 +169,6 @@ class T3DUtil:
         return graph_object
 
     def create_vnf_views(self, vnfd, graph_object):
-        for vdu in vnfd['vdu']:
-            node = copy.deepcopy(self.node_t3d_base)
-            node['id'] =vdu['vduId']
-            node['descriptor'] = vdu
-            node['info']['type'] = 'vnf_vdu'
-            node['info']['property']['role'] = 'square'
-            graph_object['vertices'].append(node)
-            for cpd in vdu['intCpd']:
-                node = copy.deepcopy(self.node_t3d_base)
-                node['id'] = cpd['cpdId']
-                node['descriptor'] = cpd
-                node['info']['type'] = 'vnf_cp'
-                node['info']['property']['role'] = 'circle'
-                graph_object['vertices'].append(node)
-                edge_obj = {
-                    'source': cpd['cpdId'],
-                    'target': cpd["intVirtualLinkDesc"],
-                    'view': 'vnf',
-                    'vnf': vnfd
-                }
-                if edge_obj not in graph_object['edges']:
-                    graph_object['edges'].append(edge_obj)
         for vl in vnfd['intVirtualLinkDesc']:
             node = copy.deepcopy(self.node_t3d_base)
             node['id'] = vl['virtualLinkDescId']
@@ -213,6 +191,36 @@ class T3DUtil:
             }
             if edge_obj not in graph_object['edges']:
                 graph_object['edges'].append(edge_obj)
+        for vdu in vnfd['vdu']:
+            node = copy.deepcopy(self.node_t3d_base)
+            node['id'] =vdu['vduId']
+            node['descriptor'] = vdu
+            node['info']['type'] = 'vnf_vdu'
+            node['info']['property']['role'] = 'square'
+            graph_object['vertices'].append(node)
+            for cpd in vdu['intCpd']:
+                node = copy.deepcopy(self.node_t3d_base)
+                node['id'] = cpd['cpdId']
+                node['descriptor'] = cpd
+                node['info']['type'] = 'vnf_cp'
+                node['info']['property']['role'] = 'circle'
+                graph_object['vertices'].append(node)
+                edge_obj = {
+                    'source': cpd['cpdId'],
+                    'target': cpd["intVirtualLinkDesc"],
+                    'view': 'vnf',
+                    'vnf': vnfd
+                }
+                if edge_obj not in graph_object['edges']:
+                    graph_object['edges'].append(edge_obj)
+                edge_obj = {
+                    'source': cpd['cpdId'],
+                    'target': vdu['vduId'],
+                    'view': 'vnf',
+                    'vnf': vnfd
+                }
+                if edge_obj not in graph_object['edges']:
+                    graph_object['edges'].append(edge_obj)
 
 
     def build_graph_from_project(self, json_project):
