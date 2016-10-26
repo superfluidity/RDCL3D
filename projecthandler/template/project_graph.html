@@ -22,7 +22,7 @@
 
 {% block content_body %}
   	{{ block.super }}
-
+ {% csrf_token %}
 <div class="row">
     <div id="graph_ed" style="border: 2px #3c8dbc solid;overflow-y: scroll; width: 100%; height: 480px;">
         {% include 'topology_toolbar.html' %}
@@ -111,6 +111,12 @@
         graph_editor.handleForce((el.id == "topology_play") ? true : false);
 
     }
+    function savePositions(el){
+         var data = new FormData();
+         data.append('csrfmiddlewaretoken','{{csrf_token}}');
+         graph_editor.savePositions(data);
+    }
+
     $(document).ready(function() {
 
 

@@ -184,3 +184,16 @@ class EtsiManoProject(Project):
 
     def __str__(self):
         return self.name
+
+    def editGraphPositions(self, positions):
+        print positions
+        try:
+            current_data = json.loads(self.data_project)
+            current_data['positions'] = positions
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result

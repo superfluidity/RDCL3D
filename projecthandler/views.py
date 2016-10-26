@@ -214,3 +214,14 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         descriptor_string_yaml = utility.json2yaml(descriptor)
         #print descriptor
         return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
+
+@login_required
+def graph_positions(request, project_id=None):
+    if request.method == 'POST':
+        print request.POST
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        result = projects[0].editGraphPositions(json.loads(request.POST.get('positions')))
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response

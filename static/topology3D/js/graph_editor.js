@@ -616,6 +616,29 @@ dreamer.GraphEditor = (function(global) {
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
 
+    GraphEditor.prototype.savePositions = function(data) {
+        log("dentro save potitions")
+        var vertices = {}
+        this.node.each(function(d) {
+            vertices[d.id] = {}
+            vertices[d.id]['x'] = d.x;
+            vertices[d.id]['y'] = d.y;
+        });
+        data.append('positions', JSON.stringify({'vertices': vertices}) );
+        $.ajax({
+            url: "positions",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+            },
+            error: function(result) {
+                alert("some error");
+            }
+        });
+    }
     /**
      * Log utility
      */

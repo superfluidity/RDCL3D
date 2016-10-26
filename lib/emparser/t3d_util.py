@@ -246,14 +246,21 @@ class T3DUtil:
                     node['descriptor'] = json_project['vnfd'][vnfd_id]
                     node['info']['type'] = 'vnf'
                     node['info']['property']['role'] = 'circle'
+                    if ('positions' in json_project and vnfd_id in json_project['positions']['vertices']):
+                        node['fx'] = json_project['positions']['vertices'][vnfd_id]['x']
+                        node['fy'] = json_project['positions']['vertices'][vnfd_id]['y']
                     graph_object['vertices'].append(node)
                     self.create_vnf_views(json_project['vnfd'][vnfd_id], graph_object)
                 for sapd in json_project['nsd'][current_nsd]['sapd']:
                     node = copy.deepcopy(self.node_t3d_base)
+                    cpdId = sapd["cpdId"]
                     node['id'] = sapd["cpdId"]
                     node['descriptor'] = sapd
                     node['info']['type'] = 'ns_cp'
                     node['info']['property']['role'] = 'circle'
+                    if ('positions' in json_project and cpdId in json_project['positions']['vertices']):
+                        node['fx'] = json_project['positions']['vertices'][cpdId]['x']
+                        node['fy'] = json_project['positions']['vertices'][cpdId]['y']
                     graph_object['vertices'].append(node)
                     edge_obj = {
                         'source': sapd['nsVirtualLinkDescId'],
@@ -269,6 +276,9 @@ class T3DUtil:
                     node['descriptor'] = vld
                     node['info']['type'] = 'ns_vl'
                     node['info']['property']['role'] = 'circle'
+                    if ('positions' in json_project and vld["virtualLinkDescId"] in json_project['positions']['vertices']):
+                        node['fx'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['x']
+                        node['fy'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['y']
                     graph_object['vertices'].append(node)
                 for nsdf in json_project['nsd'][current_nsd]['nsDf']:
                     for vnfProfile in nsdf['vnfProfile']:
