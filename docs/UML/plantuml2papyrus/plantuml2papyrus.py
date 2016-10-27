@@ -5,6 +5,10 @@ from papyrus import *
 
 classes = {}
 associations = []
+states = ["NORMAL", "INSIDECLASS"]
+currentstate = "NORMAL"
+classcontent = ""
+currentclass = None
 
 f = open(sys.argv[1])
 
@@ -13,13 +17,13 @@ for line in f.readlines():
     if len(l) == 0:
         continue
 
-    if l.startswith("package"):
-        continue #TODO not implemented yet
-
     if l.startswith("/'"):
         continue #TODO not implemented yet
 
-    if l.startswith("class"):
+    if currentstate == "NORMAL" and l.startswith("package"):
+        continue #TODO not implemented yet
+
+    elif currentstate == "NORMAL" and l.startswith("class"):
         tokens = l.split(" ")
         i = 0
         t = tokens[i]
@@ -31,6 +35,41 @@ for line in f.readlines():
         newclass = UMLClass(classname)
         classes[classname] = newclass
         print "class " + classname
+
+        # try to find the class declaration contents
+        classcontent = ""
+        i = l.find("{")
+        currentclass = newclass
+        if i >= 0:
+            c = l[i]
+            currentstate = "INSIDECLASS"
+            while c.isspace() and i < len(l):
+                i += 1
+                c = l[i]
+            if i >= len(l):
+                continue
+            while c != "}" and i < len(l) - 1:
+                classcontent += c
+                c = l[i]
+                i += 1
+            if c == "}":
+                currentstate = "NORMAL"
+                print "contents: " + classcontent
+                currentclass.addDescription(classcontent)
+
+    elif currentstate == "INSIDECLASS":
+        i = 0
+        c = l[i]
+        while c != "}" and i < len(l) - 1:
+            classcontent += c
+            i += 1
+            c = l[i]
+        if c == "}":
+            currentstate = "NORMAL"
+            print "contents: " + classcontent
+            currentclass.addDescription(classcontent)
+        else:
+            classcontent += c
 
     elif l.find("o--") >= 0:
         # association from class A to class B

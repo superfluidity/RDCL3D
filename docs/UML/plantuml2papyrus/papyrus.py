@@ -23,13 +23,30 @@ class UMLLinkException():
 
 class UMLClass(UMLElement):
     "this class represents an UML class element"
+    description = ""
+    description_eid = None
+
     def toET(self):
         "convert this class into an ElementTree object"
-        return ET.Element('packagedElement', attrib={
+        e = ET.Element('packagedElement', attrib={
             'xmi:type': "uml:Class",
             'xmi:id': self.eid,
             'name': self.name
             })
+
+        if self.description != "":
+            self.description_eid = randomeid()
+            o = ET.SubElement(e, 'ownedAttribute', attrib={
+                'xmi:type': "uml:Property",
+                'xmi:id': randomeid(),
+                'name': "Attribute1"
+                })
+            n = ET.SubElement(e, 'nestedClassifier', attrib={
+                'xmi:type': "uml:DataType",
+                'xmi:id': self.description_eid,
+                'name': self.description
+                })
+        return e
 
     def toNotation(self):
         "convert this class into an ElementTree object for the notation XML"
@@ -70,6 +87,20 @@ class UMLClass(UMLElement):
             'xmi:id': randomeid(),
             'type': "Class_AttributeCompartment"
             })
+        if self.description != "" and self.description_eid != None:
+            h = ET.SubElement(c, 'children', attrib={
+                'xmi:type': "notation:Shape",
+                'xmi:id': randomeid(),
+                'type': "DataType_ClassNestedClassifierLabel"
+                })
+            e = ET.SubElement(h, 'element', attrib={
+                'xmi:type' : "uml:DataType",
+                'href': "model.uml#%s" % self.description_eid
+                })
+            l = ET.SubElement(h, 'layoutConstraint', attrib={
+                'xmi:type': "notation:Location",
+                'xmi:id': randomeid(),
+                })
         s = ET.SubElement(c, 'styles', attrib={
             'xmi:type': "notation:TitleStyle",
             'xmi:id': randomeid(),
@@ -132,6 +163,10 @@ class UMLClass(UMLElement):
             })
 
         return k
+
+    def addDescription(self, description):
+        "add a (short) description for the class"
+        self.description = description
 
 
 class UMLAssociation(UMLElement):
@@ -399,6 +434,7 @@ if __name__ == "__main__":
     uml_Model = UMLModel()
 
     class1 = UMLClass("Classe1")
+    class1.addDescription("IFA011.1.2.3")
     class2 = UMLClass("Classe2")
     class3 = UMLClass("Classe3")
     uml_Model.add(class1)
