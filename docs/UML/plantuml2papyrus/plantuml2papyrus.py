@@ -83,70 +83,18 @@ for line in f.readlines():
 
 
 
-umleid = randomeid()
-
-uml_Model = ET.Element('uml:Model', attrib={
-        'xmi:version': "20131001",
-        'xmi:id': umleid,
-        'name': "NSD",
-        'xmlns:xmi': "http://www.omg.org/spec/XMI/20131001",
-        'xmlns:ecore': "http://www.eclipse.org/emf/2002/Ecore",
-        'xmlns:uml': "http://www.eclipse.org/uml2/5.0.0/UML"
-    })
-
-uml_Model.extend([c.toET() for c in classes.values()])
-uml_Model.extend([a.toET() for a in associations])
+uml_Model = UMLModel()
+uml_Model.extend(classes.values())
+uml_Model.extend(associations)
 
 print "writing model"
 f = open('model.uml', 'w')
-f.write(ET.tostring(uml_Model, encoding='UTF-8'))
+f.write(ET.tostring(uml_Model.toET(), encoding='UTF-8'))
 f.close()
-
-
-notationdiagram = ET.Element('notation:Diagram', attrib={
-        'xmi:version': "2.0",
-        'xmlns:xmi': "http://www.omg.org/XMI",
-        'xmlns:notation': "http://www.eclipse.org/gmf/runtime/1.0.2/notation",
-        'xmlns:style': "http://www.eclipse.org/papyrus/infra/viewpoints/policy/style",
-        'xmlns:uml': "http://www.eclipse.org/uml2/5.0.0/UML",
-        'xmi:id': randomeid(),
-        'type': "PapyrusUMLClassDiagram",
-        'name': "Class Diagram",
-        'measurementUnit': "Pixel"
-})
-
-e = ET.SubElement(notationdiagram, 'element', attrib={
-        'xmi:type': "uml:Model",
-        'href': "model.uml#%s" % umleid
-})
-
-s = ET.SubElement(notationdiagram, 'styles', attrib={
-        'xmi:type': "notation:StringValueStyle",
-        'name': "diagram_compatibility_version",
-        'stringValue': "1.2.0",
-        'xmi:id': randomeid()
-})
-
-s = ET.SubElement(notationdiagram, 'styles', attrib={
-        'xmi:type': "notation:DiagramStyle",
-        'xmi:id': randomeid()
-})
-
-s = ET.SubElement(notationdiagram, 'styles', attrib={
-        'xmi:type': "style:PapyrusViewStyle",
-        'xmi:id': randomeid()
-})
-o = ET.SubElement(s, 'owner', attrib={
-        'xmi:type': "uml:Model",
-        'href': "model.uml#%s" % umleid
-})
-
-notationdiagram.extend([c.toNotation() for c in classes.values()])
-notationdiagram.extend([a.toNotation() for a in associations])
 
 print "writing notation"
 f = open('model.notation', 'w')
-f.write(ET.tostring(notationdiagram, encoding='UTF-8'))
+f.write(ET.tostring(uml_Model.toNotation(), encoding='UTF-8'))
 f.close()
 
 

@@ -327,40 +327,21 @@ class UMLAssociation(UMLElement):
         return v
 
 
-if __name__ == "__main__":
-    umleid = randomeid()
+class UMLModel(UMLElement):
+    def __init__(self):
+        UMLElement.__init__(self, "")
 
-    uml_Model = ET.Element('uml:Model', attrib={
+        self.model = ET.Element('uml:Model', attrib={
             'xmi:version': "20131001",
-            'xmi:id': umleid,
+            'xmi:id': self.eid,
             'name': "NSD",
             'xmlns:xmi': "http://www.omg.org/spec/XMI/20131001",
             'xmlns:ecore': "http://www.eclipse.org/emf/2002/Ecore",
             'xmlns:uml': "http://www.eclipse.org/uml2/5.0.0/UML"
-        })
+            })
 
-
-    class1 = UMLClass("Classe1")
-    class2 = UMLClass("Classe2")
-    class3 = UMLClass("Classe3")
-    uml_Model.append(class1.toET())
-    uml_Model.append(class2.toET())
-    uml_Model.append(class3.toET())
-
-    asso1 = UMLAssociation("assoc1")
-    asso1.addLink(class1, class2, "shared", "1..*")
-    uml_Model.append(asso1.toET())
-
-    asso2 = UMLAssociation("assoc1")
-    asso2.addLink(class2, class3, "composite", "0..*")
-    uml_Model.append(asso2.toET())
-
-    print "writing model"
-    f = open('model.uml', 'w')
-    f.write(ET.tostring(uml_Model, encoding='UTF-8'))
-    f.close()
-
-    notationdiagram = ET.Element('notation:Diagram', attrib={
+        # notation
+        self.notation = ET.Element('notation:Diagram', attrib={
             'xmi:version': "2.0",
             'xmlns:xmi': "http://www.omg.org/XMI",
             'xmlns:notation': "http://www.eclipse.org/gmf/runtime/1.0.2/notation",
@@ -370,43 +351,76 @@ if __name__ == "__main__":
             'type': "PapyrusUMLClassDiagram",
             'name': "Class Diagram",
             'measurementUnit': "Pixel"
-    })
+            })
 
-    e = ET.SubElement(notationdiagram, 'element', attrib={
-            'xmi:type': "uml:Model",
-            'href': "model.uml#%s" % umleid
-    })
+        e = ET.SubElement(self.notation, 'element', attrib={
+                'xmi:type': "uml:Model",
+                'href': "model.uml#%s" % self.eid
+        })
 
-    s = ET.SubElement(notationdiagram, 'styles', attrib={
-            'xmi:type': "notation:StringValueStyle",
-            'name': "diagram_compatibility_version",
-            'stringValue': "1.2.0",
-            'xmi:id': randomeid()
-    })
+        s = ET.SubElement(self.notation, 'styles', attrib={
+                'xmi:type': "notation:StringValueStyle",
+                'name': "diagram_compatibility_version",
+                'stringValue': "1.2.0",
+                'xmi:id': randomeid()
+        })
 
-    s = ET.SubElement(notationdiagram, 'styles', attrib={
-            'xmi:type': "notation:DiagramStyle",
-            'xmi:id': randomeid()
-    })
+        s = ET.SubElement(self.notation, 'styles', attrib={
+                'xmi:type': "notation:DiagramStyle",
+                'xmi:id': randomeid()
+        })
 
-    s = ET.SubElement(notationdiagram, 'styles', attrib={
-            'xmi:type': "style:PapyrusViewStyle",
-            'xmi:id': randomeid()
-    })
-    o = ET.SubElement(s, 'owner', attrib={
-            'xmi:type': "uml:Model",
-            'href': "model.uml#%s" % umleid
-    })
+        s = ET.SubElement(self.notation, 'styles', attrib={
+                'xmi:type': "style:PapyrusViewStyle",
+                'xmi:id': randomeid()
+        })
+        o = ET.SubElement(s, 'owner', attrib={
+                'xmi:type': "uml:Model",
+                'href': "model.uml#%s" % self.eid
+        })
 
-    notationdiagram.append(class1.toNotation())
-    notationdiagram.append(class2.toNotation())
-    notationdiagram.append(class3.toNotation())
-    notationdiagram.append(asso1.toNotation())
-    notationdiagram.append(asso2.toNotation())
+    def add(self, element):
+        self.model.append(element.toET())
+        self.notation.append(element.toNotation())
+
+    def extend(self, elementlist):
+        self.model.extend([e.toET() for e in elementlist])
+        self.notation.extend([e.toNotation() for e in elementlist])
+
+    def toET(self):
+        return self.model
+
+    def toNotation(self):
+        return self.notation
+
+
+if __name__ == "__main__":
+
+    uml_Model = UMLModel()
+
+    class1 = UMLClass("Classe1")
+    class2 = UMLClass("Classe2")
+    class3 = UMLClass("Classe3")
+    uml_Model.add(class1)
+    uml_Model.add(class2)
+    uml_Model.add(class3)
+
+    asso1 = UMLAssociation("assoc1")
+    asso1.addLink(class1, class2, "shared", "1..*")
+    uml_Model.add(asso1)
+
+    asso2 = UMLAssociation("assoc1")
+    asso2.addLink(class2, class3, "composite", "0..*")
+    uml_Model.add(asso2)
+
+    print "writing model"
+    f = open('model.uml', 'w')
+    f.write(ET.tostring(uml_Model.toET(), encoding='UTF-8'))
+    f.close()
 
     print "writing notation"
     f = open('model.notation', 'w')
-    f.write(ET.tostring(notationdiagram, encoding='UTF-8'))
+    f.write(ET.tostring(uml_Model.toNotation(), encoding='UTF-8'))
     f.close()
 
 
