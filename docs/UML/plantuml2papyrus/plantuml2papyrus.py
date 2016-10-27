@@ -3,7 +3,6 @@
 import sys
 from papyrus import *
 
-rootclass = None
 classes = {}
 associations = []
 
@@ -32,8 +31,6 @@ for line in f.readlines():
         newclass = UMLClass(classname)
         classes[classname] = newclass
         print "class " + classname
-        if rootclass == None:
-            rootclass = classname
 
     elif l.find("o--") >= 0:
         # association from class A to class B
