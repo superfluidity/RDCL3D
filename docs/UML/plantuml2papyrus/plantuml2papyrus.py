@@ -31,7 +31,7 @@ for line in f.readlines():
         # TODO: parse the contents of the class declaration
         newclass = UMLClass(classname)
         classes[classname] = newclass
-        print classname
+        print "class " + classname
         if rootclass == None:
             rootclass = classname
 
@@ -54,6 +54,7 @@ for line in f.readlines():
             classBname = tokens[0].strip()
         assocClassB = classes[classBname]
 
+        print classAname + " o-- " + classBname
         newassoc.addLink(assocClassA, assocClassB, "shared", classBmult)
         associations.append(newassoc)
 
@@ -76,6 +77,7 @@ for line in f.readlines():
             classBname = tokens[0].strip()
         assocClassB = classes[classBname]
 
+        print classAname + " *-- " + classBname
         newassoc.addLink(assocClassA, assocClassB, "composite", classBmult)
         associations.append(newassoc)
 
