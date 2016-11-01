@@ -15,7 +15,6 @@ class T3DUtil:
             'frozen': False,
             'property': {
                 'custom_label': '',
-                'role': ''
             },
             'type': ''
         }
@@ -39,7 +38,6 @@ class T3DUtil:
         node['descriptor'] = cpdata
         node['nsd'] = nsd
         node['info']['type'] = 'ns_cp'
-        node['info']['property']['role'] = 'circular'
         return node
 
     def __build_node_ns_vld(self, vldata, nsd):
@@ -48,7 +46,6 @@ class T3DUtil:
         node['nsd'] = nsd
         node['descriptor'] = vldata
         node['info']['type'] = 'ns_vl'
-        node['info']['property']['role'] = 'circular'
         node['vl_info'] = vldata
         return node
 
@@ -174,19 +171,20 @@ class T3DUtil:
             node['id'] = vl['virtualLinkDescId']
             node['descriptor'] = vl
             node['info']['type'] = 'vnf_vl'
-            node['info']['property']['role'] = 'circle'
+            node['info']['group'] = vnfd['vnfdId']
             graph_object['vertices'].append(node)
         for cpd in vnfd['vnfExtCpd']:
             node = copy.deepcopy(self.node_t3d_base)
             node['id'] = cpd['cpdId']
             node['descriptor'] = cpd
             node['info']['type'] = 'vnf_cp'
-            node['info']['property']['role'] = 'circle'
+            node['info']['group'] = vnfd['vnfdId']
             graph_object['vertices'].append(node)
             edge_obj = {
                 'source': cpd['cpdId'],
                 'target': cpd["intVirtualLinkDesc"],
                 'view': 'vnf',
+                'group': vnfd['vnfdId'],
                 'vnf': vnfd
             }
             if edge_obj not in graph_object['edges']:
@@ -196,19 +194,20 @@ class T3DUtil:
             node['id'] =vdu['vduId']
             node['descriptor'] = vdu
             node['info']['type'] = 'vnf_vdu'
-            node['info']['property']['role'] = 'square'
+            node['info']['group'] = vnfd['vnfdId']
             graph_object['vertices'].append(node)
             for cpd in vdu['intCpd']:
                 node = copy.deepcopy(self.node_t3d_base)
                 node['id'] = cpd['cpdId']
                 node['descriptor'] = cpd
                 node['info']['type'] = 'vnf_cp'
-                node['info']['property']['role'] = 'circle'
+                node['info']['group'] = vnfd['vnfdId']
                 graph_object['vertices'].append(node)
                 edge_obj = {
                     'source': cpd['cpdId'],
                     'target': cpd["intVirtualLinkDesc"],
                     'view': 'vnf',
+                    'group': vnfd['vnfdId'],
                     'vnf': vnfd
                 }
                 if edge_obj not in graph_object['edges']:
@@ -217,6 +216,7 @@ class T3DUtil:
                     'source': cpd['cpdId'],
                     'target': vdu['vduId'],
                     'view': 'vnf',
+                    'group': vnfd['vnfdId'],
                     'vnf': vnfd
                 }
                 if edge_obj not in graph_object['edges']:
@@ -239,13 +239,14 @@ class T3DUtil:
                 node['descriptor'] = json_project['nsd'][current_nsd]
                 node['info']['type'] = 'nsd'
                 node['info']['property']['role'] = 'square'
+                node['info']['group'] = current_nsd
                 graph_object['vertices'].append(node)
                 for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
                     node = copy.deepcopy(self.node_t3d_base)
                     node['id'] = vnfd_id
                     node['descriptor'] = json_project['vnfd'][vnfd_id]
                     node['info']['type'] = 'vnf'
-                    node['info']['property']['role'] = 'circle'
+                    node['info']['group'] = current_nsd
                     if ('positions' in json_project and vnfd_id in json_project['positions']['vertices']):
                         node['fx'] = json_project['positions']['vertices'][vnfd_id]['x']
                         node['fy'] = json_project['positions']['vertices'][vnfd_id]['y']
@@ -257,7 +258,7 @@ class T3DUtil:
                     node['id'] = sapd["cpdId"]
                     node['descriptor'] = sapd
                     node['info']['type'] = 'ns_cp'
-                    node['info']['property']['role'] = 'circle'
+                    node['info']['group'] = current_nsd
                     if ('positions' in json_project and cpdId in json_project['positions']['vertices']):
                         node['fx'] = json_project['positions']['vertices'][cpdId]['x']
                         node['fy'] = json_project['positions']['vertices'][cpdId]['y']
@@ -266,6 +267,7 @@ class T3DUtil:
                         'source': sapd['nsVirtualLinkDescId'],
                         'target': sapd["cpdId"],
                         'view': 'nsd',
+                        'group': current_nsd,
                         'nsd': current_nsd
                     }
                     if edge_obj not in graph_object['edges']:
@@ -275,7 +277,7 @@ class T3DUtil:
                     node['id'] = vld["virtualLinkDescId"]
                     node['descriptor'] = vld
                     node['info']['type'] = 'ns_vl'
-                    node['info']['property']['role'] = 'circle'
+                    node['info']['group']= current_nsd
                     if ('positions' in json_project and vld["virtualLinkDescId"] in json_project['positions']['vertices']):
                         node['fx'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['x']
                         node['fy'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['y']
@@ -283,12 +285,13 @@ class T3DUtil:
                 for nsdf in json_project['nsd'][current_nsd]['nsDf']:
                     for vnfProfile in nsdf['vnfProfile']:
                         for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
-                            virtualLinkProfile =  next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
+                            virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
                             if(virtualLinkProfile is not None):
                                 edge_obj = {
                                     'source': virtualLinkProfile['virtualLinkDescId'],
                                     'target': vnfProfile["vnfdId"],
                                     'view': 'nsd',
+                                    'group': current_nsd,
                                     'nsd': current_nsd
                                 }
                                 if edge_obj not in graph_object['edges']:

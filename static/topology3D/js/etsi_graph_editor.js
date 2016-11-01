@@ -52,11 +52,6 @@ dreamer.ManoGraphEditor = (function(global) {
                 "color": "#313679",
                 "size": 15
             },
-            "vnfc_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#343D41",
-                "size": 15
-            },
             "vnf_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#4E6293",
@@ -187,9 +182,25 @@ dreamer.ManoGraphEditor = (function(global) {
                 'mouseout': function(d) {
                     self.link.style('stroke-width', 2);
                 },
-                'dblclick': function(d) {
+                'dblclick': function(c_node) {
                     d3.event.preventDefault();
-                    log('dblclick');
+                    log('dblclick ');
+                    if(c_node.info.type!= undefined){
+
+                        if(c_node.info.type == 'vnf')
+                            self.handleFiltersParams({
+                                node: {
+                                    type : ['vnf_vl', 'vnf_cp', 'vnf_vdu'],
+                                    group: [c_node.id]
+                                },
+                                link: {
+                                    group: [c_node.id],
+                                    view: ['vnf']
+                                }
+                            });
+
+                    }
+
                 },
                 'contextmenu': function(d,i) {
                     d3.event.preventDefault();
@@ -218,6 +229,11 @@ dreamer.ManoGraphEditor = (function(global) {
             }
         };
     };
+
+    ManoGraphEditor.prototype.exploreLayer = function(args) {
+
+    };
+
 
 
     /**

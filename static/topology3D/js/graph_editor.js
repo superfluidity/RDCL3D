@@ -34,7 +34,7 @@ dreamer.GraphEditor = (function(global) {
                 view: [],
             }
         };
-        this.current_view_id = 'nsd'; //TODO change value
+        this.current_view_id = '';
         // graph data initailization
         this.d3_graph = {
             nodes: [],
@@ -150,7 +150,8 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
         this.filter_parameters = filtersParams;
-
+        this.current_view_id = (filtersParams.link.view[0] != undefined) ? filtersParams.link.view[0] : current_view_id
+        this.cleanAll();
         this.refresh();
     };
 
@@ -222,6 +223,7 @@ dreamer.GraphEditor = (function(global) {
         return false;
     };
 
+
     /**
      * Add a new link to graph.
      * @param {Object} Required. An object that specifies tha data of the new Link.
@@ -266,7 +268,6 @@ dreamer.GraphEditor = (function(global) {
     };
 
 
-
     /**
      * Force a refresh of GraphView
      * @returns {}
@@ -288,7 +289,7 @@ dreamer.GraphEditor = (function(global) {
             .style("stroke", function(d) {
                 return default_link_color;
             });
-        //this.link.exit().remove();
+
         this.node = this.svg
             .selectAll(".node")
             .data(self.d3_graph.nodes
