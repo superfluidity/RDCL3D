@@ -7,6 +7,8 @@ dreamer.ManoGraphEditor = (function(global) {
     'use strict';
 
     var DEBUG = true;
+    var SHIFT_BUTTON = 16;
+
     ManoGraphEditor.prototype = new dreamer.GraphEditor();
     ManoGraphEditor.prototype.constructor = ManoGraphEditor;
     ManoGraphEditor.prototype.parent = dreamer.GraphEditor.prototype;
@@ -20,6 +22,58 @@ dreamer.ManoGraphEditor = (function(global) {
 
     }
 
+    ManoGraphEditor.prototype.init = function(args){
+         this.parent.init.call(this, args);
+
+         this.type_property = {
+            "unrecognized": {
+                "shape": d3.symbolCircle,
+                "color": "white",
+                "default_node_label_color": "black",
+                "size": 15
+            },
+            "ns_vl": {
+                "shape": d3.symbolCircle,
+                "color": "#196B90",
+                "size": 15
+            },
+            "ns_cp": {
+                "shape": d3.symbolCircle,
+                "color": "#F27220",
+                "size": 15
+            },
+            "vnf": {
+                "shape": d3.symbolCircle,
+                "color": "#54A698",
+                "size": 15
+            },
+            "vnf_vl": {
+                "shape": d3.symbolCircle,
+                "color": "#313679",
+                "size": 15
+            },
+            "vnfc_cp": {
+                "shape": d3.symbolCircle,
+                "color": "#343D41",
+                "size": 15
+            },
+            "vnf_cp": {
+                "shape": d3.symbolCircle,
+                "color": "#4E6293",
+                "size": 15
+            },
+            "vnfc": {
+                "shape": d3.symbolCircle,
+                "color": "#1D74C2",
+                "size": 15
+            },
+            "vdu": {
+                "shape": d3.symbolCircle,
+                "color": "#4B7C91",
+                "size": 15
+            }
+        }
+    }
 
     /**
      * Add a new node to the graph.
@@ -67,6 +121,30 @@ dreamer.ManoGraphEditor = (function(global) {
     };
 
 
+    ManoGraphEditor.prototype.savePositions = function(data) {
+        log("dentro save potitions")
+        var vertices = {}
+        this.node.each(function(d) {
+            vertices[d.id] = {}
+            vertices[d.id]['x'] = d.x;
+            vertices[d.id]['y'] = d.y;
+        });
+        data.append('positions', JSON.stringify({'vertices': vertices}) );
+        $.ajax({
+            url: "positions",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+            },
+            error: function(result) {
+                alert("some error");
+            }
+        });
+    }
+
     /**
      *  Internal functions
      */
@@ -77,16 +155,46 @@ dreamer.ManoGraphEditor = (function(global) {
      */
     ManoGraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
+        var self = this;
         this.behavioursOnEvents = {
             'nodes': {
-                'click': function(event) {
+                'click': function(d) {
+                    d3.event.preventDefault();
+
+                    if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
+                        var source_id = self._selected_node;
+                        var target_id = d.id;
+                        var new_link = {
+                            source: source_id,
+                            target: target_id,
+                            view: self.current_view_id
+                        };
+                        self.addLink(new_link);
+                        self._deselectAllNodes();
+                    } else {
+                        self._selectNodeExclusive(this, d);
+                    }
 
                 },
-                'dblclick': function(event) {
-
+                'mouseover': function(d) {
+                    self.link.style('stroke-width', function(l) {
+                        if (d === l.source || d === l.target)
+                            return 4;
+                        else
+                            return 2;
+                    });
                 },
-                'contextmenu': function(event){
-
+                'mouseout': function(d) {
+                    self.link.style('stroke-width', 2);
+                },
+                'dblclick': function(d) {
+                    d3.event.preventDefault();
+                    log('dblclick');
+                },
+                'contextmenu': function(d,i) {
+                    d3.event.preventDefault();
+                    log("contextmenu node");
+                    self.eventHandler.fire("right_click_node", d);
                 }
             },
             'links': {
@@ -95,33 +203,22 @@ dreamer.ManoGraphEditor = (function(global) {
                 },
                 'dblclick': function(event) {
 
+                },
+                'mouseover': function(d) {
+                    d3.select(this).style('stroke-width', 4);
+                },
+                'mouseout': function(d) {
+                    d3.select(this).style('stroke-width', 2);
+                },
+                'contextmenu': function(d, i) {
+                    d3.event.preventDefault();
+                    // react on right-clicking
+                    log("contextmenu link");
                 }
             }
         };
     };
 
-    /**
-     *  Deselect previously selected nodes
-     *
-     */
-    ManoGraphEditor.prototype._deselectAllNodes = function() {
-        log("_deselectAllNodes");
-        this.node.classed("node_selected", false);
-        this._selected_node = undefined;
-    };
-
-    /**
-     *  Select node in exclusive mode
-     *  @param {Object} Required. Element selected on click event
-     */
-    ManoGraphEditor.prototype._selectNodeExclusive = function(node_instance, node_id) {
-        log("_selectNodeExclusive ");
-        var activeClass = "node_selected";
-        var alreadyIsActive = d3.select(node_instance).classed(activeClass);
-        this._deselectAllNodes();
-        d3.select(node_instance).classed(activeClass, !alreadyIsActive);
-        this._selected_node = (alreadyIsActive) ? undefined : node_id;
-    };
 
     /**
      * Log utility

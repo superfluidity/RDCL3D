@@ -120,7 +120,16 @@
     $(document).ready(function() {
 
 
-
+        graph_editor.handleFiltersParams({
+            node: {
+                type : ['vnf', 'ns_cp', 'ns_vl'],
+                group: []
+            },
+            link: {
+                group: [],
+                view: ['nsd']
+            }
+        });
         graph_editor.addListener("right_click_node", function(a, args) {
             //console.log("node_selected", a, args);
             $('#modal_edit_descriptor').modal('show');

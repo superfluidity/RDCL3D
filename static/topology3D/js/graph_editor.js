@@ -9,19 +9,11 @@ dreamer.GraphEditor = (function(global) {
     var DEBUG = true;
     var SHIFT_BUTTON = 16;
 
-    var default_node_label_color = "white";
     var default_link_color = "#888";
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
     var EventHandler = dreamer.Event;
-    /*
-    var default_node_properties = {
-        "shape": d3.symbolCircle,
-        "color": "white",
-        "size": 15,
-        "label_color": "white",
-        "label_text_size": 15
-    };*/
+
 
 
     /**
@@ -32,98 +24,61 @@ dreamer.GraphEditor = (function(global) {
         this.eventHandler = new EventHandler();
         this.lastKeyDown = -1;
         this._selected_node = undefined;
+        this.filter_parameters = {
+            node: {
+                type : [],
+                group: [],
+            },
+            link: {
+                group: [],
+                view: [],
+            }
+        };
         this.current_view_id = 'nsd'; //TODO change value
         // graph data initailization
         this.d3_graph = {
             nodes: [],
             links: []
         };
-        /*
 
-        */
     }
+
+
 
     GraphEditor.prototype.init = function(args){
         args = args || {}
+        var self = this;
         this.width = args.width || 500;
         this.height = args.height || 500;
         this.forceSimulationActive = true;
 
         var min_zoom = 0.1;
         var max_zoom = 7;
+        this._setupBehaviorsOnEvents();
+        this._setupFiltersBehaviors(args);
 
 
-        this.node_filter_cb = args.node_filter_cb || function(d) {
-            //log(d.info.type, d.info.type in ["vnf", "ns_cp", "ns_vl"], ["vnf", "ns_cp", "ns_vl"])
-            if (["vnf", "ns_cp", "ns_vl"].indexOf(d.info.type) > -1)
-                return true
-            return false;
-        };
-
-        this.link_filter_cb = args.link_filter_cb || function(d) {
-            return d.view == 'nsd';
-        };
 
         this.type_property = {
             "unrecognized": {
                 "shape": d3.symbolCircle,
                 "color": "white",
+                "node_label_color": "black",
                 "size": 15
             },
-            "ns_vl": {
-                "shape": d3.symbolCircle,
-                "color": "#196B90",
-                "size": 15
-            },
-            "ns_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#F27220",
-                "size": 15
-            },
-            "vnf": {
-                "shape": d3.symbolCircle,
-                "color": "#54A698",
-                "size": 15
-            },
-            "vnf_vl": {
-                "shape": d3.symbolCircle,
-                "color": "#313679",
-                "size": 15
-            },
-            "vnfc_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#343D41",
-                "size": 15
-            },
-            "vnf_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#4E6293",
-                "size": 15
-            },
-            "vnfc": {
-                "shape": d3.symbolCircle,
-                "color": "#1D74C2",
-                "size": 15
-            },
-            "vdu": {
-                "shape": d3.symbolCircle,
-                "color": "#4B7C91",
-                "size": 15
-            }
-        };
 
+
+        };
 
 
         this.force = d3.forceSimulation()
             .force("link", d3.forceLink().distance(100).strength(3).id(function(d, i) {
-                // log(d,i)
                 return d.id;
             }))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
-        var self = this;
-        // this.force.linkStrength(1);
+
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
 
@@ -145,14 +100,12 @@ dreamer.GraphEditor = (function(global) {
 
             })
             .on('keyup', function() {
-                log('keyup');
+                log('keyup'+ self.lastKeyDown);
                 self.lastKeyDown = -1;
             });
 
 
-
         d3.json("graph_data", function(error, data) {
-            // if(error == false)
 
             self.d3_graph.nodes = data.vertices
             self.d3_graph.links = data.edges;
@@ -190,6 +143,16 @@ dreamer.GraphEditor = (function(global) {
         }
     };
 
+    /**
+     * Handle the parameters of basic filters: node type, view, group
+     * @param {Object} Required.
+     *
+     */
+    GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
+        this.filter_parameters = filtersParams;
+
+        this.refresh();
+    };
 
     /**
      * Add a new node to the graph.
@@ -199,6 +162,7 @@ dreamer.GraphEditor = (function(global) {
     GraphEditor.prototype.addNode = function(args) {
 
         if (args.id && args.info && args.info.type) {
+            args.fixed = true;
             this.force.stop();
             this.cleanAll();
             this.d3_graph.nodes.push(args);
@@ -341,14 +305,14 @@ dreamer.GraphEditor = (function(global) {
             })
             .attr("d", d3.symbol()
                 .size(function(d) {
-                    return Math.PI * Math.pow(self.type_property[d.info.type].size, 2.2);
+                    return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
                 })
                 .type(function(d) {
-                    return self.type_property[d.info.type].shape;
+                    return self._node_property_by_type(d.info.type, 'shape');
                 })
             )
             .style("fill", function(d) {
-                return self.type_property[d.info.type].color;
+                return self._node_property_by_type(d.info.type, 'color');
             })
             .attr("transform", function() {
                 return "rotate(-45)";
@@ -360,60 +324,20 @@ dreamer.GraphEditor = (function(global) {
                 .on("drag", dragged)
                 .on("end", dragended));
 
-        this.node.on("contextmenu", function(d, i) {
-                d3.event.preventDefault();
-                log("contextmenu node");
-                self.eventHandler.fire("right_click_node", d);
-
-            })
-            .on("mouseover", function(d) {
-                self.link.style('stroke-width', function(l) {
-                    if (d === l.source || d === l.target)
-                        return 4;
-                    else
-                        return 2;
-                });
-            })
-            .on("mouseout", function(d) {
-                self.link.style('stroke-width', 2);
-            })
-            .on('click', function(d) {
-                d3.event.preventDefault();
-                console.log('click', d);
-                if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
-                    var source_id = self._selected_node;
-                    var target_id = d.id;
-                    var new_link = {
-                        source: source_id,
-                        target: target_id,
-                        view: self.current_view_id
-                    };
-                    self.addLink(new_link);
-                    self._deselectAllNodes();
-                } else {
-                    self._selectNodeExclusive(this, d);
-                }
-
-            })
-            .on('dblclick', function(d) {
-                d3.event.preventDefault();
-                log('dblclick');
-            });
+        this.node.on("contextmenu", self.behavioursOnEvents.nodes["contextmenu"])
+            .on("mouseover",  self.behavioursOnEvents.nodes["mouseover"])
+            .on("mouseout", self.behavioursOnEvents.nodes["mouseout"])
+            .on('click', self.behavioursOnEvents.nodes["click"])
+            .on('dblclick',self.behavioursOnEvents.nodes["dblclick"] );
 
         this.link
             .on("contextmenu", function(d, i) {
                 d3.event.preventDefault();
                 // react on right-clicking
-                console.log("contextmenu link", d, i);
-                self.removeLink(i);
-
+                log("contextmenu link", d, i);
             })
-            .on("mouseover", function(d) {
-                d3.select(this).style('stroke-width', 4);
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).style('stroke-width', 2);
-            });
+            .on("mouseover", self.behavioursOnEvents.links["mouseover"])
+            .on("mouseout", self.behavioursOnEvents.links["mouseout"]);
 
         this.text = this.svg.selectAll(".text")
             .data(self.d3_graph.nodes
@@ -424,7 +348,9 @@ dreamer.GraphEditor = (function(global) {
             .attr("dy", ".35em")
             .attr("pointer-events", "none")
             .style("font-size", nominal_text_size + "px")
-            .style("fill", default_node_label_color)
+            .style("fill", function(d) {
+                    return self._node_property_by_type(d.info.type, 'node_label_color');
+                })
             .style("text-anchor", "middle")
             .text(function(d) {
                 return d.id;
@@ -479,9 +405,8 @@ dreamer.GraphEditor = (function(global) {
 
         function ticked() {
             self.node.attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")rotate(-90)";
+                return "translate(" + d.x + "," + d.y + ")";
             });
-            var sub_self = self;
 
             self.link
                 .attr("x1", function(d) {
@@ -500,7 +425,6 @@ dreamer.GraphEditor = (function(global) {
 
 
             self.text.attr("transform", function(d) {
-                //if((d.draggednode == true && self.forceSimulationActive) || self.forceSimulationActive == false)
                 return "translate(" + d.x + "," + d.y + ")";
 
             });
@@ -512,7 +436,7 @@ dreamer.GraphEditor = (function(global) {
      *  Export Graph data.
      *  @returns {Object} Graph object.
      */
-    GraphEditor.prototype.exportJSON = function() {
+    GraphEditor.prototype.exportJSONGraph = function() {
 
     };
 
@@ -564,22 +488,106 @@ dreamer.GraphEditor = (function(global) {
      *  Internal functions
      */
 
+     GraphEditor.prototype._node_property_by_type = function(type, property){
+        if(this.type_property[type] != undefined && this.type_property[type][property] != undefined)
+            return this.type_property[type][property];
+        else
+            return this.type_property['unrecognized'][property];
+     }
+
+     /**
+     *
+     *
+     *
+     */
+     GraphEditor.prototype._setupFiltersBehaviors = function(args) {
+
+        var self = this;
+
+        this.node_filter_cb = args.node_filter_cb || function(d) {
+            var result = true;
+
+            // check filter by node type
+            if(self.filter_parameters.node.type.length > 0){
+                if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
+                    result = false;
+            }
+
+            // check filter by group
+            if(self.filter_parameters.node.group.length > 0){
+                if(self.filter_parameters.node.group.indexOf(d.info.group) < 0)
+                    result = false;
+            }
+
+            return result;
+        };
+
+        this.link_filter_cb = args.link_filter_cb || function(d) {
+            var result = true;
+
+            // check filter by view
+            if(self.filter_parameters.link.view.length > 0){
+                if (self.filter_parameters.link.view.indexOf(d.view) < 0)
+                    result = false;
+            }
+
+            // check filter by group
+            if(self.filter_parameters.link.group.length > 0){
+                if(self.filter_parameters.link.group.indexOf(d.group) < 0)
+                    result = false;
+            }
+
+            return result;
+        };
+
+     };
+
     /**
      *
      *
      */
     GraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
+        var self = this;
         this.behavioursOnEvents = {
             'nodes': {
-                'click': function(event) {
+                'click': function(d) {
+                    d3.event.preventDefault();
+                    log('click', d);
+                    if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
+                        var source_id = self._selected_node;
+                        var target_id = d.id;
+                        var new_link = {
+                            source: source_id,
+                            target: target_id,
+                            view: self.current_view_id
+                        };
+                        self.addLink(new_link);
+                        self._deselectAllNodes();
+                    } else {
+                        self._selectNodeExclusive(this, d);
+                    }
 
                 },
-                'dblclick': function(event) {
-
+                'mouseover': function(d) {
+                    self.link.style('stroke-width', function(l) {
+                        if (d === l.source || d === l.target)
+                            return 4;
+                        else
+                            return 2;
+                    });
                 },
-                'contextmenu': function(event){
-
+                'mouseout': function(d) {
+                    self.link.style('stroke-width', 2);
+                },
+                'dblclick': function(d) {
+                    d3.event.preventDefault();
+                    log('dblclick');
+                },
+                'contextmenu': function(d,i) {
+                    d3.event.preventDefault();
+                    log("contextmenu node");
+                    self.eventHandler.fire("right_click_node", d);
                 }
             },
             'links': {
@@ -616,29 +624,7 @@ dreamer.GraphEditor = (function(global) {
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
 
-    GraphEditor.prototype.savePositions = function(data) {
-        log("dentro save potitions")
-        var vertices = {}
-        this.node.each(function(d) {
-            vertices[d.id] = {}
-            vertices[d.id]['x'] = d.x;
-            vertices[d.id]['y'] = d.y;
-        });
-        data.append('positions', JSON.stringify({'vertices': vertices}) );
-        $.ajax({
-            url: "positions",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-            },
-            error: function(result) {
-                alert("some error");
-            }
-        });
-    }
+
     /**
      * Log utility
      */
