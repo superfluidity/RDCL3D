@@ -64,7 +64,7 @@ or:
 Development (TODO)
 -------
 
-In order to keep your environment consistent, it�s a good idea to �freeze� the current state of the environment packages. 
+In order to keep your environment consistent, it's a good idea to "freeze" the current state of the environment packages. 
 To do this, run
 
     $ pip freeze > requirements.txt
