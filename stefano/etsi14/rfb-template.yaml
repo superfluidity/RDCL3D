@@ -1,0 +1,44 @@
+---
+rfb:
+    name: RFB TEMPLATE WITH NO RFBC #(this RFB has no component RFB)
+    description: This is a template to help in the creation of your own RFBs
+    class: rfb      # Optional. Used to organize VNFs
+    hosting_env:  hypervisor  #"hypervisor" is a generic hypervisor 
+    #rfb_image: /path/to/imagefolder/RFB-TEMPLATE-VM.image  when an image is specified, it refers to a specific hypervisor
+
+    external-connections:
+    -   name:              mgmt0
+        type:              mgmt        # "mgmt" (autoconnect to management net), "bridge", "data"
+        description:       Management interface
+    -   name:              xe0
+        type:              data
+        description:       Data interface 1
+    -   name:              xe1
+        type:              data
+        description:       Data interface 2
+    -   name:              ge0
+        type:              bridge
+        description:       Bridge interface
+    bridge-ifaces:
+    -   name:      mgmt0
+        bandwidth: 1 Mbps            # Optional. Informative only
+        # mac_address: '20:33:45:56:77:46' #avoid this option if possible
+        # model:       'virtio'      # ("virtio","e1000","ne2k_pci","pcnet","rtl8139") By default, it is automatically filled by libvirt
+    -   name:      ge0
+        vpci:      "0000:00:10.0"
+        bandwidth: 1 Mbps
+        # mac_address: '20:33:45:56:77:47' #avoid this option if possible
+        # model:       'virtio'      # ("virtio","e1000","ne2k_pci","pcnet","rtl8139") By default, it is automatically filled by libvirt
+    data-ifaces:
+        -   name:      xe0
+            vpci:      "0000:00:11.0"   # Optional. Virtual PCI address
+            dedicated: "yes"         # "yes"(passthrough), "no"(sriov with vlan tags), "yes:sriov"(sriovi, but exclusive and without vlan tag)
+            bandwidth: 10 Gbps
+            # mac_address: '20:33:45:56:77:44' #avoid this option if possible
+        -   name:      xe1
+            vpci:      "0000:00:12.0"
+            dedicated: "yes"
+            bandwidth: 10 Gbps
+            # mac_address: '20:33:45:56:77:45' #avoid this option if possible
+
+
