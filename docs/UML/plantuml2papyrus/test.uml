@@ -1,0 +1,14 @@
+@startuml
+
+class Class1 {
+}
+class Class2 {
+}
+class Class3 {
+}
+
+Class1  o-- "0..*" Class2
+Class2  *-- "1..*" Class3
+
+@enduml
+
