@@ -48,12 +48,12 @@ class T3DUtil:
         for vl in vnfd['intVirtualLinkDesc']:
             self.add_node(vl['virtualLinkDescId'], 'vnf_vl', vnfd['vnfdId'],positions, graph_object)
         for cpd in vnfd['vnfExtCpd']:
-            self.add_node(cpd['cpdId'], 'vnf_cp', vnfd['vnfdId'], positions, graph_object)
+            self.add_node(cpd['cpdId'], 'vnf_ext_cp', vnfd['vnfdId'], positions, graph_object)
             self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
         for vdu in vnfd['vdu']:
             self.add_node(vdu['vduId'], 'vnf_vdu', vnfd['vnfdId'], positions, graph_object)
             for cpd in vdu['intCpd']:
-                self.add_node(cpd['cpdId'], 'vnf_cp', vnfd['vnfdId'], positions, graph_object)
+                self.add_node(cpd['cpdId'], 'vnf_vdu_cp', vnfd['vnfdId'], positions, graph_object)
                 self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
                 self.add_link(cpd['cpdId'], vdu['vduId'], 'vnf', vnfd['vnfdId'], graph_object)
 

@@ -35,37 +35,49 @@ dreamer.ManoGraphEditor = (function(global) {
             "ns_vl": {
                 "shape": d3.symbolCircle,
                 "color": "#196B90",
-                "size": 15
+                "size": 15,
+                "name": "VL"
             },
             "ns_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#F27220",
-                "size": 15
+                "size": 15,
+                "name": "CP"
             },
             "vnf": {
                 "shape": d3.symbolCircle,
                 "color": "#54A698",
-                "size": 15
+                "size": 15,
+                "name": "VNF"
             },
             "vnf_vl": {
                 "shape": d3.symbolCircle,
                 "color": "#313679",
-                "size": 15
+                "size": 15,
+                "name": "IntVL"
             },
-            "vnf_cp": {
+            "vnf_ext_cp": {
+                "shape": d3.symbolCircle,
+                "color": "#1F2B35",
+                "size": 15,
+                "name": "ExtCP"
+            },
+            "vnf_vdu_cp": {
                 "shape": d3.symbolCircle,
                 "color": "#4E6293",
-                "size": 15
+                "size": 15,
+                "name": "VduCP"
             },
             "vnfc": {
                 "shape": d3.symbolCircle,
                 "color": "#1D74C2",
                 "size": 15
             },
-            "vdu": {
+            "vnf_vdu": {
                 "shape": d3.symbolCircle,
                 "color": "#4B7C91",
-                "size": 15
+                "size": 15,
+                "name": "VDU"
             }
         }
     }
@@ -117,7 +129,6 @@ dreamer.ManoGraphEditor = (function(global) {
 
 
     ManoGraphEditor.prototype.savePositions = function(data) {
-        log("dentro save potitions")
         var vertices = {}
         this.node.each(function(d) {
             vertices[d.id] = {}
@@ -190,7 +201,7 @@ dreamer.ManoGraphEditor = (function(global) {
                         if(c_node.info.type == 'vnf')
                             self.handleFiltersParams({
                                 node: {
-                                    type : ['vnf_vl', 'vnf_cp', 'vnf_vdu'],
+                                    type : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp','vnf_vdu'],
                                     group: [c_node.id]
                                 },
                                 link: {
@@ -234,7 +245,9 @@ dreamer.ManoGraphEditor = (function(global) {
 
     };
 
-
+    ManoGraphEditor.prototype.getTypeProperty = function(){
+        return this.type_property;
+    };
 
     /**
      * Log utility

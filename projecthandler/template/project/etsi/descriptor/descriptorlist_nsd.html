@@ -12,7 +12,7 @@
     <tbody>
     {% for k,v in descriptors.items %}
     <tr>
-        <td><a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')">{{ k }}</a></td>
+        <td><a href='/projects/{{project_id}}/graph/'>{{ k }}</a></td>
         <td>{{ v.vendor }}</td>
         <td>{{ v.version }}</td>
         <td>

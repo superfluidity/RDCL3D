@@ -73,14 +73,16 @@
 
     var dropZone = document.getElementById('graph_ed_container');
     dropZone.ondrop = function(e) {
+        var group = graph_editor.getCurrentGroup()
         e.preventDefault();
         var nodetype = e.dataTransfer.getData("text/plain");
-        console.log(e);
+        console.log(nodetype);
         if (nodetype) {
             graph_editor.addNode({
                 'id': nodetype + "_" + Date.now(),
                 'info': {
-                    'type': nodetype
+                    'type': nodetype,
+                    'group': group
                 },
                 'x': e.layerX,
                 'y': e.layerY
@@ -133,6 +135,14 @@
         graph_editor.addListener("right_click_node", function(a, args) {
             //console.log("node_selected", a, args);
             $('#modal_edit_descriptor').modal('show');
+        });
+        graph_editor.addListener("filters_changed", function(e,c ){
+            var type_property = graph_editor.getTypeProperty();
+            $("#draggable-container").empty()
+            for( var i in c.node.type){
+                var event = 'event.dataTransfer.setData("text/plain","'+c.node.type[i]+'")'
+                $("#draggable-container").append('<div class="external-event bg-green" id="'+c.node.type[i]+'" draggable="true" ondragstart='+event+' style="background-color: '+type_property[c.node.type[i]].color+' !important;">'+type_property[c.node.type[i]].name+'</div>');
+            }
         });
     });
     </script>

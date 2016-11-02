@@ -122,6 +122,7 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
+        var self = this;
 
         if(start)
             this.force.stop();
@@ -143,6 +144,7 @@ dreamer.GraphEditor = (function(global) {
      *
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
+        var self = this;
         this.filter_parameters = filtersParams;
         this.current_view_id = (filtersParams.link.view[0] != undefined) ? filtersParams.link.view[0] : current_view_id
         this.cleanAll();
@@ -156,7 +158,6 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.addNode = function(args) {
-
         if (args.id && args.info && args.info.type) {
             args.fixed = true;
             this.force.stop();
@@ -619,7 +620,9 @@ dreamer.GraphEditor = (function(global) {
         d3.select(node_instance).classed(activeClass, !alreadyIsActive);
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
-
+    GraphEditor.prototype.getCurrentGroup = function(){
+        return this.filter_parameters.node.group[0];
+    }
 
     /**
      * Log utility
