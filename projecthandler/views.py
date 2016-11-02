@@ -218,9 +218,8 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
 @login_required
 def graph_positions(request, project_id=None):
     if request.method == 'POST':
-        print request.POST
         projects = EtsiManoProject.objects.filter(id=project_id)
-        result = projects[0].editGraphPositions(json.loads(request.POST.get('positions')))
+        result = projects[0].edit_graph_positions(json.loads(request.POST.get('positions')))
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"

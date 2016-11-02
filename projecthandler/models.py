@@ -185,11 +185,16 @@ class EtsiManoProject(Project):
     def __str__(self):
         return self.name
 
-    def editGraphPositions(self, positions):
+    def edit_graph_positions(self, positions):
         print positions
         try:
             current_data = json.loads(self.data_project)
-            current_data['positions'] = positions
+            if 'positions' not in current_data :
+                current_data['positions'] = {}
+            if 'vertices' not in current_data['positions'] :
+                current_data['positions']['vertices'] = {}
+            if 'vertices' in positions :
+                current_data['positions']['vertices'].update(positions['vertices'])
             self.data_project = current_data
             self.update()
             result = True

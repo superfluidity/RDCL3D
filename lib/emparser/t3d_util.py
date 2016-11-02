@@ -24,204 +24,38 @@ class T3DUtil:
         logging.basicConfig(level=logging.DEBUG)
         self.log = logging.getLogger('T3DUtil')
 
-    def __build_nodes_ns(self, graph_object, project_data):
-        self.log.debug('__build_nodes')
-        for nscp in project_data['nsd']['connection_point']:
-            id_nscp = 'id'
-            graph_object['vertices'][nscp[id_nscp]] = self.__build_node_ns_cp(nscp)
-
-        return graph_object
-
-    def __build_node_ns_cp(self, cpdata, nsd):
-        node = copy.deepcopy(self.node_t3d_base)
-        node['id'] = cpdata['id']
-        node['descriptor'] = cpdata
-        node['nsd'] = nsd
-        node['info']['type'] = 'ns_cp'
-        return node
-
-    def __build_node_ns_vld(self, vldata, nsd):
-        node = copy.deepcopy(self.node_t3d_base)
-        node['id'] = vldata['id']
-        node['nsd'] = nsd
-        node['descriptor'] = vldata
-        node['info']['type'] = 'ns_vl'
-        node['vl_info'] = vldata
-        return node
-
-
-
-    def __build_edges_ns_vld(self, nsdid, vldid, json_project, graph_object, nsd):
-
-        for vl_cp in json_project['vld'][vldid]['connection']:
-            #cerco connessione con ns:connection_point
-            for ns_cp in json_project['nsd'][nsdid]['connection_point']:
-                if vl_cp == ns_cp['id']:
-                    edge_obj = {
-                        'source': vldid,
-                        'target': vl_cp,
-                        'view': 'nsd',
-                        'nsd' : nsd
-                    }
-                    if edge_obj not in graph_object['edges']:
-                        graph_object['edges'].append(edge_obj)
-
-            # cerco connessione con vnfd livello ns
-            for vnfd_id in json_project['vnfd']:
-                for vnfd_cp in json_project['vnfd'][vnfd_id]['connection_point']:
-                    if vl_cp == vnfd_cp['id']:
-                        edge_identifier = vldid + '&&' + vnfd_id
-                        edge_obj = {
-                            'source': vldid,
-                            'target': vnfd_id,
-                            'view': 'nsd',
-                            'nsd': nsd
-                        }
-                        if edge_obj not in graph_object['edges']:
-                            graph_object['edges'].append(edge_obj)
-
-        return graph_object
-
-    def __parse_ns_vnfd(self, vnfdid, vnfd, graph_object, nsd):
-        vnfd_node = copy.deepcopy(self.node_t3d_base)
-        vnfd_node['info']['type'] = 'vnf'
-        vnfd_node['info']['property']['role'] = 'circular'
-        vnfd_node['id'] = vnfdid
-        vnfd_node['nsd'] = nsd
-        vnfd_node['descriptor'] = vnfd
-        graph_object['vertices'].append(vnfd_node)
-        for vnfd_cp in vnfd['connection_point']:
-            vnfd_cp_node = copy.deepcopy(self.node_t3d_base)
-            vnfd_cp_node['info']['type'] = 'vnf_cp'
-            vnfd_cp_node['vnfd_cp_info'] = vnfd_cp
-            vnfd_cp_node['id'] = vnfd_cp['id']
-            vnfd_cp_node['nsd'] = nsd
-            vnfd_cp_node['descriptor'] = vnfd_cp
-            graph_object['vertices'].append(vnfd_cp_node)
-
-        for vnfd_vl in vnfd['virtual_link']:
-            vnfd_vl_node = copy.deepcopy(self.node_t3d_base)
-            vnfd_vl_node['info']['type'] = 'vnf_vl'
-            vnfd_vl_node['vnfd_vl_info'] = vnfd_vl
-            vnfd_vl_node['id'] = vnfd_vl['id']
-            vnfd_vl_node['nsd'] = nsd
-            vnfd_vl_node['descriptor'] = vnfd_vl
-            graph_object['vertices'].append( vnfd_vl_node)
-            for vnfd_vl_cp_r in vnfd_vl['connection_points_references']:
-                edge_obj = {
-                    'source': vnfd_vl['id'],
-                    'target': vnfd_vl_cp_r,
-                    'nsd': nsd
-                }
-                graph_object = self.__addLinktoEdge(edge_obj, edge_obj, 'vnfd', graph_object)
-
-
-        for vdu in vnfd['vdu']:
-            vdu_node = copy.deepcopy(self.node_t3d_base)
-            vdu_node['info']['type'] = 'vdu'
-            vdu_node['vdu_info'] = vdu
-            vdu_node['id'] = vdu['id']
-            vdu_node['nsd'] = nsd
-            vdu_node['descriptor'] = vdu
-            graph_object['vertices'].append(vdu_node)
-            for vnfc in vdu['vnfc']:
-                vnfc_node = copy.deepcopy(self.node_t3d_base)
-                vnfc_node['info']['type'] = 'vnfc'
-                vnfc_node['vnfc_info'] = vnfc
-                vnfc_node['id'] = vnfc['id']
-                vnfc_node['nsd'] = nsd
-                vnfc_node['descriptor'] = vnfc
-                graph_object['vertices'].append(vnfc_node)
-                edge_obj = {
-                    'source': vdu['id'],
-                    'target': vnfc['id'],
-                    'nsd': nsd
-                }
-                graph_object = self.__addLinktoEdge(edge_obj,edge_obj,'vnfd', graph_object)
-                for vnfc_cp in vnfc['connection_point']:
-                    vnfc_cp_node = copy.deepcopy(self.node_t3d_base)
-                    vnfc_cp_node['info']['type'] = 'vnfc_cp'
-                    vnfc_node['vnfc_cp_info'] = vnfc_cp
-                    vnfc_cp_node['id'] = vnfc_cp['id']
-                    vnfc_cp_node['nsd'] = nsd
-                    vnfc_cp_node['descriptor'] = vnfc_cp
-                    graph_object['vertices'].append(vnfc_cp_node)
-                    edge_obj = {
-                        'source': vnfc['id'],
-                        'target': vnfc_cp['id'],
-                        'nsd': nsd
-                    }
-                    graph_object = self.__addLinktoEdge(edge_obj, edge_obj, 'vnfd', graph_object)
-
-
-
-        return graph_object
-
-    def __addLinktoEdge(self, edge_obj, link_identifier, view, graph_object):
-        edge_obj['view'] = view
+    def add_link(self, source, target, view, group, graph_object ):
+        edge_obj = {
+            'source': source,
+            'target': target,
+            'view': view,
+            'group': group
+        }
         if edge_obj not in graph_object['edges']:
             graph_object['edges'].append(edge_obj)
 
+    def add_node(self, id, type, group, positions, graph_object):
+        node = copy.deepcopy(self.node_t3d_base)
+        node['id'] = id
+        node['info']['type'] = type
+        node['info']['group'] = group
+        if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
+            node['fx'] = positions['vertices'][id]['x']
+            node['fy'] = positions['vertices'][id]['y']
+        graph_object['vertices'].append(node)
 
-        return graph_object
-
-    def create_vnf_views(self, vnfd, graph_object):
+    def create_vnf_views(self, vnfd, positions, graph_object):
         for vl in vnfd['intVirtualLinkDesc']:
-            node = copy.deepcopy(self.node_t3d_base)
-            node['id'] = vl['virtualLinkDescId']
-            node['descriptor'] = vl
-            node['info']['type'] = 'vnf_vl'
-            node['info']['group'] = vnfd['vnfdId']
-            graph_object['vertices'].append(node)
+            self.add_node(vl['virtualLinkDescId'], 'vnf_vl', vnfd['vnfdId'],positions, graph_object)
         for cpd in vnfd['vnfExtCpd']:
-            node = copy.deepcopy(self.node_t3d_base)
-            node['id'] = cpd['cpdId']
-            node['descriptor'] = cpd
-            node['info']['type'] = 'vnf_cp'
-            node['info']['group'] = vnfd['vnfdId']
-            graph_object['vertices'].append(node)
-            edge_obj = {
-                'source': cpd['cpdId'],
-                'target': cpd["intVirtualLinkDesc"],
-                'view': 'vnf',
-                'group': vnfd['vnfdId'],
-                'vnf': vnfd
-            }
-            if edge_obj not in graph_object['edges']:
-                graph_object['edges'].append(edge_obj)
+            self.add_node(cpd['cpdId'], 'vnf_cp', vnfd['vnfdId'], positions, graph_object)
+            self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
         for vdu in vnfd['vdu']:
-            node = copy.deepcopy(self.node_t3d_base)
-            node['id'] =vdu['vduId']
-            node['descriptor'] = vdu
-            node['info']['type'] = 'vnf_vdu'
-            node['info']['group'] = vnfd['vnfdId']
-            graph_object['vertices'].append(node)
+            self.add_node(vdu['vduId'], 'vnf_vdu', vnfd['vnfdId'], positions, graph_object)
             for cpd in vdu['intCpd']:
-                node = copy.deepcopy(self.node_t3d_base)
-                node['id'] = cpd['cpdId']
-                node['descriptor'] = cpd
-                node['info']['type'] = 'vnf_cp'
-                node['info']['group'] = vnfd['vnfdId']
-                graph_object['vertices'].append(node)
-                edge_obj = {
-                    'source': cpd['cpdId'],
-                    'target': cpd["intVirtualLinkDesc"],
-                    'view': 'vnf',
-                    'group': vnfd['vnfdId'],
-                    'vnf': vnfd
-                }
-                if edge_obj not in graph_object['edges']:
-                    graph_object['edges'].append(edge_obj)
-                edge_obj = {
-                    'source': cpd['cpdId'],
-                    'target': vdu['vduId'],
-                    'view': 'vnf',
-                    'group': vnfd['vnfdId'],
-                    'vnf': vnfd
-                }
-                if edge_obj not in graph_object['edges']:
-                    graph_object['edges'].append(edge_obj)
-
+                self.add_node(cpd['cpdId'], 'vnf_cp', vnfd['vnfdId'], positions, graph_object)
+                self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
+                self.add_link(cpd['cpdId'], vdu['vduId'], 'vnf', vnfd['vnfdId'], graph_object)
 
     def build_graph_from_project(self, json_project):
         print "json_project ",json_project
@@ -231,71 +65,26 @@ class T3DUtil:
             'graph_parameters': {}
         }
         try:
+            positions = json_project['positions'] if 'positions' in json_project else False
             self.log.debug('build t3d graph from project json')
 
             for current_nsd in json_project['nsd']:
-                node = copy.deepcopy(self.node_t3d_base)
-                node['id'] = current_nsd
-                node['descriptor'] = json_project['nsd'][current_nsd]
-                node['info']['type'] = 'nsd'
-                node['info']['property']['role'] = 'square'
-                node['info']['group'] = current_nsd
-                graph_object['vertices'].append(node)
+                self.add_node(current_nsd, 'nsd', current_nsd, positions, graph_object)
                 for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
-                    node = copy.deepcopy(self.node_t3d_base)
-                    node['id'] = vnfd_id
-                    node['descriptor'] = json_project['vnfd'][vnfd_id]
-                    node['info']['type'] = 'vnf'
-                    node['info']['group'] = current_nsd
-                    if ('positions' in json_project and vnfd_id in json_project['positions']['vertices']):
-                        node['fx'] = json_project['positions']['vertices'][vnfd_id]['x']
-                        node['fy'] = json_project['positions']['vertices'][vnfd_id]['y']
-                    graph_object['vertices'].append(node)
-                    self.create_vnf_views(json_project['vnfd'][vnfd_id], graph_object)
+                    self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
+                    self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
                 for sapd in json_project['nsd'][current_nsd]['sapd']:
-                    node = copy.deepcopy(self.node_t3d_base)
-                    cpdId = sapd["cpdId"]
-                    node['id'] = sapd["cpdId"]
-                    node['descriptor'] = sapd
-                    node['info']['type'] = 'ns_cp'
-                    node['info']['group'] = current_nsd
-                    if ('positions' in json_project and cpdId in json_project['positions']['vertices']):
-                        node['fx'] = json_project['positions']['vertices'][cpdId]['x']
-                        node['fy'] = json_project['positions']['vertices'][cpdId]['y']
-                    graph_object['vertices'].append(node)
-                    edge_obj = {
-                        'source': sapd['nsVirtualLinkDescId'],
-                        'target': sapd["cpdId"],
-                        'view': 'nsd',
-                        'group': current_nsd,
-                        'nsd': current_nsd
-                    }
-                    if edge_obj not in graph_object['edges']:
-                        graph_object['edges'].append(edge_obj)
+                    self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
+                    self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'nsd', current_nsd, graph_object)
                 for vld in json_project['nsd'][current_nsd]['virtualLinkDesc']:
-                    node = copy.deepcopy(self.node_t3d_base)
-                    node['id'] = vld["virtualLinkDescId"]
-                    node['descriptor'] = vld
-                    node['info']['type'] = 'ns_vl'
-                    node['info']['group']= current_nsd
-                    if ('positions' in json_project and vld["virtualLinkDescId"] in json_project['positions']['vertices']):
-                        node['fx'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['x']
-                        node['fy'] = json_project['positions']['vertices'][vld["virtualLinkDescId"]]['y']
-                    graph_object['vertices'].append(node)
+                   self.add_node(vld["virtualLinkDescId"], 'ns_vl', current_nsd, positions, graph_object)
                 for nsdf in json_project['nsd'][current_nsd]['nsDf']:
                     for vnfProfile in nsdf['vnfProfile']:
                         for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
                             virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
                             if(virtualLinkProfile is not None):
-                                edge_obj = {
-                                    'source': virtualLinkProfile['virtualLinkDescId'],
-                                    'target': vnfProfile["vnfdId"],
-                                    'view': 'nsd',
-                                    'group': current_nsd,
-                                    'nsd': current_nsd
-                                }
-                                if edge_obj not in graph_object['edges']:
-                                    graph_object['edges'].append(edge_obj)
+                                self.add_link(virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'nsd', current_nsd, graph_object)
+
         except Exception as e:
             self.log.error('Exception build_graph_from_project')
             raise
