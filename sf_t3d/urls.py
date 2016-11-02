@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^register', user_views.register_view, name='register_user'),
     url(r'^mpv/', include('topology_mpv.urls')),
     url(r'^projects/', include('projecthandler.urls',namespace='projects'), name='projects_base'),
+    url(r'^$', views.home, name='home'),
     url(r'^home', views.home, name='home'),
 
 ]

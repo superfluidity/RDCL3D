@@ -79,7 +79,6 @@ dreamer.GraphEditor = (function(global) {
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
 
-
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
 
         var size = d3.scalePow().exponent(2)
@@ -122,7 +121,6 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-        var self = this;
 
         if(start)
             this.force.stop();
@@ -135,7 +133,7 @@ dreamer.GraphEditor = (function(global) {
         if(start)
             this.force.restart();
 
-        self.eventHandler.fire("force_status_changed_on", start);
+        this.eventHandler.fire("force_status_changed_on", start);
     };
 
     /**
@@ -144,12 +142,11 @@ dreamer.GraphEditor = (function(global) {
      *
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
-        var self = this;
         this.filter_parameters = filtersParams;
         this.current_view_id = (filtersParams.link.view[0] != undefined) ? filtersParams.link.view[0] : current_view_id
         this.cleanAll();
         this.refresh();
-        self.eventHandler.fire("filters_changed", filtersParams);
+        this.eventHandler.fire("filters_changed", filtersParams);
     };
 
     /**
