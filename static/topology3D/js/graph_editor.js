@@ -122,25 +122,19 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-        if (start) {
 
-            this.node.each(function(d) {
-                d.fx= null;
-                d.fy= null;
-            });
-            this.force.restart();
-            this.forceSimulationActive = true;
-
-        } else {
-
+        if(start)
             this.force.stop();
-            this.forceSimulationActive = false;
-            this.node.each(function(d) {
-                d.fx= d.x;
-                d.fy= d.y;
-            });
+        this.forceSimulationActive = false;
+        this.node.each(function(d) {
+                d.fx = (start) ? null : d.x;
+                d.fy = (start) ? null : d.y;
+        });
 
-        }
+        if(start)
+            this.force.restart();
+
+        self.eventHandler.fire("force_status_changed_on", start);
     };
 
     /**
@@ -153,6 +147,7 @@ dreamer.GraphEditor = (function(global) {
         this.current_view_id = (filtersParams.link.view[0] != undefined) ? filtersParams.link.view[0] : current_view_id
         this.cleanAll();
         this.refresh();
+        self.eventHandler.fire("filters_changed", filtersParams);
     };
 
     /**
