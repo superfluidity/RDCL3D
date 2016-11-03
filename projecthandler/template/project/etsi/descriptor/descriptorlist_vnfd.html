@@ -2,11 +2,11 @@
     <thead>
     <tr>
 
-        <th>Id</th>
-        <th>Vendor</th>
+        <th>Product Name</th>
+        <th>Provider</th>
         <th>Version</th>
-        <th>Description Version</th>
-        <th>Action</th>
+        <th>Software Version</th>
+        <th>Actions</th>
 
 
     </tr>
@@ -16,9 +16,9 @@
     <tr>
 
         <td><a href="/projects/{{project_id}}/graph">{{ k }}</a></td>
-        <td>{{ v.vendor }}</td>
-        <td>{{ v.version }}</td>
-        <td>{{ v.descriptor_version }}</td>
+        <td>{{ v.vnfProvider }}</td>
+        <td>{{ v.vnfdVersion }}</td>
+        <td>{{ v.vnfSoftwareVersion }}</td>
         <td>
             <div class="btn-group">
                   <button type="button" class="btn btn-default">Action</button>

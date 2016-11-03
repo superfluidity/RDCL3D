@@ -2,10 +2,10 @@
     <thead>
     <tr>
 
-        <th>Id</th>
-        <th>Vendor</th>
+        <th>Name</th>
+        <th>Designer</th>
         <th>Version</th>
-        <th><span> Action</span></th>
+        <th><span> Actions</span></th>
 
     </tr>
     </thead>
@@ -13,7 +13,7 @@
     {% for k,v in descriptors.items %}
     <tr>
         <td><a href='/projects/{{project_id}}/graph/'>{{ k }}</a></td>
-        <td>{{ v.vendor }}</td>
+        <td>{{ v.designer }}</td>
         <td>{{ v.version }}</td>
         <td>
             <div class="btn-group">
