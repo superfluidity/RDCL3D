@@ -21,11 +21,7 @@
       </div>
       <div class="row">
         <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> Remember Me
-            </label>
-          </div>
+
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
@@ -34,8 +30,11 @@
         <!-- /.col -->
       </div>
     </form>
-
-
+    <div class="row center">
+    <p class="login-box-msg">- OR -</p>
+    </div>
+     <a href='{% url "auth_user_guest" %}' class="btn btn-primary btn-block btn-flat">Guest Sign In</a>
+    <br>
     <a href="#">I forgot my password</a><br>
     <a href='{% url "register_user" %}' class="text-center">Register a new membership</a>
 

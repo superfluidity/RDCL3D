@@ -617,9 +617,8 @@ dreamer.GraphEditor = (function(global) {
         d3.select(node_instance).classed(activeClass, !alreadyIsActive);
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
-    GraphEditor.prototype.getCurrentGroup = function(){
-        return this.filter_parameters.node.group[0];
-    }
+
+
 
     /**
      * Log utility

@@ -2,10 +2,10 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
-from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sessions.base_session import AbstractBaseSession
+from django.db import models
 
 class CustomUserManager(BaseUserManager):
     """Custom manager for CustomUser."""
@@ -35,9 +35,14 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(username, password, False, False, is_full_operator=True,
                                  **extra_fields)
 
-    """Create and save an CustomUser with the given email and password. """
+    """Create and save an BasicUser with the given email and password. """
     def create_basic_user(self, username, password=None, **extra_fields):
         return self._create_user(username, password, False, False, is_basic_user=True,
+                                 **extra_fields)
+
+    """Create and save an GuestUser with the given email and password. """
+    def create_guest_user(self, username, password="guest", **extra_fields):
+        return self._create_user(username, password, False, False, is_guest_user=True,
                                  **extra_fields)
 
 
@@ -69,6 +74,7 @@ class AbstractCustomUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(_('admin status'), default=False)
     is_full_operator = models.BooleanField(_('full_operator status'), default=False)
     is_basic_user = models.BooleanField(_('basic_user status'), default=False)
+    is_guest_user = models.BooleanField(_('guest_user status'), default=False)
 
     is_staff = models.BooleanField(
         _('staff status'), default=False, help_text=_(
@@ -121,6 +127,9 @@ class CustomUser(AbstractCustomUser):
     def count_inactives(self):
         return CustomUser.objects.filter(is_active=False).count()
 
+    def is_guest(self):
+        return self.is_guest_user
+
     def get_avatar(self):
         if self.is_admin:
             return "assets/img/employer.jpg"
@@ -128,6 +137,8 @@ class CustomUser(AbstractCustomUser):
             return "assets/img/employer.jpg"
         elif self.is_basic_user:
             return "assets/img/employer.jpg"
+        elif self.is_guest_user:
+            return "assets/img/punto.png"
 
     def get_user_role(self):
         if self.is_admin:
@@ -136,6 +147,8 @@ class CustomUser(AbstractCustomUser):
             return 1, "Full operator"
         elif self.is_basic_user:
             return 2, "Basic user"
+        elif self.is_guest_user:
+            return 3, "Guest user"
 
     def get_user_role_name(self):
         if self.is_admin:
@@ -144,3 +157,13 @@ class CustomUser(AbstractCustomUser):
             return "Full operator"
         elif self.is_basic_user:
             return "Basic user"
+        elif self.is_guest_user:
+            return "Guest user"
+
+class CustomSession(AbstractBaseSession):
+    account_id = models.IntegerField(null=True, db_index=True)
+
+    @classmethod
+    def get_session_store_class(cls):
+        return SessionStore
+

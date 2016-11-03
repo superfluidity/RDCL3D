@@ -249,6 +249,10 @@ dreamer.ManoGraphEditor = (function(global) {
         return this.type_property;
     };
 
+    ManoGraphEditor.prototype.getCurrentGroup = function(){
+        return this.filter_parameters.node.group[0];
+    }
+
     /**
      * Log utility
      */
