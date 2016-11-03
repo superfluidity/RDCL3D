@@ -58,7 +58,7 @@ dreamer.ManoGraphEditor = (function(global) {
             },
             "vnf_ext_cp": {
                 "shape": d3.symbolCircle,
-                "color": "#1F2B35",
+                "color": "#9EAAB4",
                 "size": 15,
                 "name": "ExtCP"
             },

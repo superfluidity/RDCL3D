@@ -118,32 +118,42 @@
          data.append('csrfmiddlewaretoken','{{csrf_token}}');
          graph_editor.savePositions(data);
     }
+   $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null){
+           return null;
+        }
+        else{
+           return results[1] || 0;
+        }
+    }
 
+    function changeFilter (e,c ){
+        var type_property = graph_editor.getTypeProperty();
+        $("#draggable-container").empty()
+        for( var i in c.node.type){
+            var event = 'event.dataTransfer.setData("text/plain","'+c.node.type[i]+'")'
+            $("#draggable-container").append('<div class="external-event bg-green" id="'+c.node.type[i]+'" draggable="true" ondragstart='+event+' style="background-color: '+type_property[c.node.type[i]].color+' !important;">'+type_property[c.node.type[i]].name+'</div>');
+        }
+    }
     $(document).ready(function() {
-
-
+        var type = $.urlParam('type')=='nsd'? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp','vnf_vdu'];
         graph_editor.handleFiltersParams({
             node: {
-                type : ['vnf', 'ns_cp', 'ns_vl'],
-                group: []
+                type : type ,
+                group: [$.urlParam('id')]
             },
             link: {
-                group: [],
-                view: ['nsd']
+                group: [$.urlParam('id')],
+                view: [$.urlParam('type')]
             }
         });
+        changeFilter(null, {node:{type: type}});
         graph_editor.addListener("right_click_node", function(a, args) {
             //console.log("node_selected", a, args);
             $('#modal_edit_descriptor').modal('show');
         });
-        graph_editor.addListener("filters_changed", function(e,c ){
-            var type_property = graph_editor.getTypeProperty();
-            $("#draggable-container").empty()
-            for( var i in c.node.type){
-                var event = 'event.dataTransfer.setData("text/plain","'+c.node.type[i]+'")'
-                $("#draggable-container").append('<div class="external-event bg-green" id="'+c.node.type[i]+'" draggable="true" ondragstart='+event+' style="background-color: '+type_property[c.node.type[i]].color+' !important;">'+type_property[c.node.type[i]].name+'</div>');
-            }
-        });
+        graph_editor.addListener("filters_changed", changeFilter);
     });
     </script>
 {% endblock %}
