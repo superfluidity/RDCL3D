@@ -15,9 +15,7 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">Project {{project_id}}</a></li>
-    <li>Show Graph</li>
-
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
 {% endblock %}
 
 {% block content_body %}
@@ -135,10 +133,12 @@
             var event = 'event.dataTransfer.setData("text/plain","'+c.node.type[i]+'")'
             $("#draggable-container").append('<div class="external-event bg-green" id="'+c.node.type[i]+'" draggable="true" ondragstart='+event+' style="background-color: '+type_property[c.node.type[i]].color+' !important;">'+type_property[c.node.type[i]].name+'</div>');
         }
+        var newLi= $("<li id="+JSON.stringify(graph_editor.getCurrentGroup())+"><a href='javascript:filters("+JSON.stringify(graph_editor.getCurrentGroup())+","+JSON.stringify(c)+")'>"+graph_editor.getCurrentGroup()+"</a></li>");
+        $('#breadcrumb').append(newLi);
     }
     $(document).ready(function() {
         var type = $.urlParam('type')=='nsd'? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp','vnf_vdu'];
-        graph_editor.handleFiltersParams({
+        var params = {
             node: {
                 type : type ,
                 group: [$.urlParam('id')]
@@ -147,14 +147,27 @@
                 group: [$.urlParam('id')],
                 view: [$.urlParam('type')]
             }
-        });
-        changeFilter(null, {node:{type: type}});
+        }
+
+        graph_editor.addListener("filters_changed", changeFilter);
+        graph_editor.handleFiltersParams(params);
+
         graph_editor.addListener("right_click_node", function(a, args) {
             //console.log("node_selected", a, args);
             $('#modal_edit_descriptor').modal('show');
         });
-        graph_editor.addListener("filters_changed", changeFilter);
+
+
+
     });
+    var filters = function(e,params){
+        console.log(e)
+        graph_editor.handleFiltersParams(params);
+        $('#'+e).nextAll('li').remove();
+    }
+
+
+
     </script>
 {% endblock %}
 

@@ -78,8 +78,7 @@
 
 .level_box {
     position: absolute;
-    padding-top: 10px;
-    left: 40%;
+    /*padding-top: 10px;*/
     z-index: 1;
     -webkit-touch-callout: none;
     -webkit-user-select: none;

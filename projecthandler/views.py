@@ -100,6 +100,7 @@ def show_descriptors(request, project_id = None, descriptor_type = None):
     return render(request, 'project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
+        'project_overview_data': projects[0].get_overview_data(),
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type
     })
@@ -110,7 +111,10 @@ def graph(request, project_id = None):
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
 
-    return render(request, 'project_graph.html', {'project_id': project_id})
+    return render(request, 'project_graph.html', {
+        'project_id': project_id,
+        'project_overview_data': projects[0].get_overview_data(),
+    })
 
 
 @login_required
@@ -128,6 +132,7 @@ def graph_data(request, project_id = None):
 @login_required
 def downlaod(request, project_id = None):
     csrf_token_value = get_token(request)
+    projects = EtsiManoProject.objects.filter(id=project_id)
     if request.method == 'POST':
         projects = EtsiManoProject.objects.filter(id=project_id)
         in_memory = projects[0].get_zip_archive()
@@ -140,7 +145,10 @@ def downlaod(request, project_id = None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {'project_id': project_id})
+        return render(request, 'download_etsi.html', {
+            'project_id': project_id,
+            'project_overview_data': projects[0].get_overview_data(),
+        })
 
 
 @login_required
@@ -152,6 +160,7 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     return render(request, 'project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
+        'project_overview_data': projects[0].get_overview_data(),
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type,
         'alert_message':{
@@ -164,7 +173,9 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
         return render(request, 'descriptor_new.html', {
             'project_id': project_id,
-            'descriptor_type':descriptor_type})
+            'descriptor_type':descriptor_type,
+            'project_overview_data': projects[0].get_overview_data(),
+        })
     elif request.method == 'POST':
         csrf_token_value = get_token(request)
         projects = EtsiManoProject.objects.filter(id=project_id)
@@ -178,6 +189,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         response_data = {
             'project_id': project_id,
             'descriptor_type': descriptor_type,
+            'project_overview_data': projects[0].get_overview_data(),
             'alert_message': {
                 'success': result,
                 'message': "Descriptor created" if result else 'Error in creation'}
@@ -196,6 +208,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         response_data = {
             'project_id': project_id,
             'descriptor_type': descriptor_type,
+            'project_overview_data': projects[0].get_overview_data(),
             'alert_message': {
                 'success': result,
                 'message': "Descriptor modified." if result else 'Error during descriptor editing.'}
@@ -213,7 +226,12 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = utility.json2yaml(descriptor)
         #print descriptor
-        return render(request, 'descriptor_view.html', {'project_id': project_id,'descriptor_id': descriptor_id, 'descriptor_type': descriptor_type, 'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
+        return render(request, 'descriptor_view.html', {
+            'project_id': project_id,
+            'descriptor_id': descriptor_id,
+            'project_overview_data': projects[0].get_overview_data(),
+            'descriptor_type': descriptor_type,
+            'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}})
 
 @login_required
 def graph_positions(request, project_id=None):

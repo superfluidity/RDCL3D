@@ -15,7 +15,7 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     {% if project_id  %}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">Project {{project_id}}</a></li>
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
     <li>Delete Project</li>
     {% endif %}
 {% endblock %}
