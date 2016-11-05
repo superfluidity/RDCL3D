@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect
 from sf_user.models import CustomUser
-from django.utils import timezone
+import uuid
 
 
 # Create your views here.
@@ -38,7 +38,8 @@ def guest_login(request):
         CustomUser.objects.get(id=request.user.id).delete()
     logout(request)
     next = ""
-    guest_user_name = "Guesto"+str(timezone.now())
+
+    guest_user_name = "Guest_"+str(uuid.uuid1())
     guest_user_email = guest_user_name+"@guest.it"
     guest_user = CustomUser.objects.create(username=guest_user_name, is_guest_user="True", email=guest_user_email)
     print guest_user.username
