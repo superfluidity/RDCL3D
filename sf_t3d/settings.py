@@ -32,8 +32,8 @@ AUTH_USER_MODEL = "sf_user.CustomUser"
 SITE_NAME = "RDCL 3D"
 SHORT_SITE_NAME = "RDCL"
 
-LOGIN_URL = '/auth'
-LOGOUT_URL = '/auth'
+LOGIN_URL = '/auth/'
+LOGOUT_URL = '/auth/'
 
 VERSION = "0.0.1"
 
