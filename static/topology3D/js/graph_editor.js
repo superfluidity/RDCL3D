@@ -611,7 +611,8 @@ dreamer.GraphEditor = (function(global) {
      *  Callback to resize SVG element on window resize
      */
     GraphEditor.prototype.resizeSvg = function(width, height) {
-        log("resizeSvg " + width + " " + height);
+        log("resizeSvg");
+        log(event);
         this.width = width || this.width;
         this.height = height || this.height;
         this.svg.attr('width', width);

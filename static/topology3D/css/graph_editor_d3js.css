@@ -40,7 +40,7 @@
 }
 
 
-.canvas-label {
+.left-tool-bar {
     top: 14px;
     cursor: default;
     padding: 0 6px;
@@ -55,7 +55,7 @@
     z-index: 1;
     text-align: center;
     font-size: 12px;
-    color: #777;
+    /*color: #777;
     /* border-radius: 20px; */
 
     -webkit-touch-callout: none;

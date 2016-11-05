@@ -114,6 +114,7 @@ def graph(request, project_id = None):
     return render(request, 'project_graph.html', {
         'project_id': project_id,
         'project_overview_data': projects[0].get_overview_data(),
+        'collapsed_sidebar': True
     })
 
 
@@ -171,6 +172,7 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
 @login_required
 def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
+        projects = EtsiManoProject.objects.filter(id=project_id)
         return render(request, 'descriptor_new.html', {
             'project_id': project_id,
             'descriptor_type':descriptor_type,

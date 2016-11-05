@@ -33,29 +33,33 @@
     <div class="col-md-6">
         <div class="box box-widget ">
             <div class="box-body">
-              <ul class="list-group list-group-unbordered">
-                  <li class="list-group-item"><b>Project Name:</b><a > <span class="pull-right">{{project_overview.name}}</span></a></li>
-                  <li class="list-group-item"><b>Info:</b><a > <span class="pull-right">{{project_overview.info}}</span></a></li>
-                  <li class="list-group-item"><b>Last updated:</b><a > <span class="pull-right">{{project_overview.updated_date}}</span></a></li>
-                  <li class="list-group-item"><b>Owner:</b><a > <span class="pull-right">{{project_overview.owner}}</span></a></li>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item"><b>Project Name:</b><a> <span class="pull-right">{{project_overview.name}}</span></a>
+                    </li>
+                    <li class="list-group-item"><b>Info:</b><a> <span
+                            class="pull-right">{{project_overview.info}}</span></a></li>
+                    <li class="list-group-item"><b>Last updated:</b><a> <span class="pull-right">{{project_overview.updated_date}}</span></a>
+                    </li>
+                    <li class="list-group-item"><b>Owner:</b><a> <span
+                            class="pull-right">{{project_overview.owner}}</span></a></li>
 
-                    <li class="list-group-item"><b>Validated:</b><a >
+                    <li class="list-group-item"><b>Validated:</b><a>
                         {% if project_overview.validated %}
-                         <span class="pull-right badge bg-green">{{project_overview.validated}}</span>
-                             {% else %}
+                        <span class="pull-right badge bg-green">{{project_overview.validated}}</span>
+                        {% else %}
                         <span class="pull-right badge bg-red">{{project_overview.validated}}</span>
                         {% endif %}
-                           </a>
+                    </a>
 
                     </li>
 
-              </ul>
+                </ul>
 
             </div>
             <div class="box-footer">
 
             </div>
-          </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="row">
@@ -74,27 +78,7 @@
                         More info <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
-          </div>
-        <!--
-          <div class="col-md-6 ">
-
-              <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>{{project_overview.vnffgd}}</h3>
-
-                        <p>VNFFGD</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-file-code-o"></i>
-                    </div>
-                    <a href="/projects/{{project_id}}/descriptors/vnffgd" class="small-box-footer">
-                        More info <i class="fa fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-          </div>
-        </div>
-        -->
-        <div class="row">
+            </div>
             <div class="col-md-6 ">
                 <div class="small-box bg-aqua">
                     <div class="inner">
@@ -109,26 +93,13 @@
                         More info <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
-          </div>
-        <!--
-          <div class="col-md-6 ">
+            </div>
 
-              <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>{{project_overview.vld}}</h3>
-
-                        <p>VLD</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-file-code-o"></i>
-                    </div>
-                    <a href="/projects/{{project_id}}/descriptors/vld" class="small-box-footer">
-                        More info <i class="fa fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-          </div>
         </div>
-        -->
+        <div class="row">
+
+
+        </div>
     </div>
 </div>
 

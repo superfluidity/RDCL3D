@@ -33,10 +33,10 @@
   <![endif]-->
 </head>
 
-{% if user.get_full_name %}
-<body class="hold-transition skin-blue sidebar-mini">
-{% else %}
+{% if collapsed_sidebar == True %}
 <body class="skin-blue sidebar-mini sidebar-collapse">
+{% else %}
+<body class="hold-transition skin-blue sidebar-mini">
 {% endif %}
     <!-- Site wrapper -->
     <div class="wrapper">
