@@ -23,10 +23,10 @@
 }
 
 .drag_box {
-margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
     padding-top: 0px;
     top: 14px;
-    right: 21px;
+    right: 25px !important;
     width: 15%;
     position: absolute;
     z-index: 1;

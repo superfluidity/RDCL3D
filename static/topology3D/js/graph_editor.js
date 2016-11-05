@@ -41,6 +41,7 @@ dreamer.GraphEditor = (function(global) {
             links: []
         };
 
+
     }
 
 
@@ -57,8 +58,6 @@ dreamer.GraphEditor = (function(global) {
         this._setupBehaviorsOnEvents();
         this._setupFiltersBehaviors(args);
 
-
-
         this.type_property = {
             "unrecognized": {
                 "shape": d3.symbolCircle,
@@ -66,24 +65,12 @@ dreamer.GraphEditor = (function(global) {
                 "node_label_color": "black",
                 "size": 15
             },
-
-
         };
 
-console.log(this.width / 2, this.height / 2)
         this.force = d3.forceSimulation()
-    .force("charge", d3.forceManyBody().strength(-10))
-    .force("link", d3.forceLink().distance(100).iterations(3).id(function(d) { return d.id; }))
-    .force("center", d3.forceCenter(this.width / 2, this.height / 2));
-
-
-            /*d3.forceSimulation()
-            .force("link", d3.forceLink().distance(100).strength(3).id(function(d, i) {
-                return d.id;
-            }))
-            .force("charge", d3.forceManyBody().strength(30))
+            .force("charge", d3.forceManyBody().strength(-10))
+            .force("link", d3.forceLink().distance(100).iterations(3).id(function(d) { return d.id; }))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
-*/
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
 
@@ -112,13 +99,13 @@ console.log(this.width / 2, this.height / 2)
 
         d3.json("graph_data", function(error, data) {
 
-            self.d3_graph.nodes = data.vertices
+            self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
-
 
             self.refresh();
             self.startForce();
         });
+
     }
 
     /**
@@ -169,7 +156,6 @@ console.log(this.width / 2, this.height / 2)
             this.refresh();
             this.startForce();
             this.force.restart();
-            //
             return true;
         }
 
@@ -422,11 +408,8 @@ console.log(this.width / 2, this.height / 2)
                     return d.target.y;
                 });
 
-
-
             self.text.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
-
             });
 
         };
@@ -623,6 +606,18 @@ console.log(this.width / 2, this.height / 2)
         d3.select(node_instance).classed(activeClass, !alreadyIsActive);
         this._selected_node = (alreadyIsActive) ? undefined : node_id;
     };
+
+    /**
+     *  Callback to resize SVG element on window resize
+     */
+    GraphEditor.prototype.resizeSvg = function(width, height) {
+        log("resizeSvg " + width + " " + height);
+        this.width = width || this.width;
+        this.height = height || this.height;
+        this.svg.attr('width', width);
+        this.svg.attr('height', height);
+
+    }
 
 
 
