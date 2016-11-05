@@ -70,14 +70,20 @@ dreamer.GraphEditor = (function(global) {
 
         };
 
-
+console.log(this.width / 2, this.height / 2)
         this.force = d3.forceSimulation()
+    .force("charge", d3.forceManyBody().strength(-10))
+    .force("link", d3.forceLink().distance(100).iterations(3).id(function(d) { return d.id; }))
+    .force("center", d3.forceCenter(this.width / 2, this.height / 2));
+
+
+            /*d3.forceSimulation()
             .force("link", d3.forceLink().distance(100).strength(3).id(function(d, i) {
                 return d.id;
             }))
-            .force("charge", d3.forceManyBody())
+            .force("charge", d3.forceManyBody().strength(30))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
-
+*/
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
 

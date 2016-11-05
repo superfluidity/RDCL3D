@@ -21,12 +21,15 @@
 {% block content_body %}
   	{{ block.super }}
  {% csrf_token %}
-<div class="row">
-    <div id="graph_ed" style="border: 2px #3c8dbc solid;overflow-y: scroll; width: 100%; height: 480px;">
+<div class="row" >
+    <div class="col-md-12">
         {% include 'topology_toolbar.html' %}
+        <div id="graph_ed"   style="border: 2px #3c8dbc solid;overflow-y: scroll;">
 
-        <div id="graph_ed_container" style="width: 100%; height: 100%; position:relative;">
 
+            <div id="graph_ed_container" >
+
+            </div>
         </div>
     </div>
 </div>
@@ -65,8 +68,8 @@
 
     var graph_editor = new dreamer.ManoGraphEditor();
     graph_editor.init({
-        width: window.innerWidth,
-        height: window.innerHeight
+        width:$('#graph_ed').width(),
+        height: $('#graph_ed').height()
     });
 
     var dropZone = document.getElementById('graph_ed_container');
