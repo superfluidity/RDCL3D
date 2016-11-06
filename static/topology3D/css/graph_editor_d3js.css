@@ -23,11 +23,12 @@
 }
 
 .drag_box {
+    padding: 0 21px 0 0;
     margin-bottom: 0px !important;
     padding-top: 0px;
     top: 14px;
-    right: 25px !important;
-    width: 15%;
+    /* right: 25px !important; */
+    /* width: 15%; */
     position: absolute;
     z-index: 1;
     -webkit-touch-callout: none;
@@ -37,6 +38,17 @@
     -ms-user-select: none;
     user-select: none;
     right: 0;
+    cursor: move;
+}
+
+.drag_button {
+    cursor: move !important;
+    border-style: dashed;
+    border-width: thin;
+    border-color: black;
+    color: white;
+    font-size: larger;
+
 }
 
 

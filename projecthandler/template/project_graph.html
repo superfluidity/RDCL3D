@@ -24,7 +24,7 @@
 <div class="row" >
     <div class="col-md-12">
         {% include 'topology_toolbar.html' %}
-        <div id="graph_ed"   style="border: 2px #3c8dbc solid;overflow-y: scroll;">
+        <div id="graph_ed" style="background-color: white; border: 2px #3c8dbc solid;overflow-y: scroll;">
 
 
             <div id="graph_ed_container" >
@@ -48,129 +48,13 @@
     <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
     <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
 
-
-
     <!-- d3.js -->
     <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
 
     <!-- Select2 -->
     <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
 
-    <script>
-    var level = {
-        "NSExample": {
-            "vnf": ["vnf1", "vnf2", "vnf3"],
-            "vnffg": ["vnffg1"],
-            "vl": ["vl1", "vl2", "vl3", "vl4"]
-        }
-    };
+    <script src="{% static "src/projecthandler/project_graph.js" %}"></script>
 
-
-    var graph_editor = new dreamer.ManoGraphEditor();
-    graph_editor.init({
-        width:$('#graph_ed').width(),
-        height: $('#graph_ed').height()
-    });
-
-    var dropZone = document.getElementById('graph_ed_container');
-    dropZone.ondrop = function(e) {
-        var group = graph_editor.getCurrentGroup()
-        e.preventDefault();
-        var nodetype = e.dataTransfer.getData("text/plain");
-        console.log(nodetype);
-        if (nodetype) {
-            graph_editor.addNode({
-                'id': nodetype + "_" + Date.now(),
-                'info': {
-                    'type': nodetype,
-                    'group': group
-                },
-                'x': e.layerX,
-                'y': e.layerY
-            });
-        }
-
-    }
-
-    dropZone.ondragover = function(ev) {
-        console.log("ondragover");
-        return false;
-    }
-
-    dropZone.ondragleave = function() {
-        console.log("ondragleave");
-        return false;
-    }
-
-    function handleForce(el) {
-        if(el.id == "topology_play"){
-            $("#topology_pause").removeClass('active');
-            $("#topology_play").addClass('active');
-        }else{
-            $("#topology_pause").addClass('active');
-            $("#topology_play").removeClass('active');
-        }
-
-        graph_editor.handleForce((el.id == "topology_play") ? true : false);
-
-    }
-    function savePositions(el){
-         var data = new FormData();
-         data.append('csrfmiddlewaretoken','{{csrf_token}}');
-         graph_editor.savePositions(data);
-    }
-   $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null){
-           return null;
-        }
-        else{
-           return results[1] || 0;
-        }
-    }
-
-    function changeFilter (e,c ){
-        var type_property = graph_editor.getTypeProperty();
-        $("#draggable-container").empty()
-        for( var i in c.node.type){
-            var event = 'event.dataTransfer.setData("text/plain","'+c.node.type[i]+'")'
-            $("#draggable-container").append('<div class="external-event bg-green" id="'+c.node.type[i]+'" draggable="true" ondragstart='+event+' style="background-color: '+type_property[c.node.type[i]].color+' !important;">'+type_property[c.node.type[i]].name+'</div>');
-        }
-        var newLi= $("<li id="+JSON.stringify(graph_editor.getCurrentGroup())+"><a href='javascript:filters("+JSON.stringify(graph_editor.getCurrentGroup())+","+JSON.stringify(c)+")'>"+graph_editor.getCurrentGroup()+"</a></li>");
-        $('#breadcrumb').append(newLi);
-    }
-    $(document).ready(function() {
-        var type = $.urlParam('type')=='nsd'? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp','vnf_vdu'];
-        var params = {
-            node: {
-                type : type ,
-                group: [$.urlParam('id')]
-            },
-            link: {
-                group: [$.urlParam('id')],
-                view: [$.urlParam('type')]
-            }
-        }
-
-        graph_editor.addListener("filters_changed", changeFilter);
-        graph_editor.handleFiltersParams(params);
-
-        graph_editor.addListener("right_click_node", function(a, args) {
-            //console.log("node_selected", a, args);
-            $('#modal_edit_descriptor').modal('show');
-        });
-
-
-
-    });
-    var filters = function(e,params){
-        console.log(e)
-        graph_editor.handleFiltersParams(params);
-        $('#'+e).nextAll('li').remove();
-    }
-
-
-
-    </script>
 {% endblock %}
 

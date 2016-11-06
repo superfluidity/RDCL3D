@@ -20,33 +20,22 @@
 
 </div>
 
-    <div class="drag_box box box-solid ">
-        <div class="box-header with-border">
-              <h3 class="box-title">Add Elements</h3>
 
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-              </div>
-            </div>
-        <div class="box-body">
             <!-- the events -->
-            <div id="draggable-container">
+            <div id="draggable-container"  class="btn-group drag_box" >
 
-                <div class="external-event bg-green" id="cp" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_cp')" style="background-color: #F27220 !important;">
+                <button type="button" class="btn btn-flat btn-default drag_button" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_cp')" >
                     CP
-                </div>
-                <div class="external-event bg-yellow" id="vnf" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'vnf')" style="background-color: #54A698 !important;">
+                </button>
+                <button type="button" class="btn btn-flat btn-default drag_button" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'vnf')" >
                     VNF
-                </div>
-                <div class="external-event bg-aqua" id="vl" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_vl')" style="background-color: #196B90 !important;">
+                </button>
+                <button type="button" class="btn btn-flat btn-default drag_button" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'ns_vl')" >
                     VL
-                </div>
+                </button>
 
             </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
+
 
 <div>
     <!-- Popover settings content -->

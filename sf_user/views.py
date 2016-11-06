@@ -55,6 +55,7 @@ def guest_login(request):
 
     return render(request, 'login.html', {'error_message': 'New Guest session failed.'})
 
+
 def register_view(request):
 
     logout(request)

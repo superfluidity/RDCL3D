@@ -173,7 +173,8 @@ dreamer.ManoGraphEditor = (function(global) {
                         var new_link = {
                             source: source_id,
                             target: target_id,
-                            view: self.current_view_id
+                            view: self.filter_parameters.link.view[0],
+                            group: self.filter_parameters.link.group[0],
                         };
                         self.addLink(new_link);
                         self._deselectAllNodes();

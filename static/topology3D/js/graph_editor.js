@@ -136,7 +136,7 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
         this.filter_parameters = filtersParams;
-        this.current_view_id = (filtersParams.link.view[0] != undefined) ? filtersParams.link.view[0] : current_view_id
+        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : current_view_id
         this.cleanAll();
         this.refresh();
         this.eventHandler.fire("filters_changed", filtersParams);
@@ -215,13 +215,13 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.addLink = function(link) {
-        log("addLink")
         if (link.source && link.target) {
-            this.d3_graph.links.push(link);
-
+            this.force.stop();
             this.cleanAll();
+            this.d3_graph.links.push(link);
             this.refresh();
             this.startForce();
+            this.force.restart();
             return true;
         }
 
@@ -507,7 +507,6 @@ dreamer.GraphEditor = (function(global) {
 
         this.link_filter_cb = args.link_filter_cb || function(d) {
             var result = true;
-
             // check filter by view
             if(self.filter_parameters.link.view.length > 0){
                 if (self.filter_parameters.link.view.indexOf(d.view) < 0)
@@ -540,10 +539,12 @@ dreamer.GraphEditor = (function(global) {
                     if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
                         var source_id = self._selected_node;
                         var target_id = d.id;
+                        log(JSON.stringify(self.filter_parameters.link.view));
                         var new_link = {
                             source: source_id,
                             target: target_id,
-                            view: self.current_view_id
+                            view: self.filter_parameters.link.view[0],
+                            group: self.filter_parameters.link.group[0],
                         };
                         self.addLink(new_link);
                         self._deselectAllNodes();
