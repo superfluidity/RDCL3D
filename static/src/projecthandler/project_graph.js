@@ -107,7 +107,7 @@ function handleForce(el) {
 
 function savePositions(el) {
     var data = new FormData();
-    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     graph_editor.savePositions(data);
 }
 
@@ -122,4 +122,20 @@ function changeFilter(e, c) {
     }
     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(c) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
     $('#breadcrumb').append(newLi);
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
