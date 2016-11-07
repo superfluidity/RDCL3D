@@ -202,3 +202,402 @@ class EtsiManoProject(Project):
             print 'exception',e
             result = False
         return result
+
+    # NS operations: add/remove VL
+    def add_ns_vl(self, ns_id, vl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            ns = utility.get_descriptor_template('nsd')
+            vl_descriptor = ns['virtualLinkDesc'][0]
+            vl_descriptor['virtualLinkDescId'] = vl_id
+            current_data['nsd'][ns_id]['virtualLinkDesc'].append(vl_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result
+
+    def remove_ns_vl(self, ns_id, vl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vl_descriptor = next((x for x in current_data['nsd'][ns_id]['virtualLinkDesc'] if x['virtualLinkDescId'] == vl_id),None)
+            if vl_descriptor is not None:
+                current_data['nsd'][ns_id]['virtualLinkDesc'].remove(vl_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result
+
+    def edit_ns_vl(self, ns_id, vl_id, vl_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            self.remove_ns_vl(ns_id, vl_id)
+            current_data['nsd'][ns_id]['virtualLinkDesc'].append(vl_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result
+
+    # NS operations: add/remove SAP
+    def add_ns_sap(self, ns_id, sap_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            ns = utility.get_descriptor_template('nsd')
+            sap_descriptor = ns['sapd'][0]
+            sap_descriptor['cpdId'] = sap_id
+            current_data['nsd'][ns_id]['sapd'].append(sap_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def remove_ns_sap(self, ns_id, sap_id):
+        try:
+            current_data = json.loads(self.data_project)
+            sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
+            if sap_descriptor is not None:
+                current_data['nsd'][ns_id]['sapd'].remove(sap_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def edit_ns_sap(self, ns_id, sap_id, sap_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            self.remove_ns_sap(ns_id, sap_id)
+            current_data['nsd'][ns_id]['sapd'].append(sap_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # NS operations: add/remove VNF
+    def add_ns_vnf(self, ns_id, vnf_id):
+        #Aggingi l'id a vnfProfile e aggiungi un entry in nsDf e creare il file descriptor del VNF
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            current_data['nsd'][ns_id]['vnfdId'].append(vnf_id)
+            vnf_profile = utility.get_descriptor_template('nsd')['nsDf']['vnfProfile'][0]
+            vnf_profile['vnfdId'] = vnf_id
+            current_data['nsd'][ns_id]['nsDf']['vnfProfile'].append(vnf_profile)
+            vnf_descriptor = utility.get_descriptor_template('vnf')
+            current_data['vnfd'][vnf_id] = vnf_descriptor
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+
+    def remove_ns_vnf(self, ns_id, vnf_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            current_data['nsd'][ns_id]['vnfdId'].remove(vnf_id)
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            if vnf_profile is not None:
+                current_data['nsd'][ns_id]['nsDf']['vnfProfile'].remove(vnf_profile)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def edit_ns_vnf(self, vnf_id, vnf_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            current_data['vnfd'][vnf_id] = vnf_descriptor
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    #NS operations: add/remove Nested NS
+    def add_ns_nsNested (self, ns_id, nested_ns_id):
+        try:
+            current_data = json.loads(self.data_project)
+            current_data['nsd'][ns_id]['nestedNsdId'].append(nested_ns_id)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # NS operations: link/Unlink Sap with VL
+    def link_vl_sap(self, ns_id, vl_id, sap_id):
+        try:
+            current_data = json.loads(self.data_project)
+            sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
+            sap_descriptor['nsVirtualLinkDescId'] =vl_id
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def unlink_vl_sap(self, ns_id, vl_id, sap_id):
+        try:
+            current_data = json.loads(self.data_project)
+            sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
+            del sap_descriptor['nsVirtualLinkDescId']
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # NS operations: link/Unlink VNF with VL
+    def link_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
+        try:
+            utility = Util()
+            current_data = json.loads(self.data_project)
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id),None)
+            virtual_link_connectivity = utility.get_descriptor_template('nsd')['nsDf']['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
+            virtual_link_connectivity['cpdId'].append(ext_cp_id)
+            vnf_profile["nsVirtualLinkConnectivity"].append(virtual_link_connectivity)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+
+    def unlink_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if ext_cp_id in x['cpdId'] ), None)
+            virtual_link_connectivity['cpdId'].remove(ext_cp_id)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    #VNF operationd: add/remove VDU
+    def add_vnf_vdu(self, vnf_id, vdu_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            vdu_descriptor = utility.get_descriptor_template('vnf')['vdu'][0]
+            vdu_descriptor['vduId'] = vdu_id
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception',e
+            result = False
+        return result
+
+    def remove_vnf_vdu(self, vnf_id, vdu_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            if vdu_descriptor is not None:
+                current_data['vnfd'][vnf_id]['vdu'].remove(vdu_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def edit_vnf_vdu(self, vnf_id, vdu_id, vdu_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            self.remove_vnf_vdu(vnf_id, vdu_id)
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # VNF operationd: add/remove CP VDU
+    def add_vnf_vducp(self, vnf_id, vdu_id, vducp_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            intcp_descriptor = utility.get_descriptor_template('vnf')['vdu'][0]['intCpd'][0]
+            intcp_descriptor['cpdId'] = vducp_id
+            vdu_descriptor['intCpd'].append(intcp_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def remove_vnf_vducp(self, vnf_id, vdu_id, vducp_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
+            vdu_descriptor['intCpd'].remove(intcp_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # VNF operationd: link/unlink VduCP and IntVL
+    def link_vducp_intvl(self, vnf_id, vdu_id, vducp_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
+            intcp_descriptor['intVirtualLinkDesc'] = intvl_id
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def unlink_vducp_intvl(self, vnf_id, vdu_id, vducp_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
+            del intcp_descriptor['intVirtualLinkDesc']
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    #VNF operationd: add/remove IntVL
+    def add_vnf_intvl(self, vnf_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            intVirtualLinkDesc = utility.get_descriptor_template('vnf')['intVirtualLinkDesc'][0]
+            intVirtualLinkDesc['virtualLinkDescId'] = intvl_id
+            current_data['vnfd'][vnf_id]['intVirtualLinkDesc'].append(intVirtualLinkDesc)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def remove_vnf_intvl(self, vnf_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            intVirtualLinkDesc = next((x for x in current_data['vnfd'][vnf_id]['intVirtualLinkDesc'] if x['virtualLinkDescId'] == intvl_id), None)
+            current_data['vnfd'][vnf_id]['intVirtualLinkDesc'].remove(intVirtualLinkDesc)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # VNF operationd: add/remove vnfExtCpd
+    def add_vnf_vnfextcpd(self, vnf_id, vnfExtCpd_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            vnfExtCpd = utility.get_descriptor_template('vnf')['vnfExtCpd'][0]
+            vnfExtCpd['cpdId'] = vnfExtCpd_id
+            current_data['vnfd'][vnf_id]['vnfExtCpd'].append(vnfExtCpd)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def remove_vnf_vnfextcpd(self, vnf_id, vnfExtCpd_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
+            current_data['vnfd'][vnf_id]['vnfExtCpd'].remove(vnfExtCpd)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    # VNF operationd: link/unlink vnfextcpd and IntVL
+    def link_vnfextcpd_intvl(self, vnf_id, vnfExtCpd_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
+            vnfExtCpd['intVirtualLinkDesc'] = intvl_id
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def unlink_vnfextcpd_intvl(self, vnf_id, vnfExtCpd_id, intvl_id):
+        try:
+            current_data = json.loads(self.data_project)
+            vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
+            del vnfExtCpd['intVirtualLinkDesc']
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result

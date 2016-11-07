@@ -94,3 +94,12 @@ class Util:
         except Exception as e:
             self.log.error('Exception validate json schema')
             return False
+
+
+    def get_descriptor_template(self, type_descriptor):
+        try:
+            schema = self.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
+            return schema
+        except Exception as e:
+            self.log.error('Exception validate json schema')
+            return False

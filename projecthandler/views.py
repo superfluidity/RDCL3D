@@ -244,3 +244,15 @@ def graph_positions(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+
+@login_required
+def sap(request, project_id=None):
+    if request.method == 'POST':
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        ns_id = request.POST.get('ns_id')
+        sap_id = request.POST.get('sap_id')
+        result = projects[0].add_ns_sap(ns_id, sap_id)
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
