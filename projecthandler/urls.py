@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^(?P<project_id>\d+)/graph/graph_data(/$)', views.graph_data, name='graph_data'),
     url(r'^(?P<project_id>\d+)/graph/positions$', views.graph_positions, name='graph_positions'),
     url(r'^(?P<project_id>\d+)/graph/addelement$', views.add_element, name='addelement'),
+    url(r'^(?P<project_id>\d+)/graph/addlink$', views.add_link, name='addlink'),
     url(r'^(?P<project_id>\d+)/download(/$)', views.downlaod, name='download_page'),
     url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)(/$)', views.show_descriptors, name='show_descriptors'),
     url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)(/$)', views.edit_descriptor, name='edit_descriptor'),

@@ -253,6 +253,7 @@ def add_element(request, project_id=None):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
+        print element_id
         if element_type == 'ns_cp':
             result = projects[0].add_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
@@ -268,6 +269,17 @@ def add_element(request, project_id=None):
         elif element_type == 'vnf_vdu_cp':
             #FixMe it should call projects[0].add_vnf_vducp(vnf_id, vdu_id, vducp_id)
             result = True
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+@login_required
+def add_link(request, project_id=None):
+    if request.method == 'POST':
+        result = False
+        projects = EtsiManoProject.objects.filter(id=project_id)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
