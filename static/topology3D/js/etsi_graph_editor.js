@@ -168,7 +168,7 @@ dreamer.ManoGraphEditor = (function(global) {
                     d3.event.preventDefault();
 
                     if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
-                        var source_id = self._selected_node;
+                        var source_id = self._selected_node.id;
                         var target_id = d.id;
                         var new_link = {
                             source: source_id,
@@ -177,6 +177,7 @@ dreamer.ManoGraphEditor = (function(global) {
                             group: self.filter_parameters.link.group[0],
                         };
                         self.addLink(new_link);
+                        new dreamer.GraphRequests().addLink(self._selected_node, d);
                         self._deselectAllNodes();
                     } else {
                         self._selectNodeExclusive(this, d);

@@ -73,7 +73,8 @@ dropZone.ondrop = function(e) {
             'info': {
                 'type': nodetype,
                 'group': group
-            }}
+                }
+            }
         new dreamer.GraphRequests().addNode(node_information);
         graph_editor.addNode(node_information);
     }

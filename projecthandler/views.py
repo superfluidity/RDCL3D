@@ -279,7 +279,24 @@ def add_link(request, project_id=None):
     if request.method == 'POST':
         result = False
         projects = EtsiManoProject.objects.filter(id=project_id)
-
+        source = json.loads(request.POST.get('source'))
+        destination = json.loads(request.POST.get('destination'))
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            result = projects[0].link_vl_sap(source['info']['group'],vl_id, sap_id)
+        elif (source_type, destination_type) in [('ns_vl', 'ns_vnf'), ('ns_vnf', 'ns_vl')]:
+            #FixMe it should call projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, ext_cp_id)
+            result = True
+        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+            #FixMe it should call projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
+            result = True
+        if (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            result = projects[0].link_vnfextcpd_intvl(source['info']['group'], vnfExtCpd_id, intvl_id)
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"

@@ -303,6 +303,9 @@ class EtsiManoProject(Project):
             current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'].append(vnf_profile)
             vnf_descriptor = utility.get_descriptor_template('vnf')
             vnf_descriptor['vnfdId'] = vnf_id
+            vnf_descriptor['vdu'] = []
+            vnf_descriptor['intVirtualLinkDesc'] = []
+            vnf_descriptor['vnfExtCpd'] = []
             current_data['vnfd'][vnf_id] = vnf_descriptor
             self.data_project = current_data
             self.update()
@@ -580,6 +583,7 @@ class EtsiManoProject(Project):
     # VNF operationd: link/unlink vnfextcpd and IntVL
     def link_vnfextcpd_intvl(self, vnf_id, vnfExtCpd_id, intvl_id):
         try:
+            print vnf_id, vnfExtCpd_id, intvl_id
             current_data = json.loads(self.data_project)
             vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
             vnfExtCpd['intVirtualLinkDesc'] = intvl_id

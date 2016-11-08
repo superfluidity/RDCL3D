@@ -19,7 +19,6 @@ dreamer.GraphRequests = (function(global) {
     }
 
    GraphRequests.prototype.addNode= function(args){
-        console.log('ajax add sap')
         var data = new FormData();
         data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
         data.append('group_id', args.info.group);
@@ -27,6 +26,26 @@ dreamer.GraphRequests = (function(global) {
         data.append('element_type', args.info.type);
         $.ajax({
             url: "addelement",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+            },
+            error: function(result) {
+                alert("some error");
+            }
+        });
+    };
+
+   GraphRequests.prototype.addLink= function(source, destination){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('source', JSON.stringify(source));
+        data.append('destination', JSON.stringify(destination));
+        $.ajax({
+            url: "addlink",
             type: 'POST',
             data: data,
             cache: false,
