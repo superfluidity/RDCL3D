@@ -39,6 +39,27 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
+   GraphRequests.prototype.removeNode= function(args){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('group_id', args.info.group);
+        data.append('element_id', args.id);
+        data.append('element_type', args.info.type);
+        $.ajax({
+            url: "removeelement",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+            },
+            error: function(result) {
+                alert("some error");
+            }
+        });
+    };
+
    GraphRequests.prototype.addLink= function(source, destination){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', getCookie('csrftoken'));

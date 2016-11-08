@@ -70,11 +70,12 @@ class T3DUtil:
             positions = json_project['positions'] if 'positions' in json_project else False
             self.log.debug('build t3d graph from project json')
 
+            for vnfd_id in json_project['vnfd']:
+                self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
             for current_nsd in json_project['nsd']:
                 self.add_node(current_nsd, 'nsd', current_nsd, positions, graph_object)
                 for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
                     self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
-                    self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
                 for sapd in json_project['nsd'][current_nsd]['sapd']:
                     self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
                     self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'nsd', current_nsd, graph_object)

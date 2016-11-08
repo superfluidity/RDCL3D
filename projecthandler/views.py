@@ -275,6 +275,39 @@ def add_element(request, project_id=None):
         return response
 
 @login_required
+def remove_element(request, project_id=None):
+    if request.method == 'POST':
+        result = False
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        print element_id
+        if element_type == 'ns_cp':
+            result = projects[0].remove_ns_sap(group_id, element_id)
+        elif element_type == 'ns_vl':
+            #FixMe bisogna rimuovere tutti i riferimenti al link
+            #result = projects[0].remove_ns_vl(group_id, element_id)
+            result = True
+        elif element_type == 'vnf':
+            result = projects[0].remove_ns_vnf(group_id, element_id)
+        elif element_type == 'vnf_vl':
+            #FixMe bisogna rimuovere tutti i riferimenti al link
+            #result = projects[0].remove_vnf_intvl(group_id, element_id)
+            result = True
+        elif element_type == 'vnf_ext_cp':
+            result = projects[0].remove_vnf_vnfextcpd(group_id, element_id)
+        elif element_type == 'vnf_vdu':
+            result = projects[0].remove_vnf_vdu(group_id, element_id)
+        elif element_type == 'vnf_vdu_cp':
+            #FixMe it should call projects[0].remove_vnf_vducp(vnf_id, vdu_id, vducp_id)
+            result = True
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+@login_required
 def add_link(request, project_id=None):
     if request.method == 'POST':
         result = False

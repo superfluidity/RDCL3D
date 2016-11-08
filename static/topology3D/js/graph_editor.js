@@ -89,6 +89,9 @@ dreamer.GraphEditor = (function(global) {
                 //d3.event.preventDefault();
                 if (self.lastKeyDown !== -1) return;
                 self.lastKeyDown = d3.event.keyCode;
+                if(self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined){
+                    self.removeNode(self._selected_node);
+                }
 
             })
             .on('keyup', function() {
@@ -178,8 +181,9 @@ dreamer.GraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    GraphEditor.prototype.removeNode = function(node_id) {
-        if (node_id != undefined) {
+    GraphEditor.prototype.removeNode = function(node) {
+        if (node != undefined) {
+            var node_id = node.id;
             this.d3_graph['nodes'].forEach(function(n, index, object) {
                 if (n.id == node_id) {
                     object.splice(index, 1);
@@ -187,7 +191,7 @@ dreamer.GraphEditor = (function(global) {
                 }
 
             });
-
+            new dreamer.GraphRequests().removeNode(node);
             //TODO trovare una metodo piu efficace
             var self = this;
             var links_to_remove = [];
@@ -202,7 +206,10 @@ dreamer.GraphEditor = (function(global) {
                 self.d3_graph['links'].splice(l_index - links_removed, 1);
                 links_removed++;
             });
-
+            this.cleanAll();
+            this.refresh();
+            this.startForce();
+            this.force.restart();
 
             return true;
         }

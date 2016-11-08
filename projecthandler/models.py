@@ -319,11 +319,10 @@ class EtsiManoProject(Project):
     def remove_ns_vnf(self, ns_id, vnf_id):
         try:
             current_data = json.loads(self.data_project)
-            utility = Util()
             current_data['nsd'][ns_id]['vnfdId'].remove(vnf_id)
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
             if vnf_profile is not None:
-                current_data['nsd'][ns_id]['nsDf']['vnfProfile'].remove(vnf_profile)
+                current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'].remove(vnf_profile)
             self.data_project = current_data
             self.update()
             result = True
@@ -362,7 +361,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
-            sap_descriptor['nsVirtualLinkDescId'] =vl_id
+            sap_descriptor['nsVirtualLinkDescId'] = vl_id
             self.data_project = current_data
             self.update()
             result = True
@@ -407,7 +406,8 @@ class EtsiManoProject(Project):
             current_data = json.loads(self.data_project)
             vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id), None)
             virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if ext_cp_id in x['cpdId'] ), None)
-            virtual_link_connectivity['cpdId'].remove(ext_cp_id)
+            if virtual_link_connectivity is not None:
+                virtual_link_connectivity['cpdId'].remove(ext_cp_id)
             self.data_project = current_data
             self.update()
             result = True
