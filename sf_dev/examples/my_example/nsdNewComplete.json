@@ -17,13 +17,13 @@
   ],
   "sapd":[
     {
-      "cpdId": "cp1",
+      "cpdId": null,
       "layerProtocol": "E-LAN",
       "cpRole": "root or leaf",
       "description": "description",
       "sapAddressAssignment": true,
-      "nsVirtualLinkDescId": "vl",
-      "associatedCpdId": "cp"
+      "nsVirtualLinkDescId": null,
+      "associatedCpdId": null
     }
 
   ],

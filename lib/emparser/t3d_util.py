@@ -25,6 +25,8 @@ class T3DUtil:
         self.log = logging.getLogger('T3DUtil')
 
     def add_link(self, source, target, view, group, graph_object ):
+        if (source is None) or (target is None):
+            return;
         edge_obj = {
             'source': source,
             'target': target,
