@@ -152,10 +152,8 @@
           ],
           "nsVirtualLinkConnectivity":[
             {
-              "virtualLinkProfileId": "virtualLinkProfileId",
+              "virtualLinkProfileId": null,
               "cpdId": [
-                "cpdId",
-                "SapId"
               ]
             }
 
@@ -175,8 +173,8 @@
       ],
       "virtualLinkProfile":[
         {
-          "virtualLinkProfileId": "virtualLinkProfileId",
-          "virtualLinkDescId": "vld",
+          "virtualLinkProfileId": null,
+          "virtualLinkDescId": null,
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
 

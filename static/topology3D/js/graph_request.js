@@ -18,27 +18,15 @@ dreamer.GraphRequests = (function(global) {
 
     }
 
-    /**
-     * Add a new node to the graph.
-     * @param {Object} Required. An object that specifies tha data of the new node.
-     * @returns {boolean}
-     */
-    GraphRequests.prototype.addNode = function(args) {
-        switch(args.info.type){
-            case 'ns_cp':
-                this.add_sapd(args.info.group, args.id)
-                break;
-        }
-    };
-
-    GraphRequests.prototype.add_sapd= function(ns_id, sap_id){
+   GraphRequests.prototype.addNode= function(args){
         console.log('ajax add sap')
         var data = new FormData();
         data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-        data.append('ns_id', ns_id);
-        data.append('sap_id', sap_id);
+        data.append('group_id', args.info.group);
+        data.append('element_id', args.id);
+        data.append('element_type', args.info.type);
         $.ajax({
-            url: "sap",
+            url: "addelement",
             type: 'POST',
             data: data,
             cache: false,

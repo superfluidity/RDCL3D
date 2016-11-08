@@ -246,12 +246,28 @@ def graph_positions(request, project_id=None):
         return response
 
 @login_required
-def sap(request, project_id=None):
+def add_element(request, project_id=None):
     if request.method == 'POST':
+        result = False
         projects = EtsiManoProject.objects.filter(id=project_id)
-        ns_id = request.POST.get('ns_id')
-        sap_id = request.POST.get('sap_id')
-        result = projects[0].add_ns_sap(ns_id, sap_id)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        if element_type == 'ns_cp':
+            result = projects[0].add_ns_sap(group_id, element_id)
+        elif element_type == 'ns_vl':
+            result = projects[0].add_ns_vl(group_id, element_id)
+        elif element_type == 'vnf':
+            result = projects[0].add_ns_vnf(group_id, element_id)
+        elif element_type == 'vnf_vl':
+            result = projects[0].add_vnf_intvl(group_id, element_id)
+        elif element_type == 'vnf_ext_cp':
+            result = projects[0].add_vnf_vnfextcpd(group_id, element_id)
+        elif element_type == 'vnf_vdu':
+            result = projects[0].add_vnf_vdu(group_id, element_id)
+        elif element_type == 'vnf_vdu_cp':
+            #FixMe it should call projects[0].add_vnf_vducp(vnf_id, vdu_id, vducp_id)
+            result = True
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"

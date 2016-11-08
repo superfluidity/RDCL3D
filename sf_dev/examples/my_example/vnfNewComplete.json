@@ -14,11 +14,11 @@
       "description":"",
       "intCpd":[
         {
-          "cpdId": "cp1",
+          "cpdId": null,
           "layerProtocol": "E-LAN",
           "cpRole": "root or leaf",
           "description": "description",
-          "intVirtualLinkDesc": "id"
+          "intVirtualLinkDesc": null
         }
       ],
       "virtualComputeDesc": "id",
@@ -103,7 +103,7 @@
   ],
   "intVirtualLinkDesc":[
     {
-      "virtualLinkDescId": "",
+      "virtualLinkDescId": null,
       "virtualLinkDescFlavour": [
         {
               "flavourId": "flavourId",
@@ -152,12 +152,12 @@
   ],
   "vnfExtCpd":[
     {
-      "cpdId": "cp1",
+      "cpdId": null,
       "layerProtocol": "E-LAN",
       "cpRole": "root or leaf",
       "description": "description",
-      "intVirtualLinkDesc": 1 ,
-      "intCpd":2 ,
+      "intVirtualLinkDesc": null,
+      "intCpd":null ,
       "virtualNetworkInterfaceRequirements":{
         "name": "name",
         "description": "description",
@@ -189,7 +189,7 @@
       ],
       "virtualLinkProfile":[
         {
-          "vnfVirtualLinkDescId": "vnfVirtualLinkDescId",
+          "vnfVirtualLinkDescId": null,
           "flavourId": "flavourId",
           "localAffinityOrAntiAffinityRule":[
             {
