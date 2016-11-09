@@ -7,7 +7,8 @@ import uuid
 
 # Create your views here.
 def login_view(request):
-    if hasattr(request.user, "is_guest_user"):
+    if hasattr(request.user, "is_guest_user") and request.user.is_guest_user == True:
+        print "is_guest", request.user.is_guest_user
         CustomUser.objects.get(id=request.user.id).delete()
     logout(request)
     extra_data = {}
@@ -34,7 +35,7 @@ def login_view(request):
 
 def guest_login(request):
     #user = CustomUser.objects.get(id=request.user.id)
-    if hasattr(request.user, "is_guest_user"):
+    if hasattr(request.user, "is_guest_user") and request.user.is_guest_user == True:
         CustomUser.objects.get(id=request.user.id).delete()
     logout(request)
     next = ""
