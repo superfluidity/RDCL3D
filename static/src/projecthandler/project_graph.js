@@ -66,7 +66,6 @@ dropZone.ondrop = function(e) {
     var group = graph_editor.getCurrentGroup()
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
-    console.log(e);
     if (nodetype) {
         var node_information = {
             'id': nodetype + "_" + generateUID(),

@@ -12,6 +12,7 @@ dreamer.GraphEditor = (function(global) {
     var default_link_color = "#888";
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
+    var radius = 15;
     var EventHandler = dreamer.Event;
 
 
@@ -398,12 +399,14 @@ dreamer.GraphEditor = (function(global) {
             .links(this.d3_graph.links);
 
         function ticked() {
-            self.node.attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
+            self.node.attr("cx", function(d) {
+                    return d.x = Math.max(radius, Math.min(self.width - radius, d.x));
+                })
+                .attr("cy", function(d) {
+                    return d.y = Math.max(radius, Math.min(self.height - radius, d.y));
+                });
 
-            self.link
-                .attr("x1", function(d) {
+            self.link.attr("x1", function(d) {
                     return d.source.x;
                 })
                 .attr("y1", function(d) {
@@ -416,11 +419,14 @@ dreamer.GraphEditor = (function(global) {
                     return d.target.y;
                 });
 
+            self.node.attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
             self.text.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
-
         };
+
     };
 
     /**
