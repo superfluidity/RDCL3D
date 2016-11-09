@@ -66,14 +66,16 @@ dropZone.ondrop = function(e) {
     var group = graph_editor.getCurrentGroup()
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
-    console.log(nodetype);
+    console.log(e);
     if (nodetype) {
         var node_information = {
             'id': nodetype + "_" + generateUID(),
             'info': {
                 'type': nodetype,
                 'group': group
-                }
+                },
+               'x': e.layerX,
+               'y': e.layerY
             }
         new dreamer.GraphRequests().addNode(node_information);
         graph_editor.addNode(node_information);
