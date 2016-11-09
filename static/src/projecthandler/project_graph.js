@@ -41,8 +41,8 @@ $(document).ready(function() {
 
     // graph_editor initialization
 graph_editor.init({
-    width: $('#graph_ed').width(),
-    height: $('#graph_ed').height()
+    width: $('#graph_ed_container').width(),
+    height: $('#graph_ed_container').height()
 });
 
 graph_editor.handleFiltersParams(params);

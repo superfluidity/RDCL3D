@@ -54,6 +54,10 @@ dreamer.GraphEditor = (function(global) {
         this.height = args.height || 500;
         this.forceSimulationActive = true;
 
+        //FixMe
+        this.width = this.width -20;
+        this.height =  this.height - 30;
+
         var min_zoom = 0.1;
         var max_zoom = 7;
         this._setupBehaviorsOnEvents();
