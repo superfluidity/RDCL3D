@@ -226,6 +226,19 @@ class EtsiManoProject(Project):
             vl_descriptor = next((x for x in current_data['nsd'][ns_id]['virtualLinkDesc'] if x['virtualLinkDescId'] == vl_id),None)
             if vl_descriptor is not None:
                 current_data['nsd'][ns_id]['virtualLinkDesc'].remove(vl_descriptor)
+            vl_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            if vl_profile is not None:
+                vl_profile_id = vl_profile['virtualLinkProfileId']
+                current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].remove(vl_profile)
+                for nsDf in current_data['nsd'][ns_id]['nsDf']:
+                    for vnfProfile in nsDf["vnfProfile"]:
+                        for nsVirtualLinkConnectivity in vnfProfile['nsVirtualLinkConnectivity']:
+                            print nsVirtualLinkConnectivity
+                            if nsVirtualLinkConnectivity['virtualLinkProfileId'] == vl_profile_id:
+                                vnfProfile['nsVirtualLinkConnectivity'].remove(nsVirtualLinkConnectivity)
+            for sapd in current_data['nsd'][ns_id]['sapd']:
+                if sapd['nsVirtualLinkDescId'] == vl_id:
+                    sapd['nsVirtualLinkDescId'] = None
             self.data_project = current_data
             self.update()
             result = True
@@ -542,6 +555,17 @@ class EtsiManoProject(Project):
             utility = Util()
             intVirtualLinkDesc = next((x for x in current_data['vnfd'][vnf_id]['intVirtualLinkDesc'] if x['virtualLinkDescId'] == intvl_id), None)
             current_data['vnfd'][vnf_id]['intVirtualLinkDesc'].remove(intVirtualLinkDesc)
+            for vdu in current_data['vnfd'][vnf_id]['vdu']:
+                for intCpd in vdu['intCpd']:
+                    if intCpd['intVirtualLinkDesc'] == intvl_id:
+                        intCpd['intVirtualLinkDesc'] = None
+            for vnfExtCpd in current_data['vnfd'][vnf_id]['vnfExtCpd']:
+                if vnfExtCpd['intVirtualLinkDesc'] == intvl_id:
+                    vnfExtCpd['intVirtualLinkDesc'] = None
+            for deploymentFlavour in current_data['vnfd'][vnf_id]['deploymentFlavour']:
+                for virtualLinkProfile in deploymentFlavour['virtualLinkProfile']:
+                    if virtualLinkProfile['vnfVirtualLinkDescId'] == intvl_id:
+                        deploymentFlavour['virtualLinkProfile'].remove(virtualLinkProfile)
             self.data_project = current_data
             self.update()
             result = True

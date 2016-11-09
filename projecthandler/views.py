@@ -286,15 +286,11 @@ def remove_element(request, project_id=None):
         if element_type == 'ns_cp':
             result = projects[0].remove_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
-            #FixMe bisogna rimuovere tutti i riferimenti al link
-            #result = projects[0].remove_ns_vl(group_id, element_id)
-            result = True
+            result = projects[0].remove_ns_vl(group_id, element_id)
         elif element_type == 'vnf':
             result = projects[0].remove_ns_vnf(group_id, element_id)
         elif element_type == 'vnf_vl':
-            #FixMe bisogna rimuovere tutti i riferimenti al link
-            #result = projects[0].remove_vnf_intvl(group_id, element_id)
-            result = True
+            result = projects[0].remove_vnf_intvl(group_id, element_id)
         elif element_type == 'vnf_ext_cp':
             result = projects[0].remove_vnf_vnfextcpd(group_id, element_id)
         elif element_type == 'vnf_vdu':
