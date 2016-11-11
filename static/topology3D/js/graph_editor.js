@@ -52,11 +52,11 @@ dreamer.GraphEditor = (function(global) {
         var self = this;
         this.width = args.width || 500;
         this.height = args.height || 500;
-        this.forceSimulationActive = true;
+        this.forceSimulationActive = false;
 
         //FixMe
-        this.width = this.width -20;
-        this.height =  this.height - 30;
+        this.width = this.width -this.width*0.007;
+        this.height =  this.height - this.height*0.07;
 
         var min_zoom = 0.1;
         var max_zoom = 7;
@@ -112,6 +112,9 @@ dreamer.GraphEditor = (function(global) {
 
             self.refresh();
             self.startForce();
+            setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
+
+
         });
 
     }
@@ -122,10 +125,10 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-
+        console.log('handleforce ',start)
         if(start)
             this.force.stop();
-        this.forceSimulationActive = false;
+        this.forceSimulationActive = start;
         this.node.each(function(d) {
                 d.fx = (start) ? null : d.x;
                 d.fy = (start) ? null : d.y;
@@ -147,8 +150,12 @@ dreamer.GraphEditor = (function(global) {
         this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : current_view_id
         this.cleanAll();
         this.refresh();
-        this.eventHandler.fire("filters_changed", filtersParams);
+        this.startForce();
+        this.force.restart();
         this._deselectAllNodes();
+        this.handleForce(this.forceSimulationActive);
+        this.eventHandler.fire("filters_changed", filtersParams);
+
     };
 
     /**
@@ -165,6 +172,7 @@ dreamer.GraphEditor = (function(global) {
             this.refresh();
             this.startForce();
             this.force.restart();
+            this.handleForce(this.forceSimulationActive);
             return true;
         }
 
@@ -430,6 +438,8 @@ dreamer.GraphEditor = (function(global) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
         };
+
+
 
     };
 
