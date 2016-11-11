@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('EmpLogger')
 
 
-def importproject(dir_project, type):
+def importprojectdir(dir_project, type):
     project = {
         'nsd': {},
         'vnfd': {}
@@ -37,6 +37,20 @@ def importproject(dir_project, type):
 
     #log.debug('\n' + json.dumps(project))
     return project
+
+def importprojectfile(ns_files, vnf_files):
+    project = {
+        'nsd': {},
+        'vnfd': {}
+    }
+    for file in ns_files:
+        nsd =json.loads(file.read())
+        project['nsd'][nsd['nsdIdentifier']] = nsd
+    for file in vnf_files:
+        vnf =json.loads(file.read())
+        project['vnfd'][vnf['vnfdId']] = vnf
+    return project
+
 
 
 if __name__ == '__main__':

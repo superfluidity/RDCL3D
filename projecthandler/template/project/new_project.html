@@ -6,6 +6,7 @@
   	{{ block.super }}
 
     <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
+    <link rel="stylesheet" href="{% static "css/drag_drop.css" %}">
 {% endblock %}
 
 {% block left_sidebar %}
@@ -32,7 +33,7 @@
 {% block content_body %}
   	{{ block.super }}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <!-- general form elements -->
         <div class="box box-primary">
             <div class="box-header with-border">
@@ -40,7 +41,7 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form" method="post">
+            <form role="form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="box-body">
                     <div class="row">
@@ -57,30 +58,71 @@
 
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" id="file_checkbox" disabled> Upload Files
+                            <input type="checkbox" id="file_checkbox" > Upload Files
                         </label>
                     </div>
-                    <div class="form-group" id="files_form" style="display:none;">
-                        <label for="files_input">Select Project Descriptor Files</label>
-                        <input type="file" id="files_input" multiple webkitdirectory onchange="handleFiles(this.files)">
+                    <div id="div-file-upload" style="display: none;">
+                        <h4>Select Descriptors File from your computer</h4>
 
-                        <table class="table table-condensed">
-                            <tbody id="file_table_body">
-                            <tr>
-                                <th></th>
-                                <th>File Name</th>
-                                <th>Size</th>
-                                <th>Type</th>
-                            </tr>
-                            </tbody>
-                        </table>
+                         <div class="tab-pane col-md-6" id="ns-upload">
 
+                                <!-- Standar Form -->
+                                <h3>Network Service</h3>
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <input type="file" name="ns_files" id="ns-js-upload-files" multiple onchange="handleFiles(this.files)">
+                                        </div>
+                                    </div>
+                                <!--
+                                <table class="table table-condensed">
+                                    <tbody id="ns_file_table_body">
+                                    <tr>
+                                        <th></th>
+                                        <th>File Name</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                    </tr>
+                                    </tbody>
+                                </table> -->
+                                <!-- Drop Zone
+                                <h4>Or drag and drop file below</h4>
+                                <div class="upload-drop-zone" id="ns-drop-zone">
+                                    Just drag and drop file here
+                                </div>-->
+                            </div>
+                         <div class="tab-pane col-md-6" id="vnf-upload">
+
+                                <!-- Standar Form -->
+                                <h3>Virtual Network Function</h3>
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <input type="file" name="vnf_files" id="vnf-js-upload-files" multiple onchange="handleFiles(this.files)">
+                                        </div>
+                                    </div>
+                             <!--
+                              <table class="table table-condensed">
+                                    <tbody id="vnf_file_table_body">
+                                    <tr>
+                                        <th></th>
+                                        <th>File Name</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                -->
+                                <!-- Drop Zone
+                                <h4>Or drag and drop file below</h4>
+                                <div class="upload-drop-zone" id="vnf-drop-zone">
+                                    Just drag and drop file here
+                                </div> -->
+                            </div>
                     </div>
                     <!-- /.box-body -->
 
-                    <div class="box-footer">
+                </div>
+                <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
                 </div>
             </form>
         </div>
@@ -114,7 +156,7 @@ for (var i = 0; i < files.length; i++) {
     console.log(i, files[i].size)
     var file = files[i];
     if (files[i].type == "application/json" || files[i].type == "") {
-      $('#file_table_body')
+      $('#ns_file_table_body')
         .append($('<tr>')
           //.append('<td><a href="javascript:removeFile(' + i + ')"><i class="fa fa-remove"></i></a></td>')
           .append('<td><i class="fa fa-remove"></i></td>')
@@ -135,11 +177,9 @@ function removeFile(file_id){
 
 }
 
-
-
 $(document).ready(function () {
     $('#file_checkbox').change(function () {
-      $('#files_form').fadeToggle();
+      $('#div-file-upload').fadeToggle();
     });
 
     {% if project_id %}

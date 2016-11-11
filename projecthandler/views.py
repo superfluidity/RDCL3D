@@ -26,11 +26,16 @@ def create_new_project(request):
     if request.method == 'POST':
         user = CustomUser.objects.get(id=request.user.id)
         name =request.POST.get('name', '')
-        info = request.POST.get('info', '')
+        info = request.POST.get('info', ' ')
+        ns_files = request.FILES.getlist('ns_files')
+        vnf_files = request.FILES.getlist('vnf_files')
         try:
-            ##FIXME da rimuovere usata solo per develop
-            data_project = emparser.importproject('sf_dev/examples/my_example/JSON_NEW',
-                                             'json')
+            if ns_files or vnf_files:
+                data_project = emparser.importprojectfile(ns_files, vnf_files)
+            else:
+                ##FIXME da rimuovere usata solo per develop
+                data_project = emparser.importprojectdir('sf_dev/examples/my_example/JSON_NEW',
+                                                 'json')
             project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info, data_project=data_project)
 
             return render(request, 'new_project.html', {'project_id': project.id})
