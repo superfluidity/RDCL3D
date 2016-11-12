@@ -73,12 +73,12 @@ class T3DUtil:
             for vnfd_id in json_project['vnfd']:
                 self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
             for current_nsd in json_project['nsd']:
-                self.add_node(current_nsd, 'nsd', current_nsd, positions, graph_object)
+                self.add_node(current_nsd, 'ns', current_nsd, positions, graph_object)
                 for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
                     self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
                 for sapd in json_project['nsd'][current_nsd]['sapd']:
                     self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
-                    self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'nsd', current_nsd, graph_object)
+                    self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'ns', current_nsd, graph_object)
                 for vld in json_project['nsd'][current_nsd]['virtualLinkDesc']:
                    self.add_node(vld["virtualLinkDescId"], 'ns_vl', current_nsd, positions, graph_object)
                 for nsdf in json_project['nsd'][current_nsd]['nsDf']:
@@ -86,7 +86,7 @@ class T3DUtil:
                         for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
                             virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
                             if(virtualLinkProfile is not None):
-                                self.add_link(virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'nsd', current_nsd, graph_object)
+                                self.add_link(virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'ns', current_nsd, graph_object)
 
         except Exception as e:
             self.log.error('Exception build_graph_from_project')

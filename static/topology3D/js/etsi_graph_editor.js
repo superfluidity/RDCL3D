@@ -252,7 +252,13 @@ dreamer.ManoGraphEditor = (function(global) {
     };
 
     ManoGraphEditor.prototype.getCurrentGroup = function(){
+        console.log(this.filter_parameters)
         return this.filter_parameters.node.group[0];
+
+    }
+     ManoGraphEditor.prototype.getCurrentView = function(){
+        return this.filter_parameters.link.view[0];
+
     }
 
     /**

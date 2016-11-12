@@ -24,7 +24,11 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">Descriptors {{descriptor_type}}</a></li>
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'nsd' %}
+          NS
+        {% else%}
+        VNF
+     {% endifequal %} Descriptors</a></li>
     <li>Descriptor Editor</li>
 {% endblock %}
 
@@ -38,7 +42,11 @@
         <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-file-code-o"></i> JSON</a></li>
         <li id="form_li"><a href="#form" data-toggle="tab"><i class="fa fa-television"></i> Form View</a></li>
 
-        <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="update()"><i class="fa fa-save"></i> Confirm</button></li>
+        <li class="pull-right"><button id="save" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save</button></li>
+        <li class="pull-right"><button id="save_show_graph"type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph</button></li>
+        <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="goToGraph()"><i class="fa fa-sitemap"></i> Show Graph</button></li>
+
+
     </ul>
     <div class="tab-content">
 
@@ -180,7 +188,8 @@ $(document).ready(function () {
 
 
 
-function update(){
+function update(e){
+            console.log(e);
             var id = $('.nav-tabs .active').attr('id');
             var type, text ;
             switch(id) {
@@ -197,7 +206,6 @@ function update(){
                     return;
                     break;
             }
-            console.log(text);
             $.ajax({
                     url: "/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/",
                     type: 'POST',
@@ -207,8 +215,11 @@ function update(){
                             'text': text
                      },
                     success: function(result) {
-                        console.log("modificato");
-                        //window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/"
+                        if(e =='save'){
+                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+                        }else{
+                            goToGraph();
+                        }
                     },
                     error: function(result) {
                         console.log(result)
@@ -217,7 +228,9 @@ function update(){
                 });
         }
 
-
+function goToGraph(){
+    window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{descriptor_id}}'
+}
     </script>
 {% endblock %}
 

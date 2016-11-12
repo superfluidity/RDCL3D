@@ -23,7 +23,11 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">Descriptors {{descriptor_type}}</a></li>
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'nsd' %}
+          NS
+        {% else%}
+        VNF
+     {% endifequal %} Descriptors</a></li>
     <li>Create Descriptor</li>
 {% endblock %}
 
@@ -125,6 +129,7 @@
     <script src="{% static "codemirror/addon/edit/closebrackets.js" %}"></script>
     <script src="{% static "codemirror/addon/display/fullscreen.js" %}"></script>
     <script src="{% static "codemirror/keymap/sublime.js" %}"></script>
+    <script src="{% static "codemirror/addon/display/autorefresh.js" %}"></script>
 
     <!-- d3.js -->
     <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
@@ -215,6 +220,7 @@
 
            editorJSON.setValue("");
             var that = this;
+            editorJSON.setOption("autoRefresh", true);
 
 
 

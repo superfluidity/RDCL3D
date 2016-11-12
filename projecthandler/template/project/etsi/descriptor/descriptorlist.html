@@ -3,7 +3,13 @@
 
     <div class="box">
         <div class="box-header with-border">
-                  <h3 class="box-title">{{descriptor_type}} Descriptors</h3>
+                  <h3 class="box-title">
+                  {% ifequal descriptor_type 'nsd' %}
+                      NS
+                  {% else%}
+                    VNF
+                  {% endifequal %} Descriptors
+                  </h3>
             <div class="box-tools">
                 <a href="/projects/{{project_id}}/descriptors/{{descriptor_type}}/new" class="btn btn-block btn-primary btn-sm"><i class="fa fa-plus"></i><span> Create {{descriptor_type}}</span></a>
             </div>

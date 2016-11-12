@@ -169,9 +169,9 @@ class EtsiManoProject(Project):
         current_data = json.loads(self.data_project)
         #print 'nsd' in current_data, len(current_data['nsd'].keys())
         result = {
-            'owner': self.owner,
+            'owner': self.owner.__str__(),
             'name': self.name,
-            'updated_date': self.updated_date,
+            'updated_date': self.updated_date.__str__(),
             'info': self.info,
             'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
             'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,

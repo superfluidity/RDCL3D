@@ -3,7 +3,6 @@
 var graph_editor = new dreamer.ManoGraphEditor();
 
 
-
 // Enable Drop Action on the Graph
 initDropOnGraph();
 
@@ -19,7 +18,8 @@ $.urlParam = function(name) {
 
 
 $(document).ready(function() {
-    var type = $.urlParam('type') == 'nsd' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
+    var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
+    var type = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
     var params = {
         node: {
             type: type,
@@ -27,7 +27,7 @@ $(document).ready(function() {
         },
         link: {
             group: [$.urlParam('id')],
-            view: [$.urlParam('type')]
+            view: [descriptor_type]
         }
     }
 
@@ -123,6 +123,10 @@ function changeFilter(e, c) {
     }
     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(c) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
     $('#breadcrumb').append(newLi);
+}
+
+function openEditor(project_id){
+    window.location.href='/projects/'+project_id+'/descriptors/'+graph_editor.getCurrentView()+'d/'+graph_editor.getCurrentGroup();
 }
 
 function getCookie(name) {
