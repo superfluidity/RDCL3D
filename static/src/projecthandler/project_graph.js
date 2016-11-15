@@ -76,8 +76,9 @@ dropZone.ondrop = function(e) {
                'x': e.layerX,
                'y': e.layerY
             }
-        new dreamer.GraphRequests().addNode(node_information);
-        graph_editor.addNode(node_information);
+        new dreamer.GraphRequests().addNode(node_information, function(){
+            graph_editor.addNode(node_information);
+        });
     }
 
 }

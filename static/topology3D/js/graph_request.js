@@ -18,7 +18,7 @@ dreamer.GraphRequests = (function(global) {
 
     }
 
-   GraphRequests.prototype.addNode= function(args){
+   GraphRequests.prototype.addNode= function(args, callback){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
         data.append('group_id', args.info.group);
@@ -32,6 +32,7 @@ dreamer.GraphRequests = (function(global) {
             contentType: false,
             processData: false,
             success: function(result) {
+                callback();
             },
             error: function(result) {
                 alert("some error");
@@ -60,7 +61,7 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
-   GraphRequests.prototype.addLink= function(source, destination){
+   GraphRequests.prototype.addLink= function(source, destination, callback){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
         data.append('source', JSON.stringify(source));
@@ -73,6 +74,7 @@ dreamer.GraphRequests = (function(global) {
             contentType: false,
             processData: false,
             success: function(result) {
+                callback();
             },
             error: function(result) {
                 alert("some error");
