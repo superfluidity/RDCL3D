@@ -212,6 +212,10 @@ class EtsiManoProject(Project):
             vl_descriptor = ns['virtualLinkDesc'][0]
             vl_descriptor['virtualLinkDescId'] = vl_id
             current_data['nsd'][ns_id]['virtualLinkDesc'].append(vl_descriptor)
+            virtualLinkProfile = ns['nsDf'][0]['virtualLinkProfile'][0]
+            virtualLinkProfile['virtualLinkProfileId'] = "virtualLinkProfileId"+vl_id
+            virtualLinkProfile['virtualLinkDescId'] =  vl_id
+            current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].append(virtualLinkProfile)
             self.data_project = current_data
             self.update()
             result = True
