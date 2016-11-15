@@ -109,7 +109,7 @@ dreamer.GraphEditor = (function(global) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
-
+            console.log(self.d3_graph.links)
             self.refresh();
             self.startForce();
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);

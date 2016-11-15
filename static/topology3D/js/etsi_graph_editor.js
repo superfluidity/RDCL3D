@@ -52,30 +52,25 @@ dreamer.ManoGraphEditor = (function(global) {
             },
             "vnf_vl": {
                 "shape": d3.symbolCircle,
-                "color": "#313679",
+                "color": "#5FC9DB",
                 "size": 15,
                 "name": "IntVL"
             },
             "vnf_ext_cp": {
                 "shape": d3.symbolCircle,
-                "color": "#9EAAB4",
+                "color": "#00CC66",
                 "size": 15,
                 "name": "ExtCP"
             },
             "vnf_vdu_cp": {
                 "shape": d3.symbolCircle,
-                "color": "#4E6293",
+                "color": "#E74C35",
                 "size": 15,
                 "name": "VduCP"
             },
-            "vnfc": {
-                "shape": d3.symbolCircle,
-                "color": "#1D74C2",
-                "size": 15
-            },
             "vnf_vdu": {
                 "shape": d3.symbolCircle,
-                "color": "#4B7C91",
+                "color": "#50A7CC",
                 "size": 15,
                 "name": "VDU"
             }

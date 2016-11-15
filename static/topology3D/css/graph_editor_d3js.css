@@ -47,8 +47,22 @@
     border-width: thin;
     border-color: black;
     color: white;
-    font-size: larger;
+    border-radius: 50%!important;
+    height: 50px!important;
+    width: 50px!important;
+    margin-right: 5px;
+}
 
+.drag_button p{
+    font-family:Verdana;
+    font-size:0.6em;
+    font-weight:bold;
+    text-decoration:none;
+    color:#e2eaf3;
+    text-align:center;
+    padding-top:50%;
+    padding-bottom:50%;
+    width:100%;
 }
 
 
