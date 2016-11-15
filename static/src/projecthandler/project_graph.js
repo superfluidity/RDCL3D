@@ -118,7 +118,7 @@ function changeFilter(e, c) {
     for (var i in c.node.type) {
         console
         var event = 'event.dataTransfer.setData("text/plain","' + c.node.type[i] + '")'
-        $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + c.node.type[i] + '"  ondragstart=' + event + ' style="background-color: ' + type_property[c.node.type[i]].color + ' !important;">' + type_property[c.node.type[i]].name + '</span>');
+        $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + c.node.type[i] + '"  ondragstart=' + event + ' style="background-color: ' + type_property[c.node.type[i]].color + ' !important;"><p>' + type_property[c.node.type[i]].name + '</p></span>');
     }
     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(c) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
     $('#breadcrumb').append(newLi);

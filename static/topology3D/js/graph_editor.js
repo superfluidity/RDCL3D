@@ -12,7 +12,6 @@ dreamer.GraphEditor = (function(global) {
     var default_link_color = "#888";
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
-    var radius = 15;
     var EventHandler = dreamer.Event;
 
 
@@ -109,7 +108,7 @@ dreamer.GraphEditor = (function(global) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
-
+            console.log(self.d3_graph.links)
             self.refresh();
             self.startForce();
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
@@ -411,10 +410,10 @@ dreamer.GraphEditor = (function(global) {
 
         function ticked() {
             self.node.attr("cx", function(d) {
-                    return d.x = Math.max(radius, Math.min(self.width - radius, d.x));
+                    return d.x = Math.max(self._node_property_by_type(d.info.type, 'size'), Math.min(self.width - self._node_property_by_type(d.info.type, 'size'), d.x));
                 })
                 .attr("cy", function(d) {
-                    return d.y = Math.max(radius, Math.min(self.height - radius, d.y));
+                    return d.y = Math.max(self._node_property_by_type(d.info.type, 'size'), Math.min(self.height - self._node_property_by_type(d.info.type, 'size'), d.y));
                 });
 
             self.link.attr("x1", function(d) {
@@ -434,7 +433,8 @@ dreamer.GraphEditor = (function(global) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
             self.text.attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+                var label_pos_y = d.y + self._node_property_by_type(d.info.type, 'size') + 10;
+                return "translate(" + d.x + "," + label_pos_y + ")";
             });
         };
 
