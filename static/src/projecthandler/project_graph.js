@@ -108,9 +108,7 @@ function handleForce(el) {
 }
 
 function savePositions(el) {
-    var data = new FormData();
-    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    graph_editor.savePositions(data);
+    graph_editor.savePositions();
 }
 
 function changeFilter(e, c) {

@@ -204,7 +204,6 @@ dreamer.GraphEditor = (function(global) {
                 }
 
             });
-            new dreamer.GraphRequests().removeNode(node);
             //TODO trovare una metodo piu efficace
             var self = this;
             var links_to_remove = [];

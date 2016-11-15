@@ -399,12 +399,19 @@ class EtsiManoProject(Project):
     # NS operations: link/Unlink VNF with VL
     def link_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
         try:
-            utility = Util()
             current_data = json.loads(self.data_project)
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id),None)
-            virtual_link_connectivity = utility.get_descriptor_template('nsd')['nsDf']['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
-            virtual_link_connectivity['cpdId'].append(ext_cp_id)
-            vnf_profile["nsVirtualLinkConnectivity"].append(virtual_link_connectivity)
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            virtual_link_profile_id  = virtual_link_profile['virtualLinkProfileId']
+            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if x['virtualLinkProfileId'] == virtual_link_profile_id), None)
+            if virtual_link_connectivity is not None:
+               virtual_link_connectivity['cpdId'].append(ext_cp_id)
+            else:
+                utility = Util()
+                virtual_link_connectivity = utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
+                virtual_link_connectivity['virtualLinkProfileId'] = virtual_link_profile_id
+                virtual_link_connectivity['cpdId'].append(ext_cp_id)
+                vnf_profile['nsVirtualLinkConnectivity'].append(virtual_link_connectivity)
             self.data_project = current_data
             self.update()
             result = True

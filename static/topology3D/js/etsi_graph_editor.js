@@ -105,8 +105,11 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeNode = function(node_id) {
-        this.parent.removeNode.call(this, node_id);
+    ManoGraphEditor.prototype.removeNode = function(node) {
+        var self = this;
+        new dreamer.GraphRequests().removeNode(node, function(){
+            self.parent.removeNode.call(self, node);
+        });
     };
 
     /**
@@ -139,6 +142,24 @@ dreamer.ManoGraphEditor = (function(global) {
         }
         else if((source_type == 'ns_vl' && destination_type ==  'vnf') || (source_type == 'vnf' && destination_type ==  'ns_vl')){
             //Far scegliere a quale vnf_cpexr collegarlo
+            var vnf_id = source_type == 'vnf' ? source_id : target_id;
+            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_ext_cp'); });
+            console.log(vnf_ext_cps)
+
+            $('#selection_chooser').empty();
+            for (var i in vnf_ext_cps){
+                $('#selection_chooser').append('<option id="'+vnf_ext_cps[i].id+'"> '+vnf_ext_cps[i].id+'</option>');
+            }
+            $('#modal_chooser_title').text('Select the VNF EXT CP of the VNF')
+            $('#modal_create_link_chooser').modal('show');
+            var self = this;
+            $('#save_chooser').on('click', function(){
+                var vnf_ext_cp = $( "#selection_chooser option:selected" ).text();
+                new dreamer.GraphRequests().addLinkVlVnf(s, d, vnf_ext_cp, function(){
+                    self.parent.addLink.call(self, link);
+                    $('#modal_create_link_chooser').modal('hide');
+                });
+            });
         }
         else if((source_type == 'vnf_vl' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vl')){
             //bisognerebbe vedere a quale vdu il cp è collegato
@@ -171,20 +192,8 @@ dreamer.ManoGraphEditor = (function(global) {
             vertices[d.id]['x'] = d.x;
             vertices[d.id]['y'] = d.y;
         });
-        data.append('positions', JSON.stringify({'vertices': vertices}) );
-        $.ajax({
-            url: "positions",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-            },
-            error: function(result) {
-                alert("some error");
-            }
-        });
+        new dreamer.GraphRequests().savePositions({'vertices': vertices});
+
     }
 
     /**

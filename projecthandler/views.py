@@ -322,8 +322,11 @@ def add_link(request, project_id=None):
             sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
             result = projects[0].link_vl_sap(source['info']['group'],vl_id, sap_id)
         elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            #FixMe it should call projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, ext_cp_id)
-            result = True
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            ns_id = source['info']['group']
+            vnf_ext_cp = request.POST.get('vnf_ext_cp')
+            result = projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
         elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
             #FixMe it should call projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
             result = True
