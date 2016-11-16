@@ -76,9 +76,7 @@ dropZone.ondrop = function(e) {
                'x': e.layerX,
                'y': e.layerY
             }
-        new dreamer.GraphRequests().addNode(node_information, function(){
-            graph_editor.addNode(node_information);
-        });
+         graph_editor.addNode(node_information);
     }
 
 }
@@ -112,7 +110,6 @@ function savePositions(el) {
 }
 
 function changeFilter(e, c) {
-    console.log("changeFilter", $("#draggable-container"))
     var type_property = graph_editor.getTypeProperty();
     $("#draggable-container").empty()
     for (var i in c.node.type) {
@@ -142,4 +139,20 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function showChooserModal(title, chooses, callback){
+    console.log('showchooser')
+    $('#selection_chooser').empty();
+    for (var i in chooses){
+        $('#selection_chooser').append('<option id="'+chooses[i].id+'">'+chooses[i].id+'</option>');
+    }
+    $('#modal_chooser_title').text(title)
+    $('#modal_create_link_chooser').modal('show');
+    var self = this;
+    $('#save_chooser').off('click').on('click', function(){
+        var choice = $( "#selection_chooser option:selected" ).text();
+        callback(choice);
+
+    });
 }

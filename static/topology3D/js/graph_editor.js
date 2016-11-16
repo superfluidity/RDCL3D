@@ -105,10 +105,8 @@ dreamer.GraphEditor = (function(global) {
 
 
         d3.json("graph_data", function(error, data) {
-            console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
-            console.log(self.d3_graph.links)
             self.refresh();
             self.startForce();
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
@@ -124,7 +122,6 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-        console.log('handleforce ',start)
         if(start)
             this.force.stop();
         this.forceSimulationActive = start;

@@ -83,7 +83,72 @@ dreamer.ManoGraphEditor = (function(global) {
      * @returns {boolean}
      */
     ManoGraphEditor.prototype.addNode = function(args) {
-        this.parent.addNode.call(this, args);
+        var self = this;
+        console.log(args.info.type)
+        if(args.info.type === 'vnf'){
+            new dreamer.GraphRequests().addNode(args,null, function(){
+                self.parent.addNode.call(self, args);
+                var vnf_ext_cp =  {
+                        'id': 'vnf_ext_cp' + "_" + generateUID(),
+                        'info': {
+                            'type': 'vnf_ext_cp',
+                            'group': args.id
+                            },
+                        'x': args.x,
+                        'y': args.y
+                        }
+                new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function(){
+                    self.parent.addNode.call(self, vnf_ext_cp);
+                });
+            });
+        }else if(args.info.type === 'vnf_vdu'){
+            new dreamer.GraphRequests().addNode(args, null, function(){
+                self.parent.addNode.call(self, args);
+                console.log(ManoGraphEditor.prototype.width,  self.parent.height)
+                var vdu_id = args.id;
+                 var vnf_vdu_cp =  {
+                        'id': 'vnf_vdu_cp' + "_" + generateUID(),
+                        'info': {
+                            'type': 'vnf_vdu_cp',
+                            'group': args.info.group
+                            },
+                        'x': args.x,
+                        'y': args.y
+                        }
+                 new dreamer.GraphRequests().addNode(vnf_vdu_cp, vdu_id, function(){
+                    self.parent.addNode.call(self, vnf_vdu_cp);
+                    var link = {
+                        source: args.id,
+                        target: vnf_vdu_cp.id,
+                        view: self.filter_parameters.link.view[0],
+                        group: args.info.group,
+                    };
+                    self.parent.addLink.call(self, link);
+                 });
+
+            });
+        }else if(args.info.type === 'vnf_vdu_cp'){
+            var vnf_id = args.info.group;
+            var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_vdu'); });
+            var self = this;
+            showChooserModal('Select the VDU to link', vnf_vdus, function(choice){
+                new dreamer.GraphRequests().addNode(args, choice, function(){
+                    self.parent.addNode.call(self, args);
+                    var link = {
+                        source: args.id,
+                        target: choice,
+                        view: self.filter_parameters.link.view[0],
+                        group: args.info.group,
+                    };
+                    self.parent.addLink.call(self, link);
+                    $('#modal_create_link_chooser').modal('hide');
+                });
+            });
+        }else{
+            new dreamer.GraphRequests().addNode(args, null, function(){
+                self.parent.addNode.call(self, args);
+            });
+        }
     };
 
     /**
@@ -102,9 +167,27 @@ dreamer.ManoGraphEditor = (function(global) {
      */
     ManoGraphEditor.prototype.removeNode = function(node) {
         var self = this;
-        new dreamer.GraphRequests().removeNode(node, function(){
-            self.parent.removeNode.call(self, node);
-        });
+        if(node.info.type === 'vnf_vdu'){
+            var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu_cp' || e.target.info.type == 'vnf_vdu_cp')});
+            for (var i in vdu_links){
+                var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
+                self.parent.removeNode.call(self, cp_node);
+            }
+            new dreamer.GraphRequests().removeNode(node, null, function(){
+                self.parent.removeNode.call(self, node);
+            });
+        }else if(node.info.type === 'vnf_vdu_cp'){
+            var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')});
+            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
+            console.log(vdu_id)
+            new dreamer.GraphRequests().removeNode(node, vdu_id, function(){
+                self.parent.removeNode.call(self, node);
+            });
+        }else{
+            new dreamer.GraphRequests().removeNode(node, null, function(){
+                self.parent.removeNode.call(self, node);
+            });
+        }
     };
 
     /**
@@ -127,7 +210,7 @@ dreamer.ManoGraphEditor = (function(global) {
             var cp_id = source_type == 'ns_cp' ? source_id: target_id;
             var old_link = $.grep(this.d3_graph.links, function(e){return (e.source.id == cp_id || e.target.id == cp_id); });
             var self = this;
-            new dreamer.GraphRequests().addLink(s, d, function(){
+            new dreamer.GraphRequests().addLink(s, d, null, function(){
                 self._deselectAllNodes();
                 if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index){
                     self.removeLink(old_link[0].index);
@@ -136,33 +219,37 @@ dreamer.ManoGraphEditor = (function(global) {
             });
         }
         else if((source_type == 'ns_vl' && destination_type ==  'vnf') || (source_type == 'vnf' && destination_type ==  'ns_vl')){
-            //Far scegliere a quale vnf_cpexr collegarlo
             var vnf_id = source_type == 'vnf' ? source_id : target_id;
             var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_ext_cp'); });
-            console.log(vnf_ext_cps)
-
-            $('#selection_chooser').empty();
-            for (var i in vnf_ext_cps){
-                $('#selection_chooser').append('<option id="'+vnf_ext_cps[i].id+'"> '+vnf_ext_cps[i].id+'</option>');
-            }
-            $('#modal_chooser_title').text('Select the VNF EXT CP of the VNF')
-            $('#modal_create_link_chooser').modal('show');
             var self = this;
-            $('#save_chooser').on('click', function(){
-                var vnf_ext_cp = $( "#selection_chooser option:selected" ).text();
-                new dreamer.GraphRequests().addLinkVlVnf(s, d, vnf_ext_cp, function(){
+            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice){
+                new dreamer.GraphRequests().addLink(s, d, choice, function(){
+                    self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
                     $('#modal_create_link_chooser').modal('hide');
                 });
             });
+
         }
         else if((source_type == 'vnf_vl' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vl')){
-            //bisognerebbe vedere a quale vdu il cp è collegato
+            var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
+            var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')});
+            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
+            var self = this;
+            new dreamer.GraphRequests().addLink(s, d, vdu_id, function(){
+                self._deselectAllNodes();
+                self.parent.addLink.call(self, link);
+            });
         }
         else if((source_type == 'vnf_ext_cp' && destination_type ==  'vnf_vl') || (source_type == 'vnf_vl' && destination_type ==  'vnf_ext_cp')){
             var self = this;
-            new dreamer.GraphRequests().addLink(s, d, function(){
+            var vnf_ext_cp_id = source_type == 'vnf_ext_cp' ? source_id : target_id;
+            var old_link = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_ext_cp_id || e.target.id == vnf_ext_cp_id); });
+            new dreamer.GraphRequests().addLink(s, d, null, function(){
                 self._deselectAllNodes();
+                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index){
+                    self.removeLink(old_link[0].index);
+                }
                 self.parent.addLink.call(self, link);
             });
         }else{

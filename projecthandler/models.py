@@ -214,7 +214,7 @@ class EtsiManoProject(Project):
             current_data['nsd'][ns_id]['virtualLinkDesc'].append(vl_descriptor)
             virtualLinkProfile = ns['nsDf'][0]['virtualLinkProfile'][0]
             virtualLinkProfile['virtualLinkProfileId'] = "virtualLinkProfileId"+vl_id
-            virtualLinkProfile['virtualLinkDescId'] =  vl_id
+            virtualLinkProfile['virtualLinkDescId'] = vl_id
             current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].append(virtualLinkProfile)
             self.data_project = current_data
             self.update()
@@ -404,14 +404,18 @@ class EtsiManoProject(Project):
     def link_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
         try:
             current_data = json.loads(self.data_project)
+            utility = Util()
             vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
             virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            if virtual_link_profile is None:
+                virtual_link_profile = utility.get_descriptor_template('nsd')['nsDf'][0]['virtualLinkProfile'][0]
+                virtual_link_profile['virtualLinkDescId'] = vl_id
+                current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].append(virtual_link_profile)
             virtual_link_profile_id  = virtual_link_profile['virtualLinkProfileId']
             virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if x['virtualLinkProfileId'] == virtual_link_profile_id), None)
             if virtual_link_connectivity is not None:
                virtual_link_connectivity['cpdId'].append(ext_cp_id)
             else:
-                utility = Util()
                 virtual_link_connectivity = utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
                 virtual_link_connectivity['virtualLinkProfileId'] = virtual_link_profile_id
                 virtual_link_connectivity['cpdId'].append(ext_cp_id)
@@ -504,7 +508,9 @@ class EtsiManoProject(Project):
     def remove_vnf_vducp(self, vnf_id, vdu_id, vducp_id):
         try:
             current_data = json.loads(self.data_project)
+            print vnf_id, vdu_id, vducp_id
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            print vdu_descriptor
             intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             vdu_descriptor['intCpd'].remove(intcp_descriptor)
             self.data_project = current_data
