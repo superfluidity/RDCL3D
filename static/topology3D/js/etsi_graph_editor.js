@@ -84,7 +84,6 @@ dreamer.ManoGraphEditor = (function(global) {
      */
     ManoGraphEditor.prototype.addNode = function(args) {
         var self = this;
-        console.log(args.info.type)
         if(args.info.type === 'vnf'){
             new dreamer.GraphRequests().addNode(args,null, function(){
                 self.parent.addNode.call(self, args);
@@ -104,7 +103,6 @@ dreamer.ManoGraphEditor = (function(global) {
         }else if(args.info.type === 'vnf_vdu'){
             new dreamer.GraphRequests().addNode(args, null, function(){
                 self.parent.addNode.call(self, args);
-                console.log(ManoGraphEditor.prototype.width,  self.parent.height)
                 var vdu_id = args.id;
                  var vnf_vdu_cp =  {
                         'id': 'vnf_vdu_cp' + "_" + generateUID(),
@@ -112,8 +110,8 @@ dreamer.ManoGraphEditor = (function(global) {
                             'type': 'vnf_vdu_cp',
                             'group': args.info.group
                             },
-                        'x': args.x,
-                        'y': args.y
+                        'x': args.x-(args.x*0.1),
+                        'y': args.y-(args.y*0.1)
                         }
                  new dreamer.GraphRequests().addNode(vnf_vdu_cp, vdu_id, function(){
                     self.parent.addNode.call(self, vnf_vdu_cp);

@@ -43,7 +43,7 @@
 
 .drag_button {
     cursor: move !important;
-    border-style: dashed;
+    /*border-style: dashed;*/
     border-width: thin;
     border-color: black;
     color: white;
@@ -54,11 +54,11 @@
 }
 
 .drag_button p{
-    font-family:Verdana;
+    font-family:"Lucida Console", Monaco, monospace;;
     font-size:0.6em;
     font-weight:bold;
     text-decoration:none;
-    color:#e2eaf3;
+    color: black;
     text-align:center;
     padding-top:50%;
     padding-bottom:50%;

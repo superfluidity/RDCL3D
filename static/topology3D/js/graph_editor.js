@@ -350,6 +350,7 @@ dreamer.GraphEditor = (function(global) {
             .attr("dy", ".35em")
             .attr("pointer-events", "none")
             .style("font-size", nominal_text_size + "px")
+            .style("font-family", "Lucida Console")
             .style("fill", function(d) {
                     return self._node_property_by_type(d.info.type, 'node_label_color');
                 })
