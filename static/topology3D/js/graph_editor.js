@@ -250,8 +250,9 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.removeLink = function(link_id) {
+        console.log('remove link'+link_id)
         var self = this;
-        if (link_id) {
+        if (link_id !== 'undefined') {
             this.d3_graph['links'].forEach(function(l, index, object) {
                 if (link_id === l.index) {
                     object.splice(index, 1);

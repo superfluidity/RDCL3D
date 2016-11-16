@@ -210,7 +210,7 @@ dreamer.ManoGraphEditor = (function(global) {
             var self = this;
             new dreamer.GraphRequests().addLink(s, d, null, function(){
                 self._deselectAllNodes();
-                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index){
+                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined'){
                     self.removeLink(old_link[0].index);
                 }
                 self.parent.addLink.call(self, link);
@@ -245,7 +245,7 @@ dreamer.ManoGraphEditor = (function(global) {
             var old_link = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_ext_cp_id || e.target.id == vnf_ext_cp_id); });
             new dreamer.GraphRequests().addLink(s, d, null, function(){
                 self._deselectAllNodes();
-                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index){
+                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined'){
                     self.removeLink(old_link[0].index);
                 }
                 self.parent.addLink.call(self, link);
