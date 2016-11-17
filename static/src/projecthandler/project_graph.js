@@ -67,8 +67,11 @@ dropZone.ondrop = function(e) {
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
-        var node_information = {
-            'id': nodetype + "_" + generateUID(),
+        $('#input_choose_node_id').val(nodetype + "_" + generateUID());
+        $('#save_choose_node_id').off('click').on('click', function(){
+            var name =$('#input_choose_node_id').val();
+            var node_information = {
+            'id': name,
             'info': {
                 'type': nodetype,
                 'group': group
@@ -76,7 +79,13 @@ dropZone.ondrop = function(e) {
                'x': e.layerX,
                'y': e.layerY
             }
-         graph_editor.addNode(node_information);
+            graph_editor.addNode(node_information, function(){
+               $('#modal_choose_node_id').modal('hide');
+
+            });
+        });
+        $('#modal_choose_node_id').modal('show');
+
     }
 
 }
@@ -148,11 +157,12 @@ function showChooserModal(title, chooses, callback){
         $('#selection_chooser').append('<option id="'+chooses[i].id+'">'+chooses[i].id+'</option>');
     }
     $('#modal_chooser_title').text(title)
-    $('#modal_create_link_chooser').modal('show');
     var self = this;
     $('#save_chooser').off('click').on('click', function(){
         var choice = $( "#selection_chooser option:selected" ).text();
         callback(choice);
 
     });
+    $('#modal_create_link_chooser').modal('show');
+
 }

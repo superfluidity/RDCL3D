@@ -82,7 +82,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new node.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addNode = function(args) {
+    ManoGraphEditor.prototype.addNode = function(args, success, error) {
         var self = this;
         if(args.info.type === 'vnf'){
             new dreamer.GraphRequests().addNode(args,null, function(){
@@ -98,6 +98,8 @@ dreamer.ManoGraphEditor = (function(global) {
                         }
                 new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function(){
                     self.parent.addNode.call(self, vnf_ext_cp);
+                    if(success)
+                        success();
                 });
             });
         }else if(args.info.type === 'vnf_vdu'){
@@ -122,6 +124,8 @@ dreamer.ManoGraphEditor = (function(global) {
                         group: args.info.group,
                     };
                     self.parent.addLink.call(self, link);
+                    if(success)
+                        success();
                  });
 
             });
@@ -139,12 +143,16 @@ dreamer.ManoGraphEditor = (function(global) {
                         group: args.info.group,
                     };
                     self.parent.addLink.call(self, link);
+                    if(success)
+                        success();
                     $('#modal_create_link_chooser').modal('hide');
                 });
             });
         }else{
             new dreamer.GraphRequests().addNode(args, null, function(){
                 self.parent.addNode.call(self, args);
+                if(success)
+                        success();
             });
         }
     };
