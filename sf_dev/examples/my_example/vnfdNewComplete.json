@@ -1,5 +1,5 @@
 {
-  "vnfdId": "vnf1",
+  "vnfdId": "vnf_template",
   "vnfProvider": "netgroup",
   "vnfProductName": "vnf1",
   "vnfSoftwareVersion": "0.1",

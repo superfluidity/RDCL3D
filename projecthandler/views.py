@@ -177,11 +177,16 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
 @login_required
 def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
+        util = Util()
+        json_template = util.get_descriptor_template(descriptor_type)
+        descriptor_string_yaml = util.json2yaml(json_template)
+        descriptor_string_json = json.dumps(json_template)
         projects = EtsiManoProject.objects.filter(id=project_id)
         return render(request, 'descriptor_new.html', {
             'project_id': project_id,
             'descriptor_type':descriptor_type,
             'project_overview_data': projects[0].get_overview_data(),
+            'descriptor_strings': { 'descriptor_string_yaml': descriptor_string_yaml, 'descriptor_string_json': descriptor_string_json}
         })
     elif request.method == 'POST':
         csrf_token_value = get_token(request)

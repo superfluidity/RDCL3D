@@ -318,7 +318,7 @@ class EtsiManoProject(Project):
             vnf_profile = utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]
             vnf_profile['vnfdId'] = vnf_id
             current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'].append(vnf_profile)
-            vnf_descriptor = utility.get_descriptor_template('vnf')
+            vnf_descriptor = utility.get_descriptor_template('vnfd')
             vnf_descriptor['vnfdId'] = vnf_id
             vnf_descriptor['vdu'] = []
             vnf_descriptor['intVirtualLinkDesc'] = []
@@ -468,7 +468,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            vdu_descriptor = utility.get_descriptor_template('vnf')['vdu'][0]
+            vdu_descriptor = utility.get_descriptor_template('vnfd')['vdu'][0]
             vdu_descriptor['vduId'] = vdu_id
             vdu_descriptor['intCpd'] = []
             current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
@@ -513,7 +513,7 @@ class EtsiManoProject(Project):
             current_data = json.loads(self.data_project)
             utility = Util()
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            intcp_descriptor = utility.get_descriptor_template('vnf')['vdu'][0]['intCpd'][0]
+            intcp_descriptor = utility.get_descriptor_template('vnfd')['vdu'][0]['intCpd'][0]
             intcp_descriptor['cpdId'] = vducp_id
             vdu_descriptor['intCpd'].append(intcp_descriptor)
             self.data_project = current_data
@@ -574,7 +574,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            intVirtualLinkDesc = utility.get_descriptor_template('vnf')['intVirtualLinkDesc'][0]
+            intVirtualLinkDesc = utility.get_descriptor_template('vnfd')['intVirtualLinkDesc'][0]
             intVirtualLinkDesc['virtualLinkDescId'] = intvl_id
             current_data['vnfd'][vnf_id]['intVirtualLinkDesc'].append(intVirtualLinkDesc)
             self.data_project = current_data
@@ -615,7 +615,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            vnfExtCpd = utility.get_descriptor_template('vnf')['vnfExtCpd'][0]
+            vnfExtCpd = utility.get_descriptor_template('vnfd')['vnfExtCpd'][0]
             vnfExtCpd['cpdId'] = vnfExtCpd_id
             current_data['vnfd'][vnf_id]['vnfExtCpd'].append(vnfExtCpd)
             self.data_project = current_data

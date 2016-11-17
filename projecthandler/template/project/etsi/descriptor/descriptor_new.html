@@ -218,7 +218,7 @@
                             myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
                         }, json_editor_settings );
 
-           editorJSON.setValue("");
+            editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
             var that = this;
             editorJSON.setOption("autoRefresh", true);
 
@@ -229,8 +229,10 @@
            editorYaml = CodeMirror(function(elt) {
                             myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
                         }, yaml_editor_settings );
+           var des_strings = {{ descriptor_strings|safe }};
+           editorYaml.setValue(des_strings.descriptor_string_yaml);
+           editorYaml.setOption("autoRefresh", true);
 
-           editorYaml.setValue("");
 
 
             setTimeout(function() {

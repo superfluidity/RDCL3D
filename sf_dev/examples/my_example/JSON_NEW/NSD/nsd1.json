@@ -16,7 +16,7 @@
       "cpRole": "root",
       "description": "description",
       "nsVirtualLinkDescId": "vl1",
-      "sapAddressAssignment": true 
+      "sapAddressAssignment": true
     },
      {
       "cpdId": "sap2",

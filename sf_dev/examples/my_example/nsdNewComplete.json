@@ -1,5 +1,5 @@
 {
-  "nsdIdentifier": "NSExample",
+  "nsdIdentifier": "NS_template",
   "designer": "netgroup",
   "version": "1.0",
   "nsdName": "NSExample",
@@ -8,9 +8,6 @@
 
   ],
   "vnfdId": [
-    "vnf1",
-    "vnf2",
-    "vnf3"
   ],
   "pnfdId":[
 
@@ -28,7 +25,8 @@
 
   ],
   "virtualLinkDesc": [
-    { "virtualLinkDescId": "vl1",
+    {
+      "virtualLinkDescId": null,
       "vitualLinkDescProvider": "netgroup",
       "virtuaLinkDescVersion": "0.1",
       "connectivityType": {
@@ -61,32 +59,21 @@
   ],
   "vnffgd":[
     {
-      "vnffgdId": "vnffg1",
+      "vnffgdId": null,
       "vnfdId":[
-        "vnf1",
-        "vnf3"
+
       ],
       "pnfdId":[
 
       ],
       "virtualLinkDescId":[
-        "vl01",
-        "vl11",
-        "vl02",
-        "vl31",
-        "vl04"
+
       ],
       "cpdPoolId":[
         {
           "cpdPoolId": "cpdPoolId",
           "cpdId":[
-             "cp01",
-             "cp11",
-             "cp14",
-             "cp13",
-             "cp31",
-             "cp33",
-             "cp03"
+
           ]
         }
 
