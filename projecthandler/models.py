@@ -378,6 +378,8 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
+            if 'associatedCpdId' in sap_descriptor:
+                del sap_descriptor['associatedCpdId']
             sap_descriptor['nsVirtualLinkDescId'] = vl_id
             self.data_project = current_data
             self.update()
@@ -399,6 +401,23 @@ class EtsiManoProject(Project):
             print 'exception', e
             result = False
         return result
+
+    # NS operations: link/Unlink vnf with VL
+    def link_vnf_sap(self, ns_id, vnf_id, sap_id, ext_cp_id):
+        try:
+            current_data = json.loads(self.data_project)
+            sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
+            if 'nsVirtualLinkDescId' in sap_descriptor:
+                del sap_descriptor['nsVirtualLinkDescId']
+            sap_descriptor['associatedCpdId'] = ext_cp_id
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
 
     # NS operations: link/Unlink VNF with VL
     def link_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):

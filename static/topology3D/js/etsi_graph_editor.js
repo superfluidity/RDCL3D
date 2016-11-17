@@ -229,6 +229,24 @@ dreamer.ManoGraphEditor = (function(global) {
             });
 
         }
+         else if((source_type == 'ns_cp' && destination_type ==  'vnf') || (source_type == 'vnf' && destination_type ==  'ns_cp')){
+            var vnf_id = source_type == 'vnf' ? source_id : target_id;
+            var ns_cp_id = source_type == 'ns_cp' ? source_id : target_id;
+            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_ext_cp'); });
+            var old_link = $.grep(this.d3_graph.links, function(e){return (e.source.id == ns_cp_id || e.target.id == ns_cp_id); });
+            var self = this;
+            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice){
+                new dreamer.GraphRequests().addLink(s, d, choice, function(){
+                    if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined'){
+                         self.removeLink(old_link[0].index);
+                    }
+                    self._deselectAllNodes();
+                    self.parent.addLink.call(self, link);
+                    $('#modal_create_link_chooser').modal('hide');
+                });
+            });
+
+        }
         else if((source_type == 'vnf_vl' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vl')){
             var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
             var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')});

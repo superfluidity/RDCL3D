@@ -16,8 +16,7 @@
       "cpRole": "root",
       "description": "description",
       "nsVirtualLinkDescId": "vl1",
-      "sapAddressAssignment": true,
-      "associatedCpdId": "VnfExtCp11"
+      "sapAddressAssignment": true 
     },
      {
       "cpdId": "sap2",
@@ -25,8 +24,7 @@
       "cpRole": "root",
       "description": "description",
       "sapAddressAssignment": true,
-      "nsVirtualLinkDescId": "vl4",
-      "associatedCpdId": "VnfExtCp33"
+      "nsVirtualLinkDescId": "vl4"
     }
 
   ],

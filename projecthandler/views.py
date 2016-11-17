@@ -326,13 +326,19 @@ def add_link(request, project_id=None):
             ns_id = source['info']['group']
             vnf_ext_cp = request.POST.get('choice')
             result = projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
+        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            ns_id = source['info']['group']
+            vnf_ext_cp = request.POST.get('choice')
+            result = projects[0].link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
         elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
             vdu_id = request.POST.get('choice')
             vnf_id = source['info']['group']
             intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
             vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
             result = projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
-        if (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
             vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
             intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
             result = projects[0].link_vnfextcpd_intvl(source['info']['group'], vnfExtCpd_id, intvl_id)

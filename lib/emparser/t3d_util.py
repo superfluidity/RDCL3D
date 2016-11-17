@@ -78,7 +78,11 @@ class T3DUtil:
                     self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
                 for sapd in json_project['nsd'][current_nsd]['sapd']:
                     self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
-                    self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'ns', current_nsd, graph_object)
+                    if 'nsVirtualLinkDescId' in sapd:
+                        self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'ns', current_nsd, graph_object)
+                    elif 'associatedCpdId' in sapd:
+                        associatedCpdId =  next((x for x in graph_object['vertices'] if x['id'] == sapd['associatedCpdId']), None)
+                        self.add_link(associatedCpdId['info']['group'], sapd["cpdId"], 'ns', current_nsd, graph_object)
                 for vld in json_project['nsd'][current_nsd]['virtualLinkDesc']:
                    self.add_node(vld["virtualLinkDescId"], 'ns_vl', current_nsd, positions, graph_object)
                 for nsdf in json_project['nsd'][current_nsd]['nsDf']:
