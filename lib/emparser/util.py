@@ -3,6 +3,7 @@ import yaml
 import pyaml
 import logging
 import jsonschema
+import copy
 
 _lib_name = 'Util'
 
@@ -103,3 +104,27 @@ class Util:
         except Exception as e:
             self.log.error('Exception validate json schema')
             return False
+
+    def clone_descriptor (self, descriptor, type_descriptor, new_extention):
+        new_descriptor = copy.deepcopy(descriptor)
+        if (type_descriptor == 'vnfd'):
+            new_descriptor_id = new_descriptor['vnfdId'] +  new_extention
+            new_descriptor['vnfdId'] = new_descriptor_id;
+            new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention
+            for vnfExtCpd in new_descriptor['vnfExtCpd']:
+                vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention
+                vnfExtCpd['intVirtualLinkDesc'] = vnfExtCpd['intVirtualLinkDesc'] + new_extention
+            for vdu in new_descriptor['vdu']:
+                vdu['vduId'] = vdu['vduId'] + new_extention
+                vdu['name'] = vdu['name'] + new_extention
+                for intCpd in vdu['intCpd']:
+                    intCpd['cpdId'] = intCpd['cpdId'] +  new_extention
+                    intCpd['intVirtualLinkDesc'] = intCpd['intVirtualLinkDesc'] + new_extention
+            for intVirtualLinkDesc in new_descriptor['intVirtualLinkDesc']:
+                intVirtualLinkDesc['virtualLinkDescId'] = intVirtualLinkDesc['virtualLinkDescId'] + new_extention
+            for deploymentFlavour in new_descriptor['deploymentFlavour']:
+                for vduProfile in deploymentFlavour['vduProfile']:
+                    vduProfile['vduId'] = vduProfile['vduId'] + new_extention
+                for virtualLinkProfile in deploymentFlavour['virtualLinkProfile']:
+                    virtualLinkProfile['vnfVirtualLinkDescId'] = virtualLinkProfile['vnfVirtualLinkDescId'] + new_extention
+        return  new_descriptor

@@ -175,6 +175,25 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     })
 
 @login_required
+def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_id=None):
+    print project_id, descriptor_type, descriptor_id
+    csrf_token_value = get_token(request)
+    projects = EtsiManoProject.objects.filter(id=project_id)
+    print "entro"
+    result = projects[0].clone_descriptor(descriptor_type, descriptor_id)
+    return render(request, 'project_descriptors.html', {
+        'descriptors': projects[0].get_descriptors(descriptor_type),
+        'project_id': project_id,
+        'project_overview_data': projects[0].get_overview_data(),
+        "csrf_token_value": csrf_token_value,
+        'descriptor_type': descriptor_type,
+        'alert_message':{
+            'success': result,
+            'message': "Cloned!" if result else 'Error in cloning'}
+    })
+
+
+@login_required
 def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
         util = Util()
