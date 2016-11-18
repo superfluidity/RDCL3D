@@ -356,11 +356,15 @@ dreamer.ManoGraphEditor = (function(global) {
                     }
 
                 },
-                'contextmenu': function(d,i) {
-                    d3.event.preventDefault();
-                    log("contextmenu node");
-                    self.eventHandler.fire("right_click_node", d);
-                }
+                'contextmenu':  d3.contextMenu([
+                    {
+                        title: 'Delete',
+                        action: function(elm, d, i) {
+                            self.removeNode(d);
+                        }
+
+                    }
+                ])
             },
             'links': {
                 'click': function(event) {
