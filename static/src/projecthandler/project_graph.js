@@ -67,25 +67,84 @@ dropZone.ondrop = function(e) {
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
-        $('#input_choose_node_id').val(nodetype + "_" + generateUID());
-        $('#save_choose_node_id').off('click').on('click', function(){
-            var name =$('#input_choose_node_id').val();
-            var node_information = {
-            'id': name,
-            'info': {
-                'type': nodetype,
-                'group': group
-                },
-               'x': e.layerX,
-               'y': e.layerY
-            }
-            graph_editor.addNode(node_information, function(){
-               $('#modal_choose_node_id').modal('hide');
+        if(nodetype =='vnf'){
+            new dreamer.GraphRequests().getUnusedVnf(group,function(vnfs){
+                $('#div_chose_id').hide();
+                $('#div_chose_vnf').show();
+                $('#input_choose_node_vnf').val(nodetype + "_" + generateUID());
+                $('#selection_chooser_vnf').empty();
+                $('#selection_chooser_vnf').append('<option >None</option>');
 
+                for (var i in vnfs){
+                    $('#selection_chooser_vnf').append('<option id="'+vnfs[i]+'">'+vnfs[i]+'</option>');
+                }
+                $('#save_choose_node_id').off('click').on('click', function(){
+                    var choice = $( "#selection_chooser_vnf option:selected" ).text();
+                    var name =$('#input_choose_node_vnf').val();
+                    if(choice == 'None'){
+                        var node_information = {
+                        'id': name,
+                        'info': {
+                            'type': nodetype,
+                            'group': group
+                            },
+                           'x': e.layerX,
+                           'y': e.layerY
+                        }
+                        graph_editor.addNode(node_information, function(){
+                           $('#modal_choose_node_id').modal('hide');
+                        });
+                    }else{
+                        var node_information = {
+                        'existing_vnf' : true,
+                        'id': choice,
+                        'info': {
+                            'type': nodetype,
+                            'group': group
+                            },
+                           'x': e.layerX,
+                           'y': e.layerY
+                        }
+                        graph_editor.addNode(node_information, function(){
+                           $('#modal_choose_node_id').modal('hide');
+                        });
+                    }
+
+                });
+
+                  $('#modal_choose_node_id').modal('show');
             });
-        });
-        $('#modal_choose_node_id').modal('show');
 
+
+
+
+
+
+
+
+        }else{
+            $('#div_chose_id').show();
+            $('#div_chose_vnf').hide();
+            $('#input_choose_node_id').val(nodetype + "_" + generateUID());
+            $('#modal_chooser_title').text('Add Node')
+            $('#save_choose_node_id').off('click').on('click', function(){
+                var name =$('#input_choose_node_id').val();
+                var node_information = {
+                'id': name,
+                'info': {
+                    'type': nodetype,
+                    'group': group
+                    },
+                   'x': e.layerX,
+                   'y': e.layerY
+                }
+                graph_editor.addNode(node_information, function(){
+                   $('#modal_choose_node_id').modal('hide');
+                });
+            });
+            $('#modal_choose_node_id').modal('show');
+
+        }
     }
 
 }
@@ -122,7 +181,6 @@ function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     $("#draggable-container").empty()
     for (var i in c.node.type) {
-        console
         var event = 'event.dataTransfer.setData("text/plain","' + c.node.type[i] + '")'
         $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + c.node.type[i] + '"  ondragstart=' + event + ' style="background-color: ' + type_property[c.node.type[i]].color + ' !important;"><p>' + type_property[c.node.type[i]].name + '</p></span>');
     }
@@ -134,21 +192,6 @@ function openEditor(project_id){
     window.location.href='/projects/'+project_id+'/descriptors/'+graph_editor.getCurrentView()+'d/'+graph_editor.getCurrentGroup();
 }
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
 
 function showChooserModal(title, chooses, callback){
     console.log('showchooser')

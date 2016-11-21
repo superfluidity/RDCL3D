@@ -223,6 +223,18 @@ class EtsiManoProject(Project):
             result = False
         return result
 
+    def get_unused_vnf(self, nsd_id):
+        try:
+            current_data = json.loads(self.data_project)
+            result = []
+            for vnf in current_data['vnfd']:
+                if vnf not in current_data['nsd'][nsd_id]['vnfdId']:
+                    result.append(vnf)
+        except Exception as e:
+            print 'exception', e
+            result = None
+        return result
+
     # NS operations: add/remove VL
     def add_ns_vl(self, ns_id, vl_id):
         try:
@@ -344,6 +356,22 @@ class EtsiManoProject(Project):
             vnf_descriptor['intVirtualLinkDesc'] = []
             vnf_descriptor['vnfExtCpd'] = []
             current_data['vnfd'][vnf_id] = vnf_descriptor
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def add_ns_existing_vnf(self, ns_id, vnf_id):
+        try:
+            current_data = json.loads(self.data_project)
+            current_data['nsd'][ns_id]['vnfdId'].append(vnf_id)
+            utility = Util()
+            vnf_profile = utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]
+            vnf_profile['vnfdId'] = vnf_id
+            current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'].append(vnf_profile)
             self.data_project = current_data
             self.update()
             result = True

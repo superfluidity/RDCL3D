@@ -85,23 +85,31 @@ dreamer.ManoGraphEditor = (function(global) {
     ManoGraphEditor.prototype.addNode = function(args, success, error) {
         var self = this;
         if(args.info.type === 'vnf'){
-            new dreamer.GraphRequests().addNode(args,null, function(){
-                self.parent.addNode.call(self, args);
-                var vnf_ext_cp =  {
-                        'id': 'vnf_ext_cp' + "_" + generateUID(),
-                        'info': {
-                            'type': 'vnf_ext_cp',
-                            'group': args.id
-                            },
-                        'x': args.x,
-                        'y': args.y
-                        }
-                new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function(){
-                    self.parent.addNode.call(self, vnf_ext_cp);
+            if(args.existing_vnf){
+                 new dreamer.GraphRequests().addNode(args,null, function(){
+                    self.parent.addNode.call(self, args);
                     if(success)
                         success();
+                 });
+            }else {
+                new dreamer.GraphRequests().addNode(args,null, function(){
+                    self.parent.addNode.call(self, args);
+                    var vnf_ext_cp =  {
+                            'id': 'vnf_ext_cp' + "_" + generateUID(),
+                            'info': {
+                                'type': 'vnf_ext_cp',
+                                'group': args.id
+                                },
+                            'x': args.x,
+                            'y': args.y
+                            }
+                    new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function(){
+                        self.parent.addNode.call(self, vnf_ext_cp);
+                        if(success)
+                            success();
+                    });
                 });
-            });
+          }
         }else if(args.info.type === 'vnf_vdu'){
             new dreamer.GraphRequests().addNode(args, null, function(){
                 self.parent.addNode.call(self, args);

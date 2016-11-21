@@ -20,10 +20,11 @@ dreamer.GraphRequests = (function(global) {
 
    GraphRequests.prototype.addNode= function(args, choice,  success, error){
         var data = new FormData();
-        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('group_id', args.info.group);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
+        data.append('existing_vnf', args.existing_vnf ? args.existing_vnf :false)
         if(choice)
             data.append('choice', choice);
         $.ajax({
@@ -48,7 +49,7 @@ dreamer.GraphRequests = (function(global) {
 
    GraphRequests.prototype.removeNode= function(args, choice, success, error){
         var data = new FormData();
-        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('group_id', args.info.group);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
@@ -74,7 +75,7 @@ dreamer.GraphRequests = (function(global) {
 
    GraphRequests.prototype.addLink= function(source, destination, choice, success, error){
         var data = new FormData();
-        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('source', JSON.stringify(source));
         data.append('destination', JSON.stringify(destination));
         if(choice)
@@ -100,7 +101,7 @@ dreamer.GraphRequests = (function(global) {
 
    GraphRequests.prototype.savePositions = function(positions, success, error){
         var data = new FormData();
-        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('positions', JSON.stringify(positions) );
         $.ajax({
             url: "positions",
@@ -119,10 +120,27 @@ dreamer.GraphRequests = (function(global) {
                 alert("some error");
             }
         });
+    };
 
+    GraphRequests.prototype.getUnusedVnf = function(nsd_id, success, error){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        $.ajax({
+            url: "unusedvnf/"+nsd_id,
+            type: 'GET',
+            success: function(result) {
+                console.log(result)
+                if(success)
+                    success(result);
+            },
+            error: function(result) {
+                if(error)
+                    error();
+                alert("some error");
+            }
+        });
 
-    }
-
+    };
     GraphRequests.prototype.getCookie =  function (name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {

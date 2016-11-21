@@ -273,6 +273,16 @@ def graph_positions(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+@login_required
+def unused_vnf(request, project_id=None, nsd_id = None):
+    if request.method == 'GET':
+        print project_id, nsd_id
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        result = projects[0].get_unused_vnf(nsd_id)
+        status_code = 500 if result==None else 200
+        response = HttpResponse(json.dumps(result), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 @login_required
 def add_element(request, project_id=None):
@@ -282,12 +292,16 @@ def add_element(request, project_id=None):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
+        existing_vnf = request.POST.get('existing_vnf')
         if element_type == 'ns_cp':
             result = projects[0].add_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
             result = projects[0].add_ns_vl(group_id, element_id)
         elif element_type == 'vnf':
-            result = projects[0].add_ns_vnf(group_id, element_id)
+            if existing_vnf == 'true':
+                result = projects[0].add_ns_existing_vnf(group_id, element_id)
+            else :
+                result = projects[0].add_ns_vnf(group_id, element_id)
         elif element_type == 'vnf_vl':
             result = projects[0].add_vnf_intvl(group_id, element_id)
         elif element_type == 'vnf_ext_cp':

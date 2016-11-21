@@ -1,15 +1,24 @@
-<div class="modal" id="modal_choose_node_id">
+<div class="modal" id="modal_choose_node_id" xmlns="http://www.w3.org/1999/html">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title" id="modal_chooser_title">Node name</h4>
+        <h4 class="modal-title" id="modal_chooser_title">Add node</h4>
       </div>
-      <div class="modal-body" >
+      <div id="div_chose_id"class="modal-body" >
+         <label>Chose Node id  </label>
           <input name="input_choose_node_id" id="input_choose_node_id" type="text" size="40" maxlength="20" />
-          </select>
     </div>
+      <div id="div_chose_vnf"class="modal-body" >
+          <div>
+          <label>Chose VNF id  </label>
+        </div>
+        <input name="input_choose_node_id" id="input_choose_node_vnf"type="text" size="40" maxlength="20" />
+          <div><label>or select an existing VNF </label></div>
+        <select class="form-control" left="20px" id="selection_chooser_vnf" >
+          </select>
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="save_choose_node_id">Save changes</button>
