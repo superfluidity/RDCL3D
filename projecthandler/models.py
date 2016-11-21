@@ -135,7 +135,7 @@ class EtsiManoProject(Project):
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(utility.yaml2json(yaml_object))
             validate = utility.validate_json_schema(type_descriptor, new_descriptor)
-            new_descriptor_id = new_descriptor['id'] if type_descriptor != "nsd" else new_descriptor['name']
+            new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor['nsdIdentifier']
             if not type_descriptor in current_data:
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
@@ -144,7 +144,7 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception create desciptor',e
             result = False
         return result
 

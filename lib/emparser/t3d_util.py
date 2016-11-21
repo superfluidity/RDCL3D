@@ -37,6 +37,8 @@ class T3DUtil:
             graph_object['edges'].append(edge_obj)
 
     def add_node(self, id, type, group, positions, graph_object):
+        if id is None:
+            return
         node = copy.deepcopy(self.node_t3d_base)
         node['id'] = id
         node['info']['type'] = type

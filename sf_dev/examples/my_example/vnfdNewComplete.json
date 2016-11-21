@@ -9,7 +9,7 @@
   ],
   "vdu":[
     {
-      "vduId":"",
+      "vduId":null,
       "name": "",
       "description":"",
       "intCpd":[

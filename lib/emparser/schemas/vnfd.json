@@ -34,7 +34,7 @@
                      "type":"object",
                      "properties":{
                         "cpdId":{
-                           "type":"string"
+                           "type":["string", "null"]
                         },
                         "layerProtocol":{
                            "type":"string"
@@ -43,7 +43,7 @@
                            "type":"string"
                         },
                         "intVirtualLinkDesc":{
-                           "type":"string"
+                           "type":["string", "null"]
                         }
                      }
                   }
@@ -57,7 +57,7 @@
             "type":"object",
             "properties":{
                "virtualLinkDescId":{
-                  "type":"string"
+                  "type":["string", "null"]
                },
                "virtualLinkDescFlavour":{
                   "type":"array",
@@ -149,7 +149,7 @@
             "type":"object",
             "properties":{
                "cpdId":{
-                  "type":"string"
+                  "type":["string", "null"]
                },
                "layerProtocol":{
                   "type":"string"
@@ -161,7 +161,7 @@
                   "type":"string"
                },
                "intVirtualLinkDesc":{
-                  "type":"string"
+                  "type":["string", "null"]
                }
             }
          }
@@ -220,7 +220,7 @@
                      "type":"object",
                      "properties":{
                         "vnfVirtualLinkDescId":{
-                           "type":"string"
+                           "type":["string","null"]
                         },
                         "flavourId":{
                            "type":"string"

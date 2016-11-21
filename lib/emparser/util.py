@@ -93,6 +93,7 @@ class Util:
             jsonschema.validate(data, schema)
             return True
         except Exception as e:
+            print e
             self.log.error('Exception validate json schema')
             return False
 
