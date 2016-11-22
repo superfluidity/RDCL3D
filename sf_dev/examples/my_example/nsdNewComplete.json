@@ -27,7 +27,7 @@
   "virtualLinkDesc": [
     {
       "virtualLinkDescId": null,
-      "vitualLinkDescProvider": "netgroup",
+      "virtualLinkDescProvider": "netgroup",
       "virtuaLinkDescVersion": "0.1",
       "connectivityType": {
         "layerProtocol": "E-LAN",
@@ -52,7 +52,7 @@
       "description": "descrizione",
       "security":  {
         "signature": "signature",
-        "algorithm": "algorith",
+        "algorithm": "algorithm",
         "certificate": "certificate"
       }
     }
@@ -97,7 +97,7 @@
         "vnfIndicator": "VnfIndicator"
       },
       "monitoringParameter":{
-        "monitoringParamaterId": "id",
+        "monitoringParameterId": "id",
         "name": "nomeMonitoring",
         "performanceMetric": "metrics"
       }
@@ -108,7 +108,7 @@
   "autoScalingRule":[
 
   ],
-  "lifeCycleManagementScript": "scipt",
+  "lifeCycleManagementScript": "script",
   "nsDf":[
     {
       "nsDfId": "nsDfId",
@@ -253,7 +253,7 @@
   ],
   "security": {
     "signature": "signature",
-    "algorithm": "algorith",
+    "algorithm": "algorithm",
     "certificate": "certificate"
   }
 }

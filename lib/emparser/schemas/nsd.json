@@ -60,7 +60,7 @@
                "virtualLinkDescId":{
                   "type":"string"
                },
-               "vitualLinkDescProvider":{
+               "virtualLinkDescProvider":{
                   "type":"string"
                },
                "virtuaLinkDescVersion":{

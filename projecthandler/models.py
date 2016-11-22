@@ -138,7 +138,7 @@ class EtsiManoProject(Project):
             self.update()
             result = new_descriptor_id
         except Exception as e:
-            print 'exception create desciptor',e
+            print 'exception create descriptor',e
             result = False
         return result
 
