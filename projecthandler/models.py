@@ -83,18 +83,12 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    def clone_descriptor(self,type_descriptor, descriptor_id):
+    def clone_descriptor(self,type_descriptor, descriptor_id, new_id):
         try:
             current_data = json.loads(self.data_project)
-            descriptor = current_data[type_descriptor][descriptor_id].copy()
-            for i in range(1,1000):
-                new_descriptor_id = descriptor_id+"_"+str(i)
-                count = i
-                if new_descriptor_id not in current_data[type_descriptor]:
-                    break;
-            new_extention = "_" + str(count)
-            new_descriptor = Util().clone_descriptor(descriptor, type_descriptor, new_extention)
-            current_data[type_descriptor][new_descriptor_id] = new_descriptor
+            descriptor = current_data[type_descriptor][descriptor_id]
+            new_descriptor = Util().clone_descriptor(descriptor, type_descriptor, new_id)
+            current_data[type_descriptor][new_id] = new_descriptor
             self.data_project = current_data
             self.update()
             result = True
@@ -142,7 +136,7 @@ class EtsiManoProject(Project):
             self.data_project = current_data
             self.validated = validate
             self.update()
-            result = True
+            result = new_descriptor_id
         except Exception as e:
             print 'exception create desciptor',e
             result = False

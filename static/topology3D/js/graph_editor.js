@@ -105,6 +105,7 @@ dreamer.GraphEditor = (function(global) {
 
 
         d3.json("graph_data", function(error, data) {
+            console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.refresh();

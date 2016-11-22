@@ -179,8 +179,8 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
     print project_id, descriptor_type, descriptor_id
     csrf_token_value = get_token(request)
     projects = EtsiManoProject.objects.filter(id=project_id)
-    print "entro"
-    result = projects[0].clone_descriptor(descriptor_type, descriptor_id)
+    new_id = request.GET.get('newid', '')
+    result = projects[0].clone_descriptor(descriptor_type, descriptor_id, new_id)
     return render(request, 'project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -196,8 +196,16 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
 @login_required
 def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
+        id = request.GET.get('id', '')
+        print id
         util = Util()
         json_template = util.get_descriptor_template(descriptor_type)
+        if descriptor_type == 'nsd':
+            json_template['nsdIdentifier'] = id
+            json_template['nsdInvariantId'] = id
+        else:
+            json_template['vnfdId'] = id
+
         descriptor_string_yaml = util.json2yaml(json_template)
         descriptor_string_json = json.dumps(json_template)
         projects = EtsiManoProject.objects.filter(id=project_id)
@@ -221,11 +229,12 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             'project_id': project_id,
             'descriptor_type': descriptor_type,
             'project_overview_data': projects[0].get_overview_data(),
+            'descriptor_id':result,
             'alert_message': {
-                'success': result,
+                'success': True if result!=False else False,
                 'message': "Descriptor created" if result else 'Error in creation'}
             }
-        status_code = 200 if result else 500
+        status_code = 200 if result!=False else 500
         response = HttpResponse(json.dumps(response_data), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response

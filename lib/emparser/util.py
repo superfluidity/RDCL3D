@@ -106,10 +106,10 @@ class Util:
             self.log.error('Exception validate json schema')
             return False
 
-    def clone_descriptor (self, descriptor, type_descriptor, new_extention):
+    def clone_descriptor (self, descriptor, type_descriptor, new_descriptor_id):
         new_descriptor = copy.deepcopy(descriptor)
         if (type_descriptor == 'vnfd'):
-            new_descriptor_id = new_descriptor['vnfdId'] +  new_extention
+            new_extention = "_"+new_descriptor_id
             new_descriptor['vnfdId'] = new_descriptor_id;
             new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention
             for vnfExtCpd in new_descriptor['vnfExtCpd']:

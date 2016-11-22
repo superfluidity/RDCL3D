@@ -16,6 +16,11 @@
 
     <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 {% endblock %}
+{% block title_header_big %}
+    {{ block.super }}
+  Edit {{descriptor_id}} descriptor
+{% endblock %}
+
 
 {% block left_sidebar %}
     {% include 'project_base_left_sidebar.html' %}
@@ -45,7 +50,6 @@
         <li class="pull-right"><button id="save" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save</button></li>
         <li class="pull-right"><button id="save_show_graph"type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph</button></li>
         <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="goToGraph()"><i class="fa fa-sitemap"></i> Show Graph</button></li>
-
 
     </ul>
     <div class="tab-content">

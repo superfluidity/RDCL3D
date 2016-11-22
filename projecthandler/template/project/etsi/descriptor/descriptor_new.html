@@ -15,6 +15,16 @@
      <link rel="stylesheet" href="{% static "css/drag_drop.css" %}">
     <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 {% endblock %}
+{% block title_header_big %}
+    {{ block.super }}
+  Create new {% ifequal descriptor_type 'nsd' %}
+          NS
+        {% else%}
+        VNF
+     {% endifequal %} descriptor
+{% endblock %}
+
+
 
 {% block left_sidebar %}
     {% include 'project_base_left_sidebar.html' %}
@@ -36,11 +46,11 @@
 <div class="box">
     {% csrf_token %}
     <div class="box-header with-border">
-        <h3 class="box-title">Create new {{descriptor_type}} descriptor</h3>
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
                     <div class="nav-tabs-custom">
+
                         <ul class="nav nav-tabs">
                             <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i
                                     class="fa fa-clipboard"></i> Paste YAML</a></li>
@@ -48,11 +58,12 @@
                                 JSON</a></li>
                             <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload
                                 File</a></li>
-                            <li class="pull-right">
-                                <button type="button" class="btn btn-block btn-primary btn-sm" onclick="create()"><i
-                                        class="fa fa-save"></i> Upload
-                                </button>
-                            </li>
+
+                            <li class="pull-right"><button type="button" id="upload_button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i class="fa fa-save"></i> Save </button></li>
+                            <li class="pull-right"><button id="save_show_graph"type="button" class="btn btn-block btn-primary btn-sm"  onclick="create(this.id)"><i class="fa fa-sitemap"></i> Save and Show Graph</button></li>
+                            <li class="pull-right"><button id="cancel" type="button" class="btn btn-block btn-primary btn-sm"  onclick="cancel(this.id)"><i class="fa fa-times"></i> Calcel</button></li>
+
+
                         </ul>
                         <div class="tab-content">
                             <!-- /.tab-pane -->
@@ -147,7 +158,7 @@
     dropZone.ondrop = function(e) {
         e.preventDefault();
         this.className = 'upload-drop-zone';
-        create(e.dataTransfer.files);
+        create(e.dataTransfer.files, true);
     }
 
     dropZone.ondragover = function() {
@@ -246,9 +257,9 @@
         });
 
 
-        function create(fs){
+        function create(fs, dropzone){
             var id = $('.nav-tabs .active').attr('id');
-            if (fs) id = 'file_li'
+            if (dropzone) id = 'file_li'
             var type, text ;
             var data = new FormData();
             switch(id) {
@@ -263,7 +274,7 @@
                 case 'file_li':
                     type = 'file'
 
-                    var files = fs? fs : document.getElementById('js-upload-files').files;
+                    var files = dropzone ? fs : document.getElementById('js-upload-files').files;
                     if (!files || !files.length) {
                       files = document.getElementById('drop-zone').files
                       if(!files || !files.length){
@@ -271,6 +282,7 @@
                         return
                       }
                     }
+                    console.log(files[0])
                     var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
                     if(!(extension == 'json' || extension =='yaml')){
                         alert("The file must be .json or .yaml");
@@ -292,7 +304,13 @@
                     contentType: false,
                     processData: false,
                     success: function(result) {
-                        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+                        console.log(result)
+                        if(fs =='save_show_graph'){
+                            window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id='+result.descriptor_id
+                        }else{
+                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+
+                        }
                     },
                     error: function(result) {
                         alert("some error");
@@ -300,6 +318,9 @@
                 });
         }
 
+    function cancel(id){
+        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+    }
 
 
     </script>

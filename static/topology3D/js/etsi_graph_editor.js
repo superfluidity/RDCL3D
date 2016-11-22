@@ -366,6 +366,40 @@ dreamer.ManoGraphEditor = (function(global) {
                 },
                 'contextmenu':  d3.contextMenu([
                     {
+                        title: 'Show graph',
+                        action: function(elm, d, i) {
+                        if(d.info.type!= undefined){
+                            if(d.info.type == 'vnf')
+                                self.handleFiltersParams({
+                                    node: {
+                                        type : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp','vnf_vdu'],
+                                        group: [d.id]
+                                    },
+                                    link: {
+                                        group: [d.id],
+                                        view: ['vnf']
+                                    }
+                                });
+
+                            }
+                        }
+                    },
+                    {
+                        title: 'Edit',
+                        action: function(elm, d, i) {
+                            if(d.info.type!= undefined){
+                                if(d.info.type == 'vnf'){
+                                    window.location.href='/projects/'+self.project_id+'/descriptors/vnfd/'+d.id;
+
+                                }else{
+                                    window.location.href='/projects/'+self.project_id+'/descriptors/'+graph_editor.getCurrentView()+'d/'+graph_editor.getCurrentGroup();
+
+                                }
+                             }
+                        }
+
+                    },
+                    {
                         title: 'Delete',
                         action: function(elm, d, i) {
                             self.removeNode(d);

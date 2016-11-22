@@ -30,7 +30,6 @@ $(document).ready(function() {
             view: [descriptor_type]
         }
     }
-
     graph_editor.addListener("filters_changed", changeFilter);
 
 
@@ -67,6 +66,7 @@ dropZone.ondrop = function(e) {
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
+        var type_name = graph_editor.getTypeProperty()[nodetype].name;
         if(nodetype =='vnf'){
             new dreamer.GraphRequests().getUnusedVnf(group,function(vnfs){
                 $('#div_chose_id').hide();
@@ -74,7 +74,7 @@ dropZone.ondrop = function(e) {
                 $('#input_choose_node_vnf').val(nodetype + "_" + generateUID());
                 $('#selection_chooser_vnf').empty();
                 $('#selection_chooser_vnf').append('<option >None</option>');
-
+                $('#modal_chooser_title_add_node').text('Add '+type_name);
                 for (var i in vnfs){
                     $('#selection_chooser_vnf').append('<option id="'+vnfs[i]+'">'+vnfs[i]+'</option>');
                 }
@@ -115,18 +115,11 @@ dropZone.ondrop = function(e) {
                   $('#modal_choose_node_id').modal('show');
             });
 
-
-
-
-
-
-
-
         }else{
             $('#div_chose_id').show();
             $('#div_chose_vnf').hide();
             $('#input_choose_node_id').val(nodetype + "_" + generateUID());
-            $('#modal_chooser_title').text('Add Node')
+            $('#modal_chooser_title_add_node').text('Add '+type_name);
             $('#save_choose_node_id').off('click').on('click', function(){
                 var name =$('#input_choose_node_id').val();
                 var node_information = {
@@ -179,6 +172,11 @@ function savePositions(el) {
 
 function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
+    if(c.link.view == 'ns'){
+        $("#title_header").text("NS Graph Editor")
+    }else{
+        $("#title_header").text("VNF Graph Editor")
+    }
     $("#draggable-container").empty()
     for (var i in c.node.type) {
         var event = 'event.dataTransfer.setData("text/plain","' + c.node.type[i] + '")'
