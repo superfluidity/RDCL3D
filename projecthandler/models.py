@@ -435,7 +435,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             sap_descriptor = next((x for x in current_data['nsd'][ns_id]['sapd'] if x['cpdId'] == sap_id), None)
-            del sap_descriptor['nsVirtualLinkDescId']
+            sap_descriptor['nsVirtualLinkDescId'] = None
             self.data_project = current_data
             self.update()
             result = True
@@ -490,13 +490,24 @@ class EtsiManoProject(Project):
         return result
 
 
-    def unlink_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
+    def unlink_vl_vnf(self, ns_id, vl_id, vnf_id):
         try:
             current_data = json.loads(self.data_project)
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf']['vnfProfile'] if x['vnfdId'] == vnf_id), None)
-            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if ext_cp_id in x['cpdId'] ), None)
+            utility = Util()
+            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            virtual_link_profile_id = virtual_link_profile['virtualLinkProfileId']
+            print virtual_link_profile_id
+            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if x['virtualLinkProfileId'] == virtual_link_profile_id), None)
+            print virtual_link_connectivity
             if virtual_link_connectivity is not None:
-                virtual_link_connectivity['cpdId'].remove(ext_cp_id)
+                for vnfExtCpd  in current_data['vnfd'][vnf_id]['vnfExtCpd']:
+                    print  vnfExtCpd['cpdId']
+                    if vnfExtCpd['cpdId'] in virtual_link_connectivity['cpdId']:
+                        print "rimyovo", vnfExtCpd['cpdId']
+                        virtual_link_connectivity['cpdId'].remove(vnfExtCpd['cpdId'])
+                if not virtual_link_connectivity['cpdId']:
+                    vnf_profile['nsVirtualLinkConnectivity'].remove(virtual_link_connectivity)
             self.data_project = current_data
             self.update()
             result = True
@@ -597,12 +608,13 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    def unlink_vducp_intvl(self, vnf_id, vdu_id, vducp_id, intvl_id):
+    def unlink_vducp_intvl(self, vnf_id, vducp_id, intvl_id):
         try:
             current_data = json.loads(self.data_project)
-            vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
-            del intcp_descriptor['intVirtualLinkDesc']
+            for vdu in current_data['vnfd'][vnf_id]['vdu']:
+                intCpd = next((x for x in vdu['intCpd'] if x['cpdId'] == vducp_id and x['intVirtualLinkDesc'] == intvl_id), None)
+                if intCpd is not None:
+                    intCpd['intVirtualLinkDesc'] = None
             self.data_project = current_data
             self.update()
             result = True
@@ -701,7 +713,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
-            del vnfExtCpd['intVirtualLinkDesc']
+            vnfExtCpd['intVirtualLinkDesc'] = None
             self.data_project = current_data
             self.update()
             result = True

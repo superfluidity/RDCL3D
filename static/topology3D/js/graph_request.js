@@ -99,6 +99,30 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
+      GraphRequests.prototype.removeLink= function(source, destination, success, error){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('source', JSON.stringify(source));
+        data.append('destination', JSON.stringify(destination));
+        $.ajax({
+            url: "removelink",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if(success)
+                    success();
+            },
+            error: function(result) {
+                if(error)
+                    error();
+                alert("some error");
+            }
+        });
+    };
+
    GraphRequests.prototype.savePositions = function(positions, success, error){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));

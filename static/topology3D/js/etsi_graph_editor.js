@@ -141,21 +141,28 @@ dreamer.ManoGraphEditor = (function(global) {
             var vnf_id = args.info.group;
             var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_vdu'); });
             var self = this;
-            showChooserModal('Select the VDU to link', vnf_vdus, function(choice){
-                new dreamer.GraphRequests().addNode(args, choice, function(){
-                    self.parent.addNode.call(self, args);
-                    var link = {
-                        source: args.id,
-                        target: choice,
-                        view: self.filter_parameters.link.view[0],
-                        group: args.info.group,
-                    };
-                    self.parent.addLink.call(self, link);
-                    if(success)
-                        success();
-                    $('#modal_create_link_chooser').modal('hide');
+            if(success)
+                success();
+            if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <=0){
+                alert('You should add a VDU')
+            }else{
+                showChooserModal('Select the VDU to link', vnf_vdus, function(choice){
+                    new dreamer.GraphRequests().addNode(args, choice, function(){
+                        self.parent.addNode.call(self, args);
+                        var link = {
+                            source: args.id,
+                            target: choice,
+                            view: self.filter_parameters.link.view[0],
+                            group: args.info.group,
+                        };
+
+                        self.parent.addLink.call(self, link);
+
+                        $('#modal_create_link_chooser').modal('hide');
+                    });
                 });
-            });
+            }
+
         }else{
             new dreamer.GraphRequests().addNode(args, null, function(){
                 self.parent.addNode.call(self, args);
@@ -421,11 +428,28 @@ dreamer.ManoGraphEditor = (function(global) {
                 'mouseout': function(d) {
                     d3.select(this).style('stroke-width', 2);
                 },
-                'contextmenu': function(d, i) {
-                    d3.event.preventDefault();
-                    // react on right-clicking
-                    log("contextmenu link");
-                }
+                'contextmenu': d3.contextMenu([
+                    {
+                        title: 'Delete Link',
+                        action: function(elm, link, i) {
+                            var s = link.source;
+                            var d = link.target;
+                            var source_type = s.info.type;
+                            var destination_type = d.info.type;
+                            if((source_type == 'vnf_vdu' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vdu')){
+                                alert('You should delete the VDU CP')
+                            }else{
+                                new dreamer.GraphRequests().removeLink(s, d, function(){
+                                self._deselectAllNodes();
+                                self.removeLink(link.index);
+                            });
+                            }
+
+
+                        }
+
+                    }
+                ])
             }
         };
     };

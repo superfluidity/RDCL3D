@@ -251,7 +251,6 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.removeLink = function(link_id) {
-        console.log('remove link'+link_id)
         var self = this;
         if (link_id !== 'undefined') {
             this.d3_graph['links'].forEach(function(l, index, object) {
@@ -261,6 +260,7 @@ dreamer.GraphEditor = (function(global) {
                     self.cleanAll();
                     self.refresh();
                     self.startForce();
+                    self.force.restart();
                     return true;
                 }
 
@@ -335,11 +335,7 @@ dreamer.GraphEditor = (function(global) {
             .on('dblclick',self.behavioursOnEvents.nodes["dblclick"] );
 
         this.link
-            .on("contextmenu", function(d, i) {
-                d3.event.preventDefault();
-                // react on right-clicking
-                log("contextmenu link", d, i);
-            })
+            .on("contextmenu", self.behavioursOnEvents.links["contextmenu"])
             .on("mouseover", self.behavioursOnEvents.links["mouseover"])
             .on("mouseout", self.behavioursOnEvents.links["mouseout"]);
 

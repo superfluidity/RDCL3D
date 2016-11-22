@@ -393,3 +393,41 @@ def add_link(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+
+@login_required
+def remove_link(request, project_id=None):
+    if request.method == 'POST':
+        result = False
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        source = json.loads(request.POST.get('source'))
+        destination = json.loads(request.POST.get('destination'))
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            result = projects[0].unlink_vl_sap(source['info']['group'],vl_id, sap_id)
+        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            ns_id = source['info']['group']
+            result = projects[0].unlink_vl_vnf(ns_id, vl_id, vnf_id)
+        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            ns_id = source['info']['group']
+            result = projects[0].unlink_vl_sap(ns_id, vnf_id, sap_id)
+        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+            print source, destination
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+            vnf_id = source['info']['group']
+            result = projects[0].unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
+        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            result = projects[0].unlink_vnfextcpd_intvl(source['info']['group'], vnfExtCpd_id, intvl_id)
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
