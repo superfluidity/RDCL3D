@@ -318,6 +318,36 @@ intVirtualLinkDesc:
       priority: 1
     testAccess: ''
   virtualLinkDescId: vnf_vl_a46r
+- connectivityType:
+    flowPattern: ''
+    layerProtocol: Enum
+  description: ''
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  testAccess:
+  - ''
+  virtualLinkDescFlavour:
+  - bitrateRequirements:
+      leaf: 13
+      root: 7
+    connectivityType:
+      flowPattern: ''
+      layerProtocol: Enum
+    description: ''
+    flavourId: flavourId
+    monitoringParameter:
+      id: id
+      name: name
+      performanceMetric: performanceMetric
+    qos:
+      latency: 500
+      packetDelayVariation: 50
+      packetLossRatio: 5
+      priority: 1
+    testAccess: ''
+  virtualLinkDescId: vnf_vl_abv1
 lifeCycleManagementScript:
 - event:
   - ''
@@ -531,6 +561,11 @@ vdu:
     description: description
     intVirtualLinkDesc: vnf_vl_sqk7
     layerProtocol: E-LAN
+  - cpRole: root or leaf
+    cpdId: vnf_vdu_cp_i3wh
+    description: description
+    intVirtualLinkDesc: vnf_vl_abv1
+    layerProtocol: E-LAN
   monitoringParameter:
   - id: id
     name: name
@@ -726,6 +761,17 @@ vnfExtCpd:
   description: description
   intCpd: null
   intVirtualLinkDesc: vnf_vl_a46r
+  layerProtocol: E-LAN
+  virtualNetworkInterfaceRequirements:
+    description: description
+    name: name
+    requirement: ''
+    supportMandatory: true
+- cpRole: root or leaf
+  cpdId: towardsMEChost
+  description: description
+  intCpd: null
+  intVirtualLinkDesc: vnf_vl_abv1
   layerProtocol: E-LAN
   virtualNetworkInterfaceRequirements:
     description: description
