@@ -274,9 +274,14 @@ dreamer.ManoGraphEditor = (function(global) {
             var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
             var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')});
             var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
+            var old_link = $.grep(this.d3_graph.links, function(e){return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')});
+
             var self = this;
             new dreamer.GraphRequests().addLink(s, d, vdu_id, function(){
                 self._deselectAllNodes();
+                if(typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined'){
+                    self.removeLink(old_link[0].index);
+                }
                 self.parent.addLink.call(self, link);
             });
         }
