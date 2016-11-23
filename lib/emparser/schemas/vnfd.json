@@ -23,7 +23,7 @@
             "type":"object",
             "properties":{
                "vduId":{
-                  "type":"string"
+                  "type":["string", "null"]
                },
                "name":{
                   "type":"string"
@@ -183,7 +183,7 @@
                      "type":"object",
                      "properties":{
                         "vduId":{
-                           "type":"string"
+                           "type":["string", "null"]
                         },
                         "minNumberOfInstances":{
                            "type":"integer"
@@ -262,7 +262,7 @@
                               "type":"object",
                               "properties":{
                                  "vduId":{
-                                    "type":"string"
+                                    "type":["string", "null"]
                                  },
                                  "numberOfInstances":{
                                     "type":"integer"
