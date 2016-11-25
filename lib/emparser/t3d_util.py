@@ -16,7 +16,8 @@ class T3DUtil:
             'property': {
                 'custom_label': '',
             },
-            'type': ''
+            'type': '',
+            'group': []
         }
     }
 
@@ -42,7 +43,7 @@ class T3DUtil:
         node = copy.deepcopy(self.node_t3d_base)
         node['id'] = id
         node['info']['type'] = type
-        node['info']['group'] = group
+        node['info']['group'].append(group)
         if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
             node['fx'] = positions['vertices'][id]['x']
             node['fy'] = positions['vertices'][id]['y']

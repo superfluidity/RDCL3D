@@ -515,21 +515,25 @@ dreamer.GraphEditor = (function(global) {
         var self = this;
 
         this.node_filter_cb = args.node_filter_cb || function(d) {
-            var result = true;
+
+            var cond_view = true, cond_group = false;
 
             // check filter by node type
             if(self.filter_parameters.node.type.length > 0){
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
-                    result = false;
+                    cond_view = false;
             }
 
-            // check filter by group
+             // check filter by group
             if(self.filter_parameters.node.group.length > 0){
-                if(self.filter_parameters.node.group.indexOf(d.info.group) < 0)
-                    result = false;
+                self.filter_parameters.node.group.forEach(function(group){
+                    if(d.info.group.indexOf(group) >= 0)
+                        cond_group = true;
+                });
             }
 
-            return result;
+
+            return cond_view && cond_group;
         };
 
         this.link_filter_cb = args.link_filter_cb || function(d) {
