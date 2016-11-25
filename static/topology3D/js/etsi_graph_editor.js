@@ -99,7 +99,7 @@ dreamer.ManoGraphEditor = (function(global) {
                             'id': 'vnf_ext_cp' + "_" + args.id,
                             'info': {
                                 'type': 'vnf_ext_cp',
-                                'group': args.id
+                                'group': [args.id]
                                 },
                             'x': args.x,
                             'y': args.y
@@ -119,7 +119,7 @@ dreamer.ManoGraphEditor = (function(global) {
                         'id': 'vnf_vdu_cp' + "_" + generateUID(),
                         'info': {
                             'type': 'vnf_vdu_cp',
-                            'group': args.info.group
+                            'group': [args.info.group[0]]
                             },
                         'x': args.x-(args.x*0.1),
                         'y': args.y-(args.y*0.1)
@@ -130,7 +130,7 @@ dreamer.ManoGraphEditor = (function(global) {
                         source: args.id,
                         target: vnf_vdu_cp.id,
                         view: self.filter_parameters.link.view[0],
-                        group: args.info.group,
+                        group: [args.info.group[0]],
                     };
                     self.parent.addLink.call(self, link);
                     if(success)
@@ -140,7 +140,7 @@ dreamer.ManoGraphEditor = (function(global) {
             });
         }else if(args.info.type === 'vnf_vdu_cp'){
             var vnf_id = args.info.group;
-            var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group == vnf_id &&  e.info.type == 'vnf_vdu'); });
+            var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group.indexOf(vnf_id) >= 0 &&  e.info.type == 'vnf_vdu'); });
             var self = this;
             if(success)
                 success();
@@ -154,7 +154,7 @@ dreamer.ManoGraphEditor = (function(global) {
                             source: args.id,
                             target: choice,
                             view: self.filter_parameters.link.view[0],
-                            group: args.info.group,
+                            group: [args.info.group[0]],
                         };
 
                         self.parent.addLink.call(self, link);

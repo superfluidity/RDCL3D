@@ -21,7 +21,7 @@ dreamer.GraphRequests = (function(global) {
    GraphRequests.prototype.addNode= function(args, choice,  success, error){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group);
+        data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
         data.append('existing_vnf', args.existing_vnf ? args.existing_vnf :false)
@@ -50,7 +50,7 @@ dreamer.GraphRequests = (function(global) {
    GraphRequests.prototype.removeNode= function(args, choice, success, error){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group);
+        data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
         if(choice)

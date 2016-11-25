@@ -87,7 +87,7 @@ dropZone.ondrop = function(e) {
                         'id': name,
                         'info': {
                             'type': nodetype,
-                            'group': group
+                            'group': [group]
                             },
                            'x': e.layerX,
                            'y': e.layerY
@@ -101,7 +101,7 @@ dropZone.ondrop = function(e) {
                         'id': choice,
                         'info': {
                             'type': nodetype,
-                            'group': group
+                            'group': [group]
                             },
                            'x': e.layerX,
                            'y': e.layerY
@@ -127,7 +127,7 @@ dropZone.ondrop = function(e) {
                 'id': name,
                 'info': {
                     'type': nodetype,
-                    'group': group
+                    'group': [group]
                     },
                    'x': e.layerX,
                    'y': e.layerY
