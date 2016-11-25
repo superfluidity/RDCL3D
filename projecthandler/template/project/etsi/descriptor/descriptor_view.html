@@ -18,7 +18,12 @@
 {% endblock %}
 {% block title_header_big %}
     {{ block.super }}
-  Edit {{descriptor_id}} descriptor
+    Edit
+{% ifequal descriptor_type 'nsd' %}
+          NS
+        {% else%}
+        VNF
+     {% endifequal %} Descriptor
 {% endblock %}
 
 
@@ -34,7 +39,8 @@
         {% else%}
         VNF
      {% endifequal %} Descriptors</a></li>
-    <li>Descriptor Editor</li>
+    <li><a >{{descriptor_id}}</a></li>
+
 {% endblock %}
 
 {% block content_body %}

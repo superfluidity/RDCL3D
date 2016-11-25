@@ -114,18 +114,11 @@ class Util:
             new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor['vnfProductName'] is not None else new_descriptor['vnfProductName']
             for vnfExtCpd in new_descriptor['vnfExtCpd']:
                 vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else vnfExtCpd['cpdId']
-                vnfExtCpd['intVirtualLinkDesc'] = vnfExtCpd['intVirtualLinkDesc'] + new_extention if vnfExtCpd['intVirtualLinkDesc'] is not None else vnfExtCpd['intVirtualLinkDesc']
-            for vdu in new_descriptor['vdu']:
-                vdu['vduId'] = vdu['vduId'] + new_extention if vdu['vduId'] is not None else vdu['vduId']
-                vdu['name'] = vdu['name'] + new_extention if vdu['name'] is not None else vdu['name']
-                for intCpd in vdu['intCpd']:
-                    intCpd['cpdId'] = intCpd['cpdId'] +  new_extention if intCpd['cpdId'] is not None else intCpd['cpdId']
-                    intCpd['intVirtualLinkDesc'] = intCpd['intVirtualLinkDesc'] + new_extention if intCpd['intVirtualLinkDesc'] is not None else intCpd['intVirtualLinkDesc']
-            for intVirtualLinkDesc in new_descriptor['intVirtualLinkDesc']:
-                intVirtualLinkDesc['virtualLinkDescId'] = intVirtualLinkDesc['virtualLinkDescId'] + new_extention if intVirtualLinkDesc['virtualLinkDescId'] is not None else intVirtualLinkDesc['virtualLinkDescId']
-            for deploymentFlavour in new_descriptor['deploymentFlavour']:
-                for vduProfile in deploymentFlavour['vduProfile']:
-                    vduProfile['vduId'] = vduProfile['vduId'] + new_extention if vduProfile['vduId'] is not None else vduProfile['vduId']
-                for virtualLinkProfile in deploymentFlavour['virtualLinkProfile']:
-                    virtualLinkProfile['vnfVirtualLinkDescId'] = virtualLinkProfile['vnfVirtualLinkDescId'] + new_extention if virtualLinkProfile['vnfVirtualLinkDescId'] is not None else virtualLinkProfile['vnfVirtualLinkDescId']
+        if (type_descriptor == 'nsd'):
+            new_extention = "_" + new_descriptor_id
+            new_descriptor['nsdIdentifier'] = new_descriptor_id
+            new_descriptor['nsdName'] = new_descriptor_id
+            new_descriptor['nsdInvariantId'] = new_descriptor_id
+            for sapd in new_descriptor['sapd']:
+                sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
         return  new_descriptor

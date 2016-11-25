@@ -22,6 +22,11 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+    <li><a>  {% ifequal descriptor_type 'nsd' %}
+              NS
+            {% else%}
+            VNF
+         {% endifequal %} Descriptors</a></li>
 
 {% endblock %}
 
@@ -77,8 +82,10 @@ function openDescriptorView(project_id, descriptor_type, descriptor_id){
 
 function createNewDescriptor(project_id, descriptor_type){
     if(descriptor_type =='nsd'){
+        $("#modal_chooser_new_descriptor_name").text("New NS Descriptor");
         $( "#input_choose_new_descriptor_name" ).val("ns_"+generateUID());
     }else{
+        $("#modal_chooser_new_descriptor_name").text("New VNF Descriptor");
         $( "#input_choose_new_descriptor_name" ).val("vnf_"+generateUID());
     }
      $('#save_new_descriptor_name').off('click').on('click', function(){

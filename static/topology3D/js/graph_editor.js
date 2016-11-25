@@ -24,6 +24,7 @@ dreamer.GraphEditor = (function(global) {
         this.eventHandler = new EventHandler();
         this.lastKeyDown = -1;
         this._selected_node = undefined;
+        this._selected_link = undefined;
         this.filter_parameters = {
             node: {
                 type : [],
@@ -95,6 +96,8 @@ dreamer.GraphEditor = (function(global) {
                 self.lastKeyDown = d3.event.keyCode;
                 if(self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined){
                     self.removeNode(self._selected_node);
+                }else if(self.lastKeyDown === CANC_BUTTON && self._selected_link != undefined){
+                    self.removeLink(self._selected_link);
                 }
 
             })
@@ -337,6 +340,7 @@ dreamer.GraphEditor = (function(global) {
         this.link
             .on("contextmenu", self.behavioursOnEvents.links["contextmenu"])
             .on("mouseover", self.behavioursOnEvents.links["mouseover"])
+            .on('click', self.behavioursOnEvents.links["click"])
             .on("mouseout", self.behavioursOnEvents.links["mouseout"]);
 
         this.text = this.svg.selectAll(".text")
@@ -577,15 +581,9 @@ dreamer.GraphEditor = (function(global) {
 
                 },
                 'mouseover': function(d) {
-                    self.link.style('stroke-width', function(l) {
-                        if (d === l.source || d === l.target)
-                            return 4;
-                        else
-                            return 2;
-                    });
+
                 },
                 'mouseout': function(d) {
-                    self.link.style('stroke-width', 2);
                 },
                 'dblclick': function(d) {
                     d3.event.preventDefault();
@@ -618,6 +616,11 @@ dreamer.GraphEditor = (function(global) {
         this._selected_node = undefined;
     };
 
+    GraphEditor.prototype._deselectAllLinks = function() {
+        log("_deselectAllLinks");
+        this.link.classed("link_selected", false).style('stroke-width', 2);
+        this._selected_link = undefined;
+    };
     /**
      *  Select node in exclusive mode
      *  @param {Object} Required. Element selected on click event
@@ -627,8 +630,24 @@ dreamer.GraphEditor = (function(global) {
         var activeClass = "node_selected";
         var alreadyIsActive = d3.select(node_instance).classed(activeClass);
         this._deselectAllNodes();
+        this._deselectAllLinks();
         d3.select(node_instance).classed(activeClass, !alreadyIsActive);
         this._selected_node = (alreadyIsActive) ? undefined : node_instance.__data__;
+    };
+
+    /**
+     *  Select node in exclusive mode
+     *  @param {Object} Required. Element selected on click event
+     */
+    GraphEditor.prototype._selectLinkExclusive = function(link_instance, link_id) {
+        log("_selectLinkExclusive " );
+        var activeClass = "link_selected";
+        var alreadyIsActive = d3.select(link_instance).classed(activeClass);
+        this._deselectAllNodes();
+        this._deselectAllLinks();
+        d3.select(link_instance).classed(activeClass, !alreadyIsActive);
+        d3.select(link_instance).style('stroke-width', 4)
+        this._selected_link = link_instance.__data__;
     };
 
     /**

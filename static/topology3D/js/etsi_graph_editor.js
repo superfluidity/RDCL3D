@@ -95,7 +95,7 @@ dreamer.ManoGraphEditor = (function(global) {
                 new dreamer.GraphRequests().addNode(args,null, function(){
                     self.parent.addNode.call(self, args);
                     var vnf_ext_cp =  {
-                            'id': 'vnf_ext_cp' + "_" + generateUID(),
+                            'id': 'vnf_ext_cp' + "_" + args.id,
                             'info': {
                                 'type': 'vnf_ext_cp',
                                 'group': args.id
@@ -187,6 +187,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @returns {boolean}
      */
     ManoGraphEditor.prototype.removeNode = function(node) {
+    console.log('REMOVEEEEEEEEEEEEEE NODEEEEEEEEEEE')
         var self = this;
         if(node.info.type === 'vnf_vdu'){
             var vdu_links = $.grep(this.d3_graph.links, function(e){return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu_cp' || e.target.info.type == 'vnf_vdu_cp')});
@@ -306,8 +307,22 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeLink = function(link_id) {
-        this.parent.removeLink.call(this, link_id);
+    ManoGraphEditor.prototype.removeLink = function(link) {
+        var s = link.source;
+        var d = link.target;
+        var source_type = s.info.type;
+        var destination_type = d.info.type;
+        if((source_type == 'vnf_vdu' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vdu')){
+            alert('You should delete the VDU CP')
+        }else{
+            var self = this;
+            new dreamer.GraphRequests().removeLink(s, d, function(){
+                self._deselectAllNodes();
+                self._deselectAllLinks();
+                self.parent.removeLink.call(self,link.index);
+            });
+        }
+
     };
 
 
@@ -421,7 +436,8 @@ dreamer.ManoGraphEditor = (function(global) {
                 ])
             },
             'links': {
-                'click': function(event) {
+                'click': function(d) {
+                     self._selectLinkExclusive(this, d);
 
                 },
                 'dblclick': function(event) {
@@ -431,26 +447,14 @@ dreamer.ManoGraphEditor = (function(global) {
                     d3.select(this).style('stroke-width', 4);
                 },
                 'mouseout': function(d) {
-                    d3.select(this).style('stroke-width', 2);
+                    if(d != self._selected_link)
+                        d3.select(this).style('stroke-width', 2);
                 },
                 'contextmenu': d3.contextMenu([
                     {
                         title: 'Delete Link',
                         action: function(elm, link, i) {
-                            var s = link.source;
-                            var d = link.target;
-                            var source_type = s.info.type;
-                            var destination_type = d.info.type;
-                            if((source_type == 'vnf_vdu' && destination_type ==  'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type ==  'vnf_vdu')){
-                                alert('You should delete the VDU CP')
-                            }else{
-                                new dreamer.GraphRequests().removeLink(s, d, function(){
-                                self._deselectAllNodes();
-                                self.removeLink(link.index);
-                            });
-                            }
-
-
+                            self.removeLink(link);
                         }
 
                     }
