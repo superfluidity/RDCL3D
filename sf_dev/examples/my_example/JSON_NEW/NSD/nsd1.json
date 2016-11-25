@@ -127,24 +127,30 @@
         "vnf3"
       ],
       "virtualLinkDescId":[
-        "vl01",
-        "vl02",
-        "vl03",
-        "vl04"
+        "vl1",
+        "vl2",
+        "vl3",
+        "vl4"
       ],
       "cpdPoolId":[
-        {
-          "cpdPoolId": "cpdPoolId",
-          "cpdId":[
-             "sap1",
-             "VnfExtCp11",
-             "VnfExtCp12",
-             "VnfExtCp32",
-             "VnfExtCp33",
-             "sap2"
-          ]
-        }
-
+        "sap1",
+        "sap2"
+      ]
+    },
+    {
+      "vnffgdId": "vnffg2",
+      "vnfdId":[
+        "vnf1",
+        "vnf3"
+      ],
+      "virtualLinkDescId":[
+        "vl1",
+        "vl2",
+        "vl4"
+      ],
+      "cpdPoolId":[
+        "sap1",
+        "sap2"
       ]
     }
   ],

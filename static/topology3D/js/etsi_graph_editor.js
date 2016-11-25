@@ -24,6 +24,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
     ManoGraphEditor.prototype.init = function(args){
          this.parent.init.call(this, args);
+         this.old_vnffg = null;
 
          this.type_property = {
             "unrecognized": {
@@ -479,6 +480,29 @@ dreamer.ManoGraphEditor = (function(global) {
         return this.filter_parameters.link.view[0];
 
     }
+    ManoGraphEditor.prototype.refreshGraphParameters = function(){
+        setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
+    }
+
+    ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId){
+        if(this.old_vnffg != null){
+            var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.node.group.splice(index, 1);
+            index = this.filter_parameters.link.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.link.group.splice(index, 1);
+        }
+        if(vnffgId != "Global"){
+            this.old_vnffg = vnffgId;
+            this.filter_parameters.node.group.push(vnffgId);
+            this.filter_parameters.link.group.push(vnffgId);
+        }else{
+            this.old_vnffg = null;
+        }
+        this.handleFiltersParams(this.filter_parameters, true);
+    }
+
 
     /**
      * Log utility

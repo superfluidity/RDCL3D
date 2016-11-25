@@ -39,7 +39,9 @@ dreamer.GraphEditor = (function(global) {
         // graph data initailization
         this.d3_graph = {
             nodes: [],
-            links: []
+            links: [],
+            graph_parameters :{}
+
         };
 
 
@@ -111,6 +113,8 @@ dreamer.GraphEditor = (function(global) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
+            self.d3_graph.graph_parameters = data.graph_parameters;
+            self.refreshGraphParameters();
             self.refresh();
             self.startForce();
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
@@ -145,7 +149,7 @@ dreamer.GraphEditor = (function(global) {
      * @param {Object} Required.
      *
      */
-    GraphEditor.prototype.handleFiltersParams = function(filtersParams) {
+    GraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.filter_parameters = filtersParams;
         this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : current_view_id
         this.cleanAll();
@@ -154,7 +158,8 @@ dreamer.GraphEditor = (function(global) {
         this.force.restart();
         this._deselectAllNodes();
         this.handleForce(this.forceSimulationActive);
-        this.eventHandler.fire("filters_changed", filtersParams);
+        if(!notFireEvent)
+            this.eventHandler.fire("filters_changed", filtersParams);
 
     };
 
@@ -516,7 +521,7 @@ dreamer.GraphEditor = (function(global) {
 
         this.node_filter_cb = args.node_filter_cb || function(d) {
 
-            var cond_view = true, cond_group = false;
+            var cond_view = true, cond_group = true;
 
             // check filter by node type
             if(self.filter_parameters.node.type.length > 0){
@@ -527,8 +532,8 @@ dreamer.GraphEditor = (function(global) {
              // check filter by group
             if(self.filter_parameters.node.group.length > 0){
                 self.filter_parameters.node.group.forEach(function(group){
-                    if(d.info.group.indexOf(group) >= 0)
-                        cond_group = true;
+                    if(d.info.group.indexOf(group) < 0)
+                        cond_group = false;
                 });
             }
 
@@ -537,20 +542,22 @@ dreamer.GraphEditor = (function(global) {
         };
 
         this.link_filter_cb = args.link_filter_cb || function(d) {
-            var result = true;
+            var cond_view = true, cond_group = true;
             // check filter by view
             if(self.filter_parameters.link.view.length > 0){
                 if (self.filter_parameters.link.view.indexOf(d.view) < 0)
-                    result = false;
+                    cond_view = false;
             }
 
             // check filter by group
             if(self.filter_parameters.link.group.length > 0){
-                if(self.filter_parameters.link.group.indexOf(d.group) < 0)
-                    result = false;
+                self.filter_parameters.link.group.forEach(function(group){
+                    if(d.group.indexOf(group) < 0)
+                        cond_group = false;
+                });
             }
 
-            return result;
+            return cond_view && cond_group;
         };
 
      };
@@ -667,7 +674,8 @@ dreamer.GraphEditor = (function(global) {
 
     }
 
-
+    GraphEditor.prototype.refreshGraphParameters = function() {
+    }
 
     /**
      * Log utility

@@ -32,7 +32,7 @@ class T3DUtil:
             'source': source,
             'target': target,
             'view': view,
-            'group': group
+            'group': [group]
         }
         if edge_obj not in graph_object['edges']:
             graph_object['edges'].append(edge_obj)
@@ -54,7 +54,7 @@ class T3DUtil:
             self.add_node(vl['virtualLinkDescId'], 'vnf_vl', vnfd['vnfdId'],positions, graph_object)
         for cpd in vnfd['vnfExtCpd']:
             self.add_node(cpd['cpdId'], 'vnf_ext_cp', vnfd['vnfdId'], positions, graph_object)
-            self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
+            self.add_link( cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
         for vdu in vnfd['vdu']:
             self.add_node(vdu['vduId'], 'vnf_vdu', vnfd['vnfdId'], positions, graph_object)
             for cpd in vdu['intCpd']:
@@ -62,12 +62,26 @@ class T3DUtil:
                 self.add_link(cpd['cpdId'], cpd["intVirtualLinkDesc"], 'vnf', vnfd['vnfdId'], graph_object)
                 self.add_link(cpd['cpdId'], vdu['vduId'], 'vnf', vnfd['vnfdId'], graph_object)
 
+    def add_vnffgd_to_node(self, graph_object, node_id, vnffgdId):
+        node = next((x for x in graph_object['vertices'] if x['id'] == node_id),None)
+        if node is not None:
+            node['info']['group'].append(vnffgdId)
+
+    def add_vnffgd_to_links(self, graph_object, vnffgdId):
+        for link in graph_object['edges']:
+            source_node = next((x for x in graph_object['vertices'] if x['id'] == link['source']),None)
+            target_node = next((x for x in graph_object['vertices'] if x['id'] == link['target']),None)
+            print source_node, target_node
+            if vnffgdId in source_node['info']['group'] and vnffgdId in target_node['info']['group']:
+                link['group'].append(vnffgdId)
+
+
     def build_graph_from_project(self, json_project):
         print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],
-            'graph_parameters': {}
+            'graph_parameters': {'vnffgIds': []},
         }
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
@@ -93,8 +107,16 @@ class T3DUtil:
                         for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
                             virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
                             if(virtualLinkProfile is not None):
-                                self.add_link(virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'ns', current_nsd, graph_object)
-
+                                self.add_link( virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'ns', current_nsd, graph_object)
+                for vnffgd in json_project['nsd'][current_nsd]['vnffgd']:
+                    graph_object['graph_parameters']['vnffgIds'].append(vnffgd['vnffgdId'])
+                    for vnfdId in vnffgd['vnfdId']:
+                        self.add_vnffgd_to_node(graph_object, vnfdId, vnffgd['vnffgdId']);
+                    for cpdPoolId in vnffgd['cpdPoolId']:
+                        self.add_vnffgd_to_node(graph_object, cpdPoolId, vnffgd['vnffgdId']);
+                    for virtualLinkDescId in vnffgd['virtualLinkDescId']:
+                        self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
+                    self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
         except Exception as e:
             self.log.error('Exception build_graph_from_project')
             raise

@@ -40,6 +40,24 @@
     right: 0;
     cursor: move;
 }
+.selector_box {
+    padding: 0 40px 0 0;
+    margin-bottom: 0px !important;
+    padding-top: 0px;
+    top: 70px;
+    /* right: 25px !important; */
+    /* width: 15%; */
+    position: absolute;
+    z-index: 1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    right: 0;
+    cursor: move;
+}
 
 .drag_button {
     cursor: move !important;
