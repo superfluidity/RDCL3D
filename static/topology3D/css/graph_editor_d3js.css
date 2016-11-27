@@ -22,6 +22,15 @@
 
 }
 
+.link{
+  fill: none;
+}
+
+.link path{
+  stroke-width: 2;
+}
+
+
 .drag_box {
     padding: 0 40px 0 0;
     margin-bottom: 0px !important;

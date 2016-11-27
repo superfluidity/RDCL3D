@@ -75,8 +75,8 @@ dreamer.GraphEditor = (function(global) {
         };
 
         this.force = d3.forceSimulation()
-            .force("charge", d3.forceManyBody().strength(-10))
-            .force("link", d3.forceLink().distance(100).iterations(3).id(function(d) { return d.id; }))
+            .force("collide", d3.forceCollide().radius(40))
+            .force("link", d3.forceLink().distance(100).iterations(1).id(function(d) { return d.id; }))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
@@ -289,11 +289,13 @@ dreamer.GraphEditor = (function(global) {
         var self = this;
 
         this.link = this.svg
-            .selectAll(".line")
+            .selectAll()
             .data(self.d3_graph.links
                 .filter(this.link_filter_cb)
             )
-            .enter().append("line")
+            .enter().append("g")
+            .attr("class", "link cleanable")
+            .append("path")
             .attr("class", "link")
             .attr("class", "cleanable")
             .style("stroke-width", nominal_stroke)
@@ -301,18 +303,21 @@ dreamer.GraphEditor = (function(global) {
                 return default_link_color;
             });
 
-        this.node = this.svg
-            .selectAll(".node")
+        this.nodeContainer = this.svg
+            .selectAll()
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
             .enter()
             .append("g")
-            .attr("class", "node")
-            .attr("class", "cleanable")
+           // .attr("class", "nodosdads")
+            .attr("class", "node cleanable");
+
+        this.node = this.svg.selectAll('.node')
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
             .append("svg:path")
             .attr("class", "node_path")
-
-        .attr("id", function(d) {
+            .attr("id", function(d) {
                 return "path_" + d.id;
             })
             .attr("d", d3.symbol()
@@ -348,10 +353,12 @@ dreamer.GraphEditor = (function(global) {
             .on('click', self.behavioursOnEvents.links["click"])
             .on("mouseout", self.behavioursOnEvents.links["mouseout"]);
 
-        this.text = this.svg.selectAll(".text")
+
+
+        this.text = this.svg.selectAll(".node")
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
-            .enter().append("text")
+            .append("svg:text")
             .attr("class", "nodetext")
             .attr("class", "cleanable")
             .attr("dy", ".35em")
@@ -421,18 +428,12 @@ dreamer.GraphEditor = (function(global) {
                     return d.y = Math.max(self._node_property_by_type(d.info.type, 'size'), Math.min(self.height - self._node_property_by_type(d.info.type, 'size'), d.y));
                 });
 
-            self.link.attr("x1", function(d) {
-                    return d.source.x;
-                })
-                .attr("y1", function(d) {
-                    return d.source.y;
-                })
-                .attr("x2", function(d) {
-                    return d.target.x;
-                })
-                .attr("y2", function(d) {
-                    return d.target.y;
-                });
+            self.link.attr("d", function(d) {
+  var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr = Math.sqrt(dx * dx + dy * dy);
+  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+});
 
             self.node.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
