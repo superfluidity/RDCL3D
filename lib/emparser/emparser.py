@@ -15,7 +15,8 @@ log = logging.getLogger('EmpLogger')
 def importprojectdir(dir_project, type):
     project = {
         'nsd': {},
-        'vnfd': {}
+        'vnfd': {},
+        'positions': {}
     }
     my_util = Util()
     NSD_PATH = dir_project+'/NSD'
@@ -34,6 +35,8 @@ def importprojectdir(dir_project, type):
         log.debug(vnfd_filename)
         vnfd_object = my_util.loadjsonfile(vnfd_filename)
         project['vnfd'][vnfd_object['vnfdId']] = vnfd_object
+    for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
+        project['positions']['vertices'] = my_util.loadjsonfile(vertices_file)
 
     #log.debug('\n' + json.dumps(project))
     return project
