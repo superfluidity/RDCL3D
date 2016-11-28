@@ -30,6 +30,10 @@
   stroke-width: 2;
 }
 
+.matted {
+    opacity: 0.3;
+}
+
 
 .drag_box {
     padding: 0 40px 0 0;

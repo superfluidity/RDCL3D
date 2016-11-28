@@ -352,6 +352,7 @@ dreamer.ManoGraphEditor = (function(global) {
         this.behavioursOnEvents = {
             'nodes': {
                 'click': function(d) {
+
                     d3.event.preventDefault();
 
                     if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
@@ -485,6 +486,7 @@ dreamer.ManoGraphEditor = (function(global) {
     }
 
     ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId){
+        /*
         if(this.old_vnffg != null){
             var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
             if(index >= 0)
@@ -497,10 +499,44 @@ dreamer.ManoGraphEditor = (function(global) {
             this.old_vnffg = vnffgId;
             this.filter_parameters.node.group.push(vnffgId);
             this.filter_parameters.link.group.push(vnffgId);
+
         }else{
             this.old_vnffg = null;
         }
         this.handleFiltersParams(this.filter_parameters, true);
+        */
+
+        if(vnffgId != "Global"){
+            this.setNodeClass("matted", function(d){
+                var result = false;
+                if(d.info.group.indexOf(vnffgId) < 0){
+                    result =  true;
+                }
+                console.log(result);
+                 return result;
+            });
+
+            this.setLinkClass("matted", function(d){
+                var result = false;
+                if(d.group.indexOf(vnffgId) < 0){
+                    result =  true;
+                }
+                console.log(result);
+                 return result;
+            });
+
+        }
+        else{
+            this.setNodeClass("matted", function(d){
+                var result = false;
+                 return result;
+            });
+
+            this.setLinkClass("matted", function(d){
+                var result = false;
+                 return result;
+            });
+        }
     }
 
 

@@ -402,6 +402,7 @@ dreamer.GraphEditor = (function(global) {
             }
         }
 
+
     };
 
     /**
@@ -492,6 +493,23 @@ dreamer.GraphEditor = (function(global) {
 
     }
 
+
+    GraphEditor.prototype.setNodeClass = function(class_name, filter_cb){
+        console.log("setNodeClass");
+        var self = this;
+        this.svg.selectAll('.node').classed(class_name, false);
+        this.svg.selectAll('.node')
+            .classed(class_name, filter_cb);
+    }
+
+    GraphEditor.prototype.setLinkClass = function(class_name, filter_cb){
+        console.log("setLinkClass");
+        var self = this;
+        this.svg.selectAll('.link').classed(class_name, false);
+        this.svg.selectAll('.link')
+            .classed(class_name, filter_cb);
+    }
+
     /**
      *  Remove all the graph objects from the view
      */
@@ -536,6 +554,8 @@ dreamer.GraphEditor = (function(global) {
                     if(d.info.group.indexOf(group) < 0)
                         cond_group = false;
                 });
+
+
             }
 
 
