@@ -435,3 +435,19 @@ def remove_link(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+@login_required
+def add_node_to_vnffg(request, project_id=None):
+    print "add_node_to_vnffg"
+    if request.method == 'POST':
+        result = False
+        projects = EtsiManoProject.objects.filter(id=project_id)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        vnffg_id = request.POST.get('vnffg_id')
+        print group_id, element_id, element_type, vnffg_id
+        result = projects[0].add_node_to_vnffg(group_id, vnffg_id, element_type, element_id )
+    status_code = 200 if result else 500
+    response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response

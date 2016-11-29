@@ -24,7 +24,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
     ManoGraphEditor.prototype.init = function(args){
          this.parent.init.call(this, args);
-         this.old_vnffg = null;
+         this.current_vnffg = null;
 
          this.type_property = {
             "unrecognized": {
@@ -440,6 +440,26 @@ dreamer.ManoGraphEditor = (function(global) {
 
                     },
                     {
+                        title: 'Add to current VNFFG',
+                        action: function(elm, d, i) {
+                            if(self.current_vnffg && self.getCurrentView() =='ns' &&  d.info.group.indexOf(self.current_vnffg) < 0){
+                                d.vnffgId = self.current_vnffg;
+                                new dreamer.GraphRequests().addNodeToVnffg(d, function(result){
+                                    d.info.group.push(self.current_vnffg)
+                                    var links = $.grep(self.d3_graph.links, function(e){return (e.source.id == d.id || e.target.id == d.id ); });
+                                    for(var i in links){
+                                        console.log(links[i])
+                                        if(links[i].source.info.group.indexOf(self.current_vnffg) >= 0 && links[i].target.info.group.indexOf(self.current_vnffg) >= 0){
+                                            links[i].group.push(self.current_vnffg)
+                                        }
+                                    }
+                                    show_all_change();
+                               });
+                            }
+                        }
+
+                    },
+                    {
                         title: 'Delete',
                         action: function(elm, d, i) {
                             self.removeNode(d);
@@ -518,6 +538,7 @@ dreamer.ManoGraphEditor = (function(global) {
         */
 
         if(vnffgId != "Global"){
+            this.current_vnffg = vnffgId;
             this.setNodeClass(class_name, function(d){
                 var result = false;
                 if(d.info.group.indexOf(vnffgId) < 0){
@@ -538,6 +559,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
         }
         else{
+            this.current_vnffg = null;
             this.setNodeClass(class_name, function(d){
                 var result = false;
                  return result;

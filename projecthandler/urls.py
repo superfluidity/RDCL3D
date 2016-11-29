@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^(?P<project_id>\d+)/graph/positions$', views.graph_positions, name='graph_positions'),
     url(r'^(?P<project_id>\d+)/graph/unusedvnf/(?P<nsd_id>\w+)(/$)', views.unused_vnf, name='unused_vnf'),
     url(r'^(?P<project_id>\d+)/graph/addelement$', views.add_element, name='addelement'),
+    url(r'^(?P<project_id>\d+)/graph/addnodetovnffg', views.add_node_to_vnffg, name='addnodetovnffg'),
     url(r'^(?P<project_id>\d+)/graph/removeelement$', views.remove_element, name='removeelement'),
     url(r'^(?P<project_id>\d+)/graph/addlink$', views.add_link, name='addlink'),
     url(r'^(?P<project_id>\d+)/graph/removelink$', views.remove_link, name='removelink'),

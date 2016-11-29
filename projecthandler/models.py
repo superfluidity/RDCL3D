@@ -736,3 +736,22 @@ class EtsiManoProject(Project):
             print 'exception', e
             result = False
         return result
+
+
+    def add_node_to_vnffg(self, ns_id, vnffg_id, element_type, element_id ):
+        try:
+            current_data = json.loads(self.data_project)
+            vnffg =next((x for x in current_data['nsd'][ns_id]['vnffgd'] if x['vnffgdId'] == vnffg_id), None)
+            if element_type == 'ns_vl':
+                vnffg['virtualLinkDescId'].append(element_id)
+            elif element_type == 'vnf':
+                vnffg['vnfdId'].append(element_id)
+            elif element_type == 'ns_cp':
+                vnffg['cpdPoolId'].append(element_id)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
