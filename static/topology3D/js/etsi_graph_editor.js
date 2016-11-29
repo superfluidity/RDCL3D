@@ -485,7 +485,7 @@ dreamer.ManoGraphEditor = (function(global) {
         setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
     }
 
-    ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId){
+    ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId, class_name ){
         /*
         if(this.old_vnffg != null){
             var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
@@ -507,7 +507,7 @@ dreamer.ManoGraphEditor = (function(global) {
         */
 
         if(vnffgId != "Global"){
-            this.setNodeClass("matted", function(d){
+            this.setNodeClass(class_name, function(d){
                 var result = false;
                 if(d.info.group.indexOf(vnffgId) < 0){
                     result =  true;
@@ -516,7 +516,7 @@ dreamer.ManoGraphEditor = (function(global) {
                  return result;
             });
 
-            this.setLinkClass("matted", function(d){
+            this.setLinkClass(class_name, function(d){
                 var result = false;
                 if(d.group.indexOf(vnffgId) < 0){
                     result =  true;
@@ -527,12 +527,12 @@ dreamer.ManoGraphEditor = (function(global) {
 
         }
         else{
-            this.setNodeClass("matted", function(d){
+            this.setNodeClass(class_name, function(d){
                 var result = false;
                  return result;
             });
 
-            this.setLinkClass("matted", function(d){
+            this.setLinkClass(class_name, function(d){
                 var result = false;
                  return result;
             });

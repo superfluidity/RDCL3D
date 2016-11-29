@@ -219,9 +219,25 @@ function setVnffgIds(vnffgIds){
         var vnffgId = vnffgIds[i]
         $("#selection_vnffg").append('<option id="'+vnffgId+'">'+vnffgId+'</option>')
     }
+    $("#selection_vnffg").append('<option id="new_vnffg" style="font-weight:bold">New VNFFG</option>')
 }
 
 function changeVnffg(e){
     var vnffgId = $( "#selection_vnffg option:selected" ).attr('id');
-    graph_editor.handleVnffgParameter(vnffgId);
+    if(vnffgId == "new_vnffg"){
+    }else{
+        graph_editor.handleVnffgParameter("Global", "matted");
+        graph_editor.handleVnffgParameter(vnffgId, "invisible");
+    }
+}
+
+function show_all_change(){
+    var vnffgId = $( "#selection_vnffg option:selected" ).attr('id');
+    if(document.getElementById('show_all_checkbox').checked) {
+        graph_editor.handleVnffgParameter("Global", "invisible");
+        graph_editor.handleVnffgParameter(vnffgId, "matted");
+    } else {
+        graph_editor.handleVnffgParameter("Global", "matted");
+        graph_editor.handleVnffgParameter(vnffgId, "invisible");
+    }
 }
