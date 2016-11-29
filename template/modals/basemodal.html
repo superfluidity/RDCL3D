@@ -1,0 +1,23 @@
+<div id="{% block modal_id %}form-modal{% endblock %}" {% block modal_attrs %}{%endblock%} class="modal fade {% block modal_classes %}{%endblock%}" tabindex="-1" role="dialog">
+	<div class="modal-dialog {%block modal-size%}{%endblock%}">
+		<div class="modal-content">
+			<div class="modal-header">
+				{% block close_button %}
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			 	{% endblock %}
+				<h4 class="modal-title">{% block modal_title %}{% endblock %}</h4>
+			</div>
+			<div class="modal-body">
+			{% block modal_body %}{% endblock %}
+			</div>
+			<div class="modal-footer">
+			{% block modal_footer %}{% endblock %}
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

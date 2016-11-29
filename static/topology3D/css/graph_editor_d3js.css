@@ -156,4 +156,13 @@ textarea {
   -webkit-user-select: none;
 }
 
+.help-key {
+    border: 1px solid #ddd;
+    padding: 4px;
+    border-radius: 3px;
+    background: #f6f6f6;
+    font-family: Courier, monospace;
+    box-shadow: #999 1px 1px 1px;
+}
+
 
