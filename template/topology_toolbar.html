@@ -12,6 +12,7 @@
 
     <button id="topology_play" type="button" class="btn btn btn-default" onclick="handleForce(this)"><i class="fa fa-play"></i></button>
     <button id="topology_pause" type="button" class="btn btn btn-default active" onclick="handleForce(this)"><i class="fa fa-pause"></i></button>
+    <button type="button" class="btn btn btn-default" data-container="body" data-toggle="popover" data-placement="right" >VNFFG</button>
 
     <!-- <button id="topology_settings" type="button" class="btn btn-default"><i class="fa fa-gear"></i></button> -->
     <!-- <button id="topology_info_button" type="button" class="btn btn-default" data-toggle="modal"
@@ -37,16 +38,7 @@
                 </span>
 
             </div>
-            <div class="selector_box" id="box_vnffg">
-                <label>VNFFG</label>
-                <select class="form-control" id="selection_vnffg" onchange="changeVnffg()"></select>
-                <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="show_all_checkbox" onchange="show_all_change()">
-                    Show all
-                </label>
-            </div>
-            </div>
+
 
 
 <div>
@@ -76,3 +68,12 @@
       <input type="file" id="hidden-file-upload"><input id="upload-input" type="image" title="upload graph" src="upload-icon.png" alt="upload graph"> <input type="image" id="download-input" title="download graph" src="download-icon.png" alt="download graph"> <input type="image" id="delete-graph" title="delete graph" src="trash-icon.png" alt="delete graph">
 </div>
 -->
+ <div class="selector_box" id="box_vnffg" style="display:none;">
+    <select class="form-control" id="selection_vnffg" onchange="changeVnffg()"></select>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" id="show_all_checkbox" onchange="show_all_change()">
+            Show all
+        </label>
+    </div>
+</div>

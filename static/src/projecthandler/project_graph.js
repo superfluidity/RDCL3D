@@ -175,11 +175,9 @@ function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     if(c.link.view == 'ns'){
         $("#title_header").text("NS Graph Editor")
-        $("#box_vnffg").show()
         graph_editor.refreshGraphParameters();
     }else{
         $("#title_header").text("VNF Graph Editor")
-        $("#box_vnffg").hide()
     }
     $("#draggable-container").empty()
     for (var i in c.node.type) {
@@ -213,13 +211,22 @@ function showChooserModal(title, chooses, callback){
 }
 
 function setVnffgIds(vnffgIds){
+    var self = $(this);
     $("#selection_vnffg").empty();
     $("#selection_vnffg").append('<option id="Global">Global</option>')
     for(var i in vnffgIds){
         var vnffgId = vnffgIds[i]
-        $("#selection_vnffg").append('<option id="'+vnffgId+'">'+vnffgId+'</option>')
+        var child = $('<option id="'+vnffgId+'">'+vnffgId+'</option>');
+        $("#selection_vnffg").append(child)
     }
     $("#selection_vnffg").append('<option id="new_vnffg" style="font-weight:bold">New VNFFG</option>')
+    var html = $('#box_vnffg').html()
+    console.log(html)
+    $('[data-toggle="popover"]').popover({  animation:true,
+                                            content: html,
+                                            html:true,
+                                            container: 'body'
+                                        });
 }
 
 function changeVnffg(e){
