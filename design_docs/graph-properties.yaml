@@ -1,0 +1,16 @@
+default:
+  shape: "circle"
+  color: "#42f44e"
+  size: "50"
+nodes:
+- nodeName: "vnfd"
+  shape: "circle"
+  color: "#42f44e"
+  size: "100%"
+- nodeName: "nsd"
+  shape: "square"
+  color: "#42f44e"
+  size: "80%"
+- nodeName: "pippo"
+  image: "image.png"
+  size: "60"
