@@ -721,3 +721,18 @@ class EtsiManoProject(Project):
             print 'exception', e
             result = False
         return result
+
+    def add_vnffg(self, ns_id, vnffg_id):
+        try:
+            current_data = json.loads(self.data_project)
+            utility = Util()
+            vnffg = utility.get_descriptor_template('nsd')['vnffgd'][0]
+            vnffg['vnffgdId'] = vnffg_id
+            current_data['nsd'][ns_id]['vnffgd'].append(vnffg)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result

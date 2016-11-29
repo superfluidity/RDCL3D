@@ -47,6 +47,32 @@ dreamer.GraphRequests = (function(global) {
     };
 
 
+
+   GraphRequests.prototype.addVnffg= function(args, success, error){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('group_id', args.info.group[0]);
+        data.append('element_id', args.id);
+        data.append('element_type', args.info.type);
+        $.ajax({
+            url: "addelement",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if(success)
+                    success(result);
+            },
+            error: function(result) {
+                if(error)
+                    error();
+                alert("some error");
+            }
+        });
+    };
+
    GraphRequests.prototype.removeNode= function(args, choice, success, error){
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));

@@ -224,7 +224,28 @@ function setVnffgIds(vnffgIds){
 
 function changeVnffg(e){
     var vnffgId = $( "#selection_vnffg option:selected" ).attr('id');
+    document.getElementById('show_all_checkbox').checked = false;
     if(vnffgId == "new_vnffg"){
+        var group = graph_editor.getCurrentGroup()
+        $('#div_chose_id').show();
+            $('#div_chose_vnf').hide();
+            $('#input_choose_node_id').val("vnffg_" + generateUID());
+            $('#modal_chooser_title_add_node').text('Add VNFFG');
+            $('#save_choose_node_id').off('click').on('click', function(){
+                var name =$('#input_choose_node_id').val();
+                var node_information = {
+                        'id': name,
+                        'info': {
+                            'type': "vnffg",
+                            'group': [group]
+                            }
+                        }
+                graph_editor.addVnffg(node_information, function(){
+                   $('#modal_choose_node_id').modal('hide');
+                });
+            });
+            $('#modal_choose_node_id').modal('show');
+
     }else{
         graph_editor.handleVnffgParameter("Global", "matted");
         graph_editor.handleVnffgParameter(vnffgId, "invisible");

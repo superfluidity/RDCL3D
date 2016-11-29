@@ -173,6 +173,17 @@ dreamer.ManoGraphEditor = (function(global) {
         }
     };
 
+    ManoGraphEditor.prototype.addVnffg = function(node_info, success) {
+        var self = this;
+        new dreamer.GraphRequests().addVnffg(node_info, function(result){
+            if(success)
+                success();
+            self.d3_graph.graph_parameters.vnffgIds.push(node_info.id)
+            self.refreshGraphParameters();
+       });
+    };
+
+
     /**
      * Update the data properties of the node
      * @param {Object} Required. An object that specifies tha data of the node.

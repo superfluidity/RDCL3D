@@ -320,6 +320,10 @@ def add_element(request, project_id=None):
         elif element_type == 'vnf_vdu_cp':
             vdu_id = request.POST.get('choice')
             result = projects[0].add_vnf_vducp(group_id, vdu_id, element_id)
+        elif element_type == 'vnffg':
+            print group_id, element_id
+            result = projects[0].add_vnffg(group_id, element_id)
+        status_code = 200 if result else 500
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
