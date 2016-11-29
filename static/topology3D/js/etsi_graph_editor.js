@@ -236,7 +236,7 @@ dreamer.ManoGraphEditor = (function(global) {
             source: source_id,
             target: target_id,
             view: this.filter_parameters.link.view[0],
-            group: this.filter_parameters.link.group[0],
+            group: this.filter_parameters.link.group,
         };
         var source_type = s.info.type;
         var destination_type = d.info.type;
