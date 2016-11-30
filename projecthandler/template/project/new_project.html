@@ -33,7 +33,7 @@
 {% block content_body %}
   	{{ block.super }}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <!-- general form elements -->
         <div class="box box-primary">
             <div class="box-header with-border">
@@ -45,15 +45,29 @@
                 {% csrf_token %}
                 <div class="box-body">
                     <div class="row">
-                        <div class="form-group col-xs-4">
-                            <label for="projectName">Project Name</label>
+                        <div class="form-group col-xs-3">
+                            <p for="projectName">Project Name</p>
                             <input type="text" class="form-control" name="name" id="projectName"
                                    placeholder="Enter Project name">
                         </div>
-                        <div class="form-group col-xs-5">
-                            <label for="projectInfo">Info</label>
+                        <div class="form-group col-xs-4">
+                            <p for="projectInfo">Info</p>
                             <input type="text" class="form-control" name="info" id="projectInfo" placeholder="Description info">
                         </div>
+                        <div class="form-group col-xs-5">
+                            <p for="typeButtonsSelect">Type</p>
+
+                            <div id="typeButtonsSelect" class="btn-group" data-toggle="buttons">
+                              <label class="btn btn-primary active">
+                                <input type="radio" name="type" id="option1" autocomplete="off" value="etsi" checked> Etsi Mano
+                              </label>
+                              <label class="btn btn-primary">
+                                <input type="radio" name="type" id="option2" autocomplete="off" value="click"> Click
+                              </label>
+
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="checkbox">
@@ -136,16 +150,6 @@
   	{{ block.super }}
 
 
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
-
-
-
-    <!-- d3.js -->
-    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
-
-    <!-- Select2 -->
-    <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
 
     <script>
 
@@ -178,6 +182,11 @@ function removeFile(file_id){
 }
 
 $(document).ready(function () {
+
+    $("#typeButtonsSelect :input").change(function() {
+        console.log(this); // points to the clicked input button
+    });
+
     $('#file_checkbox').change(function () {
       $('#div-file-upload').fadeToggle();
     });

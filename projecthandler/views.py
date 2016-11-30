@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from projecthandler.models import Project
 from projecthandler.models import EtsiManoProject
+from projecthandler.models import ClickProject
 from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
@@ -22,25 +23,38 @@ def home(request):
 def create_new_project(request):
     if request.method == 'POST':
         user = CustomUser.objects.get(id=request.user.id)
-        name = request.POST.get('name', '')
+        name = request.POST.get('name', 'WithoutName')
         info = request.POST.get('info', ' ')
-        ns_files = request.FILES.getlist('ns_files')
-        vnf_files = request.FILES.getlist('vnf_files')
-        try:
-            if ns_files or vnf_files:
-                data_project = emparser.importprojectfile(ns_files, vnf_files)
-            else:
-                ##FIXME da rimuovere usata solo per develop
-                data_project = emparser.importprojectdir('sf_dev/examples/my_example/JSON_NEW',
-                                                         'json')
-            project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
-                                                     data_project=data_project)
+        type = request.POST.get('type', '')
 
-            return render(request, 'new_project.html', {'project_id': project.id})
-        except Exception as e:
-            print e
-            return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
+        if type == 'etsi':
 
+            ns_files = request.FILES.getlist('ns_files')
+            vnf_files = request.FILES.getlist('vnf_files')
+            try:
+                if ns_files or vnf_files:
+                    data_project = emparser.importprojectfile(ns_files, vnf_files)
+                else:
+                    ##FIXME da rimuovere usata solo per develop
+                    data_project = emparser.importprojectdir('sf_dev/examples/my_example/JSON_NEW',
+                                                             'json')
+                project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
+                                                         data_project=data_project)
+            except Exception as e:
+                print e
+                return render(request, 'error.html', {'error_msg': 'Error creating etsi project! Please retry.'})
+
+
+
+        elif type == 'click':
+            ##TODO inserire qui il retrive dei configuration files
+            try:
+                project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info)
+            except Exception as e:
+                print e
+                return render(request, 'error.html', {'error_msg': 'Error creating click project! Please retry.'})
+
+        return render(request, 'new_project.html', {'project_id': project.id})
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
         return render(request, 'new_project.html', {})

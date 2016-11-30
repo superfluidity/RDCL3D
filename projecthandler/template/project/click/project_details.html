@@ -65,35 +65,19 @@
 
                 <div class="small-box bg-aqua">
                     <div class="inner">
-                        <h3>{{project_overview.nsd}}</h3>
+                        <h3>{{project_overview.configurations}}</h3>
 
-                        <p>NSD</p>
+                        <p>Configurations</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-file-code-o"></i>
                     </div>
-                    <a href="/projects/{{project_id}}/descriptors/nsd" class="small-box-footer">
-                        More info <i class="fa fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6 ">
-                <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>{{project_overview.vnfd}}</h3>
-
-                        <p>VNFD</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-file-code-o"></i>
-                    </div>
-                    <a href="/projects/{{project_id}}/descriptors/vnfd" class="small-box-footer">
+                    <a href="/projects/{{project_id}}/descriptors/configurations" class="small-box-footer">
                         More info <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
             </div>
 
-        </div>
         <div class="row">
 
 
@@ -105,20 +89,6 @@
 
 {% block resource_block %}
   	{{ block.super }}
-
-
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
-
-
-
-    <!-- d3.js -->
-    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
-
-    <!-- Select2 -->
-    <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
-
-    <script>
 
 
 
