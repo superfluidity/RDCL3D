@@ -8,22 +8,30 @@ import zipfile
 import json
 import yaml
 from lib.emparser.util import Util
+from model_utils.managers import InheritanceManager
+
+
 # Create your models here.
 
 
 class Project(models.Model):
-
     owner = models.ForeignKey('sf_user.CustomUser', db_column='owner')
     name = models.CharField(max_length=20)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     info = models.TextField(default='No info')
-    data_project = jsonfield.JSONField(default={'nsd': {}, 'vld': {}, 'vnfd': {}, 'vnffgd': {}})
+    data_project = jsonfield.JSONField(default={})
     validated = models.BooleanField(default=False)
+
+    #InheritanceManager
+    objects = InheritanceManager()
+
+    def getType(self):
+        return "Base"
 
     def get_dataproject(self):
         current_data = json.loads(self.data_project)
-        return  current_data
+        return current_data
 
     def get_overview_data(self):
         result = {
@@ -45,18 +53,55 @@ class Project(models.Model):
         self.updated_date = timezone.now()
         self.save()
 
+
+    def __str__(self):
+        return self.name
+
+
+
+class ClickProject(Project):
+
+
+    def get_overview_data(self):
+        current_data = json.loads(self.data_project)
+        result = {
+            'owner': self.owner,
+            'name': self.name,
+            'updated_date': self.updated_date,
+            'info': self.info,
+            'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
+            'validated': self.validated
+        }
+
+        return result
+
+    def getType(self):
+        return "Click"
+
+    def set_data_project(self, new_data, validated):
+        self.data_project = new_data
+        self.set_validated(validated)
+        self.update()
+
+    def update(self):
+        self.updated_date = timezone.now()
+        self.save()
+
     def __str__(self):
         return self.name
 
 
 class EtsiManoProject(Project):
 
+    def getType(self):
+        return "Etsi"
 
     def get_descriptors(self, type_descriptor):
+
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
-        except Exception as e:
+        except Exception:
             result = {}
         return result
 
@@ -65,12 +110,12 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
-        except:
+        except Exception:
             result = {}
 
         return result
 
-    def delete_descriptor(self,type_descriptor, descriptor_id):
+    def delete_descriptor(self, type_descriptor, descriptor_id):
         try:
             print descriptor_id, type_descriptor
             current_data = json.loads(self.data_project)
@@ -79,11 +124,11 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
-    def clone_descriptor(self,type_descriptor, descriptor_id, new_id):
+    def clone_descriptor(self, type_descriptor, descriptor_id, new_id):
         try:
             current_data = json.loads(self.data_project)
             descriptor = current_data[type_descriptor][descriptor_id]
@@ -93,7 +138,7 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
@@ -129,7 +174,8 @@ class EtsiManoProject(Project):
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(utility.yaml2json(yaml_object))
             validate = utility.validate_json_schema(type_descriptor, new_descriptor)
-            new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor['nsdIdentifier']
+            new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[
+                'nsdIdentifier']
             if not type_descriptor in current_data:
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
@@ -138,10 +184,9 @@ class EtsiManoProject(Project):
             self.update()
             result = new_descriptor_id
         except Exception as e:
-            print 'exception create descriptor',e
+            print 'exception create descriptor', e
             result = False
         return result
-
 
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
@@ -153,22 +198,11 @@ class EtsiManoProject(Project):
             zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
             for desc_type in current_data:
                 for current_desc in current_data[desc_type]:
-                    zip.writestr(current_desc+'.json', json.dumps(current_data[desc_type][current_desc]))
+                    zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
             zip.close()
         except Exception as e:
             print e
-
-
-        #zip.writestr("file1.txt", "some text contents")
-        #zip.writestr("file2", "csv,data,here")
-
-        # fix for Linux zip files read in Windows
-        #for file in zip.filelist:
-        #    print file.filename
-
-        #    file.create_system = 0
-        #zip.filelist
 
         in_memory.flush()
         return in_memory
@@ -178,10 +212,7 @@ class EtsiManoProject(Project):
         self.save()
 
     def get_overview_data(self):
-        #print self.owner,self.name,self.updated_date, self.info
-        #print type(self.data_project)
         current_data = json.loads(self.data_project)
-        #print 'nsd' in current_data, len(current_data['nsd'].keys())
         result = {
             'owner': self.owner.__str__(),
             'name': self.name,
@@ -203,17 +234,17 @@ class EtsiManoProject(Project):
         print positions
         try:
             current_data = json.loads(self.data_project)
-            if 'positions' not in current_data :
+            if 'positions' not in current_data:
                 current_data['positions'] = {}
-            if 'vertices' not in current_data['positions'] :
+            if 'vertices' not in current_data['positions']:
                 current_data['positions']['vertices'] = {}
-            if 'vertices' in positions :
+            if 'vertices' in positions:
                 current_data['positions']['vertices'].update(positions['vertices'])
             self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
@@ -239,24 +270,26 @@ class EtsiManoProject(Project):
             vl_descriptor['virtualLinkDescId'] = vl_id
             current_data['nsd'][ns_id]['virtualLinkDesc'].append(vl_descriptor)
             virtualLinkProfile = ns['nsDf'][0]['virtualLinkProfile'][0]
-            virtualLinkProfile['virtualLinkProfileId'] = "virtualLinkProfileId"+vl_id
+            virtualLinkProfile['virtualLinkProfileId'] = "virtualLinkProfileId" + vl_id
             virtualLinkProfile['virtualLinkDescId'] = vl_id
             current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].append(virtualLinkProfile)
             self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
     def remove_ns_vl(self, ns_id, vl_id):
         try:
             current_data = json.loads(self.data_project)
-            vl_descriptor = next((x for x in current_data['nsd'][ns_id]['virtualLinkDesc'] if x['virtualLinkDescId'] == vl_id),None)
+            vl_descriptor = next(
+                (x for x in current_data['nsd'][ns_id]['virtualLinkDesc'] if x['virtualLinkDescId'] == vl_id), None)
             if vl_descriptor is not None:
                 current_data['nsd'][ns_id]['virtualLinkDesc'].remove(vl_descriptor)
-            vl_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            vl_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if
+                               x['virtualLinkDescId'] == vl_id), None)
             if vl_profile is not None:
                 vl_profile_id = vl_profile['virtualLinkProfileId']
                 current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].remove(vl_profile)
@@ -273,7 +306,7 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
@@ -286,7 +319,7 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
@@ -336,7 +369,7 @@ class EtsiManoProject(Project):
 
     # NS operations: add/remove VNF
     def add_ns_vnf(self, ns_id, vnf_id):
-        #Aggingi l'id a vnfProfile e aggiungi un entry in nsDf e creare il file descriptor del VNF
+        # Aggingi l'id a vnfProfile e aggiungi un entry in nsDf e creare il file descriptor del VNF
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
@@ -374,12 +407,12 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-
     def remove_ns_vnf(self, ns_id, vnf_id):
         try:
             current_data = json.loads(self.data_project)
             current_data['nsd'][ns_id]['vnfdId'].remove(vnf_id)
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            vnf_profile = next(
+                (x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
             if vnf_profile is not None:
                 current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'].remove(vnf_profile)
             self.data_project = current_data
@@ -402,8 +435,8 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    #NS operations: add/remove Nested NS
-    def add_ns_nsNested (self, ns_id, nested_ns_id):
+    # NS operations: add/remove Nested NS
+    def add_ns_nsNested(self, ns_id, nested_ns_id):
         try:
             current_data = json.loads(self.data_project)
             current_data['nsd'][ns_id]['nestedNsdId'].append(nested_ns_id)
@@ -460,24 +493,27 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-
     # NS operations: link/Unlink VNF with VL
     def link_vl_vnf(self, ns_id, vl_id, vnf_id, ext_cp_id):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
-            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            vnf_profile = next(
+                (x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if
+                                         x['virtualLinkDescId'] == vl_id), None)
             if virtual_link_profile is None:
                 virtual_link_profile = utility.get_descriptor_template('nsd')['nsDf'][0]['virtualLinkProfile'][0]
                 virtual_link_profile['virtualLinkDescId'] = vl_id
                 current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'].append(virtual_link_profile)
-            virtual_link_profile_id  = virtual_link_profile['virtualLinkProfileId']
-            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if x['virtualLinkProfileId'] == virtual_link_profile_id), None)
+            virtual_link_profile_id = virtual_link_profile['virtualLinkProfileId']
+            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if
+                                              x['virtualLinkProfileId'] == virtual_link_profile_id), None)
             if virtual_link_connectivity is not None:
-               virtual_link_connectivity['cpdId'].append(ext_cp_id)
+                virtual_link_connectivity['cpdId'].append(ext_cp_id)
             else:
-                virtual_link_connectivity = utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
+                virtual_link_connectivity = \
+                    utility.get_descriptor_template('nsd')['nsDf'][0]['vnfProfile'][0]['nsVirtualLinkConnectivity'][0]
                 virtual_link_connectivity['virtualLinkProfileId'] = virtual_link_profile_id
                 virtual_link_connectivity['cpdId'].append(ext_cp_id)
                 vnf_profile['nsVirtualLinkConnectivity'].append(virtual_link_connectivity)
@@ -489,19 +525,21 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-
     def unlink_vl_vnf(self, ns_id, vl_id, vnf_id):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            vnf_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
-            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if x['virtualLinkDescId'] == vl_id), None)
+            vnf_profile = next(
+                (x for x in current_data['nsd'][ns_id]['nsDf'][0]['vnfProfile'] if x['vnfdId'] == vnf_id), None)
+            virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if
+                                         x['virtualLinkDescId'] == vl_id), None)
             virtual_link_profile_id = virtual_link_profile['virtualLinkProfileId']
             print virtual_link_profile_id
-            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if x['virtualLinkProfileId'] == virtual_link_profile_id), None)
+            virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if
+                                              x['virtualLinkProfileId'] == virtual_link_profile_id), None)
             print virtual_link_connectivity
             if virtual_link_connectivity is not None:
-                for vnfExtCpd  in current_data['vnfd'][vnf_id]['vnfExtCpd']:
+                for vnfExtCpd in current_data['vnfd'][vnf_id]['vnfExtCpd']:
                     print  vnfExtCpd['cpdId']
                     if vnfExtCpd['cpdId'] in virtual_link_connectivity['cpdId']:
                         print "rimyovo", vnfExtCpd['cpdId']
@@ -516,7 +554,7 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    #VNF operationd: add/remove VDU
+    # VNF operationd: add/remove VDU
     def add_vnf_vdu(self, vnf_id, vdu_id):
         try:
             current_data = json.loads(self.data_project)
@@ -529,7 +567,7 @@ class EtsiManoProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception',e
+            print 'exception', e
             result = False
         return result
 
@@ -612,7 +650,8 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             for vdu in current_data['vnfd'][vnf_id]['vdu']:
-                intCpd = next((x for x in vdu['intCpd'] if x['cpdId'] == vducp_id and x['intVirtualLinkDesc'] == intvl_id), None)
+                intCpd = next(
+                    (x for x in vdu['intCpd'] if x['cpdId'] == vducp_id and x['intVirtualLinkDesc'] == intvl_id), None)
                 if intCpd is not None:
                     intCpd['intVirtualLinkDesc'] = None
             self.data_project = current_data
@@ -623,7 +662,7 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-    #VNF operationd: add/remove IntVL
+    # VNF operationd: add/remove IntVL
     def add_vnf_intvl(self, vnf_id, intvl_id):
         try:
             current_data = json.loads(self.data_project)
@@ -643,7 +682,9 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             utility = Util()
-            intVirtualLinkDesc = next((x for x in current_data['vnfd'][vnf_id]['intVirtualLinkDesc'] if x['virtualLinkDescId'] == intvl_id), None)
+            intVirtualLinkDesc = next(
+                (x for x in current_data['vnfd'][vnf_id]['intVirtualLinkDesc'] if x['virtualLinkDescId'] == intvl_id),
+                None)
             current_data['vnfd'][vnf_id]['intVirtualLinkDesc'].remove(intVirtualLinkDesc)
             for vdu in current_data['vnfd'][vnf_id]['vdu']:
                 for intCpd in vdu['intCpd']:
@@ -737,11 +778,10 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-
-    def add_node_to_vnffg(self, ns_id, vnffg_id, element_type, element_id ):
+    def add_node_to_vnffg(self, ns_id, vnffg_id, element_type, element_id):
         try:
             current_data = json.loads(self.data_project)
-            vnffg =next((x for x in current_data['nsd'][ns_id]['vnffgd'] if x['vnffgdId'] == vnffg_id), None)
+            vnffg = next((x for x in current_data['nsd'][ns_id]['vnffgd'] if x['vnffgdId'] == vnffg_id), None)
             if element_type == 'ns_vl':
                 vnffg['virtualLinkDescId'].append(element_id)
             elif element_type == 'vnf':

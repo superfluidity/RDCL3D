@@ -14,6 +14,7 @@
 
 						<th>Name</th>
 						<th>Info</th>
+						<th>Type</th>
 						<th>Modification Date</th>
 						<th>Creation Date</th>
 
@@ -30,7 +31,7 @@
 							<a href="javascript:openProject('{{ p.id }}')" >{{ p.name }}</a>
 						</td>
 						<td>{{ p.info }}</td>
-
+						<td>{{ p.getType }}</td>
 						<td>{{ p.updated_date }}</td>
 						<td>{{ p.created_date }}</td>
 						<td>{{ p.owner.username }}</td>
