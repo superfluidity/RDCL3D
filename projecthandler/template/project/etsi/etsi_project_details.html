@@ -1,31 +1,10 @@
-{% extends "base.html" %}
+{% extends "project_details.html" %}
 
-{% load staticfiles %}
-
-{% block head_block %}
-  	{{ block.super }}
-
-    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
-{% endblock %}
 
 {% block left_sidebar %}
-    {% include 'project_base_left_sidebar.html' %}
+    {% include 'etsi_project_left_sidebar.html' %}
 {% endblock %}
 
-{% block title_header_big %}
-    {{ block.super }}
-    {{project_overview.name}}
-{% endblock %}
-
-{% block title_header_small %}
-    {{ block.super }}
-    Overview
-{% endblock %}
-
-{% block breadcrumb_body %}
-  	{{ block.super }}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview.name}}</a></li>
-{% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
@@ -65,19 +44,35 @@
 
                 <div class="small-box bg-aqua">
                     <div class="inner">
-                        <h3>{{project_overview.configurations}}</h3>
+                        <h3>{{project_overview.nsd}}</h3>
 
-                        <p>Configurations</p>
+                        <p>NSD</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-file-code-o"></i>
                     </div>
-                    <a href="/projects/{{project_id}}/descriptors/configurations" class="small-box-footer">
+                    <a href="/projects/{{project_id}}/descriptors/nsd" class="small-box-footer">
+                        More info <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="small-box bg-aqua">
+                    <div class="inner">
+                        <h3>{{project_overview.vnfd}}</h3>
+
+                        <p>VNFD</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-file-code-o"></i>
+                    </div>
+                    <a href="/projects/{{project_id}}/descriptors/vnfd" class="small-box-footer">
                         More info <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
             </div>
 
+        </div>
         <div class="row">
 
 
@@ -90,9 +85,7 @@
 {% block resource_block %}
   	{{ block.super }}
 
-
-
-
+    <script>
 $(document).ready(function () {
 
 

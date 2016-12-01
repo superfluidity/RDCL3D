@@ -22,37 +22,51 @@ def home(request):
 @login_required
 def create_new_project(request):
     if request.method == 'POST':
+        error_msgs = []
         user = CustomUser.objects.get(id=request.user.id)
         name = request.POST.get('name', 'WithoutName')
         info = request.POST.get('info', ' ')
         type = request.POST.get('type', '')
+        start_from = request.POST.get('startfrom', 'scratch')
 
         if type == 'etsi':
 
-            ns_files = request.FILES.getlist('ns_files')
-            vnf_files = request.FILES.getlist('vnf_files')
             try:
-                if ns_files or vnf_files:
-                    data_project = emparser.importprojectfile(ns_files, vnf_files)
-                else:
-                    ##FIXME da rimuovere usata solo per develop
-                    data_project = emparser.importprojectdir('sf_dev/examples/my_example/JSON_NEW',
-                                                             'json')
+
+                if start_from == 'scratch':
+                    data_project = {}
+                elif start_from == 'files':
+                    ns_files = request.FILES.getlist('ns_files')
+                    vnf_files = request.FILES.getlist('vnf_files')
+                    if ns_files or vnf_files:
+                        data_project = emparser.importprojectfile(ns_files, vnf_files)
+                elif start_from == 'example':
+                    data_project = emparser.importprojectdir('projecthandler/examples/etsi/example1/JSON', 'json')
+
                 project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
                                                          data_project=data_project)
             except Exception as e:
                 print e
                 return render(request, 'error.html', {'error_msg': 'Error creating etsi project! Please retry.'})
 
-
-
         elif type == 'click':
-            ##TODO inserire qui il retrive dei configuration files
+
             try:
-                project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info)
+                if start_from == 'scratch':
+                    data_project = {}
+                elif start_from == 'files':
+                    cfg_files = request.FILES.getlist('cfg_files')
+                    ##TODO inserire qui il retrive dei configuration files
+                elif start_from == 'example':
+                    ##FIXME
+                    data_project = {}
+                project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
+                                                      data_project=data_project)
             except Exception as e:
                 print e
                 return render(request, 'error.html', {'error_msg': 'Error creating click project! Please retry.'})
+        else:
+            error_msgs.push('Project type undefined.')
 
         return render(request, 'new_project.html', {'project_id': project.id})
     elif request.method == 'GET':
@@ -80,10 +94,15 @@ def open_project(request, project_id=None):
     try:
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
-        return render(request, 'project_details.html', {'project_overview': project_overview, 'project_id': project_id})
+        if project_overview['type'] == 'etsi':
+            return render(request, 'etsi/etsi_project_details.html',
+                          {'project_overview': project_overview, 'project_id': project_id})
+        elif project_overview['type'] == 'click':
+            return render(request, 'click/click_project_details.html',
+                          {'project_overview': project_overview, 'project_id': project_id})
     except Exception as e:
         print e
-        return render(request, 'error.html', {'error_msg': 'Error creating project! Please retry.'})
+        return render(request, 'error.html', {'error_msg': 'Error open project! Please retry.'})
 
 
 @login_required
@@ -103,8 +122,13 @@ def delete_project(request, project_id=None):
             print "projects", projects[0]
             project_overview = projects[0].get_overview_data()
             print "project_overview", project_overview
-            return render(request, 'project_delete.html',
-                          {'project_id': project_id, 'project_name': project_overview['name']})
+            if project_overview['type'] == 'etsi':
+                return render(request, 'etsi_project_delete.html',
+                              {'project_id': project_id, 'project_name': project_overview['name']})
+            elif project_overview['type'] == 'click':
+                return render(request, 'click/click_project_delete.html',
+                              {'project_id': project_id, 'project_name': project_overview['name']})
+
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Project not found.'})
@@ -113,13 +137,17 @@ def delete_project(request, project_id=None):
 @login_required
 def show_descriptors(request, project_id=None, descriptor_type=None):
     csrf_token_value = get_token(request)
-    # user = CustomUser.objects.get(id=request.user.id)
-    projects = EtsiManoProject.objects.filter(id=project_id)
-
-    return render(request, 'project_descriptors.html', {
+    projects = Project.objects.filter(id=project_id).select_subclasses()
+    project_overview= projects[0].get_overview_data()
+    print project_overview['type']
+    if project_overview['type'] == 'etsi':
+        page = 'etsi/ets_project_descriptors.html'
+    elif project_overview['type'] == 'click':
+        page = 'click/click_project_descriptors.html'
+    return render(request, 'etsi/etsi_project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
-        'project_overview_data': projects[0].get_overview_data(),
+        'project_overview_data': project_overview,
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type
     })
@@ -154,7 +182,7 @@ def downlaod(request, project_id=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     if request.method == 'POST':
-       # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiManoProject.objects.filter(id=project_id)
         in_memory = projects[0].get_zip_archive()
 
         response = HttpResponse(content_type="application/zip")

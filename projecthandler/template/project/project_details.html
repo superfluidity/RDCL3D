@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block left_sidebar %}
+    {{ block.super }}
+
+{% endblock %}
+
+{% block title_header_big %}
+    {{ block.super }}
+    {{project_overview.name}}
+{% endblock %}
+
+{% block title_header_small %}
+    {{ block.super }}
+    Overview
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview.name}}</a></li>
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+
+
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+
+
+{% endblock %}
+

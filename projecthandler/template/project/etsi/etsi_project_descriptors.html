@@ -1,0 +1,121 @@
+{% extends "project_descriptors.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+{% block title_header_big %}
+    {{ block.super }}
+  {% ifequal descriptor_type 'nsd' %}
+      NS
+  {% else%}
+    VNF
+  {% endifequal %} Descriptors
+{% endblock %}
+{% block left_sidebar %}
+    {% include 'etsi_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+    <li><a>  {% ifequal descriptor_type 'nsd' %}
+              NS
+            {% else%}
+            VNF
+         {% endifequal %} Descriptors</a></li>
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+{% if alert_message %}
+    {% if alert_message.success %}
+        <div class="alert alert-success alert-dismissible fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success</h4>
+            {{alert_message.message}}
+        </div>
+    {% endif %}
+    {% if not alert_message.success %}
+        <div class="alert alert-danger alert-dismissible fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+            {{alert_message.message}}
+        </div>
+    {% endif %}
+{% endif %}
+<div class="row">
+    {% include "etsi/descriptor/descriptorlist.html" %}
+</div>
+{% endblock %}
+
+
+
+
+{% block resource_block %}
+  	{{ block.super }}
+
+
+    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
+
+
+
+
+    <script>
+
+
+function openDescriptorView(project_id, descriptor_type, descriptor_id){
+    console.log("openDescriptorView", project_id, descriptor_type, descriptor_id);
+    window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/' + descriptor_id;
+
+}
+
+function createNewDescriptor(project_id, descriptor_type){
+    if(descriptor_type =='nsd'){
+        $("#modal_chooser_new_descriptor_name").text("New NS Descriptor");
+        $( "#input_choose_new_descriptor_name" ).val("ns_"+generateUID());
+    }else{
+        $("#modal_chooser_new_descriptor_name").text("New VNF Descriptor");
+        $( "#input_choose_new_descriptor_name" ).val("vnf_"+generateUID());
+    }
+     $('#save_new_descriptor_name').off('click').on('click', function(){
+        var descriptor_id = $( "#input_choose_new_descriptor_name" ).val();
+        console.log(descriptor_id);
+        window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/new?id='+descriptor_id ;
+    });
+    $('#modal_new_descriptor_name').modal('show');
+
+
+}
+
+$(document).ready(function () {
+    window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove();
+    });
+}, 4000);
+
+});
+
+function cloneDescriptor(project_id, descriptor_type, descriptor_id){
+     $( "#input_choose_new_descriptor_name" ).val(descriptor_id+"_"+generateUID());
+     $('#save_new_descriptor_name').off('click').on('click', function(){
+        var new_descriptor_id = $( "#input_choose_new_descriptor_name" ).val();
+        console.log(descriptor_id);
+        window.location.href="/projects/"+project_id+"/descriptors/"+descriptor_type+"/"+descriptor_id+"/clone?newid="+new_descriptor_id ;
+    });
+    $('#modal_new_descriptor_name').modal('show');
+
+}
+
+
+function generateUID() {
+    return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
+}
+    </script>
+{% endblock %}
+

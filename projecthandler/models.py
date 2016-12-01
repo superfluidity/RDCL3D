@@ -69,6 +69,7 @@ class ClickProject(Project):
             'name': self.name,
             'updated_date': self.updated_date,
             'info': self.info,
+            'type': 'click',
             'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
             'validated': self.validated
         }
@@ -76,7 +77,7 @@ class ClickProject(Project):
         return result
 
     def getType(self):
-        return "Click"
+        return "click"
 
     def set_data_project(self, new_data, validated):
         self.data_project = new_data
@@ -94,7 +95,7 @@ class ClickProject(Project):
 class EtsiManoProject(Project):
 
     def getType(self):
-        return "Etsi"
+        return "etsi"
 
     def get_descriptors(self, type_descriptor):
 
@@ -218,6 +219,7 @@ class EtsiManoProject(Project):
             'name': self.name,
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
+            'type': 'etsi',
             'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
             'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,
             'vld': len(current_data['vld'].keys()) if 'vld' in current_data else 0,

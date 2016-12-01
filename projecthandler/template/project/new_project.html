@@ -3,14 +3,12 @@
 {% load staticfiles %}
 
 {% block head_block %}
-  	{{ block.super }}
+{{ block.super }}
 
-    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
-    <link rel="stylesheet" href="{% static "css/drag_drop.css" %}">
 {% endblock %}
 
 {% block left_sidebar %}
-    <!-- Left side column. contains the sidebar -->
+<!-- Left side column. contains the sidebar -->
 <aside class="main-sidebar" id="globalmenu">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -18,7 +16,8 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             <li><a href='{% url "home" %}'><i class="fa fa-dashboard"></i><span>Home</span></a></li>
-            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text"></i><span>New Project</span></a></li>
+            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text"></i><span>New Project</span></a>
+            </li>
         </ul>
     </section>
     <!-- /.sidebar -->
@@ -26,12 +25,12 @@
 {% endblock %}
 
 {% block breadcrumb_body %}
-  	{{ block.super }}
-    <li><a href='{% url "projects:new_project" %}'>New Project</a></li>
+{{ block.super }}
+<li><a href='{% url "projects:new_project" %}'>New Project</a></li>
 {% endblock %}
 
 {% block content_body %}
-  	{{ block.super }}
+{{ block.super }}
 <div class="row">
     <div class="col-md-12">
         <!-- general form elements -->
@@ -52,91 +51,101 @@
                         </div>
                         <div class="form-group col-xs-4">
                             <p for="projectInfo">Info</p>
-                            <input type="text" class="form-control" name="info" id="projectInfo" placeholder="Description info">
+                            <input type="text" class="form-control" name="info" id="projectInfo"
+                                   placeholder="Description info">
                         </div>
                         <div class="form-group col-xs-5">
                             <p for="typeButtonsSelect">Type</p>
 
                             <div id="typeButtonsSelect" class="btn-group" data-toggle="buttons">
-                              <label class="btn btn-primary active">
-                                <input type="radio" name="type" id="option1" autocomplete="off" value="etsi" checked> Etsi Mano
-                              </label>
-                              <label class="btn btn-primary">
-                                <input type="radio" name="type" id="option2" autocomplete="off" value="click"> Click
-                              </label>
-
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="type" id="option1" autocomplete="off" value="etsi"
+                                           checked> Etsi Mano
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="type" id="option2" autocomplete="off" value="click"> Click
+                                </label>
+                                <label class="btn btn-primary" disabled>
+                                    <input type="radio" name="type" id="option3" autocomplete="off" value="superfluidity" > Superfluidity
+                                </label>
                             </div>
                         </div>
 
                     </div>
+                    <div class="row">
+                        <div class="form-group col-xs-5">
+                            <p for="startButtonsSelect">Start From</p>
 
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="file_checkbox" > Upload Files
-                        </label>
+                            <div id="startButtonsSelect" class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="startfrom" id="s-scratch" autocomplete="off" value="scratch"
+                                           checked>
+                                    Empty
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="startfrom" id="s-files" autocomplete="off" value="files">
+                                    From exisiting descriptors
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="startfrom" id="s-example" autocomplete="off" value="example">
+                                    From Example
+                                </label>
+
+                            </div>
+                        </div>
                     </div>
-                    <div id="div-file-upload" style="display: none;">
+
+                    <div id="div-file-upload-etsi" style="display: none;">
                         <h4>Select Descriptors File from your computer</h4>
 
-                         <div class="tab-pane col-md-6" id="ns-upload">
+                        <div class="tab-pane col-md-6" id="ns-upload">
 
-                                <!-- Standar Form -->
-                                <h3>Network Service</h3>
-                                    <div class="form-inline">
-                                        <div class="form-group">
-                                            <input type="file" name="ns_files" id="ns-js-upload-files" multiple onchange="handleFiles(this.files)">
-                                        </div>
-                                    </div>
-                                <!--
-                                <table class="table table-condensed">
-                                    <tbody id="ns_file_table_body">
-                                    <tr>
-                                        <th></th>
-                                        <th>File Name</th>
-                                        <th>Size</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    </tbody>
-                                </table> -->
-                                <!-- Drop Zone
-                                <h4>Or drag and drop file below</h4>
-                                <div class="upload-drop-zone" id="ns-drop-zone">
-                                    Just drag and drop file here
-                                </div>-->
+                            <!-- Standar Form -->
+                            <h3>Network Service</h3>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="file" accept=".json, .yaml" name="ns_files" id="ns-js-upload-files" multiple
+                                           onchange="handleFiles(this.files)">
+                                </div>
                             </div>
-                         <div class="tab-pane col-md-6" id="vnf-upload">
 
-                                <!-- Standar Form -->
-                                <h3>Virtual Network Function</h3>
-                                    <div class="form-inline">
-                                        <div class="form-group">
-                                            <input type="file" name="vnf_files" id="vnf-js-upload-files" multiple onchange="handleFiles(this.files)">
-                                        </div>
-                                    </div>
-                             <!--
-                              <table class="table table-condensed">
-                                    <tbody id="vnf_file_table_body">
-                                    <tr>
-                                        <th></th>
-                                        <th>File Name</th>
-                                        <th>Size</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                -->
-                                <!-- Drop Zone
-                                <h4>Or drag and drop file below</h4>
-                                <div class="upload-drop-zone" id="vnf-drop-zone">
-                                    Just drag and drop file here
-                                </div> -->
+                        </div>
+                        <div class="tab-pane col-md-6" id="vnf-upload">
+
+                            <!-- Standar Form -->
+                            <h3>Virtual Network Function</h3>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="file" accept=".json, .yaml" name="vnf_files" id="vnf-js-upload-files" multiple
+                                           onchange="handleFiles(this.files)">
+                                </div>
                             </div>
+
+                        </div>
                     </div>
-                    <!-- /.box-body -->
+                    <div id="div-file-upload-click" style="display: none;">
+                        <h4>Select Descriptors File from your computer</h4>
 
+                        <div class="tab-pane col-md-6" id="cfg-upload">
+
+                            <!-- Standar Form -->
+                            <h3>Configuration files</h3>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="file" name="cfg_files" id="cfg-js-upload-files" multiple
+                                           onchange="handleFiles(this.files)">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- /.box-body -->
                 </div>
                 <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
                 </div>
             </form>
         </div>
@@ -147,26 +156,19 @@
 {% endblock %}
 
 {% block resource_block %}
-  	{{ block.super }}
+{{ block.super }}
 
 
+<script>
 
-    <script>
 
 function handleFiles(files){
 console.log(files);
-$('#file_table_body').empty()
 for (var i = 0; i < files.length; i++) {
     console.log(i, files[i].size)
     var file = files[i];
     if (files[i].type == "application/json" || files[i].type == "") {
-      $('#ns_file_table_body')
-        .append($('<tr>')
-          //.append('<td><a href="javascript:removeFile(' + i + ')"><i class="fa fa-remove"></i></a></td>')
-          .append('<td><i class="fa fa-remove"></i></td>')
-          .append('<td>' + files[i].name + '</td>')
-          .append('<td>' + files[i].size + '</td>')
-          .append('<td>JSON</td>'))
+
     }
     else{
 
@@ -181,15 +183,53 @@ function removeFile(file_id){
 
 }
 
+function handleTypeChoose(type){
+
+    if(type == 'click'){
+
+    }
+    else if ( type == 'etsi'){
+
+
+    }
+    else if ( type == 'superfluidity'){
+
+
+    }
+}
+
+function startFromChoose(start){
+    resetFilesSelectors();
+    var type = $('input[name="type"]:checked').val();
+    if(start == 'scratch'){
+
+    }
+    else if ( start == 'files'){
+        $('#div-file-upload-'+type).show();
+
+    }
+    else if ( start == 'example'){
+
+
+    }
+}
+
+function resetFilesSelectors(){
+    $('#div-file-upload-etsi').hide();
+    $('#div-file-upload-click').hide();
+}
+
+
 $(document).ready(function () {
 
-    $("#typeButtonsSelect :input").change(function() {
-        console.log(this); // points to the clicked input button
+    $("#typeButtonsSelect :input").change(function(e) {
+        handleTypeChoose(this.value)
     });
 
-    $('#file_checkbox').change(function () {
-      $('#div-file-upload').fadeToggle();
+    $("#startButtonsSelect :input").change(function() {
+        startFromChoose(this.value);
     });
+
 
     {% if project_id %}
       window.location.href='{% url "projects:open_project" project_id %}';
@@ -198,6 +238,7 @@ $(document).ready(function () {
 
 
 
-    </script>
+
+</script>
 {% endblock %}
 

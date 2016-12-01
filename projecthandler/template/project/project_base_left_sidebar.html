@@ -9,22 +9,11 @@
             <li class="header">PROJECT</li>
             <li><a href='/projects/{{project_id}}/'><i class="fa fa-file-text fa-fw"></i><span>Overview</span></a>
             </li>
-            <!--<li><a href='/projects/{{project_id}}/graph'><i class="fa fa-sitemap fa-fw"></i><span>Show Graph</span></a></li>-->
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-archive fa-fw"></i> <span>Project descriptors</span>
-                    <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-                </a>
-                <ul class="treeview-menu" style="display: none;">
-                    <li><a href="/projects/{{project_id}}/descriptors/nsd"><i class="fa fa-files-o fa-fw"></i>NSD</a></li>
-                    <li><a href="/projects/{{project_id}}/descriptors/vnfd"><i class="fa fa-files-o fa-fw"></i>VNFD</a></li>
+            {% block li_list %}
 
-                </ul>
-            </li>
-            <li><a href="/projects/{{project_id}}/download"><i class="fa fa-download fa-fw"></i><span>Export</span></a></li>
 
+            {% endblock %}
+             <li><a href="/projects/{{project_id}}/download"><i class="fa fa-download fa-fw"></i><span>Export</span></a></li>
         </ul>
     </section>
     <!-- /.sidebar -->

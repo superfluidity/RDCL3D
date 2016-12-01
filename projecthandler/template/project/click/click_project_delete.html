@@ -1,23 +1,19 @@
-{% extends "base.html" %}
+{% extends "project_delete.html" %}
 
 {% load staticfiles %}
 
 {% block head_block %}
   	{{ block.super }}
 
-    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 {% endblock %}
 
 {% block left_sidebar %}
-    {% include 'project_base_left_sidebar.html' %}
+    {% include 'click/click_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
   	{{ block.super }}
-    {% if project_id  %}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li>Delete Project</li>
-    {% endif %}
+
 {% endblock %}
 
 {% block content_body %}
@@ -60,28 +56,9 @@
   	{{ block.super }}
 
 
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
-
-
-
-    <!-- d3.js -->
-    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
-
-    <!-- Select2 -->
-    <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
-
     <script>
 
 
-
-
-$(document).ready(function () {
-    {% if project_id == None %}
-      window.location.href='{% url "home"  %}';
-    {% endif %}
-
-});
 
 
 
