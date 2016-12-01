@@ -1,7 +1,8 @@
 
 //ManoGraphEditor instance
 var graph_editor = new dreamer.ManoGraphEditor();
-
+var selected_vnffgId = null;
+var show_all = null;
 
 // Enable Drop Action on the Graph
 initDropOnGraph();
@@ -43,14 +44,11 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height()
     });
-
-
     graph_editor.handleFiltersParams(params);
 
 });
 
 var filters = function(e, params) {
-    console.log(e)
     graph_editor.handleFiltersParams(params);
     $('#' + e).nextAll('li').remove();
 }
@@ -212,16 +210,17 @@ function showChooserModal(title, chooses, callback){
 
 function setVnffgIds(vnffgIds){
     var self = $(this);
+    if(vnffgIds == null) return;
+
+
     $("#selection_vnffg").empty();
-    $("#selection_vnffg").append('<option id="Global">Global</option>')
+    $("#selection_vnffg").append('<option value="Global">Global</option>')
     for(var i in vnffgIds){
         var vnffgId = vnffgIds[i]
-        var child = $('<option id="'+vnffgId+'">'+vnffgId+'</option>');
+        var child = $('<option value="'+vnffgId+'">'+vnffgId+'</option>');
         $("#selection_vnffg").append(child)
     }
-    $("#selection_vnffg").append('<option id="new_vnffg" style="font-weight:bold">New VNFFG</option>')
-    var html = $('#box_vnffg').html()
-    console.log(html)
+    var html = $('#box_vnffg').html()+"";
     $('[data-toggle="popover"]').popover({  animation:true,
                                             content: html,
                                             html:true,
@@ -230,11 +229,15 @@ function setVnffgIds(vnffgIds){
 }
 
 function changeVnffg(e){
-    var vnffgId = $( "#selection_vnffg option:selected" ).attr('id');
-    document.getElementById('show_all_checkbox').checked = false;
-    if(vnffgId == "new_vnffg"){
-        var group = graph_editor.getCurrentGroup()
-        $('#div_chose_id').show();
+    var vnffgId = e.value;
+    selected_vnffgId = vnffgId;
+    show_all_change();
+}
+
+function newVnffg(){
+     var group = graph_editor.getCurrentGroup()
+            $('[data-original-title]').popover('destroy');
+            $('#div_chose_id').show();
             $('#div_chose_vnf').hide();
             $('#input_choose_node_id').val("vnffg_" + generateUID());
             $('#modal_chooser_title_add_node').text('Add VNFFG');
@@ -247,21 +250,19 @@ function changeVnffg(e){
                             'group': [group]
                             }
                         }
-                graph_editor.addVnffg(node_information, function(){
-                   $('#modal_choose_node_id').modal('hide');
+                    graph_editor.addVnffg(node_information, function(){
+
+                        $('#modal_choose_node_id').modal('hide');
                 });
             });
             $('#modal_choose_node_id').modal('show');
-
-    }else{
-        graph_editor.handleVnffgParameter("Global", "matted");
-        graph_editor.handleVnffgParameter(vnffgId, "invisible");
-    }
 }
 
-function show_all_change(){
-    var vnffgId = $( "#selection_vnffg option:selected" ).attr('id');
-    if(document.getElementById('show_all_checkbox').checked) {
+function show_all_change(e){
+    if(!selected_vnffgId ) return;
+    var vnffgId = selected_vnffgId;
+    if(e) show_all = e.checked;
+    if(show_all) {
         graph_editor.handleVnffgParameter("Global", "invisible");
         graph_editor.handleVnffgParameter(vnffgId, "matted");
     } else {

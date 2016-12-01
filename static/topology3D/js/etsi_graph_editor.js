@@ -513,8 +513,10 @@ dreamer.ManoGraphEditor = (function(global) {
 
     }
     ManoGraphEditor.prototype.refreshGraphParameters = function(){
-        console.log(this.d3_graph.graph_parameters.vnffgIds)
         setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
+    }
+    ManoGraphEditor.prototype.getVnffgParameter = function(){
+        return this.d3_graph.graph_parameters.vnffgIds;
     }
 
     ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId, class_name ){
