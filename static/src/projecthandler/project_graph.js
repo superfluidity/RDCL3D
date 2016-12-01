@@ -173,9 +173,11 @@ function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     if(c.link.view == 'ns'){
         $("#title_header").text("NS Graph Editor")
+        $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     }else{
         $("#title_header").text("VNF Graph Editor")
+        $("#vnffg_options").prop("disabled",true);
     }
     $("#draggable-container").empty()
     for (var i in c.node.type) {
