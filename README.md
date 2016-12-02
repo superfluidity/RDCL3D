@@ -38,7 +38,7 @@ To setup a local development environment::
 
     source env/bin/activate
 
-    pip install -r requirements/dev.txt
+    pip install -r requirements.txt
 
 #### For the first time:
 
@@ -77,5 +77,3 @@ License
 -------
 
 Describe project license here.
-
-
