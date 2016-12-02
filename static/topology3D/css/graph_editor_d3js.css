@@ -128,11 +128,10 @@
 
 .vnffg-box {
     top: 80px;
-    left:7%;
+    left:100px;
     cursor: default;
-    line-height: 22px;
     position: absolute;
-    width: 10%;
+    width: 130px;
 
     padding-top: 0px;
     padding-bottom: 0px;

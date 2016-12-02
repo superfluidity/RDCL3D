@@ -40,14 +40,18 @@ class T3DUtil:
     def add_node(self, id, type, group, positions, graph_object):
         if id is None:
             return
-        node = copy.deepcopy(self.node_t3d_base)
-        node['id'] = id
-        node['info']['type'] = type
-        node['info']['group'].append(group)
-        if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
-            node['fx'] = positions['vertices'][id]['x']
-            node['fy'] = positions['vertices'][id]['y']
-        graph_object['vertices'].append(node)
+        node = next((x for x in graph_object['vertices'] if x['id'] == id), None)
+        if node is not None:
+            node['info']['group'].append(group)
+        else:
+            node = copy.deepcopy(self.node_t3d_base)
+            node['id'] = id
+            node['info']['type'] = type
+            node['info']['group'].append(group)
+            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
+                node['fx'] = positions['vertices'][id]['x']
+                node['fy'] = positions['vertices'][id]['y']
+            graph_object['vertices'].append(node)
 
     def create_vnf_views(self, vnfd, positions, graph_object):
         for vl in vnfd['intVirtualLinkDesc']:
