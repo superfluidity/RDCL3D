@@ -60,7 +60,7 @@
                             <div id="typeButtonsSelect" class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-primary active">
                                     <input type="radio" name="type" id="option1" autocomplete="off" value="etsi"
-                                           checked> Etsi Mano
+                                           checked> Etsi 16
                                 </label>
                                 <label class="btn btn-primary">
                                     <input type="radio" name="type" id="option2" autocomplete="off" value="click"> Click
@@ -80,15 +80,15 @@
                                 <label class="btn btn-primary active">
                                     <input type="radio" name="startfrom" id="s-scratch" autocomplete="off" value="scratch"
                                            checked>
-                                    Empty
+                                     Empty project
                                 </label>
                                 <label class="btn btn-primary">
                                     <input type="radio" name="startfrom" id="s-files" autocomplete="off" value="files">
-                                    From exisiting descriptors
+                                     Exisiting files
                                 </label>
                                 <label class="btn btn-primary">
                                     <input type="radio" name="startfrom" id="s-example" autocomplete="off" value="example">
-                                    From Example
+                                     Example project
                                 </label>
 
                             </div>
@@ -141,7 +141,7 @@
 
                     </div>
                     <div id="div-example-etsi" style="display: none;">
-                        <h4>Choose an Etsi Example</h4>
+                        <h4>Choose an Example</h4>
                         <select id="example-etsi" name="example-etsi-id">
                             {% for id in etsi_example %}
                                <option value="{{id}}">
@@ -153,7 +153,7 @@
 
                     </div>
                     <div id="div-example-click" style="display: none;">
-                        <h4>Choose an Click Example</h4>
+                        <h4>Choose an Example</h4>
                             <select id="example-click" name="example-click-id">
                             {% for id in click_example %}
                                <option value="{{id}}">
