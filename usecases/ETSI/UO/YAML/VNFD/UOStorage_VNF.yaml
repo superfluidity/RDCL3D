@@ -1,0 +1,279 @@
+autoScale:
+- script
+configurableProperties:
+  instantiateVnfOpConfig: ''
+  scaleVnfOpConfig: ''
+  scaleVnfToLevelOpConfig: ''
+deploymentFlavour:
+- affinityOrAntiAffinityGroup:
+  - groupId: groupId
+    scope: Enum
+    type: Enum
+  defaultInstantiationLevelId: defaultInstantiationLevelId
+  description: description
+  flavourId: flavourId
+  instantiationLevel:
+  - description: ''
+    levelId: ''
+    scaleInfo:
+      aspectId: aspectId
+      scaleLevel: 1
+    vduLevel:
+    - numberOfInstances: 5
+      vduId: vduId
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  scalingAspect:
+  - associatedGroup: reference to VnfdElementGroup
+    description: description
+    id: id
+    maxScaleLevel: 10
+    name: name
+  supportedOperation:
+  - eum
+  vduProfile:
+  - affinityOrAntiAffinityGroupId:
+    - affinityOrAntiAffinityGroupId
+    localAffinityOrAntiAffinityRule:
+    - scope: enum
+      type: Enum
+    maxNumberOfInstances: 5
+    minNumberOfInstances: 1
+    vduId: vduId
+  virtualLinkProfile:
+  - affinityOrAntiAffinityGroupId: affinityOrAntiAffinityGroupId
+    flavourId: flavourId
+    localAffinityOrAntiAffinityRule:
+    - scope: enum
+      type: Enum
+    vnfVirtualLinkDescId: null
+  vnfLcmOperationsConfiguration:
+    healVnfOpConfig:
+      cause:
+      - ''
+      parameter:
+      - ''
+    instantiateVnfOpConfig:
+      parameter:
+      - ''
+    operateVnfOpConfig:
+      maxRecommendedGracefulStopTimeout: 5
+      minGracefulStopTimeout: 1
+    scaleVnfOpConfig:
+      parameter:
+      - ''
+      scalingByMoreThanOneStepSupported: true
+    scaleVnfToLevelOpConfig:
+      arbitraryTargetLevelsSupported: true
+      parameter:
+      - ''
+    terminateVnfOpConfig:
+      maxRecommendedGracefulTerminationtimeout: 5
+      minGracefulTerminationTimeout: 1
+elementGroup:
+- description: description
+  vdu: []
+  virtualLinkDesc: []
+  vnfdElementGroupId: groupId
+intVirtualLinkDesc:
+- connectivityType:
+    flowPattern: ''
+    layerProtocol: Enum
+  description: ''
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  testAccess:
+  - ''
+  virtualLinkDescFlavour:
+  - bitrateRequirements:
+      leaf: 13
+      root: 7
+    connectivityType:
+      flowPattern: ''
+      layerProtocol: Enum
+    description: ''
+    flavourId: flavourId
+    monitoringParameter:
+      id: id
+      name: name
+      performanceMetric: performanceMetric
+    qos:
+      latency: 500
+      packetDelayVariation: 50
+      packetLossRatio: 5
+      priority: 1
+    testAccess: ''
+  virtualLinkDescId: null
+- connectivityType:
+    flowPattern: ''
+    layerProtocol: Enum
+  description: ''
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  testAccess:
+  - ''
+  virtualLinkDescFlavour:
+  - bitrateRequirements:
+      leaf: 13
+      root: 7
+    connectivityType:
+      flowPattern: ''
+      layerProtocol: Enum
+    description: ''
+    flavourId: flavourId
+    monitoringParameter:
+      id: id
+      name: name
+      performanceMetric: performanceMetric
+    qos:
+      latency: 500
+      packetDelayVariation: 50
+      packetLossRatio: 5
+      priority: 1
+    testAccess: ''
+  virtualLinkDescId: vnf_vl_4o9f
+lifeCycleManagementScript:
+- event:
+  - ''
+  script: ''
+modifiableAttributes:
+  extension: []
+  metadata: []
+vdu:
+- bootOrder: []
+  configurableProperties:
+    additionalVnfcConfigurableProperty: []
+  description: ''
+  intCpd:
+  - cpRole: root or leaf
+    cpdId: null
+    description: description
+    intVirtualLinkDesc: null
+    layerProtocol: E-LAN
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  name: ''
+  nfviConstraint:
+  - ''
+  swImageDesc:
+    checksum: checksum
+    containerFormat: containerFormat
+    diskFormat: Fat32
+    id: id
+    minDisk: 500
+    minRam: 1
+    name: Name
+    operatingSystem: operatingSystem
+    size: 300
+    supportedVirtualisationEnvironment:
+    - ''
+    swImage: Reference to a SwImage
+    version: '0.1'
+  vduId: null
+  virtualComputeDesc: id
+  virtualStorageDesc: id
+- bootOrder: []
+  configurableProperties:
+    additionalVnfcConfigurableProperty: []
+  description: ''
+  intCpd:
+  - cpRole: root or leaf
+    cpdId: vnf_vdu_cp_116w
+    description: description
+    intVirtualLinkDesc: vnf_vl_4o9f
+    layerProtocol: E-LAN
+  monitoringParameter:
+  - id: id
+    name: name
+    performanceMetric: performanceMetric
+  name: ''
+  nfviConstraint:
+  - ''
+  swImageDesc:
+    checksum: checksum
+    containerFormat: containerFormat
+    diskFormat: Fat32
+    id: id
+    minDisk: 500
+    minRam: 1
+    name: Name
+    operatingSystem: operatingSystem
+    size: 300
+    supportedVirtualisationEnvironment:
+    - ''
+    swImage: Reference to a SwImage
+    version: '0.1'
+  vduId: UO_Storage
+  virtualComputeDesc: id
+  virtualStorageDesc: id
+virtualComputeDesc:
+- requestAdditionalCapabilities:
+  - minRequestedAdditionalCapabilityVersion: ''
+    preferredRequestedAdditionalCapabilityVersion: ''
+    requestedAdditionalCapabilityName: ''
+    supportMandatory: true
+    targetPerformanceParameters: []
+  virtualComputeDescId: virtualComputeDescId
+  virtualCpu:
+    cpuArchitecture: x86
+    numVirtualCpu: 2
+    virtualCpuClock: 2.6
+    virtualCpuOversubscriptionPolicy: ''
+    virtualCpuPinning:
+      cpuPinningMap: ''
+      cpuPinningPolicy: Enum
+  virtualMemory:
+    numaEnabled: false
+    virtualMemOversubscriptionPolicy: ''
+    virtualMemSize: 1
+virtualStorageDesc:
+- id: id
+  rdmaEnabled: false
+  sizeOfStorage: 100
+  swImageDesc: reference SwImageDesc
+  typeOfStorage: volume
+vnfExtCpd:
+- cpRole: root or leaf
+  cpdId: null
+  description: description
+  intCpd: null
+  intVirtualLinkDesc: null
+  layerProtocol: E-LAN
+  virtualNetworkInterfaceRequirements:
+    description: description
+    name: name
+    requirement: ''
+    supportMandatory: true
+- cpRole: root or leaf
+  cpdId: westExtCP_2
+  description: description
+  intCpd: null
+  intVirtualLinkDesc: vnf_vl_4o9f
+  layerProtocol: E-LAN
+  virtualNetworkInterfaceRequirements:
+    description: description
+    name: name
+    requirement: ''
+    supportMandatory: true
+vnfIndicator:
+- id: id
+  indicatorValue:
+  - ''
+  name: name
+  source: Enum
+vnfProductName: vnf1
+vnfProvider: netgroup
+vnfSoftwareVersion: '0.1'
+vnfdId: UOStorage
+vnfdVersion: '0.1'
+vnfmInfo:
+- VNFM compatible
+

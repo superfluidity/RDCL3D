@@ -176,6 +176,7 @@ function changeFilter(e, c) {
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     }else{
+        $('[data-original-title]').popover('destroy');
         $("#title_header").text("VNF Graph Editor")
         $("#vnffg_options").prop("disabled",true);
     }

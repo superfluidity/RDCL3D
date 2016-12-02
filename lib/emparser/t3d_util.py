@@ -86,37 +86,38 @@ class T3DUtil:
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
             self.log.debug('build t3d graph from project json')
-
-            for vnfd_id in json_project['vnfd']:
-                self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
-            for current_nsd in json_project['nsd']:
-                self.add_node(current_nsd, 'ns', current_nsd, positions, graph_object)
-                for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
-                    self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
-                for sapd in json_project['nsd'][current_nsd]['sapd']:
-                    self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
-                    if 'nsVirtualLinkDescId' in sapd:
-                        self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'ns', current_nsd, graph_object)
-                    elif 'associatedCpdId' in sapd:
-                        associatedCpdId =  next((x for x in graph_object['vertices'] if x['id'] == sapd['associatedCpdId']), None)
-                        self.add_link(associatedCpdId['info']['group'], sapd["cpdId"], 'ns', current_nsd, graph_object)
-                for vld in json_project['nsd'][current_nsd]['virtualLinkDesc']:
-                   self.add_node(vld["virtualLinkDescId"], 'ns_vl', current_nsd, positions, graph_object)
-                for nsdf in json_project['nsd'][current_nsd]['nsDf']:
-                    for vnfProfile in nsdf['vnfProfile']:
-                        for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
-                            virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
-                            if(virtualLinkProfile is not None):
-                                self.add_link( virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'ns', current_nsd, graph_object)
-                for vnffgd in json_project['nsd'][current_nsd]['vnffgd']:
-                    graph_object['graph_parameters']['vnffgIds'].append(vnffgd['vnffgdId'])
-                    for vnfdId in vnffgd['vnfdId']:
-                        self.add_vnffgd_to_node(graph_object, vnfdId, vnffgd['vnffgdId']);
-                    for cpdPoolId in vnffgd['cpdPoolId']:
-                        self.add_vnffgd_to_node(graph_object, cpdPoolId, vnffgd['vnffgdId']);
-                    for virtualLinkDescId in vnffgd['virtualLinkDescId']:
-                        self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
-                    self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
+            if 'vnfd' in json_project:
+                for vnfd_id in json_project['vnfd']:
+                    self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
+            if 'nsd' in json_project:
+                for current_nsd in json_project['nsd']:
+                    self.add_node(current_nsd, 'ns', current_nsd, positions, graph_object)
+                    for vnfd_id in json_project['nsd'][current_nsd]['vnfdId']:
+                        self.add_node(vnfd_id, 'vnf', current_nsd, positions, graph_object)
+                    for sapd in json_project['nsd'][current_nsd]['sapd']:
+                        self.add_node(sapd["cpdId"], 'ns_cp', current_nsd, positions, graph_object)
+                        if 'nsVirtualLinkDescId' in sapd:
+                            self.add_link(sapd['nsVirtualLinkDescId'], sapd["cpdId"], 'ns', current_nsd, graph_object)
+                        elif 'associatedCpdId' in sapd:
+                            associatedCpdId =  next((x for x in graph_object['vertices'] if x['id'] == sapd['associatedCpdId']), None)
+                            self.add_link(associatedCpdId['info']['group'], sapd["cpdId"], 'ns', current_nsd, graph_object)
+                    for vld in json_project['nsd'][current_nsd]['virtualLinkDesc']:
+                       self.add_node(vld["virtualLinkDescId"], 'ns_vl', current_nsd, positions, graph_object)
+                    for nsdf in json_project['nsd'][current_nsd]['nsDf']:
+                        for vnfProfile in nsdf['vnfProfile']:
+                            for nsVirtualLinkConnectivity in vnfProfile["nsVirtualLinkConnectivity"]:
+                                virtualLinkProfile = next((x for x in nsdf['virtualLinkProfile'] if x['virtualLinkProfileId'] == nsVirtualLinkConnectivity['virtualLinkProfileId']), None)
+                                if(virtualLinkProfile is not None):
+                                    self.add_link( virtualLinkProfile['virtualLinkDescId'], vnfProfile["vnfdId"], 'ns', current_nsd, graph_object)
+                    for vnffgd in json_project['nsd'][current_nsd]['vnffgd']:
+                        graph_object['graph_parameters']['vnffgIds'].append(vnffgd['vnffgdId'])
+                        for vnfdId in vnffgd['vnfdId']:
+                            self.add_vnffgd_to_node(graph_object, vnfdId, vnffgd['vnffgdId']);
+                        for cpdPoolId in vnffgd['cpdPoolId']:
+                            self.add_vnffgd_to_node(graph_object, cpdPoolId, vnffgd['vnffgdId']);
+                        for virtualLinkDescId in vnffgd['virtualLinkDescId']:
+                            self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
+                        self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
         except Exception as e:
             self.log.error('Exception build_graph_from_project')
             raise
