@@ -430,7 +430,7 @@
     },
     {
       "cpRole": "root or leaf",
-      "cpdId": "westExtCP",
+      "cpdId": "westExtCP_1",
       "description": "description",
       "intCpd": null,
       "intVirtualLinkDesc": "vnf_vl_2mbu",

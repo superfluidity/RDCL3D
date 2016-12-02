@@ -253,7 +253,7 @@ vnfExtCpd:
     requirement: ''
     supportMandatory: true
 - cpRole: root or leaf
-  cpdId: westExtCP
+  cpdId: westExtCP_2
   description: description
   intCpd: null
   intVirtualLinkDesc: vnf_vl_4o9f
