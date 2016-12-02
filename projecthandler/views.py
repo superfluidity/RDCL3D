@@ -41,7 +41,8 @@ def create_new_project(request):
                     if ns_files or vnf_files:
                         data_project = emparser.importprojectfile(ns_files, vnf_files)
                 elif start_from == 'example':
-                    data_project = emparser.importprojectdir('projecthandler/examples/etsi/example1/JSON', 'json')
+                    example_id =  request.POST.get('example-etsi-id', '')
+                    data_project = emparser.importprojectdir('usecases/ETSI/'+example_id+'/JSON', 'json')
 
                 project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
                                                          data_project=data_project)
@@ -59,6 +60,7 @@ def create_new_project(request):
                     ##TODO inserire qui il retrive dei configuration files
                 elif start_from == 'example':
                     ##FIXME
+                    example_id = request.POST.get('example-click-id', '')
                     data_project = {}
                 project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
                                                       data_project=data_project)
@@ -71,7 +73,7 @@ def create_new_project(request):
         return render(request, 'new_project.html', {'project_id': project.id})
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
-        return render(request, 'new_project.html', {})
+        return render(request, 'new_project.html', {'etsi_example': Util().get_etsi_example_list(), 'click_example': Util().get_click_example_list()})
 
 
 @login_required

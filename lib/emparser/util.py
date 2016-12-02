@@ -4,6 +4,7 @@ import pyaml
 import logging
 import jsonschema
 import copy
+import os.path
 
 _lib_name = 'Util'
 
@@ -122,3 +123,14 @@ class Util:
             for sapd in new_descriptor['sapd']:
                 sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
         return  new_descriptor
+
+
+    def get_etsi_example_list(self):
+        path = 'usecases/ETSI'
+        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        return dirs
+
+    def get_click_example_list(self):
+        path = 'usecases/CLICK'
+        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        return dirs
