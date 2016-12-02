@@ -254,9 +254,10 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             result = []
-            for vnf in current_data['vnfd']:
-                if vnf not in current_data['nsd'][nsd_id]['vnfdId']:
-                    result.append(vnf)
+            if 'vnfd' in current_data:
+                for vnf in current_data['vnfd']:
+                    if vnf not in current_data['nsd'][nsd_id]['vnfdId']:
+                        result.append(vnf)
         except Exception as e:
             print 'exception', e
             result = None
@@ -384,6 +385,8 @@ class EtsiManoProject(Project):
             vnf_descriptor['vdu'] = []
             vnf_descriptor['intVirtualLinkDesc'] = []
             vnf_descriptor['vnfExtCpd'] = []
+            if 'vnfd' not in current_data:
+                current_data['vnfd'] = {}
             current_data['vnfd'][vnf_id] = vnf_descriptor
             self.data_project = current_data
             self.update()
@@ -428,6 +431,8 @@ class EtsiManoProject(Project):
     def edit_ns_vnf(self, vnf_id, vnf_descriptor):
         try:
             current_data = json.loads(self.data_project)
+            if 'vnfd' not in current_data:
+                current_data['vnfd'] = {}
             current_data['vnfd'][vnf_id] = vnf_descriptor
             self.data_project = current_data
             self.update()
