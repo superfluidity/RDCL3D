@@ -126,7 +126,32 @@
     user-select: none;
 }
 
+.vnffg-box {
+    top: 80px;
+    left:7%;
+    cursor: default;
+    line-height: 22px;
+    position: absolute;
+    width: 10%;
 
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    /* top: 7px; */
+    /* right: 6px; */
+    z-index: 1;
+    text-align: center;
+    font-size: 12px;
+    /*color: #777;
+    /* border-radius: 20px; */
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 
 textarea {

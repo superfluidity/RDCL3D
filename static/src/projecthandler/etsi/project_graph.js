@@ -176,8 +176,9 @@ function changeFilter(e, c) {
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     }else{
-        $('[data-original-title]').popover('destroy');
-        $("#title_header").text("VNF Graph Editor")
+
+        $("#title_header").text("VNF Graph Editor");
+        $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled",true);
     }
     $("#draggable-container").empty()
@@ -223,12 +224,6 @@ function setVnffgIds(vnffgIds){
         var child = $('<option value="'+vnffgId+'">'+vnffgId+'</option>');
         $("#selection_vnffg").append(child)
     }
-    var html = $('#box_vnffg').html()+"";
-    $('[data-toggle="popover"]').popover({  animation:true,
-                                            content: html,
-                                            html:true,
-                                            container: 'body'
-                                        });
 }
 
 function changeVnffg(e){
@@ -239,7 +234,6 @@ function changeVnffg(e){
 
 function newVnffg(){
      var group = graph_editor.getCurrentGroup()
-            $('[data-original-title]').popover('destroy');
             $('#div_chose_id').show();
             $('#div_chose_vnf').hide();
             $('#input_choose_node_id').val("vnffg_" + generateUID());
@@ -272,4 +266,12 @@ function show_all_change(e){
         graph_editor.handleVnffgParameter("Global", "matted");
         graph_editor.handleVnffgParameter(vnffgId, "invisible");
     }
+}
+
+function clickVnffg(){
+    if($("#vnffg_box").is(':visible'))
+        $("#vnffg_box").hide();
+    else
+         $("#vnffg_box").show();
+
 }
