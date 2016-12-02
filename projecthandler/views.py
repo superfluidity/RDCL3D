@@ -143,10 +143,10 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     project_overview= projects[0].get_overview_data()
     print project_overview['type']
     if project_overview['type'] == 'etsi':
-        page = 'etsi/ets_project_descriptors.html'
+        page = 'etsi/etsi_project_descriptors.html'
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
-    return render(request, 'etsi/etsi_project_descriptors.html', {
+    return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
         'project_overview_data': project_overview,
@@ -207,10 +207,15 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
-    return render(request, 'project_descriptors.html', {
+    project_overview = projects[0].get_overview_data()
+    if project_overview['type'] == 'etsi':
+        page = 'etsi/etsi_project_descriptors.html'
+    elif project_overview['type'] == 'click':
+        page = 'click/click_project_descriptors.html'
+    return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
-        'project_overview_data': projects[0].get_overview_data(),
+        'project_overview_data': project_overview,
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type,
         'alert_message': {
@@ -226,10 +231,15 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
     projects = Project.objects.filter(id=project_id).select_subclasses()
     new_id = request.GET.get('newid', '')
     result = projects[0].clone_descriptor(descriptor_type, descriptor_id, new_id)
-    return render(request, 'project_descriptors.html', {
+    project_overview = projects[0].get_overview_data()
+    if project_overview['type'] == 'etsi':
+        page = 'etsi/etsi_project_descriptors.html'
+    elif project_overview['type'] == 'click':
+        page = 'click/click_project_descriptors.html'
+    return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
-        'project_overview_data': projects[0].get_overview_data(),
+        'project_overview_data': project_overview,
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type,
         'alert_message': {
