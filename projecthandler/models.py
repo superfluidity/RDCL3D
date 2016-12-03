@@ -88,14 +88,16 @@ class ClickProject(Project):
         return result
 
     def get_overview_data(self):
-        current_data = json.loads(self.data_project)
+        current_data = self.data_project 
+        #current_data = json.loads(self.data_project)
+        #'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
         result = {
             'owner': self.owner,
             'name': self.name,
             'updated_date': self.updated_date,
             'info': self.info,
             'type': 'click',
-            'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
+            'configuration': len(current_data[0]),
             'validated': self.validated
         }
 
@@ -105,7 +107,6 @@ class ClickProject(Project):
         return "click"
 
     def get_descriptors(self, type_descriptor):
-
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
@@ -132,7 +133,6 @@ class EtsiManoProject(Project):
         return "etsi"
 
     def get_descriptors(self, type_descriptor):
-
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
@@ -141,7 +141,6 @@ class EtsiManoProject(Project):
         return result
 
     def get_descriptor(self, descriptor_id, type_descriptor):
-
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
