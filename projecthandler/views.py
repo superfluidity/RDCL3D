@@ -9,9 +9,11 @@ from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
 from lib.emparser import emparser
+from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
+import codecs
 
 
 @login_required
@@ -56,8 +58,10 @@ def create_new_project(request):
                 if start_from == 'scratch':
                     data_project = {}
                 elif start_from == 'files':
-                    cfg_files = request.FILES.getlist('cfg_files')
+                    #cfg_files = request.FILES.getlist('cfg_files')
+                    cfg_files = codecs.EncodedFile(request.FILES['cfg_files'], "utf-8")
                     ##TODO inserire qui il retrive dei configuration files
+                    data_project = mainrdcl.importprojectfile(cfg_files)
                 elif start_from == 'example':
                     ##FIXME
                     example_id = request.POST.get('example-click-id', '')
@@ -143,9 +147,17 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     project_overview= projects[0].get_overview_data()
     print project_overview['type']
     if project_overview['type'] == 'etsi':
-        page = 'etsi/ets_project_descriptors.html'
+        page = 'etsi/etsi_project_descriptors.html'
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
+    return render(request, page, {
+        'descriptors': projects[0].get_descriptors(descriptor_type),
+        'project_id': project_id,
+        'project_overview_data': project_overview,
+        "csrf_token_value": csrf_token_value,
+        'descriptor_type': descriptor_type
+    })
+    '''
     return render(request, 'etsi/etsi_project_descriptors.html', {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -153,20 +165,33 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type
     })
-
+    '''
 
 @login_required
 def graph(request, project_id=None):
-    csrf_token_value = get_token(request)
-    projects = Project.objects.filter(id=project_id).select_subclasses()
+    if request.method == 'GET':
+        type = request.GET.get('type')
+        if type == 'ns' or type == 'vnf':
+            csrf_token_value = get_token(request)
+            projects = Project.objects.filter(id=project_id).select_subclasses()
 
-    return render(request, 'project_graph.html', {
-        'project_id': project_id,
-        'project_overview_data': projects[0].get_overview_data(),
-        'collapsed_sidebar': True
-    })
+            return render(request, 'project_graph.html', {
+                'project_id': project_id,
+                'project_overview_data': projects[0].get_overview_data(),
+                'collapsed_sidebar': True
+                })
 
+        elif type == 'click':
+            csrf_token_value = get_token(request)
+            projects = Project.objects.filter(id=project_id).select_subclasses()
 
+            return render(request, 'project_graph.html', {
+                'project_id': project_id,
+                'project_overview_data': projects[0].get_overview_data(),
+                'collapsed_sidebar': True
+                })
+   
+    
 @login_required
 def graph_data(request, project_id=None):
     test_t3d = T3DUtil()
