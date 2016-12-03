@@ -39,7 +39,7 @@ def parse_cmd_line():
 
 	return args
 
-def importprojectfile(cfg_files):
+def importprojectjson(cfg_files):
 	nx_topology = nx.MultiDiGraph()
 	#args = parse_cmd_line()
 	type_view='AllView'
@@ -52,4 +52,14 @@ def importprojectfile(cfg_files):
 	'''
 	#print json_click
 	return json_click 	
+
+def importprojectfile(cfg_files):
+    project = {
+        'click': {}
+    }
+    for file in cfg_files:
+        click =file.read()
+        project['click'] = click
+      
+    return project
 

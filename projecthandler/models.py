@@ -86,7 +86,7 @@ class ClickProject(Project):
             print 'exception create descriptor', e
             result = False
         return result
-    
+
     def get_overview_data(self):
         current_data = json.loads(self.data_project)
         result = {
@@ -100,7 +100,7 @@ class ClickProject(Project):
         }
 
         return result
-    
+
     def getType(self):
         return "click"
 
