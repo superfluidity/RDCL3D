@@ -142,14 +142,17 @@ def delete_project(request, project_id=None):
 
 @login_required
 def show_descriptors(request, project_id=None, descriptor_type=None):
+
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview= projects[0].get_overview_data()
     print project_overview['type']
     if project_overview['type'] == 'etsi':
         page = 'etsi/etsi_project_descriptors.html'
+
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
+    
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,

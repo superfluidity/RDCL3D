@@ -61,40 +61,14 @@ class Project(models.Model):
 
 class ClickProject(Project):
 
-    def create_descriptor(self, type_descriptor, new_data, data_type):
-        try:
-            utility = Util()
-            print type_descriptor, data_type
-            current_data = json.loads(self.data_project)
-            if data_type == 'json':
-                new_descriptor = json.loads(new_data)
-            else:
-                utility = Util()
-                yaml_object = yaml.load(new_data)
-                new_descriptor = json.loads(utility.yaml2json(yaml_object))
-            validate = utility.validate_json_schema(type_descriptor, new_descriptor)
-            new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[
-                'nsdIdentifier']
-            if not type_descriptor in current_data:
-                current_data[type_descriptor] = {}
-            current_data[type_descriptor][new_descriptor_id] = new_descriptor
-            self.data_project = current_data
-            self.validated = validate
-            self.update()
-            result = new_descriptor_id
-        except Exception as e:
-            print 'exception create descriptor', e
-            result = False
-        return result
-
     def get_overview_data(self):
         current_data = self.data_project 
         #current_data = json.loads(self.data_project)
         #'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
         result = {
-            'owner': self.owner,
+            'owner': self.owner.__str__(),
             'name': self.name,
-            'updated_date': self.updated_date,
+            'updated_date': self.updated_date.__str__(),
             'info': self.info,
             'type': 'click',
             'configuration': len(current_data[0]),
@@ -108,8 +82,9 @@ class ClickProject(Project):
 
     def get_descriptors(self, type_descriptor):
         try:
-            current_data = json.loads(self.data_project)
-            result = current_data[type_descriptor]
+            current_data = self.data_project
+            result = current_data
+            #result = current_data[type_descriptor]
         except Exception:
             result = {}
         return result
