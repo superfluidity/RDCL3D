@@ -76,7 +76,7 @@ dreamer.GraphEditor = (function(global) {
 
         this.force = d3.forceSimulation()
             .force("collide", d3.forceCollide().radius(40))
-            .force("link", d3.forceLink().distance(100).iterations(1).id(function(d) { return d.id; }))
+            .force("link", d3.forceLink().distance(80).iterations(1).id(function(d) { return d.id; }))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
@@ -434,7 +434,7 @@ dreamer.GraphEditor = (function(global) {
   var dx = d.target.x - d.source.x,
       dy = d.target.y - d.source.y,
       dr = Math.sqrt(dx * dx + dy * dy);
-  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+  return "M" + d.source.x + "," + d.source.y + ","  + d.target.x + "," + d.target.y;
 });
 
             self.node.attr("transform", function(d) {
