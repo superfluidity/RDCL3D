@@ -18,6 +18,7 @@ $.urlParam = function(name) {
 }
 
 
+
 $(document).ready(function() {
     var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
     var type = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
@@ -42,7 +43,9 @@ $(document).ready(function() {
     // graph_editor initialization
     graph_editor.init({
         width: $('#graph_ed_container').width(),
-        height: $('#graph_ed_container').height()
+        height: $('#graph_ed_container').height(),
+//***STEFANO
+        gui_properties: example_gui_properties
     });
     graph_editor.handleFiltersParams(params);
 
@@ -274,4 +277,67 @@ function clickVnffg(){
     else
          $("#vnffg_box").show();
 
+}
+
+//***STEFANO
+var example_gui_properties = {
+  "default": {
+    "shape": "circle",
+    "color": "#42f44e",
+    "label_color": "black",
+    "size": 15
+  },
+  "nodes": {
+    "pippo": {
+      "image": "image.png",
+      "size": 25
+    },
+    "ns_vl": {
+      "shape": "triangle",
+      "color": "#196B90",
+      "size": 11,
+      "name": "VL"
+    },
+    "ns_cp": {
+      "shape": "circle",
+      "color": "#F27220",
+      "size": 15,
+      "name": "CP"
+    },
+    "vnf": {
+      "shape": "square",
+      "color": "#54A698",
+      "size": 18,
+      "name": "VNF"
+    },
+    "vnf_vl": {
+      "shape": "triangle",
+      //"color": "#5FC9DB",
+      "color": "#196B90",
+      "size": 11,
+      "name": "IntVL"
+    },
+    "vnf_ext_cp": {
+      "shape": "circle",
+      //"#00CC66",
+      "color": "#F27220",
+      "size": 15,
+      "name": "ExtCP"
+    },
+    "vnf_vdu_cp": {
+      "shape": "circle",
+      //"color": "#E74C35",
+      "color": "#F27220",
+      "size": 15,
+      "name": "VduCP"
+    },
+    "vnf_vdu": {
+      "shape": "square",
+      //"color": "#50A7CC",
+      "color": "#54A698",
+      "size": 18,
+      "name": "VDU"
+    }
+  },
+  "graphs": null
 }
