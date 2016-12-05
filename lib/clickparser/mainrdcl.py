@@ -58,7 +58,7 @@ def importprojectfile(cfg_files):
         'click': {}
     }
     for file in cfg_files:
-        click =file.read()
+        click =str(file)
         project['click'] = click
       
     return project

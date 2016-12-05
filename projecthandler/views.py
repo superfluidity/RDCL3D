@@ -62,6 +62,7 @@ def create_new_project(request):
                     cfg_files =  request.FILES.getlist('cfg_files')
                     ##TODO inserire qui il retrive dei configuration files
                     data_project = mainrdcl.importprojectfile(cfg_files)
+                    print data_project
                 elif start_from == 'example':
                     ##FIXME
                     example_id = request.POST.get('example-click-id', '')
