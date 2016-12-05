@@ -190,7 +190,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
             });
         }else if(args.info.type === 'vnf_vdu_cp'){
-            var vnf_id = args.info.group;
+            var vnf_id = args.info.group[0];
             var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group.indexOf(vnf_id) >= 0 &&  e.info.type == 'vnf_vdu'); });
             var self = this;
             if(success)
