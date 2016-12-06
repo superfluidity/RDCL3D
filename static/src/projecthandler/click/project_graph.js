@@ -44,12 +44,12 @@ $(document).ready(function() {
     graph_editor.init({
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
-//***STEFANO
         gui_properties: example_gui_properties,
         descriptor_id: $.urlParam('id')
     });
     graph_editor.handleFiltersParams(params);
 
+    $('#draggable-container').hide()
 });
 
 var filters = function(e, params) {
