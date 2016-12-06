@@ -62,16 +62,14 @@ class Project(models.Model):
 class ClickProject(Project):
 
     def get_overview_data(self):
-        current_data = self.data_project 
-        #current_data = json.loads(self.data_project)
-        #'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
+        current_data = json.loads(self.data_project)
         result = {
             'owner': self.owner.__str__(),
             'name': self.name,
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
             'type': 'click',
-            'configuration': len(current_data[0]),
+            'click': len(current_data['click'].keys()) if 'click' in current_data else 0,
             'validated': self.validated
         }
 
@@ -96,6 +94,19 @@ class ClickProject(Project):
         except Exception:
             result = {}
 
+        return result
+
+    def delete_descriptor(self, type_descriptor, descriptor_id):
+        try:
+            print descriptor_id, type_descriptor
+            current_data = json.loads(self.data_project)
+            del (current_data[type_descriptor][descriptor_id])
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
         return result
 
     def set_data_project(self, new_data, validated):

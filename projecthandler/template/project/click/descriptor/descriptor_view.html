@@ -17,12 +17,7 @@
 {% endblock %}
 {% block title_header_big %}
     {{ block.super }}
-    Edit
-{% ifequal descriptor_type 'nsd' %}
-          NS
-        {% else%}
-        VNF
-     {% endifequal %} Descriptor
+    Edit {{descriptor_type}} Descriptor
 {% endblock %}
 
 

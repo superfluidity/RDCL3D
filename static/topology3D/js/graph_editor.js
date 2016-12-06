@@ -109,19 +109,7 @@ dreamer.GraphEditor = (function(global) {
             });
 
 
-        d3.json("graph_data", function(error, data) {
-            console.log(data)
-            self.d3_graph.nodes = data.vertices;
-            self.d3_graph.links = data.edges;
-            self.d3_graph.graph_parameters = data.graph_parameters;
-            console.log(data.graph_parameters)
-            self.refreshGraphParameters();
-            self.refresh();
-            self.startForce();
-            setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
 
-
-        });
 
     }
 

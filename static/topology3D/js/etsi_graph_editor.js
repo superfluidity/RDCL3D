@@ -57,76 +57,30 @@ dreamer.ManoGraphEditor = (function(global) {
          this.parent.init.call(this, args);
          this.current_vnffg = null;
 
-         //args.gui_properties // e' il JSON 
-         console.log("ciao13");
-
         this.type_property = {};
         this.type_property["unrecognized"]=args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"]=args.gui_properties["default"]["label_color"];
         this.type_property["unrecognized"]["shape"] = d3.symbolCross;
-        //console.log("dovrebbe essere black:"+this.type_property["unrecognized"]["default_node_label_color"]);
 
         Object.keys(args.gui_properties["nodes"]).forEach(function(key,index) {
             console.log(key); 
             this.type_property[key]=args.gui_properties["nodes"][key];
-            //this.type_property[key]["shape"] = d3.symbolCircle;
             this.type_property[key]["shape"] = get_d3_symbol (this.type_property[key]["shape"]);
 
         },this);
+        var self = this;
+        d3.json("graph_data/", function(error, data) {
+            console.log(data)
+            self.d3_graph.nodes = data.vertices;
+            self.d3_graph.links = data.edges;
+            self.d3_graph.graph_parameters = data.graph_parameters;
+            console.log(data.graph_parameters)
+            self.refreshGraphParameters();
+            self.refresh();
+            self.startForce();
+            setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
 
-         //this.type_property = args.gui_properties;
-
-
-        //  this.type_property = {
-        //     "unrecognized": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "white",
-        //         "default_node_label_color": "black",
-        //         "size": 15
-        //     },
-        //     "ns_vl": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#196B90",
-        //         "size": 15,
-        //         "name": "VL"
-        //     },
-        //     "ns_cp": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#F27220",
-        //         "size": 15,
-        //         "name": "CP"
-        //     },
-        //     "vnf": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#54A698",
-        //         "size": 15,
-        //         "name": "VNF"
-        //     },
-        //     "vnf_vl": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#5FC9DB",
-        //         "size": 15,
-        //         "name": "IntVL"
-        //     },
-        //     "vnf_ext_cp": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#00CC66",
-        //         "size": 15,
-        //         "name": "ExtCP"
-        //     },
-        //     "vnf_vdu_cp": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#E74C35",
-        //         "size": 15,
-        //         "name": "VduCP"
-        //     },
-        //     "vnf_vdu": {
-        //         "shape": d3.symbolCircle,
-        //         "color": "#50A7CC",
-        //         "size": 15,
-        //         "name": "VDU"
-        //     }
-        // }
+        });
     }
 
     /**
