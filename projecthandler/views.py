@@ -204,7 +204,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
             response["Access-Control-Allow-Origin"] = "*"
         elif data['type'] == 'click':
             project = projects[0].get_descriptor(descriptor_id,data['type'])
-            print project
+            #print project
             topology = mainrdcl.importprojectjson(project)
             print topology
             response = HttpResponse(topology, content_type="application/json")
