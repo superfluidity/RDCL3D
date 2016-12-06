@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^(?P<project_id>\d+)/$', views.open_project, name='open_project'),
     url(r'^(?P<project_id>\d+)/delete$', views.delete_project, name='delete_project'),
     url(r'^(?P<project_id>\d+)/graph(/$)', views.graph, name='graph_view'),
+
+    url(r'^(?P<project_id>\d+)/graph/graph_data/(?P<descriptor_id>[-\w]+)(/$)', views.graph_data, name='graph_data'),
     url(r'^(?P<project_id>\d+)/graph/graph_data(/$)', views.graph_data, name='graph_data'),
     url(r'^(?P<project_id>\d+)/graph/positions$', views.graph_positions, name='graph_positions'),
     url(r'^(?P<project_id>\d+)/graph/unusedvnf/(?P<nsd_id>\w+)(/$)', views.unused_vnf, name='unused_vnf'),

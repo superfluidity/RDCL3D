@@ -191,6 +191,7 @@ def graph(request, project_id=None):
     
 @login_required
 def graph_data(request, project_id=None, descriptor_id=None):
+        print "project_id " , project_id , " descriptor_id " , descriptor_id
         projects = Project.objects.filter(id=project_id).select_subclasses()
         data = projects[0].get_overview_data()
         print data['type']
@@ -204,7 +205,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
         elif data['type'] == 'click':
             project = projects[0].get_descriptor(descriptor_id,data['type'])
             print project
-            topology = mainrdcl.importprojectjson(project['click'])
+            topology = mainrdcl.importprojectjson(project)
             print topology
             response = HttpResponse(topology, content_type="application/json")
             response["Access-Control-Allow-Origin"] = "*"
