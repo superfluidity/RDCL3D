@@ -1,16 +1,21 @@
+---
+# this is only an example
+# please see graph-properties-single.yaml and graph-properties-multiple.yaml 
+# supported shape :
+# circle square diamond star triangle
 default:
-  shape: "circle"
+  shape: circle
   color: "#42f44e"
-  size: "50"
+  size: '50'
 nodes:
-- nodeName: "vnfd"
-  shape: "circle"
-  color: "#42f44e"
-  size: "100%"
-- nodeName: "nsd"
-  shape: "square"
-  color: "#42f44e"
-  size: "80%"
-- nodeName: "pippo"
-  image: "image.png"
-  size: "60"
+  vnfd :
+    shape: circle
+    color: "#42f44e"
+    size: 100%
+  nsd :
+    shape: square
+    color: "#42f44e"
+    size: 80%
+  pippo :
+    image: image.png
+    size: '60'

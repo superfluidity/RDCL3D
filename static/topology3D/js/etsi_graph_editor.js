@@ -20,62 +20,113 @@ dreamer.ManoGraphEditor = (function(global) {
 
         log("Constructor");
 
+    } 
+
+
+    function get_d3_symbol(myString) {
+        switch(myString) {
+            case "circle":
+                return d3.symbolCircle;
+            break;
+            case "square":
+                return d3.symbolSquare;
+            break;
+            case "diamond":
+                return d3.symbolDiamond;
+            break;
+            case "triangle":
+                return d3.symbolTriangle;
+            break;
+            case "star":
+                return d3.symbolStar;
+            break;
+            case "cross":
+                return d3.symbolCross;
+            break;
+            default:
+        // if the string is not recognized
+            return d3.symbolCross;
+            //return d3.symbolCircleUnknown;
+        } 
+
     }
+
+
 
     ManoGraphEditor.prototype.init = function(args){
          this.parent.init.call(this, args);
          this.current_vnffg = null;
 
-         this.type_property = {
-            "unrecognized": {
-                "shape": d3.symbolCircle,
-                "color": "white",
-                "default_node_label_color": "black",
-                "size": 15
-            },
-            "ns_vl": {
-                "shape": d3.symbolCircle,
-                "color": "#196B90",
-                "size": 15,
-                "name": "VL"
-            },
-            "ns_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#F27220",
-                "size": 15,
-                "name": "CP"
-            },
-            "vnf": {
-                "shape": d3.symbolCircle,
-                "color": "#54A698",
-                "size": 15,
-                "name": "VNF"
-            },
-            "vnf_vl": {
-                "shape": d3.symbolCircle,
-                "color": "#5FC9DB",
-                "size": 15,
-                "name": "IntVL"
-            },
-            "vnf_ext_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#00CC66",
-                "size": 15,
-                "name": "ExtCP"
-            },
-            "vnf_vdu_cp": {
-                "shape": d3.symbolCircle,
-                "color": "#E74C35",
-                "size": 15,
-                "name": "VduCP"
-            },
-            "vnf_vdu": {
-                "shape": d3.symbolCircle,
-                "color": "#50A7CC",
-                "size": 15,
-                "name": "VDU"
-            }
-        }
+         //args.gui_properties // e' il JSON 
+         console.log("ciao13");
+
+        this.type_property = {};
+        this.type_property["unrecognized"]=args.gui_properties["default"];
+        this.type_property["unrecognized"]["default_node_label_color"]=args.gui_properties["default"]["label_color"];
+        this.type_property["unrecognized"]["shape"] = d3.symbolCross;
+        //console.log("dovrebbe essere black:"+this.type_property["unrecognized"]["default_node_label_color"]);
+
+        Object.keys(args.gui_properties["nodes"]).forEach(function(key,index) {
+            console.log(key); 
+            this.type_property[key]=args.gui_properties["nodes"][key];
+            //this.type_property[key]["shape"] = d3.symbolCircle;
+            this.type_property[key]["shape"] = get_d3_symbol (this.type_property[key]["shape"]);
+
+        },this);
+
+         //this.type_property = args.gui_properties;
+
+
+        //  this.type_property = {
+        //     "unrecognized": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "white",
+        //         "default_node_label_color": "black",
+        //         "size": 15
+        //     },
+        //     "ns_vl": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#196B90",
+        //         "size": 15,
+        //         "name": "VL"
+        //     },
+        //     "ns_cp": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#F27220",
+        //         "size": 15,
+        //         "name": "CP"
+        //     },
+        //     "vnf": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#54A698",
+        //         "size": 15,
+        //         "name": "VNF"
+        //     },
+        //     "vnf_vl": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#5FC9DB",
+        //         "size": 15,
+        //         "name": "IntVL"
+        //     },
+        //     "vnf_ext_cp": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#00CC66",
+        //         "size": 15,
+        //         "name": "ExtCP"
+        //     },
+        //     "vnf_vdu_cp": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#E74C35",
+        //         "size": 15,
+        //         "name": "VduCP"
+        //     },
+        //     "vnf_vdu": {
+        //         "shape": d3.symbolCircle,
+        //         "color": "#50A7CC",
+        //         "size": 15,
+        //         "name": "VDU"
+        //     }
+        // }
     }
 
     /**
@@ -139,7 +190,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
             });
         }else if(args.info.type === 'vnf_vdu_cp'){
-            var vnf_id = args.info.group;
+            var vnf_id = args.info.group[0];
             var vnf_vdus = $.grep(this.d3_graph.nodes, function(e){return (e.info.group.indexOf(vnf_id) >= 0 &&  e.info.type == 'vnf_vdu'); });
             var self = this;
             if(success)

@@ -1,39 +1,67 @@
+---
+# supported shape :
+# circle square diamond star triangle
 default:
   shape: "circle"
   color: "#42f44e"
   size: "50"
+# the nodes at the first leve can be used in all graph types
+nodes : 
+  pippo :
+    image: image.png
+    size: 25
+# for each graph type we can define specific nodes
 graphs:
-  graphName: "nsd"
-  default:
-    shape: "circle"
-    color: "#42f44e"
-    size: "50"
-  nodes:
-  - nodeName: "vnfd"
-    shape: "circle"
-    color: "#42f44e"
-    size: "100%"
-  - nodeName: "nsd"
-    shape: "square"
-    color: "#42f44e"
-    size: "80%"
-  - nodeName: "pippo"
-    image: "image.png"
-    size: "60"
-  graphName: "vnfd"
-  default:
-    shape: "circle"
-    color: "#42f44e"
-    size: "50"
-  nodes:
-  - nodeName: "vdu"
-    shape: "circle"
-    color: "#42f44e"
-    size: "100%"
-  - nodeName: "nsd"
-    shape: "square"
-    color: "#42f44e"
-    size: "80%"
-  - nodeName: "pippo"
-    image: "image.png"
-    size: "60"
+  nsd :
+# it is not needed to have a default for each graph type
+# if the default is omitted, the node type will be searched at the first level
+    default:
+      shape: "circle"
+      color: "#42f44e"
+      size: "50"
+    nodes:
+      ns_vl:
+        shape: "circle"
+        color: "#196B90"
+        size: 15
+        name: "VL"
+      ns_cp:
+        shape: "circle"
+        color: "#F27220"
+        size: 15
+        name: "CP"
+      vnf:
+        shape: "circle"
+        color: "#54A698"
+        size: 15
+        name: "VNF"
+      vnfd :
+        shape: circle
+        color: "#42f44e"
+        size: 100%
+      nsd :
+        shape: square
+        color: "#42f44e"
+        size: 80%
+  vnfd :
+    nodes:
+      vnf_vl:
+        shape: "circle"
+        color: "#5FC9DB"
+        size: 15
+        name: "IntVL"
+      vnf_ext_cp:
+        shape: "circle"
+        color: "#00CC66"
+        size: 15
+        name: "ExtCP"
+      vnf_vdu_cp:
+        shape: "circle"
+        color: "#E74C35"
+        size: 15
+        name: "VduCP"
+      vnf_vdu:
+        shape: "circle"
+        color: "#50A7CC"
+        size: 15
+        name: "VDU"

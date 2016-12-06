@@ -18,6 +18,7 @@ $.urlParam = function(name) {
 }
 
 
+
 $(document).ready(function() {
     var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
     var type = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
@@ -42,7 +43,9 @@ $(document).ready(function() {
     // graph_editor initialization
     graph_editor.init({
         width: $('#graph_ed_container').width(),
-        height: $('#graph_ed_container').height()
+        height: $('#graph_ed_container').height(),
+//***STEFANO
+        gui_properties: example_gui_properties
     });
     graph_editor.handleFiltersParams(params);
 
@@ -176,8 +179,9 @@ function changeFilter(e, c) {
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     }else{
-        $('[data-original-title]').popover('destroy');
-        $("#title_header").text("VNF Graph Editor")
+
+        $("#title_header").text("VNF Graph Editor");
+        $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled",true);
     }
     $("#draggable-container").empty()
@@ -223,12 +227,6 @@ function setVnffgIds(vnffgIds){
         var child = $('<option value="'+vnffgId+'">'+vnffgId+'</option>');
         $("#selection_vnffg").append(child)
     }
-    var html = $('#box_vnffg').html()+"";
-    $('[data-toggle="popover"]').popover({  animation:true,
-                                            content: html,
-                                            html:true,
-                                            container: 'body'
-                                        });
 }
 
 function changeVnffg(e){
@@ -239,7 +237,6 @@ function changeVnffg(e){
 
 function newVnffg(){
      var group = graph_editor.getCurrentGroup()
-            $('[data-original-title]').popover('destroy');
             $('#div_chose_id').show();
             $('#div_chose_vnf').hide();
             $('#input_choose_node_id').val("vnffg_" + generateUID());
@@ -272,4 +269,75 @@ function show_all_change(e){
         graph_editor.handleVnffgParameter("Global", "matted");
         graph_editor.handleVnffgParameter(vnffgId, "invisible");
     }
+}
+
+function clickVnffg(){
+    if($("#vnffg_box").is(':visible'))
+        $("#vnffg_box").hide();
+    else
+         $("#vnffg_box").show();
+
+}
+
+//***STEFANO
+var example_gui_properties = {
+  "default": {
+    "shape": "circle",
+    "color": "#42f44e",
+    "label_color": "black",
+    "size": 15
+  },
+  "nodes": {
+    "pippo": {
+      "image": "image.png",
+      "size": 25
+    },
+    "ns_vl": {
+      "shape": "triangle",
+      "color": "#196B90",
+      "size": 11,
+      "name": "VL"
+    },
+    "ns_cp": {
+      "shape": "circle",
+      "color": "#F27220",
+      "size": 15,
+      "name": "CP"
+    },
+    "vnf": {
+      "shape": "square",
+      "color": "#54A698",
+      "size": 18,
+      "name": "VNF"
+    },
+    "vnf_vl": {
+      "shape": "triangle",
+      //"color": "#5FC9DB",
+      "color": "#196B90",
+      "size": 11,
+      "name": "IntVL"
+    },
+    "vnf_ext_cp": {
+      "shape": "circle",
+      //"#00CC66",
+      "color": "#F27220",
+      "size": 15,
+      "name": "ExtCP"
+    },
+    "vnf_vdu_cp": {
+      "shape": "circle",
+      //"color": "#E74C35",
+      "color": "#F27220",
+      "size": 15,
+      "name": "VduCP"
+    },
+    "vnf_vdu": {
+      "shape": "square",
+      //"color": "#50A7CC",
+      "color": "#54A698",
+      "size": 18,
+      "name": "VDU"
+    }
+  },
+  "graphs": null
 }
