@@ -144,7 +144,7 @@ $(document).ready(function () {
                 }, click_editor_settings );
 
 
-   editorClick.setValue({{ descriptor_strings|safe }});
+   editorClick.setValue({{ descriptor_strings.descriptor_string_json |safe }});
    editorClick.setOption("autoRefresh", true);
 
 

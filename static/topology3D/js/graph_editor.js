@@ -108,7 +108,7 @@ dreamer.GraphEditor = (function(global) {
                 self.lastKeyDown = -1;
             });
 
-/*
+
         d3.json("graph_data", function(error, data) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
@@ -121,7 +121,7 @@ dreamer.GraphEditor = (function(global) {
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
 
 
-        });*/
+        });
 
     }
 

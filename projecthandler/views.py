@@ -351,12 +351,17 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id).select_subclasses()
+        project_overview = projects[0].get_overview_data()
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
+        if project_overview['type'] == 'etsi':
+            page = 'etsi/descriptor/descriptor_view.html'
+        elif project_overview['type'] == 'click':
+            page = 'click/descriptor/descriptor_view.html'
         utility = Util()
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = utility.json2yaml(descriptor)
         # print descriptor
-        return render(request, 'descriptor_view.html', {
+        return render(request, page, {
             'project_id': project_id,
             'descriptor_id': descriptor_id,
             'project_overview_data': projects[0].get_overview_data(),

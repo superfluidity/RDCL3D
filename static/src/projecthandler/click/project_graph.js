@@ -108,7 +108,7 @@ function changeFilter(e, c) {
 }
 
 function openEditor(project_id){
-    window.location.href='/projects/'+project_id+'/descriptors/'+graph_editor.getCurrentView()+'/'+graph_editor.getCurrentGroup();
+    window.location.href='/projects/'+project_id+'/descriptors/'+$.urlParam('type')+'/'+$.urlParam('id');
 }
 
 
