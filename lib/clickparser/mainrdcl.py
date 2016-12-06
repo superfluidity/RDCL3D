@@ -54,9 +54,11 @@ def importprojectjson(cfg_files):
 	return json_click 	
 
 def importprojectfile(cfg_files):
+    
     project = {
         'click': {}
     }
+    
     for file in cfg_files:
         click =str(file)
         project['click'] = click

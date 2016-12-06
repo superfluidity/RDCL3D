@@ -48,6 +48,7 @@ def create_new_project(request):
 
                 project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
                                                          data_project=data_project)
+
             except Exception as e:
                 print e
                 return render(request, 'error.html', {'error_msg': 'Error creating etsi project! Please retry.'})
@@ -62,13 +63,14 @@ def create_new_project(request):
                     cfg_files =  request.FILES.getlist('cfg_files')
                     ##TODO inserire qui il retrive dei configuration files
                     data_project = mainrdcl.importprojectfile(cfg_files)
-                    print data_project
+                    #data=data_project['click']
                 elif start_from == 'example':
                     ##FIXME
                     example_id = request.POST.get('example-click-id', '')
                     data_project = {}
                 project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
                                                       data_project=data_project)
+                
             except Exception as e:
                 print e
                 return render(request, 'error.html', {'error_msg': 'Error creating click project! Please retry.'})
@@ -147,13 +149,14 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview= projects[0].get_overview_data()
+
     print project_overview['type']
     if project_overview['type'] == 'etsi':
         page = 'etsi/etsi_project_descriptors.html'
 
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
-    
+    print projects[0].get_descriptors(descriptor_type)
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -178,7 +181,6 @@ def graph(request, project_id=None):
         if type == 'ns' or type == 'vnf':
             csrf_token_value = get_token(request)
             projects = Project.objects.filter(id=project_id).select_subclasses()
-
             return render(request, 'project_graph.html', {
                 'project_id': project_id,
                 'project_overview_data': projects[0].get_overview_data(),
@@ -188,7 +190,6 @@ def graph(request, project_id=None):
         elif type == 'click':
             csrf_token_value = get_token(request)
             projects = Project.objects.filter(id=project_id).select_subclasses()
-
             return render(request, 'project_graph.html', {
                 'project_id': project_id,
                 'project_overview_data': projects[0].get_overview_data(),
@@ -198,14 +199,23 @@ def graph(request, project_id=None):
     
 @login_required
 def graph_data(request, project_id=None):
-    test_t3d = T3DUtil()
-    projects = Project.objects.filter(id=project_id).select_subclasses()
-    project = projects[0].get_dataproject()
-    topology = test_t3d.build_graph_from_project(project)
-    # print response
-    response = HttpResponse(json.dumps(topology), content_type="application/json")
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        data = projects[0].get_overview_data()
+        print data['type']
+        if  data['type'] == 'etsi':
+            test_t3d = T3DUtil()
+            project = projects[0].get_dataproject()
+            topology = test_t3d.build_graph_from_project(project)
+            # print response
+            response = HttpResponse(json.dumps(topology), content_type="application/json")
+            response["Access-Control-Allow-Origin"] = "*"
+        elif data['type'] == 'click':
+            project = projects[0].get_dataproject()
+            topology = mainrdcl.importprojectjson(project['click'])
+            print topology
+            response = HttpResponse(topology, content_type="application/json")
+            response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 
 @login_required
