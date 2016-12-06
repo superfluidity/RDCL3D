@@ -182,7 +182,7 @@ def graph(request, project_id=None):
         elif type == 'click':
             csrf_token_value = get_token(request)
             projects = Project.objects.filter(id=project_id).select_subclasses()
-            return render(request, 'click_project_graph.html', {
+            return render(request, 'click/click_project_graph.html', {
                 'project_id': project_id,
                 'project_overview_data': projects[0].get_overview_data(),
                 'collapsed_sidebar': True
@@ -203,6 +203,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
             response["Access-Control-Allow-Origin"] = "*"
         elif data['type'] == 'click':
             project = projects[0].get_descriptor(descriptor_id,data['type'])
+            print project
             topology = mainrdcl.importprojectjson(project['click'])
             print topology
             response = HttpResponse(topology, content_type="application/json")

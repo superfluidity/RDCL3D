@@ -84,6 +84,7 @@ class ClickProject(Project):
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
+            print result
         except Exception:
             result = {}
         return result
