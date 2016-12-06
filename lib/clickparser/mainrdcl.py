@@ -1,10 +1,7 @@
 import argparse
-import sys
-import networkx as nx
 from parserView import *
 from parserAllView import *
 from parserDetailView import *
-from os.path import basename
 
 
 def run_command(type_view, cfg_files, nx_topology):

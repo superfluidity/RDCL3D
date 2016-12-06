@@ -20,42 +20,42 @@ dreamer.ClickGraphEditor = (function(global) {
 
         log("Constructor");
 
-    } 
+    }
 
 
     function get_d3_symbol(myString) {
-        switch(myString) {
+        switch (myString) {
             case "circle":
                 return d3.symbolCircle;
-            break;
+                break;
             case "square":
                 return d3.symbolSquare;
-            break;
+                break;
             case "diamond":
                 return d3.symbolDiamond;
-            break;
+                break;
             case "triangle":
                 return d3.symbolTriangle;
-            break;
+                break;
             case "star":
                 return d3.symbolStar;
-            break;
+                break;
             case "cross":
                 return d3.symbolCross;
-            break;
+                break;
             default:
-        // if the string is not recognized
-            return d3.symbolCross;
-            //return d3.symbolCircleUnknown;
-        } 
+                // if the string is not recognized
+                return d3.symbolCross;
+                //return d3.symbolCircleUnknown;
+        }
 
     }
 
 
 
-    ClickGraphEditor.prototype.init = function(args){
-         this.parent.init.call(this, args);
-         this.current_vnffg = null;
+    ClickGraphEditor.prototype.init = function(args) {
+        this.parent.init.call(this, args);
+        this.current_vnffg = null;
 
 
         this.type_property = {};
@@ -63,14 +63,14 @@ dreamer.ClickGraphEditor = (function(global) {
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
         this.type_property["unrecognized"]["shape"] = d3.symbolCross;
 
-        Object.keys(args.gui_properties["nodes"]).forEach(function(key,index) {
+        Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
 
-            this.type_property[key]=args.gui_properties["nodes"][key];
-            this.type_property[key]["shape"] = get_d3_symbol (this.type_property[key]["shape"]);
+            this.type_property[key] = args.gui_properties["nodes"][key];
+            this.type_property[key]["shape"] = get_d3_symbol(this.type_property[key]["shape"]);
 
-        },this);
+        }, this);
         var self = this;
-        d3.json("graph_data/"+args.descriptor_id, function(error, data) {
+        d3.json("graph_data/" + args.descriptor_id, function(error, data) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
@@ -78,7 +78,9 @@ dreamer.ClickGraphEditor = (function(global) {
             self.refreshGraphParameters();
             self.refresh();
             self.startForce();
-            setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
+            setTimeout(function() {
+                self.handleForce(self.forceSimulationActive);
+            }, 500);
 
         });
 
@@ -105,7 +107,9 @@ dreamer.ClickGraphEditor = (function(global) {
             vertices[d.id]['x'] = d.x;
             vertices[d.id]['y'] = d.y;
         });
-        new dreamer.GraphRequests().savePositions({'vertices': vertices});
+        new dreamer.GraphRequests().savePositions({
+            'vertices': vertices
+        });
 
     }
 
@@ -147,34 +151,32 @@ dreamer.ClickGraphEditor = (function(global) {
                 'dblclick': function(c_node) {
                     d3.event.preventDefault();
                     log('dblclick ');
-                    if(c_node.info.type!= undefined){
+                    if (c_node.info.type != undefined) {
 
 
 
                     }
 
                 },
-                'contextmenu':  d3.contextMenu([
-                    {
-                        title: 'Edit',
-                        action: function(elm, d, i) {
-                            if(d.info.type!= undefined){
-                                if(d.info.type == 'vnf'){
-                                    window.location.href='/projects/'+self.project_id+'/descriptors/vnfd/'+d.id;
+                'contextmenu': d3.contextMenu([{
+                    title: 'Edit',
+                    action: function(elm, d, i) {
+                        if (d.info.type != undefined) {
+                            if (d.info.type == 'vnf') {
+                                window.location.href = '/projects/' + self.project_id + '/descriptors/vnfd/' + d.id;
 
-                                }else{
-                                    window.location.href='/projects/'+self.project_id+'/descriptors/'+graph_editor.getCurrentView()+'d/'+graph_editor.getCurrentGroup();
+                            } else {
+                                window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
 
-                                }
-                             }
+                            }
                         }
+                    }
 
-                    },
-                ])
+                }, ])
             },
             'links': {
                 'click': function(d) {
-                     self._selectLinkExclusive(this, d);
+                    self._selectLinkExclusive(this, d);
 
                 },
                 'dblclick': function(event) {
@@ -184,18 +186,16 @@ dreamer.ClickGraphEditor = (function(global) {
                     d3.select(this).style('stroke-width', 4);
                 },
                 'mouseout': function(d) {
-                    if(d != self._selected_link)
+                    if (d != self._selected_link)
                         d3.select(this).style('stroke-width', 2);
                 },
-                'contextmenu': d3.contextMenu([
-                    {
-                        title: 'Delete Link',
-                        action: function(elm, link, i) {
-                            self.removeLink(link);
-                        }
-
+                'contextmenu': d3.contextMenu([{
+                    title: 'Delete Link',
+                    action: function(elm, link, i) {
+                        self.removeLink(link);
                     }
-                ])
+
+                }])
             }
         };
     };
@@ -204,22 +204,22 @@ dreamer.ClickGraphEditor = (function(global) {
 
     };
 
-    ClickGraphEditor.prototype.getTypeProperty = function(){
+    ClickGraphEditor.prototype.getTypeProperty = function() {
         return this.type_property;
     };
 
-    ClickGraphEditor.prototype.getCurrentGroup = function(){
+    ClickGraphEditor.prototype.getCurrentGroup = function() {
         return this.filter_parameters.node.group[0];
 
     }
-     ClickGraphEditor.prototype.getCurrentView = function(){
+    ClickGraphEditor.prototype.getCurrentView = function() {
         return this.filter_parameters.link.view[0];
 
     }
-    ClickGraphEditor.prototype.refreshGraphParameters = function(){
-      //  setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
+    ClickGraphEditor.prototype.refreshGraphParameters = function() {
+        //  setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
     }
-    ClickGraphEditor.prototype.getVnffgParameter = function(){
+    ClickGraphEditor.prototype.getVnffgParameter = function() {
         return this.d3_graph.graph_parameters.vnffgIds;
     }
 

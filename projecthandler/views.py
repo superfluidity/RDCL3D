@@ -13,7 +13,6 @@ from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
-import codecs
 
 
 @login_required
@@ -128,9 +127,7 @@ def delete_project(request, project_id=None):
     elif request.method == 'GET':
         try:
             projects = Project.objects.filter(id=project_id).select_subclasses()
-            print "projects", projects[0]
             project_overview = projects[0].get_overview_data()
-            print "project_overview", project_overview
             if project_overview['type'] == 'etsi':
                 return render(request, 'etsi_project_delete.html',
                               {'project_id': project_id, 'project_name': project_overview['name']})
@@ -150,13 +147,12 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview = projects[0].get_overview_data()
 
-    print project_overview['type']
     if project_overview['type'] == 'etsi':
         page = 'etsi/etsi_project_descriptors.html'
 
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
-    #print 'desc ' + projects[0].get_descriptors(descriptor_type)
+
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -191,10 +187,8 @@ def graph(request, project_id=None):
     
 @login_required
 def graph_data(request, project_id=None, descriptor_id=None):
-        print "project_id " , project_id , " descriptor_id " , descriptor_id
         projects = Project.objects.filter(id=project_id).select_subclasses()
         data = projects[0].get_overview_data()
-        print data['type']
         if data['type'] == 'etsi':
             test_t3d = T3DUtil()
             project = projects[0].get_dataproject()
@@ -204,9 +198,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
             response["Access-Control-Allow-Origin"] = "*"
         elif data['type'] == 'click':
             project = projects[0].get_descriptor(descriptor_id,data['type'])
-            print project
             topology = mainrdcl.importprojectjson(project)
-            print topology
             response = HttpResponse(topology, content_type="application/json")
             response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -236,7 +228,6 @@ def downlaod(request, project_id=None):
 
 @login_required
 def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor_id=None):
-    print project_id, descriptor_type, descriptor_id
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
@@ -259,7 +250,6 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
 
 @login_required
 def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_id=None):
-    print project_id, descriptor_type, descriptor_id
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     new_id = request.GET.get('newid', '')
@@ -285,7 +275,6 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
 def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
         id = request.GET.get('id', '')
-        print id
         util = Util()
         json_template = util.get_descriptor_template(descriptor_type)
         if descriptor_type == 'nsd':
