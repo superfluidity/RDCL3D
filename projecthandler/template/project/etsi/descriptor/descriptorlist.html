@@ -13,12 +13,8 @@
         <div class="box-body">
             {% if descriptor_type == 'nsd' %}
                 {% include 'descriptorlist_nsd.html' %}
-            {% elif descriptor_type == 'vld' %}
-                {% include 'descriptorlist_vld.html' %}
             {% elif descriptor_type == 'vnfd' %}
                 {% include 'descriptorlist_vnfd.html' %}
-            {% elif descriptor_type == 'vnffgd' %}
-                {% include 'descriptorlist_vnffgd.html' %}
             {% endif %}
         </div>
     </div>

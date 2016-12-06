@@ -10,7 +10,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for k in descriptors %}
+    {% for k,v in descriptors.items %}
     <tr>
         <td><a href='/projects/{{project_id}}/graph?type=ns&id={{ k }}'>{{ k }}</a></td>
         <td>{{ v.designer }}</td>
