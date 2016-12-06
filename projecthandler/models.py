@@ -82,11 +82,19 @@ class ClickProject(Project):
 
     def get_descriptors(self, type_descriptor):
         try:
-            current_data = self.data_project
-            result = current_data
-            #result = current_data[type_descriptor]
+            current_data = json.loads(self.data_project)
+            result = current_data[type_descriptor]
         except Exception:
             result = {}
+        return result
+
+    def get_descriptor(self, descriptor_id, type_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            result = current_data[type_descriptor][descriptor_id]
+        except Exception:
+            result = {}
+
         return result
 
     def set_data_project(self, new_data, validated):

@@ -156,7 +156,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 
     elif project_overview['type'] == 'click':
         page = 'click/click_project_descriptors.html'
-    print projects[0].get_descriptors(descriptor_type)
+    #print 'desc ' + projects[0].get_descriptors(descriptor_type)
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -182,7 +182,7 @@ def graph(request, project_id=None):
         elif type == 'click':
             csrf_token_value = get_token(request)
             projects = Project.objects.filter(id=project_id).select_subclasses()
-            return render(request, 'project_graph.html', {
+            return render(request, 'click_project_graph.html', {
                 'project_id': project_id,
                 'project_overview_data': projects[0].get_overview_data(),
                 'collapsed_sidebar': True
@@ -190,11 +190,11 @@ def graph(request, project_id=None):
    
     
 @login_required
-def graph_data(request, project_id=None):
+def graph_data(request, project_id=None, descriptor_id=None):
         projects = Project.objects.filter(id=project_id).select_subclasses()
         data = projects[0].get_overview_data()
         print data['type']
-        if  data['type'] == 'etsi':
+        if data['type'] == 'etsi':
             test_t3d = T3DUtil()
             project = projects[0].get_dataproject()
             topology = test_t3d.build_graph_from_project(project)
@@ -202,7 +202,7 @@ def graph_data(request, project_id=None):
             response = HttpResponse(json.dumps(topology), content_type="application/json")
             response["Access-Control-Allow-Origin"] = "*"
         elif data['type'] == 'click':
-            project = projects[0].get_dataproject()
+            project = projects[0].get_descriptor(descriptor_id,data['type'])
             topology = mainrdcl.importprojectjson(project['click'])
             print topology
             response = HttpResponse(topology, content_type="application/json")
