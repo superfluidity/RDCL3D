@@ -327,7 +327,7 @@ var example_gui_properties = {
     "vnf_vdu_cp": {
       "shape": "circle",
       //"color": "#E74C35",
-      "color": "#F27220",
+      "color": "#fce0cf",
       "size": 15,
       "name": "VduCP"
     },
