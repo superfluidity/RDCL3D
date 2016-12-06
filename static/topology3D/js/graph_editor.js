@@ -108,7 +108,7 @@ dreamer.GraphEditor = (function(global) {
                 self.lastKeyDown = -1;
             });
 
-
+/*
         d3.json("graph_data", function(error, data) {
             console.log(data)
             self.d3_graph.nodes = data.vertices;
@@ -121,7 +121,7 @@ dreamer.GraphEditor = (function(global) {
             setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
 
 
-        });
+        });*/
 
     }
 
@@ -152,7 +152,7 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.filter_parameters = filtersParams;
-        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : current_view_id
+        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : this.current_view_id
         this.cleanAll();
         this.refresh();
         this.startForce();
@@ -542,7 +542,7 @@ dreamer.GraphEditor = (function(global) {
         this.node_filter_cb = args.node_filter_cb || function(d) {
 
             var cond_view = true, cond_group = true;
-
+            log(d.info.type + " " + self.filter_parameters.node.type + " group: " + self.filter_parameters.node.group + "- " + d.info.group)
             // check filter by node type
             if(self.filter_parameters.node.type.length > 0){
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)

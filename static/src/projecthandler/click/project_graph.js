@@ -18,18 +18,17 @@ $.urlParam = function(name) {
 }
 
 
-
 $(document).ready(function() {
-    var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
-    var type = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
+    var descriptor_type = $.urlParam('type');
+    var type = descriptor_type == 'click'  ? ['click'] : ['click'];
     var params = {
         node: {
             type: type,
-            group: [$.urlParam('id')]
+            group: []
         },
         link: {
-            group: [$.urlParam('id')],
-            view: [descriptor_type]
+            group: [type],
+            view: []
         }
     }
     graph_editor.addListener("filters_changed", changeFilter);
@@ -47,9 +46,10 @@ $(document).ready(function() {
         gui_properties: example_gui_properties,
         descriptor_id: $.urlParam('id')
     });
-    graph_editor.handleFiltersParams(params);
+   // graph_editor.handleFiltersParams(params);
 
-    $('#draggable-container').hide()
+    $('#draggable-container').hide();
+    $('#vnffg_options').hide();
 });
 
 var filters = function(e, params) {
@@ -103,17 +103,15 @@ function savePositions(el) {
 }
 
 function changeFilter(e, c) {
-
+    console.log("changeFilter");
 
 }
 
+function openEditor(project_id){
+    window.location.href='/projects/'+project_id+'/descriptors/'+graph_editor.getCurrentView()+'/'+graph_editor.getCurrentGroup();
+}
 
 
-
-
-
-
-//***STEFANO
 var example_gui_properties = {
   "default": {
     "shape": "circle",
@@ -122,56 +120,14 @@ var example_gui_properties = {
     "size": 15
   },
   "nodes": {
-    "pippo": {
-      "image": "image.png",
-      "size": 25
-    },
-    "ns_vl": {
-      "shape": "triangle",
-      "color": "#196B90",
-      "size": 11,
-      "name": "VL"
-    },
-    "ns_cp": {
-      "shape": "circle",
-      "color": "#F27220",
-      "size": 15,
-      "name": "CP"
-    },
-    "vnf": {
-      "shape": "square",
-      "color": "#54A698",
-      "size": 18,
-      "name": "VNF"
-    },
-    "vnf_vl": {
-      "shape": "triangle",
-      //"color": "#5FC9DB",
-      "color": "#196B90",
-      "size": 11,
-      "name": "IntVL"
-    },
-    "vnf_ext_cp": {
+    "click": {
       "shape": "circle",
       //"#00CC66",
       "color": "#F27220",
       "size": 15,
-      "name": "ExtCP"
-    },
-    "vnf_vdu_cp": {
-      "shape": "circle",
-      //"color": "#E74C35",
-      "color": "#F27220",
-      "size": 15,
-      "name": "VduCP"
-    },
-    "vnf_vdu": {
-      "shape": "square",
-      //"color": "#50A7CC",
-      "color": "#54A698",
-      "size": 18,
-      "name": "VDU"
+      "name": "click"
     }
+
   },
   "graphs": null
 }
