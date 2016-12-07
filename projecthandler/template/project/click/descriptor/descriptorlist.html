@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% include 'modals/new_descriptor_name.html' %}
+{% include 'modal/new_descriptor_name.html' %}
 <div class="col-md-12">
 
     <div class="box">
@@ -8,7 +8,7 @@
             </h3>
             <div class="box-tools">
                 <a href="javascript:createNewDescriptor('{{project_id}}', '{{descriptor_type}}')"
-                   class="btn btn-block btn-primary btn-sm" disabled><i class="fa fa-plus" ></i><span> Create {{descriptor_type}}</span></a>
+                   class="btn btn-block btn-primary btn-sm" ><i class="fa fa-plus" ></i><span> Create {{descriptor_type}}</span></a>
             </div>
         </div>
         <div class="box-body">

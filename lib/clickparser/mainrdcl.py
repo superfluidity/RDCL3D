@@ -2,6 +2,7 @@ import argparse
 from parserView import *
 from parserAllView import *
 from parserDetailView import *
+import os
 
 
 def run_command(type_view, cfg_files, nx_topology):

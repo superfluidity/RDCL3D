@@ -109,6 +109,26 @@ class ClickProject(Project):
             result = False
         return result
 
+    def create_descriptor(self, descriptor_name,type_descriptor, new_data, data_type):
+        try:
+            utility = Util()
+            print type_descriptor, data_type
+            current_data = json.loads(self.data_project)
+            if data_type == 'json':
+                new_descriptor = json.loads(new_data)
+
+            if not type_descriptor in current_data:
+                current_data[type_descriptor] = {}
+            current_data[type_descriptor][descriptor_name] = new_descriptor
+            self.data_project = current_data
+            self.validated = False
+            self.update()
+            result = descriptor_name  ##FIXME
+        except Exception as e:
+            print 'exception create descriptor', e
+            result = False
+        return result
+
     def set_data_project(self, new_data, validated):
         self.data_project = new_data
         self.set_validated(validated)
