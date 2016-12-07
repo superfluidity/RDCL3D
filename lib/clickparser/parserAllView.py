@@ -4,6 +4,12 @@ import networkx as nx
 from declaration import *
 from createJson import *
 
+def remove_tab(line):
+    if string.find(line,'\t') != -1:
+        print 'ok'
+        line=line[string.find(line,'\t')+1:]
+        line = remove_tab(line)
+    return line
 
 def generateTopology(element, connection, nx_topology):
     # nx_topology.add_node(int(node_id_value), city = node_name_value, country = node_country_value, type_node = 'core' )
@@ -35,40 +41,45 @@ def parserAllView(file_click, nx_topology):
     list_lines = []
 
     text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
-    # print text
+    #print text
     for line in text.splitlines():
-        if line[0] == '/' or len(line) == 1 or line[0] == '*':
+        
+        if line[0] == '/' or line[0] == '*':
             continue
 
-        if string.find(line, '//') != -1:  # elimina i commenti dalla riga
+        if string.find(line, '//') != -1:                                           # elimina i commenti dalla riga
             line = line[0:string.find(line, '//') - 1].strip()
 
         try:
-            if line[len(line) - 1] == '\n':  # elimina il carattere '\n' ed elimina gli spazi
-                line = line[0:len(line) - 1].strip()  # in eccesso
+            if line[len(line) - 1] == '\n':                                         # elimina il carattere '\n' ed elimina gli spazi
+                line = line[0:len(line) - 1].strip()                                # in eccesso
         except IndexError:
             continue
 
-        line = line.strip(';')  # elimina ;
-
-        if concatenate_conf:  # concatena la dichiarazione di elementi che viene scritta su
-            if line[len(line) - 1] == ',':  # diverse righe
+        line = line.strip(';')                                                      # elimina ;
+        if concatenate_conf:                                                        # concatena la dichiarazione di elementi che viene scritta su
+            if line[len(line) - 1] == ',':                                          # diverse righe
+                #line = remove_tab(line)
                 line = line2 + ' ' + line
             elif line[len(line) - 1] == ')':
+                #line = remove_tab(line)
                 line = line2 + ' ' + line
                 concatenate = False
-        # print line
-        if line[len(line) - 1] == ',':  # avvia la concatenazione degli elementi dichiarati su diverse righe
+       
+        if line[len(line) - 2] == ',':                                              # avvia la concatenazione degli elementi dichiarati su diverse righe
+            #line = remove_tab(line)
             line2 = line
             concatenate_conf = True
             continue
-
-        if string.find(line, '[') != -1:  # questo blocco modifica l'intera linea per gestire la lettura
-            index = string.find(line, '[')  # delle porte di uscita dell'elemento che possono essere scritte
-            if line[index - 1] == ' ' and line[index - 2].islower():  # sia come [num]port che [num] port
+        
+        print line      
+        
+        if string.find(line, '[') != -1:                                            # questo blocco modifica l'intera linea per gestire la lettura
+            index = string.find(line, '[')                                          # delle porte di uscita dell'elemento che possono essere scritte
+            if line[index - 1] == ' ' and line[index - 2].islower():                # sia come [num]port che [num] port
                 line = line[0:index - 1] + '' + line[index:]
 
-        if string.find(line, '{') != -1:  # concatena la dichiarazione dei compound element con la riga successiva
+        if string.find(line, '{') != -1:                                            # concatena la dichiarazione dei compound element con la riga successiva
             line2 = line
             concatenate_compound = True
             continue
@@ -78,7 +89,7 @@ def parserAllView(file_click, nx_topology):
             line2 = ''
 
             line = compound_element(line)
-        # print line
+        #print line
         explicit_elment_decl(line, element)
         implicit_element_decl(line, element)
         load_list(line, words)
@@ -87,7 +98,9 @@ def parserAllView(file_click, nx_topology):
     # print words
 
     connection_decl(words, connection, element)
-
+    print element
+    print '\n\n'
+    print connection
     # print '\n'
     # print element
     # print'\n \n \n \n'
@@ -97,4 +110,5 @@ def parserAllView(file_click, nx_topology):
 
     # generateTopology(element, connection, nx_topology)
     json_data = generateJsont3d(element, connection)
+    #print json_data
     return json_data
