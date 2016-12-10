@@ -7,10 +7,6 @@ from util import Util
 class T3DUtil:
 
     node_t3d_base = {
-        'v':{
-            'x': 0.1,
-            'y': 0.1
-        },
         'info': {
             'frozen': False,
             'property': {
@@ -81,7 +77,7 @@ class T3DUtil:
 
 
     def build_graph_from_project(self, json_project):
-        print "json_project ",json_project
+        #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],

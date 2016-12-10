@@ -13,6 +13,7 @@ dreamer.GraphEditor = (function(global) {
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
     var EventHandler = dreamer.Event;
+//    var IMAGE_PATH = "/static/assets/img/";
 
 
 
@@ -27,7 +28,7 @@ dreamer.GraphEditor = (function(global) {
         this._selected_link = undefined;
         this.filter_parameters = {
             node: {
-                type : [],
+                type: [],
                 group: [],
             },
             link: {
@@ -40,7 +41,7 @@ dreamer.GraphEditor = (function(global) {
         this.d3_graph = {
             nodes: [],
             links: [],
-            graph_parameters :{}
+            graph_parameters: {}
 
         };
 
@@ -49,7 +50,7 @@ dreamer.GraphEditor = (function(global) {
 
 
 
-    GraphEditor.prototype.init = function(args){
+    GraphEditor.prototype.init = function(args) {
         args = args || {}
         var self = this;
         this.width = args.width || 500;
@@ -57,8 +58,8 @@ dreamer.GraphEditor = (function(global) {
         this.forceSimulationActive = false;
 
         //FixMe
-        this.width = this.width -this.width*0.007;
-        this.height =  this.height - this.height*0.07;
+        this.width = this.width - this.width * 0.007;
+        this.height = this.height - this.height * 0.07;
 
         var min_zoom = 0.1;
         var max_zoom = 7;
@@ -76,7 +77,9 @@ dreamer.GraphEditor = (function(global) {
 
         this.force = d3.forceSimulation()
             .force("collide", d3.forceCollide().radius(40))
-            .force("link", d3.forceLink().distance(80).iterations(1).id(function(d) { return d.id; }))
+            .force("link", d3.forceLink().distance(80).iterations(1).id(function(d) {
+                return d.id;
+            }))
             .force("center", d3.forceCenter(this.width / 2, this.height / 2));
 
         var zoom = d3.zoom().scaleExtent([min_zoom, max_zoom])
@@ -96,32 +99,47 @@ dreamer.GraphEditor = (function(global) {
                 //d3.event.preventDefault();
                 if (self.lastKeyDown !== -1) return;
                 self.lastKeyDown = d3.event.keyCode;
-                if(self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined){
+                if (self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined) {
                     self.removeNode(self._selected_node);
-                }else if(self.lastKeyDown === CANC_BUTTON && self._selected_link != undefined){
+                } else if (self.lastKeyDown === CANC_BUTTON && self._selected_link != undefined) {
                     self.removeLink(self._selected_link);
                 }
 
             })
             .on('keyup', function() {
-                log('keyup'+ self.lastKeyDown);
+                log('keyup' + self.lastKeyDown);
                 self.lastKeyDown = -1;
             });
 
 
-        d3.json("graph_data", function(error, data) {
-            console.log(data)
-            self.d3_graph.nodes = data.vertices;
-            self.d3_graph.links = data.edges;
-            self.d3_graph.graph_parameters = data.graph_parameters;
-            console.log(data.graph_parameters)
-            self.refreshGraphParameters();
-            self.refresh();
-            self.startForce();
-            setTimeout(function(){ self.handleForce(self.forceSimulationActive); }, 500);
+    }
 
-
-        });
+    GraphEditor.prototype.get_d3_symbol = 
+    function (myString) {
+        switch (myString) {
+            case "circle":
+                return d3.symbolCircle;
+                break;
+            case "square":
+                return d3.symbolSquare;
+                break;
+            case "diamond":
+                return d3.symbolDiamond;
+                break;
+            case "triangle":
+                return d3.symbolTriangle;
+                break;
+            case "star":
+                return d3.symbolStar;
+                break;
+            case "cross":
+                return d3.symbolCross;
+                break;
+            default:
+                // if the string is not recognized
+                return d3.symbolCross;
+                //return d3.symbolCircleUnknown;
+        }
 
     }
 
@@ -131,15 +149,15 @@ dreamer.GraphEditor = (function(global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.handleForce = function(start) {
-        if(start)
+        if (start)
             this.force.stop();
         this.forceSimulationActive = start;
         this.node.each(function(d) {
-                d.fx = (start) ? null : d.x;
-                d.fy = (start) ? null : d.y;
+            d.fx = (start) ? null : d.x;
+            d.fy = (start) ? null : d.y;
         });
 
-        if(start)
+        if (start)
             this.force.restart();
 
         this.eventHandler.fire("force_status_changed_on", start);
@@ -152,14 +170,14 @@ dreamer.GraphEditor = (function(global) {
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.filter_parameters = filtersParams;
-        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : current_view_id
+        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : this.current_view_id
         this.cleanAll();
         this.refresh();
         this.startForce();
         this.force.restart();
         this._deselectAllNodes();
         this.handleForce(this.forceSimulationActive);
-        if(!notFireEvent)
+        if (!notFireEvent)
             this.eventHandler.fire("filters_changed", filtersParams);
 
     };
@@ -310,43 +328,118 @@ dreamer.GraphEditor = (function(global) {
                 .filter(this.node_filter_cb))
             .enter()
             .append("g")
-           // .attr("class", "nodosdads")
+            // .attr("class", "nodosdads")
             .attr("class", "node cleanable");
+
+        // STEFANO: below the original code, to be deleted when everything is OK
+        // this.node = this.svg.selectAll('.node')
+        //     .data(self.d3_graph.nodes
+        //         .filter(this.node_filter_cb))
+        //     .append("svg:path")
+        //     .attr("class", "node_path")
+        //     .attr("id", function(d) {
+        //         return "path_" + d.id;
+        //     })
+        //     .attr("d", d3.symbol()
+        //         .size(function(d) {
+        //             return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
+        //         })
+        //         .type(function(d) {
+        //             return self._node_property_by_type(d.info.type, 'shape');
+        //         })
+        //     )
+        //     .style("fill", function(d) {
+        //         return self._node_property_by_type(d.info.type, 'color');
+        //     })
+        //     .attr("transform", function() {
+        //         return "rotate(-45)";
+
+        //     })
+        //     .attr("stroke-width", 2.4)
+        //     .call(d3.drag()
+        //         .on("start", dragstarted)
+        //         .on("drag", dragged)
+        //         .on("end", dragended))
+        //      ;
+
+
+        this.svg.selectAll('.node')
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
+
+            .filter(function(d) { 
+                return self._node_property_by_type(d.info.type, 'image') == undefined  })
+
+            .append("svg:path")
+                .attr("d", d3.symbol()
+                    .size(function(d) {
+                        return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2)/4;
+                    })
+                    .type(function(d) {
+                        return self._node_property_by_type(d.info.type, 'shape');
+                    })
+                )
+                .style("fill", function(d) {
+                    return self._node_property_by_type(d.info.type, 'color');
+                })
+                .attr("transform", function() {
+                    return "rotate(-45)";
+
+                })
+                .attr("stroke-width", 2.4)
+
+                .attr("class", "node_path")
+                .attr("id", function(d) {
+                  return "path_" + d.id;
+                })
+
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+        ;
+
+        this.svg.selectAll('.node')
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
+
+            .filter(function(d) { 
+                return self._node_property_by_type(d.info.type, 'image') != undefined  })
+
+            .append("svg:image")
+
+                // .attr("xlink:href", "/static/assets/img/router.png")
+                .attr("xlink:href", function(d) { 
+                        return self._node_property_by_type(d.info.type, 'image')   })
+                .attr("x", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
+                .attr("y", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
+                .attr("width", function(d) { return self._node_property_by_type(d.info.type, 'size')})
+                .attr("height", function(d) { return self._node_property_by_type(d.info.type, 'size')})
+                .style("stroke", "black")
+                .style("stroke-width", "1px")
+
+                .attr("class", "node_path")
+                .attr("id", function(d) {
+                  return "path_" + d.id;
+                })
+
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+        ;
 
         this.node = this.svg.selectAll('.node')
             .data(self.d3_graph.nodes
-                .filter(this.node_filter_cb))
-            .append("svg:path")
-            .attr("class", "node_path")
-            .attr("id", function(d) {
-                return "path_" + d.id;
-            })
-            .attr("d", d3.symbol()
-                .size(function(d) {
-                    return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
-                })
-                .type(function(d) {
-                    return self._node_property_by_type(d.info.type, 'shape');
-                })
-            )
-            .style("fill", function(d) {
-                return self._node_property_by_type(d.info.type, 'color');
-            })
-            .attr("transform", function() {
-                return "rotate(-45)";
+                .filter(this.node_filter_cb)).selectAll("image, path");
 
-            })
-            .attr("stroke-width", 2.4)
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+
 
         this.node.on("contextmenu", self.behavioursOnEvents.nodes["contextmenu"])
-            .on("mouseover",  self.behavioursOnEvents.nodes["mouseover"])
+            .on("mouseover", self.behavioursOnEvents.nodes["mouseover"])
             .on("mouseout", self.behavioursOnEvents.nodes["mouseout"])
             .on('click', self.behavioursOnEvents.nodes["click"])
-            .on('dblclick',self.behavioursOnEvents.nodes["dblclick"] );
+            .on('dblclick', self.behavioursOnEvents.nodes["dblclick"]);
 
         this.link
             .on("contextmenu", self.behavioursOnEvents.links["contextmenu"])
@@ -367,8 +460,8 @@ dreamer.GraphEditor = (function(global) {
             .style("font-size", nominal_text_size + "px")
             .style("font-family", "Lucida Console")
             .style("fill", function(d) {
-                    return self._node_property_by_type(d.info.type, 'node_label_color');
-                })
+                return self._node_property_by_type(d.info.type, 'node_label_color');
+            })
             .style("text-anchor", "middle")
             .text(function(d) {
                 return d.id;
@@ -392,10 +485,10 @@ dreamer.GraphEditor = (function(global) {
         function dragended(d) {
             d.draggednode = false;
             if (!d3.event.active) self.force.alphaTarget(0);
-             if(self.forceSimulationActive){
+            if (self.forceSimulationActive) {
                 d.fx = null;
                 d.fy = null;
-            }else{
+            } else {
                 d.fx = d.x;
                 d.fy = d.y;
                 self.force.stop();
@@ -431,11 +524,11 @@ dreamer.GraphEditor = (function(global) {
                 });
 
             self.link.attr("d", function(d) {
-  var dx = d.target.x - d.source.x,
-      dy = d.target.y - d.source.y,
-      dr = Math.sqrt(dx * dx + dy * dy);
-  return "M" + d.source.x + "," + d.source.y + ","  + d.target.x + "," + d.target.y;
-});
+                var dx = d.target.x - d.source.x,
+                    dy = d.target.y - d.source.y,
+                    dr = Math.sqrt(dx * dx + dy * dy);
+                return "M" + d.source.x + "," + d.source.y + "," + d.target.x + "," + d.target.y;
+            });
 
             self.node.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
@@ -495,7 +588,7 @@ dreamer.GraphEditor = (function(global) {
     }
 
 
-    GraphEditor.prototype.setNodeClass = function(class_name, filter_cb){
+    GraphEditor.prototype.setNodeClass = function(class_name, filter_cb) {
         console.log("setNodeClass");
         var self = this;
         this.svg.selectAll('.node').classed(class_name, false);
@@ -503,7 +596,7 @@ dreamer.GraphEditor = (function(global) {
             .classed(class_name, filter_cb);
     }
 
-    GraphEditor.prototype.setLinkClass = function(class_name, filter_cb){
+    GraphEditor.prototype.setLinkClass = function(class_name, filter_cb) {
         console.log("setLinkClass");
         var self = this;
         this.svg.selectAll('.link').classed(class_name, false);
@@ -523,36 +616,37 @@ dreamer.GraphEditor = (function(global) {
      *  Internal functions
      */
 
-     GraphEditor.prototype._node_property_by_type = function(type, property){
-        if(this.type_property[type] != undefined && this.type_property[type][property] != undefined)
+    GraphEditor.prototype._node_property_by_type = function(type, property) {
+        if (this.type_property[type] != undefined && this.type_property[type][property] != undefined)
             return this.type_property[type][property];
         else
             return this.type_property['unrecognized'][property];
-     }
+    }
 
-     /**
+    /**
      *
      *
      *
      */
-     GraphEditor.prototype._setupFiltersBehaviors = function(args) {
+    GraphEditor.prototype._setupFiltersBehaviors = function(args) {
 
         var self = this;
 
         this.node_filter_cb = args.node_filter_cb || function(d) {
 
-            var cond_view = true, cond_group = true;
-
-            // check filter by node type
-            if(self.filter_parameters.node.type.length > 0){
+            var cond_view = true,
+                cond_group = true;
+            log(d.info.type + " " + self.filter_parameters.node.type + " group: " + self.filter_parameters.node.group + "- " + d.info.group)
+                // check filter by node type
+            if (self.filter_parameters.node.type.length > 0) {
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
                     cond_view = false;
             }
 
-             // check filter by group
-            if(self.filter_parameters.node.group.length > 0){
-                self.filter_parameters.node.group.forEach(function(group){
-                    if(d.info.group.indexOf(group) < 0)
+            // check filter by group
+            if (self.filter_parameters.node.group.length > 0) {
+                self.filter_parameters.node.group.forEach(function(group) {
+                    if (d.info.group.indexOf(group) < 0)
                         cond_group = false;
                 });
 
@@ -564,17 +658,18 @@ dreamer.GraphEditor = (function(global) {
         };
 
         this.link_filter_cb = args.link_filter_cb || function(d) {
-            var cond_view = true, cond_group = true;
+            var cond_view = true,
+                cond_group = true;
             // check filter by view
-            if(self.filter_parameters.link.view.length > 0){
+            if (self.filter_parameters.link.view.length > 0) {
                 if (self.filter_parameters.link.view.indexOf(d.view) < 0)
                     cond_view = false;
             }
 
             // check filter by group
-            if(self.filter_parameters.link.group.length > 0){
-                self.filter_parameters.link.group.forEach(function(group){
-                    if(d.group.indexOf(group) < 0)
+            if (self.filter_parameters.link.group.length > 0) {
+                self.filter_parameters.link.group.forEach(function(group) {
+                    if (d.group.indexOf(group) < 0)
                         cond_group = false;
                 });
             }
@@ -582,7 +677,7 @@ dreamer.GraphEditor = (function(global) {
             return cond_view && cond_group;
         };
 
-     };
+    };
 
     /**
      *
@@ -616,13 +711,12 @@ dreamer.GraphEditor = (function(global) {
                 'mouseover': function(d) {
 
                 },
-                'mouseout': function(d) {
-                },
+                'mouseout': function(d) {},
                 'dblclick': function(d) {
                     d3.event.preventDefault();
                     log('dblclick');
                 },
-                'contextmenu': function(d,i) {
+                'contextmenu': function(d, i) {
                     d3.event.preventDefault();
                     log("contextmenu node");
                     self.eventHandler.fire("right_click_node", d);
@@ -659,7 +753,7 @@ dreamer.GraphEditor = (function(global) {
      *  @param {Object} Required. Element selected on click event
      */
     GraphEditor.prototype._selectNodeExclusive = function(node_instance, node_id) {
-        log("_selectNodeExclusive " );
+        log("_selectNodeExclusive ");
         var activeClass = "node_selected";
         var alreadyIsActive = d3.select(node_instance).classed(activeClass);
         this._deselectAllNodes();
@@ -673,7 +767,7 @@ dreamer.GraphEditor = (function(global) {
      *  @param {Object} Required. Element selected on click event
      */
     GraphEditor.prototype._selectLinkExclusive = function(link_instance, link_id) {
-        log("_selectLinkExclusive " );
+        log("_selectLinkExclusive ");
         var activeClass = "link_selected";
         var alreadyIsActive = d3.select(link_instance).classed(activeClass);
         this._deselectAllNodes();
@@ -696,8 +790,7 @@ dreamer.GraphEditor = (function(global) {
 
     }
 
-    GraphEditor.prototype.refreshGraphParameters = function() {
-    }
+    GraphEditor.prototype.refreshGraphParameters = function() {}
 
     /**
      * Log utility

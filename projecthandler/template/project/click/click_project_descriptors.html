@@ -11,7 +11,7 @@
     Configurations
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'click_project_left_sidebar.html' %}
+    {% include 'click/click_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -67,13 +67,11 @@ function openDescriptorView(project_id, descriptor_type, descriptor_id){
 }
 
 function createNewDescriptor(project_id, descriptor_type){
-    if(descriptor_type =='nsd'){
-        $("#modal_chooser_new_descriptor_name").text("New NS Descriptor");
-        $( "#input_choose_new_descriptor_name" ).val("ns_"+generateUID());
-    }else{
-        $("#modal_chooser_new_descriptor_name").text("New VNF Descriptor");
-        $( "#input_choose_new_descriptor_name" ).val("vnf_"+generateUID());
+    if(descriptor_type =='click'){
+        $("#modal_chooser_new_descriptor_name").text("New Click Descriptor");
+        $("#input_choose_new_descriptor_name" ).val("cliclk_"+generateUID());
     }
+
      $('#save_new_descriptor_name').off('click').on('click', function(){
         var descriptor_id = $( "#input_choose_new_descriptor_name" ).val();
         console.log(descriptor_id);

@@ -61,16 +61,15 @@ class Project(models.Model):
 
 class ClickProject(Project):
 
-
     def get_overview_data(self):
         current_data = json.loads(self.data_project)
         result = {
-            'owner': self.owner,
+            'owner': self.owner.__str__(),
             'name': self.name,
-            'updated_date': self.updated_date,
+            'updated_date': self.updated_date.__str__(),
             'info': self.info,
             'type': 'click',
-            'configuration': len(current_data['configuration'].keys()) if 'configuration' in current_data else 0,
+            'click': len(current_data['click'].keys()) if 'click' in current_data else 0,
             'validated': self.validated
         }
 
@@ -79,14 +78,79 @@ class ClickProject(Project):
     def getType(self):
         return "click"
 
+    def get_descriptors(self, type_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            result = current_data[type_descriptor]
+            print result
+        except Exception:
+            result = {}
+        return result
+
+    def get_descriptor(self, descriptor_id, type_descriptor):
+        try:
+            current_data = json.loads(self.data_project)
+            result = current_data[type_descriptor][descriptor_id]
+        except Exception:
+            result = {}
+
+        return result
+
+    def delete_descriptor(self, type_descriptor, descriptor_id):
+        try:
+            print descriptor_id, type_descriptor
+            current_data = json.loads(self.data_project)
+            del (current_data[type_descriptor][descriptor_id])
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+    def create_descriptor(self, descriptor_name,type_descriptor, new_data, data_type):
+        try:
+            utility = Util()
+            print type_descriptor, data_type
+            current_data = json.loads(self.data_project)
+            if data_type == 'json':
+                new_descriptor = json.loads(new_data)
+
+            if not type_descriptor in current_data:
+                current_data[type_descriptor] = {}
+            current_data[type_descriptor][descriptor_name] = new_descriptor
+            self.data_project = current_data
+            self.validated = False
+            self.update()
+            result = descriptor_name  ##FIXME
+        except Exception as e:
+            print 'exception create descriptor', e
+            result = False
+        return result
+
     def set_data_project(self, new_data, validated):
         self.data_project = new_data
         self.set_validated(validated)
         self.update()
 
-    def update(self):
-        self.updated_date = timezone.now()
-        self.save()
+    def edit_graph_positions(self, positions):
+        print positions
+        try:
+            current_data = json.loads(self.data_project)
+            if 'positions' not in current_data:
+                current_data['positions'] = {}
+            if 'vertices' not in current_data['positions']:
+                current_data['positions']['vertices'] = {}
+            if 'vertices' in positions:
+                current_data['positions']['vertices'].update(positions['vertices'])
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
 
     def __str__(self):
         return self.name
@@ -98,7 +162,6 @@ class EtsiManoProject(Project):
         return "etsi"
 
     def get_descriptors(self, type_descriptor):
-
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
@@ -107,7 +170,6 @@ class EtsiManoProject(Project):
         return result
 
     def get_descriptor(self, descriptor_id, type_descriptor):
-
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
@@ -207,10 +269,6 @@ class EtsiManoProject(Project):
 
         in_memory.flush()
         return in_memory
-
-    def update(self):
-        self.updated_date = timezone.now()
-        self.save()
 
     def get_overview_data(self):
         current_data = json.loads(self.data_project)
