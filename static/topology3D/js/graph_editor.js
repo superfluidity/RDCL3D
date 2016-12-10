@@ -13,6 +13,7 @@ dreamer.GraphEditor = (function(global) {
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
     var EventHandler = dreamer.Event;
+//    var IMAGE_PATH = "/static/assets/img/";
 
 
 
@@ -111,7 +112,34 @@ dreamer.GraphEditor = (function(global) {
             });
 
 
+    }
 
+    GraphEditor.prototype.get_d3_symbol = 
+    function (myString) {
+        switch (myString) {
+            case "circle":
+                return d3.symbolCircle;
+                break;
+            case "square":
+                return d3.symbolSquare;
+                break;
+            case "diamond":
+                return d3.symbolDiamond;
+                break;
+            case "triangle":
+                return d3.symbolTriangle;
+                break;
+            case "star":
+                return d3.symbolStar;
+                break;
+            case "cross":
+                return d3.symbolCross;
+                break;
+            default:
+                // if the string is not recognized
+                return d3.symbolCross;
+                //return d3.symbolCircleUnknown;
+        }
 
     }
 
@@ -303,34 +331,109 @@ dreamer.GraphEditor = (function(global) {
             // .attr("class", "nodosdads")
             .attr("class", "node cleanable");
 
-        this.node = this.svg.selectAll('.node')
+        // STEFANO: below the original code, to be deleted when everything is OK
+        // this.node = this.svg.selectAll('.node')
+        //     .data(self.d3_graph.nodes
+        //         .filter(this.node_filter_cb))
+        //     .append("svg:path")
+        //     .attr("class", "node_path")
+        //     .attr("id", function(d) {
+        //         return "path_" + d.id;
+        //     })
+        //     .attr("d", d3.symbol()
+        //         .size(function(d) {
+        //             return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
+        //         })
+        //         .type(function(d) {
+        //             return self._node_property_by_type(d.info.type, 'shape');
+        //         })
+        //     )
+        //     .style("fill", function(d) {
+        //         return self._node_property_by_type(d.info.type, 'color');
+        //     })
+        //     .attr("transform", function() {
+        //         return "rotate(-45)";
+
+        //     })
+        //     .attr("stroke-width", 2.4)
+        //     .call(d3.drag()
+        //         .on("start", dragstarted)
+        //         .on("drag", dragged)
+        //         .on("end", dragended))
+        //      ;
+
+
+        this.svg.selectAll('.node')
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
-            .append("svg:path")
-            .attr("class", "node_path")
-            .attr("id", function(d) {
-                return "path_" + d.id;
-            })
-            .attr("d", d3.symbol()
-                .size(function(d) {
-                    return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
-                })
-                .type(function(d) {
-                    return self._node_property_by_type(d.info.type, 'shape');
-                })
-            )
-            .style("fill", function(d) {
-                return self._node_property_by_type(d.info.type, 'color');
-            })
-            .attr("transform", function() {
-                return "rotate(-45)";
 
-            })
-            .attr("stroke-width", 2.4)
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+            .filter(function(d) { 
+                return self._node_property_by_type(d.info.type, 'image') == undefined  })
+
+            .append("svg:path")
+                .attr("d", d3.symbol()
+                    .size(function(d) {
+                        return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2)/4;
+                    })
+                    .type(function(d) {
+                        return self._node_property_by_type(d.info.type, 'shape');
+                    })
+                )
+                .style("fill", function(d) {
+                    return self._node_property_by_type(d.info.type, 'color');
+                })
+                .attr("transform", function() {
+                    return "rotate(-45)";
+
+                })
+                .attr("stroke-width", 2.4)
+
+                .attr("class", "node_path")
+                .attr("id", function(d) {
+                  return "path_" + d.id;
+                })
+
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+        ;
+
+        this.svg.selectAll('.node')
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb))
+
+            .filter(function(d) { 
+                return self._node_property_by_type(d.info.type, 'image') != undefined  })
+
+            .append("svg:image")
+
+                // .attr("xlink:href", "/static/assets/img/router.png")
+                .attr("xlink:href", function(d) { 
+                        return self._node_property_by_type(d.info.type, 'image')   })
+                .attr("x", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
+                .attr("y", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
+                .attr("width", function(d) { return self._node_property_by_type(d.info.type, 'size')})
+                .attr("height", function(d) { return self._node_property_by_type(d.info.type, 'size')})
+                .style("stroke", "black")
+                .style("stroke-width", "1px")
+
+                .attr("class", "node_path")
+                .attr("id", function(d) {
+                  return "path_" + d.id;
+                })
+
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+        ;
+
+        this.node = this.svg.selectAll('.node')
+            .data(self.d3_graph.nodes
+                .filter(this.node_filter_cb)).selectAll("image, path");
+
+
 
         this.node.on("contextmenu", self.behavioursOnEvents.nodes["contextmenu"])
             .on("mouseover", self.behavioursOnEvents.nodes["mouseover"])

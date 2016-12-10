@@ -23,40 +23,10 @@ dreamer.ClickGraphEditor = (function(global) {
     }
 
 
-    function get_d3_symbol(myString) {
-        switch (myString) {
-            case "circle":
-                return d3.symbolCircle;
-                break;
-            case "square":
-                return d3.symbolSquare;
-                break;
-            case "diamond":
-                return d3.symbolDiamond;
-                break;
-            case "triangle":
-                return d3.symbolTriangle;
-                break;
-            case "star":
-                return d3.symbolStar;
-                break;
-            case "cross":
-                return d3.symbolCross;
-                break;
-            default:
-                // if the string is not recognized
-                return d3.symbolCross;
-                //return d3.symbolCircleUnknown;
-        }
-
-    }
-
-
 
     ClickGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
         this.current_vnffg = null;
-
 
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
@@ -66,7 +36,7 @@ dreamer.ClickGraphEditor = (function(global) {
         Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
 
             this.type_property[key] = args.gui_properties["nodes"][key];
-            this.type_property[key]["shape"] = get_d3_symbol(this.type_property[key]["shape"]);
+            this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
 
         }, this);
         var self = this;
