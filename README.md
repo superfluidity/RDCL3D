@@ -4,7 +4,7 @@ RDCLs Playground - RFB Description and Composition Languages Playground
 About
 -----
 
-Describe your project here.
+Private repository for developing RDCL 3D (RDCL Design, Deploy & Direct)
 
 Prerequisites
 -------------
