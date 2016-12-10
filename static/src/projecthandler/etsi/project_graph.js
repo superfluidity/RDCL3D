@@ -307,7 +307,8 @@ var example_gui_properties = {
     "vnf": {
       "shape": "square",
       "color": "#54A698",
-      "size": 18,
+      "image": "router.png",
+      "size": 40,
       "name": "VNF"
     },
     "vnf_vl": {
