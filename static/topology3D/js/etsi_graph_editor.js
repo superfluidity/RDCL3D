@@ -9,6 +9,8 @@ dreamer.ManoGraphEditor = (function(global) {
     var DEBUG = true;
     var SHIFT_BUTTON = 16;
     var IMAGE_PATH = "/static/assets/img/";
+    var GUI_VERSION = "v1";
+
 
     ManoGraphEditor.prototype = new dreamer.GraphEditor();
     ManoGraphEditor.prototype.constructor = ManoGraphEditor;
@@ -28,6 +30,10 @@ dreamer.ManoGraphEditor = (function(global) {
     ManoGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
         this.current_vnffg = null;
+
+        if (args.gui_properties[GUI_VERSION]!= undefined) {
+            args.gui_properties = args.gui_properties[GUI_VERSION];
+        }
 
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];

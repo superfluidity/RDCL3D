@@ -28,7 +28,6 @@ dreamer.ClickGraphEditor = (function(global) {
         this.parent.init.call(this, args);
         this.current_vnffg = null;
 
-
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
