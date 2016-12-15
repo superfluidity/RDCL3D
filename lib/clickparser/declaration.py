@@ -297,7 +297,7 @@ def compound_element(line):
 	return line 
 	
 	
-def compound_element_view(line):
+def compound_element_view(line,comp_elem_content):
 	words=[]
 	word2=[]
 	word3=[]
@@ -318,6 +318,7 @@ def compound_element_view(line):
 				continue
 			if control2 == True:
 				word3.append(w)	
+			comp_elem_content.append(w)							#salva contenuto del compound element
 			continue	
 		word2.append(w)
 
@@ -329,7 +330,7 @@ def compound_element_view(line):
 	for w in word3:
 		line=line+' '+w
 
-	return line
+	return line, comp_elem_content
 		
 
 
