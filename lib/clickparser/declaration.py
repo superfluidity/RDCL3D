@@ -13,8 +13,8 @@ def nameGenerator(element, type_element):      		#nome di default class@num
 
 def rename_element_list(element,words):			#controlla che non ci siano ridondanze tra le dichiarazioni 
 	element2=copy.deepcopy(element)				#ed in tal caso rinomina l'elemento in modo incrementale
-	names=[]
-	start=0
+	names=[]									#TOFIX: Deve controllare se si trova tra due graffe (compound element)
+	start=0										#ed in tal caso deve rinominare l'elemento come subgraph.nomelemento
 	old_name=''
 	new_name=''
 
@@ -49,9 +49,9 @@ def rename_element_list(element,words):			#controlla che non ci siano ridondanze
 									words[k+1]=words[k+1][0:index+1]+new_name
 							elif words[k+1]==old_name:
 									words[k+1]=new_name
-
-
 					break
+
+
 				
 			if contr==False:
 				names.append(words[i-1])
@@ -125,7 +125,7 @@ def explicit_element_decl_with_conf(i, words, element):
 			config.append(w[string.find(w,'(')+1:len(w)])	
 		elif string.find(w,'(')!=-1 and string.find(w,')')!=-1:	
 			config.append(w[string.find(w,'(')+1:len(w)-1])	
-		elif string.find(w,')'):
+		elif string.find(w,')')!=-1:
 			config.append(w[0:len(w)-1])
 		else:
 			config.append(w)
@@ -171,7 +171,7 @@ def load_list(line, words):
 
 	for word in line.split():
 		if conf:
-			if word[len(word)-1]==')':
+			if word[len(word)-1]==')' or word[len(word)-2]==')' :
 				word=word2+' '+word
 				conf=False
 			else:
