@@ -101,12 +101,17 @@ def open_project(request, project_id=None):
     try:
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
-        if project_overview['type'] == 'etsi':
-            return render(request, 'etsi/etsi_project_details.html',
+        prj_token = project_overview['type']
+        #                      example: 'etsi/etsi_project_details.html'
+        return render(request, prj_token+'/'+prj_token+'_project_details.html',
                           {'project_overview': project_overview, 'project_id': project_id})
-        elif project_overview['type'] == 'click':
-            return render(request, 'click/click_project_details.html',
-                          {'project_overview': project_overview, 'project_id': project_id})
+        # if project_overview['type'] == 'etsi':
+        #     return render(request, 'etsi/etsi_project_details.html',
+        #                   {'project_overview': project_overview, 'project_id': project_id})
+        # elif project_overview['type'] == 'click':
+        #     return render(request, 'click/click_project_details.html',
+        #                   {'project_overview': project_overview, 'project_id': project_id})
+
     except Exception as e:
         print e
         return render(request, 'error.html', {'error_msg': 'Error open project! Please retry.'})
@@ -127,12 +132,16 @@ def delete_project(request, project_id=None):
         try:
             projects = Project.objects.filter(id=project_id).select_subclasses()
             project_overview = projects[0].get_overview_data()
-            if project_overview['type'] == 'etsi':
-                return render(request, 'etsi_project_delete.html',
+            prj_token = project_overview['type']
+            #                 example: 'etsi/etsi_project_delete.html'
+            return render(request, prj_token+'/'+prj_token+'_project_delete.html',
                               {'project_id': project_id, 'project_name': project_overview['name']})
-            elif project_overview['type'] == 'click':
-                return render(request, 'click/click_project_delete.html',
-                              {'project_id': project_id, 'project_name': project_overview['name']})
+            # if project_overview['type'] == 'etsi':
+            #     return render(request, 'etsi_project_delete.html',
+            #                   {'project_id': project_id, 'project_name': project_overview['name']})
+            # elif project_overview['type'] == 'click':
+            #     return render(request, 'click/click_project_delete.html',
+            #                   {'project_id': project_id, 'project_name': project_overview['name']})
 
         except Exception as e:
             print e
@@ -144,12 +153,14 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview = projects[0].get_overview_data()
+    prj_token = project_overview['type']
 
-    if project_overview['type'] == 'etsi':
-        page = 'etsi/etsi_project_descriptors.html'
+    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    # if project_overview['type'] == 'etsi':
+    #     page = 'etsi/etsi_project_descriptors.html'
 
-    elif project_overview['type'] == 'click':
-        page = 'click/click_project_descriptors.html'
+    # elif project_overview['type'] == 'click':
+    #     page = 'click/click_project_descriptors.html'
 
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
@@ -164,7 +175,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 def graph(request, project_id=None):
     if request.method == 'GET':
         type = request.GET.get('type')
-        if type == 'ns' or type == 'vnf':
+        if type == 'ns' or type == 'vnf': # questo va sostituito con un if a livello di project type a breve, e poi sostituito con una cosa parametrica come sopra 
             csrf_token_value = get_token(request)
             projects = Project.objects.filter(id=project_id).select_subclasses()
             return render(request, 'project_graph.html', {
