@@ -42,7 +42,7 @@ def parse_cmd_line():
 def importprojectjson(cfg_files):
     nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
-    type_view = 'AllView'
+    type_view = 'View'
     json_click = run_command(type_view, cfg_files, nx_topology)
     '''
     if len(nx_topology)!=0:
