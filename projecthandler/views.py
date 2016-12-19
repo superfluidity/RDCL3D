@@ -248,7 +248,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
 
 
 @login_required
-def downlaod(request, project_id=None):
+def download(request, project_id=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     if request.method == 'POST':
