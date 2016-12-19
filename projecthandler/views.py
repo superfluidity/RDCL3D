@@ -3,13 +3,15 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from projecthandler.models import Project
-from projecthandler.models import EtsiManoProject
-from projecthandler.models import ClickProject
+#from projecthandler.models import EtsiManoProject
+from projecthandler.etsi_model import EtsiManoProject
+# from projecthandler.models import ClickProject
+from projecthandler.click_model import ClickProject
 from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
-from lib.emparser import emparser
-from lib.clickparser import mainrdcl
+#from lib.emparser import emparser
+# from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
@@ -18,6 +20,7 @@ import json
 @login_required
 def home(request):
     return render(request, 'home.html', {})
+
 
 
 @login_required
@@ -31,50 +34,65 @@ def create_new_project(request):
         start_from = request.POST.get('startfrom', 'scratch')
 
         if type == 'etsi':
-
-            try:
-
-                if start_from == 'scratch':
-                    data_project = {}
-                elif start_from == 'files':
-                    ns_files = request.FILES.getlist('ns_files')
-                    vnf_files = request.FILES.getlist('vnf_files')
-                    if ns_files or vnf_files:
-                        data_project = emparser.importprojectfile(ns_files, vnf_files)
-                elif start_from == 'example':
-                    example_id = request.POST.get('example-etsi-id', '')
-                    data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
-
-                project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
-                                                         data_project=data_project)
-
-            except Exception as e:
-                print e
-                return render(request, 'error.html', {'error_msg': 'Error creating etsi project! Please retry.'})
-
+            project_class = EtsiManoProject
         elif type == 'click':
-
-            try:
-                if start_from == 'scratch':
-                    data_project = {}
-                elif start_from == 'files':
-                    cfg_files = request.FILES.getlist('cfg_files')
-                    data_project = mainrdcl.importprojectfile(cfg_files)
-                elif start_from == 'example':
-                    ##FIXME
-                    example_id = request.POST.get('example-click-id', '')
-                    data_project = {}
-                project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
-                                                      data_project=data_project)
-
-            except Exception as e:
-                print 'Error creating click project! Please retry.'
-                print e
-                return render(request, 'error.html', {'error_msg': 'Error creating click project! Please retry.'})
+            project_class = ClickProject
         else:
+            #FIXME this error is not handled 
             error_msgs.push('Project type undefined.')
 
+
+        try:
+
+        # if type == 'etsi':
+
+            if start_from == 'scratch':
+                data_project = {}
+
+            elif start_from == 'files':
+                # data_project = EtsiManoProject.data_project_from_files(request)
+                data_project = project_class.data_project_from_files(request)
+
+            #     ns_files = request.FILES.getlist('ns_files')
+            #     vnf_files = request.FILES.getlist('vnf_files')
+            #     if ns_files or vnf_files:
+            #         data_project = emparser.importprojectfile(ns_files, vnf_files)
+
+            elif start_from == 'example':
+                # data_project = EtsiManoProject.data_project_from_example(request)
+                data_project = project_class.data_project_from_example(request)
+
+                # example_id = request.POST.get('example-etsi-id', '')
+                # data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
+
+            
+            # project = EtsiManoProject.create_project (name, user, False, info, data_project)
+            project = project_class.create_project (name, user, False, info, data_project)
+
+            # project = EtsiManoProject.objects.create (name=name, owner=user, validated=False, info=info,
+            #                                          data_project=data_project)
+
+        # elif type == 'click':
+
+        #     if start_from == 'files':
+        #         cfg_files = request.FILES.getlist('cfg_files')
+        #         data_project = mainrdcl.importprojectfile(cfg_files)
+        #     elif start_from == 'example':
+        #         ##FIXME
+        #         example_id = request.POST.get('example-click-id', '')
+        #         data_project = {}
+        #     project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
+        #                                           data_project=data_project)
+        # else:
+        #     error_msgs.push('Project type undefined.')
+
+        except Exception as e:
+            print 'Error creating '+type+' project! Please retry.'
+            print e
+            return render(request, 'error.html', {'error_msg': 'Error creating '+type+' project! Please retry.'})
+
         return render(request, 'new_project.html', {'project_id': project.id})
+
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
         return render(request, 'new_project.html', {'etsi_example': Util().get_etsi_example_list(),
@@ -137,7 +155,7 @@ def delete_project(request, project_id=None):
             return render(request, prj_token+'/'+prj_token+'_project_delete.html',
                               {'project_id': project_id, 'project_name': project_overview['name']})
             # if project_overview['type'] == 'etsi':
-            #     return render(request, 'etsi_project_delete.html',
+            #     return render(request, 'etsi/etsi_project_delete.html',
             #                   {'project_id': project_id, 'project_name': project_overview['name']})
             # elif project_overview['type'] == 'click':
             #     return render(request, 'click/click_project_delete.html',
@@ -174,39 +192,55 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 @login_required
 def graph(request, project_id=None):
     if request.method == 'GET':
-        type = request.GET.get('type')
-        if type == 'ns' or type == 'vnf': # questo va sostituito con un if a livello di project type a breve, e poi sostituito con una cosa parametrica come sopra 
-            csrf_token_value = get_token(request)
-            projects = Project.objects.filter(id=project_id).select_subclasses()
-            return render(request, 'project_graph.html', {
-                'project_id': project_id,
-                'project_overview_data': projects[0].get_overview_data(),
-                'collapsed_sidebar': True
-            })
 
-        elif type == 'click':
-            csrf_token_value = get_token(request)
-            projects = Project.objects.filter(id=project_id).select_subclasses()
-            return render(request, 'click/click_project_graph.html', {
-                'project_id': project_id,
-                'project_overview_data': projects[0].get_overview_data(),
-                'collapsed_sidebar': True
-            })
+        csrf_token_value = get_token(request)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        project_overview = projects[0].get_overview_data()
+        prj_token = project_overview['type']
+        # example : 'etsi/project_graph.html'
+        return render(request, prj_token+'/project_graph.html', {
+            'project_id': project_id,
+            'project_overview_data': projects[0].get_overview_data(),
+            'collapsed_sidebar': True
+        })
+
+        # type = request.GET.get('type')
+        # if type == 'ns' or type == 'vnf': # questo va sostituito con un if a livello di project type a breve, e poi sostituito con una cosa parametrica come sopra 
+        #     csrf_token_value = get_token(request)
+        #     projects = Project.objects.filter(id=project_id).select_subclasses()
+        #     return render(request, 'etsi/project_graph.html', {
+        #         'project_id': project_id,
+        #         'project_overview_data': projects[0].get_overview_data(),
+        #         'collapsed_sidebar': True
+        #     })
+
+        # elif type == 'click':
+        #     csrf_token_value = get_token(request)
+        #     projects = Project.objects.filter(id=project_id).select_subclasses()
+        #     return render(request, 'click/click_project_graph.html', {
+        #         'project_id': project_id,
+        #         'project_overview_data': projects[0].get_overview_data(),
+        #         'collapsed_sidebar': True
+        #     })
 
 
 @login_required
 def graph_data(request, project_id=None, descriptor_id=None):
     projects = Project.objects.filter(id=project_id).select_subclasses()
-    data = projects[0].get_overview_data()
-    if data['type'] == 'etsi':
+    project_overview = projects[0].get_overview_data()
+    # data = projects[0].get_overview_data()
+    prj_token = project_overview['type']
+
+
+    if prj_token == 'etsi':
         test_t3d = T3DUtil()
         project = projects[0].get_dataproject()
         topology = test_t3d.build_graph_from_project(project)
         # print response
         response = HttpResponse(json.dumps(topology), content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
-    elif data['type'] == 'click':
-        project = projects[0].get_descriptor(descriptor_id, data['type'])
+    elif prj_token == 'click':
+        project = projects[0].get_descriptor(descriptor_id, prj_token)
         topology = mainrdcl.importprojectjson(project)
         response = HttpResponse(topology, content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
@@ -241,10 +275,12 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     projects = Project.objects.filter(id=project_id).select_subclasses()
     result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
     project_overview = projects[0].get_overview_data()
-    if project_overview['type'] == 'etsi':
-        page = 'etsi/etsi_project_descriptors.html'
-    elif project_overview['type'] == 'click':
-        page = 'click/click_project_descriptors.html'
+    prj_token = project_overview['type']
+    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    # if project_overview['type'] == 'etsi':
+    #     page = 'etsi/etsi_project_descriptors.html'
+    # elif project_overview['type'] == 'click':
+    #     page = 'click/click_project_descriptors.html'
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -264,10 +300,12 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
     new_id = request.GET.get('newid', '')
     result = projects[0].clone_descriptor(descriptor_type, descriptor_id, new_id)
     project_overview = projects[0].get_overview_data()
-    if project_overview['type'] == 'etsi':
-        page = 'etsi/etsi_project_descriptors.html'
-    elif project_overview['type'] == 'click':
-        page = 'click/click_project_descriptors.html'
+    prj_token = project_overview['type']
+    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    # if project_overview['type'] == 'etsi':
+    #     page = 'etsi/etsi_project_descriptors.html'
+    # elif project_overview['type'] == 'click':
+    #     page = 'click/click_project_descriptors.html'
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
@@ -284,12 +322,14 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
 def new_descriptor(request, project_id=None, descriptor_type=None):
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview = projects[0].get_overview_data()
+    prj_token = project_overview['type']
+    page = prj_token+'/descriptor/descriptor_new.html'
     if request.method == 'GET':
         id = request.GET.get('id', '')
 
         util = Util()
-        if project_overview['type'] == 'etsi':
-            page = 'etsi/descriptor/descriptor_new.html'
+        if prj_token == 'etsi':
+            # page = 'etsi/descriptor/descriptor_new.html'
 
             json_template = util.get_descriptor_template(descriptor_type)
             if descriptor_type == 'nsd':
@@ -298,8 +338,8 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             else:
                 json_template['vnfdId'] = id
 
-        elif project_overview['type'] == 'click':
-            page = 'click/descriptor/descriptor_new.html'
+        elif prj_token == 'click':
+            # page = 'click/descriptor/descriptor_new.html'
             json_template = ''
 
         descriptor_string_yaml = util.json2yaml(json_template)
@@ -323,9 +363,9 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             type = request.POST.get('type')
             desc_name = request.POST.get('it')
 
-        if project_overview['type'] == 'etsi':
+        if prj_token == 'etsi':
             result = projects[0].create_descriptor(descriptor_type, text, type)
-        elif project_overview['type'] == 'click':
+        elif prj_token == 'click':
             result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
         response_data = {
             'project_id': project_id,
@@ -365,11 +405,14 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
+        prj_token = project_overview['type']
+        page = prj_token+'/descriptor/descriptor_view.html'
+
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
-        if project_overview['type'] == 'etsi':
-            page = 'etsi/descriptor/descriptor_view.html'
-        elif project_overview['type'] == 'click':
-            page = 'click/descriptor/descriptor_view.html'
+        # if project_overview['type'] == 'etsi':
+        #     page = 'etsi/descriptor/descriptor_view.html'
+        # elif project_overview['type'] == 'click':
+        #     page = 'click/descriptor/descriptor_view.html'
         utility = Util()
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = utility.json2yaml(descriptor)
