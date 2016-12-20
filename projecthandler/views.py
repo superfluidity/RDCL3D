@@ -11,7 +11,7 @@ from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
 #from lib.emparser import emparser
-# from lib.clickparser import mainrdcl
+from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
@@ -33,10 +33,15 @@ def create_new_project(request):
         type = request.POST.get('type', '')
         start_from = request.POST.get('startfrom', 'scratch')
 
-        if type == 'etsi':
-            project_class = EtsiManoProject
-        elif type == 'click':
-            project_class = ClickProject
+
+        project_types = Project.get_project_types()
+        if type in project_types:
+            project_class = project_types[type]
+
+        # if type == 'etsi':
+        #     project_class = EtsiManoProject
+        # elif type == 'click':
+        #     project_class = ClickProject
         else:
             #FIXME this error is not handled 
             error_msgs.push('Project type undefined.')
@@ -248,7 +253,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
 
 
 @login_required
-def downlaod(request, project_id=None):
+def download(request, project_id=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     if request.method == 'POST':

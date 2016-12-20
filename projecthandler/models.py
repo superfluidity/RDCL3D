@@ -9,10 +9,11 @@ import json
 import yaml
 from lib.emparser.util import Util
 from model_utils.managers import InheritanceManager
-
+#import projecthandler.etsi_model
 
 # Create your models here.
 
+project_types = {}
 
 class Project(models.Model):
     owner = models.ForeignKey('sf_user.CustomUser', db_column='owner')
@@ -25,6 +26,17 @@ class Project(models.Model):
 
     #InheritanceManager
     objects = InheritanceManager()
+   
+
+    @classmethod
+    def get_project_types(cls):
+        global project_types
+        return project_types        
+
+    @classmethod
+    def add_project_type(cls, type, my_class):
+        global project_types
+        project_types [type]= my_class
 
 
     @classmethod

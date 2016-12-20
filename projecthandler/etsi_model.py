@@ -12,6 +12,10 @@ from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.emparser import emparser
 
+print "uaaaaaaaaaaaaaaaaaaa"
+        # project_types['etsi']= projecthandler.etsi_model.EtsiManoProject
+        # project_types['click']= ClickProject
+
 
 class EtsiManoProject(Project):
 
@@ -735,3 +739,5 @@ class EtsiManoProject(Project):
             print 'exception', e
             result = False
         return result
+
+Project.add_project_type('etsi', EtsiManoProject)
