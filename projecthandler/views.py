@@ -11,7 +11,7 @@ from sf_user.models import CustomUser
 from lib.emparser.util import Util
 from lib.emparser.t3d_util import T3DUtil
 #from lib.emparser import emparser
-# from lib.clickparser import mainrdcl
+from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
