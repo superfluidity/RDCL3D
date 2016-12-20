@@ -8,6 +8,9 @@ dreamer.ManoGraphEditor = (function(global) {
 
     var DEBUG = true;
     var SHIFT_BUTTON = 16;
+    var IMAGE_PATH = "/static/assets/img/";
+    var GUI_VERSION = "v1";
+
 
     ManoGraphEditor.prototype = new dreamer.GraphEditor();
     ManoGraphEditor.prototype.constructor = ManoGraphEditor;
@@ -23,58 +26,37 @@ dreamer.ManoGraphEditor = (function(global) {
     }
 
 
-    function get_d3_symbol(myString) {
-        switch (myString) {
-            case "circle":
-                return d3.symbolCircle;
-                break;
-            case "square":
-                return d3.symbolSquare;
-                break;
-            case "diamond":
-                return d3.symbolDiamond;
-                break;
-            case "triangle":
-                return d3.symbolTriangle;
-                break;
-            case "star":
-                return d3.symbolStar;
-                break;
-            case "cross":
-                return d3.symbolCross;
-                break;
-            default:
-                // if the string is not recognized
-                return d3.symbolCross;
-                //return d3.symbolCircleUnknown;
-        }
-
-    }
-
-
-
+    //TODO this should be moved in graph_editor
     ManoGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
         this.current_vnffg = null;
 
+        if (args.gui_properties[GUI_VERSION]!= undefined) {
+            args.gui_properties = args.gui_properties[GUI_VERSION];
+        }
+
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
-        this.type_property["unrecognized"]["shape"] = d3.symbolCross;
+        //this.type_property["unrecognized"]["shape"] = d3.symbolCross;
 
         Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
-            console.log(key);
+            //console.log(key);
             this.type_property[key] = args.gui_properties["nodes"][key];
-            this.type_property[key]["shape"] = get_d3_symbol(this.type_property[key]["shape"]);
+            this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
+            if (this.type_property[key]["image"] != undefined ) {
+                this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
+            }
+            
 
         }, this);
         var self = this;
         d3.json("graph_data/", function(error, data) {
-            console.log(data)
+            //console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
-            console.log(data.graph_parameters)
+            //console.log(data.graph_parameters)
             self.refreshGraphParameters();
             self.refresh();
             self.startForce();

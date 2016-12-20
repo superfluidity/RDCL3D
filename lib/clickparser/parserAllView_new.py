@@ -29,8 +29,10 @@ def generateJsont3d(element, connection):
 
 def parserAllView_new(file_click, nx_topology):
     # with open('/home/user/Progetto_Superfluidity/test-rdcl/lib/clickparser/'+file_click,'r') as f:
-
+    l = 0
     words = []
+    
+    file_click_list = []
     element = {}
     connection = {}
     line2 = ''
@@ -44,7 +46,6 @@ def parserAllView_new(file_click, nx_topology):
     text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
     #print text
     for line in text.splitlines():
-        
         if line[0] == '/' or line[0] == '*':
             continue
 
@@ -80,27 +81,30 @@ def parserAllView_new(file_click, nx_topology):
             name = subgraph_element(compound_line, compound_element, element)
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
-
-        explicit_elment_decl(line, element,'', 'click', words)
-        implicit_element_decl(line, element,'', 'click', words)
-        load_list(line, words)
-    
         
-    print words
-    #print '\n'
-    #print element
-    print '########################'
+        words2 = []
+        explicit_elment_decl(line, element,'', 'click', words)
+        implicit_element_decl(line, element,'', 'click', words, words2)
 
-    rename_element_list(element, words)
-    print words
-    #rename_element_list_new(element, words)
+        for w in words2:
+            file_click_list.append(w)
+
+        load_list(line, words)
+
     '''
+    #rename_element_list(element, words)
+    file_click_list_prov = []
     for line in compound_element.items():
+        words2 = []
         explicit_elment_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
-        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
-    ''' 
-    #print words
-    connection_decl(words, connection, element)
+        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words2)
+
+        for w in words2:
+            file_click_list_prov.append(w)
+    
+    print file_click_list_prov 
+    '''
+    connection_decl(file_click_list, connection, element)
     words[:] = []
 
     json_data = generateJsont3d(element, connection)

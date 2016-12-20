@@ -21,7 +21,7 @@ def run_command(type_view, cfg_files, nx_topology):
 # parse_click(args.file, nx_topology)
 
 
-
+'''
 def parse_cmd_line():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--f', dest='file', action='store', help='file click to parse')
@@ -38,7 +38,7 @@ def parse_cmd_line():
         sys.exit(1)
 
     return args
-
+'''
 
 def importprojectjson(cfg_files):
     nx_topology = nx.MultiDiGraph()

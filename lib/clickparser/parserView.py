@@ -4,6 +4,12 @@ import networkx as nx
 from declaration import *
 from createJson import *
 
+def remove_tab(line):
+    if string.find(line,'\t') != -1:
+        print 'ok'
+        line=line[string.find(line,'\t')+1:]
+        line = remove_tab(line)
+    return line
 
 def generateTopology(element, connection, nx_topology):
     # nx_topology.add_node(int(node_id_value), city = node_name_value, country = node_country_value, type_node = 'core' )
@@ -20,58 +26,68 @@ def generateTopology(element, connection, nx_topology):
 
 def generateJsont3d(element, connection):
     json_data = nx_2_t3d_json(element, connection, 'out.t3d')
+    return json_data
 
 
 def parserView(file_click, nx_topology):
-    with open(file_click, 'r') as f:
 
-        words = []
-        element = {}
-        connection = {}
-        line2 = ''
-        concatenate = False
+    words = []
+    compound_element_content=[]
+    element = {}
+    connection = {}
+    line2 = ''
+    concatenate = False
 
-        for line in f:
-            if line[0] != "/":
+    text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
 
-                if string.find(line, '//') != -1:  # elimina i commenti dalla riga
-                    line = line[0:string.find(line, '//') - 1]
+    for line in text.splitlines():
+        if line[0] != "/":
 
-                if string.find(line, '[') != -1:  # questo blocco modifica l'intera linea per gestire la lettura
-                    index = string.find(line, '[')  # delle porte di uscita dell'elemento che possono essere scritte
-                    if line[index - 1] == ' ' and line[index - 2].islower():  # sia come [num]port che [num] port
-                        line = line[0:index - 1] + '' + line[index:]
+            if string.find(line, '//') != -1:  # elimina i commenti dalla riga
+                line = line[0:string.find(line, '//') - 1]
 
-                if string.find(line, '{') != -1:
+            if string.find(line, '[') != -1:  # questo blocco modifica l'intera linea per gestire la lettura
+                index = string.find(line, '[')  # delle porte di uscita dell'elemento che possono essere scritte
+                if line[index - 1] == ' ' and line[index - 2].islower():  # sia come [num]port che [num] port
+                    line = line[0:index - 1] + '' + line[index:]
 
-                    line2 = line
-                    concatenate = True
-                    continue
-                elif concatenate:
-                    line = line2 + ' ' + line
-                    start = string.find(line, '{')
-                    stop = string.find(line, '}')
-                    concatenate = False
-                    line2 = ''
+            if string.find(line, '{') != -1:
 
-                    line = compound_element_view(line)
+                line2 = line
+                concatenate = True
+                continue
+            elif concatenate:
+                line = line2 + ' ' + line
+                start = string.find(line, '{')
+                stop = string.find(line, '}')
+                concatenate = False
+                line2 = ''
 
-                explicit_elment_decl(line, element)
-                implicit_element_decl(line, element)
-                load_list(line, words)
+                line , compound_element_content = compound_element_view(line,compound_element_content)
+                #compound_element_content contiene ora il contenuto del compound element
+            explicit_elment_decl(line, element)
+            implicit_element_decl(line, element)
+            load_list(line, words)
 
-        rename_element_list(element, words)
+    rename_element_list(element, words)
 
-        connection_decl(words, connection, element)
+    connection_decl(words, connection, element)
 
-        print '\n'
-        print element
-        print'\n \n \n \n'
-        print words
-        # print connection
-        words[:] = []
+    '''#print di controllo per compound_element_content
+    print '!!!!!!!!!!!!!!!!!!!!'
+    #print comp_elem_content
+    print map(lambda x: x.encode('ascii'), compound_element_content)
+    print '********************'
+    '''
 
-        # generateTopology(element, connection, nx_topology)			#genera la topologia per nx
-        json_data = generateJsont3d(element, connection)  # genera elemento Json
+    print '\n'
+    print element
+    print'\n \n \n \n'
+    print words
+    # print connection
+    words[:] = []
 
-        return json_data
+    # generateTopology(element, connection, nx_topology)			#genera la topologia per nx
+    json_data = generateJsont3d(element, connection)  # genera elemento Json
+
+    return json_data
