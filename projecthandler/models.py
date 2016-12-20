@@ -48,7 +48,7 @@ class Project(models.Model):
         return project
 
 
-    def getType(self):
+    def get_type(self):
         return "Base"
 
     def get_dataproject(self):
@@ -91,6 +91,7 @@ class Project(models.Model):
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
         except Exception:
+            print "Exception in get_descriptor"
             result = {}
 
         return result
@@ -141,6 +142,23 @@ class Project(models.Model):
             print 'exception', e
             result = False
         return result
+
+
+    def get_zip_archive(self):
+        in_memory = StringIO()
+        try:
+            current_data = json.loads(self.data_project)
+            zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+            for desc_type in current_data:
+                for current_desc in current_data[desc_type]:
+                    zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
+
+            zip.close()
+        except Exception as e:
+            print e
+
+        in_memory.flush()
+        return in_memory
 
 
 # class ClickProject(Project):

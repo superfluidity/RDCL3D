@@ -10,9 +10,10 @@ import yaml
 from lib.emparser.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
+from lib.emparser.t3d_util import T3DUtil
 from lib.emparser import emparser
+import os.path
 
-print "uaaaaaaaaaaaaaaaaaaa"
         # project_types['etsi']= projecthandler.etsi_model.EtsiManoProject
         # project_types['click']= ClickProject
 
@@ -34,7 +35,27 @@ class EtsiManoProject(Project):
         data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
         return data_project
 
-    def getType(self):
+    @classmethod
+    def get_example_list(cls):
+        path = 'usecases/ETSI'
+        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        return {'etsi_example' : dirs}
+
+
+    @classmethod
+    def get_new_descriptor(cls,descriptor_type, request_id):
+        util = Util()
+
+        json_template = util.get_descriptor_template(descriptor_type)
+        if descriptor_type == 'nsd':
+            json_template['nsdIdentifier'] = request_id
+            json_template['nsdInvariantId'] = request_id
+        else:
+            json_template['vnfdId'] = request_id
+
+        return json_template
+
+    def get_type(self):
         return "etsi"
 
     def __str__(self):
@@ -57,6 +78,11 @@ class EtsiManoProject(Project):
 
         return result
 
+    def get_graph_data_json_topology(self, descriptor_id):
+        test_t3d = T3DUtil()
+        project = self.get_dataproject()
+        topology = test_t3d.build_graph_from_project(project)
+        return json.dumps(topology)
 
     # def get_descriptors(self, type_descriptor):
     #     try:
@@ -123,7 +149,7 @@ class EtsiManoProject(Project):
     #         result = False
     #     return result
 
-    def create_descriptor(self, type_descriptor, new_data, data_type):
+    def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         try:
             utility = Util()
             print type_descriptor, data_type
@@ -152,21 +178,21 @@ class EtsiManoProject(Project):
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
 
-    def get_zip_archive(self):
-        in_memory = StringIO()
-        try:
-            current_data = json.loads(self.data_project)
-            zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
-            for desc_type in current_data:
-                for current_desc in current_data[desc_type]:
-                    zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
+    # def get_zip_archive(self):
+    #     in_memory = StringIO()
+    #     try:
+    #         current_data = json.loads(self.data_project)
+    #         zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+    #         for desc_type in current_data:
+    #             for current_desc in current_data[desc_type]:
+    #                 zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
-            zip.close()
-        except Exception as e:
-            print e
+    #         zip.close()
+    #     except Exception as e:
+    #         print e
 
-        in_memory.flush()
-        return in_memory
+    #     in_memory.flush()
+    #     return in_memory
 
 
     def edit_graph_positions(self, positions):
