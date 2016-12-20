@@ -33,10 +33,15 @@ def create_new_project(request):
         type = request.POST.get('type', '')
         start_from = request.POST.get('startfrom', 'scratch')
 
-        if type == 'etsi':
-            project_class = EtsiManoProject
-        elif type == 'click':
-            project_class = ClickProject
+
+        project_types = Project.get_project_types()
+        if type in project_types:
+            project_class = project_types[type]
+
+        # if type == 'etsi':
+        #     project_class = EtsiManoProject
+        # elif type == 'click':
+        #     project_class = ClickProject
         else:
             #FIXME this error is not handled 
             error_msgs.push('Project type undefined.')

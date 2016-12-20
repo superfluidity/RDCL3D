@@ -13,6 +13,7 @@ from projecthandler.models import Project
 from lib.clickparser import mainrdcl
 
 
+
 class ClickProject(Project):
 
     @classmethod
@@ -126,3 +127,4 @@ class ClickProject(Project):
 
 
 
+Project.add_project_type('click', ClickProject)
