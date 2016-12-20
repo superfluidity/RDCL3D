@@ -21,7 +21,7 @@ def nx_2_t3d_json(element, connection, json_out_file):
         nodes_dict[VERTEX_INFO_KEY]['frozen'] = False
         nodes_dict[VERTEX_INFO_KEY][NODE_TYPE_KEY] = 'click'
         nodes_dict[VERTEX_INFO_KEY]['property'] = element[i]['config']
-        nodes_dict[VERTEX_INFO_KEY]['group'] = []
+        nodes_dict[VERTEX_INFO_KEY]['group'] = element[i]['group']
         nodes_dict[VERTEX_ID_KEY] = element[i]['name']
 
         nodes_list.append(nodes_dict)

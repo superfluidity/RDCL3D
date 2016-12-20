@@ -2,6 +2,7 @@ import argparse
 from parserView import *
 from parserAllView import *
 from parserDetailView import *
+from parserAllView_new import *
 import os
 
 
@@ -10,7 +11,7 @@ def run_command(type_view, cfg_files, nx_topology):
         json_click = parserView(cfg_files, nx_topology)
 
     elif type_view == 'AllView':
-        json_click = parserAllView(cfg_files, nx_topology)
+        json_click = parserAllView_new(cfg_files, nx_topology)
     elif type_view == 'DetailView':
         json_click = parserDetailView(cfg_files, nx_topology)
 

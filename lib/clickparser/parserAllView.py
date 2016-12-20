@@ -55,8 +55,12 @@ def parserAllView(file_click, nx_topology):
                 line = line[0:len(line) - 1].strip()                                # in eccesso
         except IndexError:
             continue
+        
+        #line = line.strip(';')                                                      # elimina ;
+        if line[len(line)-1]==';':
+            line=line[0:len(line)-1]
 
-        line = line.strip(';')                                                      # elimina ;
+        #print line 
         if concatenate_conf:                                                        # concatena la dichiarazione di elementi che viene scritta su
             if line[len(line) - 1] == ',':                                          # diverse righe
                 #line = remove_tab(line)
@@ -64,15 +68,15 @@ def parserAllView(file_click, nx_topology):
             elif line[len(line) - 1] == ')':
                 #line = remove_tab(line)
                 line = line2 + ' ' + line
-                concatenate = False
+                concatenate_conf = False
        
-        if line[len(line) - 2] == ',':                                              # avvia la concatenazione degli elementi dichiarati su diverse righe
+        if  line[len(line) - 1] == ',':                                              # avvia la concatenazione degli elementi dichiarati su diverse righe
             #line = remove_tab(line)
             line2 = line
             concatenate_conf = True
             continue
         
-        print line      
+        #print line      
         
         if string.find(line, '[') != -1:                                            # questo blocco modifica l'intera linea per gestire la lettura
             index = string.find(line, '[')                                          # delle porte di uscita dell'elemento che possono essere scritte
@@ -85,14 +89,16 @@ def parserAllView(file_click, nx_topology):
             continue
         elif concatenate_compound:
             line = line2 + ' ' + line
-            concatenate = False
+            concatenate_compound = False
             line2 = ''
 
             line = compound_element(line)
+        print line
+        #print concatenate_conf
         #print line
-        explicit_elment_decl(line, element)
-        implicit_element_decl(line, element)
-        load_list(line, words)
+        #explicit_elment_decl(line, element)
+        #implicit_element_decl(line, element)
+        #load_list(line, words)
 
     rename_element_list(element, words)
     # print words
