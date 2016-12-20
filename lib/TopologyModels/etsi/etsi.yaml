@@ -2,9 +2,6 @@ name: Etsi16                            #Model name
 description: etsi 16                    #Model description
 version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
-layer:                                  #List of layer
-    -   ns
-    -   vnf
 node:                                   #List of nodes, with id and label used in the gui (We can add more fields)
     -   id: vnf
         label: VNF
