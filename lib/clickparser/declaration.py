@@ -11,10 +11,7 @@ def nameGenerator(element, type_element):      		#nome di default class@num
 	
 	return type_element+'@'+str(num+1)
 
-
-#def rename_element_list_new(element,words):
-
-
+'''
 def rename_element_list(element,words):			#controlla che non ci siano ridondanze tra le dichiarazioni 
 	element2=copy.deepcopy(element)				#ed in tal caso rinomina l'elemento in modo incrementale
 	names=[]									#TOFIX: Deve controllare se si trova tra due graffe (compound element)
@@ -116,7 +113,7 @@ def rename_element_list(element,words):			#controlla che non ci siano ridondanze
 							words[i+1]=e[1]['name']
 							e[1]['element']='-1'
 							break
-
+'''
 
 def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 	comma=[]
@@ -140,7 +137,7 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 
 def explicit_element_decl_without_conf(i, words, element, name_subgraph, group):
 	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group})
-
+	
 
 def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, words2):
 	config=[]
@@ -221,8 +218,8 @@ def explicit_elment_decl(line, element, name_subgraph, group, words):
 		if string.find(words[i+1], '(') !=-1 and string.find(words[i+1], ')') !=-1:
 			explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
 		elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
-			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)
-			
+			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)	
+
 
 def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []

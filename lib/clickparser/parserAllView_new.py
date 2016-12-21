@@ -83,28 +83,49 @@ def parserAllView_new(file_click, nx_topology):
 
         
         words2 = []
+        
         explicit_elment_decl(line, element,'', 'click', words)
         implicit_element_decl(line, element,'', 'click', words, words2)
-
+        
+        for i in range(0,len(words2)):
+            try:
+                index = words2.index('::')
+                del words2[index+1]
+                del words2[index]
+            except ValueError:
+                break
+        
         for w in words2:
             file_click_list.append(w)
 
         load_list(line, words)
 
-    '''
+    
     #rename_element_list(element, words)
+    
     file_click_list_prov = []
     for line in compound_element.items():
-        words2 = []
+        words3 = []
         explicit_elment_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
-        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words2)
+        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words3)
 
-        for w in words2:
+        for i in range(0,len(words3)):
+            try:
+                index = words3.index('::')
+                del words3[index+1]
+                words3[index-1] = line[1]['name']+'.'+ words3[index-1]
+                del words3[index]
+            except ValueError:
+                break
+
+        for w in words3:
             file_click_list_prov.append(w)
     
     print file_click_list_prov 
-    '''
+    
+
     connection_decl(file_click_list, connection, element)
+    #print connection
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
