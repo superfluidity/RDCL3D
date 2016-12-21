@@ -44,7 +44,7 @@ def parserAllView(file_click, nx_topology):
                                                                                     #con il relativo nome del compound 
 
     text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
-    #print text
+
     for line in text.splitlines():
         if line[0] == '/' or line[0] == '*':
             continue
@@ -81,12 +81,10 @@ def parserAllView(file_click, nx_topology):
             name = subgraph_element(compound_line, compound_element, element)
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
-        
         words2 = []
-        
         explicit_elment_decl(line, element,'', 'click', words)
         implicit_element_decl(line, element,'', 'click', words, words2)
-        
+    
         for i in range(0,len(words2)):
             try:
                 index = words2.index('::')
@@ -94,7 +92,7 @@ def parserAllView(file_click, nx_topology):
                 del words2[index]
             except ValueError:
                 break
-        
+       
         for w in words2:
             file_click_list.append(w)
 
@@ -102,13 +100,15 @@ def parserAllView(file_click, nx_topology):
 
     
     #rename_element_list(element, words)
-    
+    ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
     file_click_list_prov = []
+    
     for line in compound_element.items():
+        
         words3 = []
         explicit_elment_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
         implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words3)
-
+        #print words3
         for i in range(0,len(words3)):
             try:
                 index = words3.index('::')
@@ -120,9 +120,10 @@ def parserAllView(file_click, nx_topology):
 
         for w in words3:
             file_click_list_prov.append(w)
+    #print words3
+    #print file_click_list_prov 
     
-    print file_click_list_prov 
-    
+    ##############################################################################################################################################
 
     connection_decl(file_click_list, connection, element)
     #print connection

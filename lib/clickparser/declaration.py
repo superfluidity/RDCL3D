@@ -175,7 +175,6 @@ def load_list(line, words):
 
 	for word in line.split():
 		if conf:
-
 			if word[len(word)-1]==')' or word[len(word)-2]==')':
 				word=word2+' '+word
 				conf=False
@@ -188,26 +187,40 @@ def load_list(line, words):
 			word2=word
 			continue
 		
-		elif word[len(word)-1]==']' and word[0]=='[':           				#usato per gestire il tipo di dichiarazione di porta d'ingresso
-			word3=word 															#es.: [num]port o [num] port 
+		elif word[len(word)-1]==']' and word[0]=='[' and words[len(words)-1] == '->':         		#usato per gestire il tipo di dichiarazione di porta d'ingresso
+			word3=word 																				#es.: [num]port o [num] port 
 			port=True
 			continue
+
 		elif port:
 			word=word3+''+word
 			port=False
+
 
 		if word[len(word)-1]==';':
 			word=word[0:len(word)-1]
 
 		words.append(word)
-	
+
+	words_new=[]	
+	for i in range(0,len(words)):																#usato per gestire il tipo di dichiarazione di porta d'uscita
+		words_new.append(words[i])																#es.:  port[num] o port [num]
+		try:
+			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->':
+				words_new[i-1]=words_new[i-1]+''+words[i]
+				del words_new[len(words_new)-1]
+		except IndexError:
+			continue
+
+	return words_new
+
 			
 def explicit_elment_decl(line, element, name_subgraph, group, words):
 	config = False
 	words=[]
 	index=[]
 
-	load_list(line,words)
+	words = load_list(line,words)
 
 	for i in range(0,len(words)):
 		if words[i] =='::':
@@ -224,8 +237,8 @@ def explicit_elment_decl(line, element, name_subgraph, group, words):
 def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []
 
-	load_list(line,words)
-
+	words = load_list(line,words)
+	
 	for w in words:
 		words2.append(w)
 
@@ -291,7 +304,7 @@ def compound_element(line):
 	word2=[]
 	control=False
 
-	load_list(line, words)
+	words = load_list(line, words)
 
 	for w in words:
 		if w=='}':
@@ -326,7 +339,7 @@ def compound_element_view(line,comp_elem_content):
 	control2=False
 	
 
-	load_list(line, words)	
+	words = load_list(line, words)	
 
 
 	for w in words:												#salva tutto cio che viene prima della graffa in word2 

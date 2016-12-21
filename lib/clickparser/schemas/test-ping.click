@@ -28,8 +28,8 @@ FromDevice($DEV)
 	-> q :: Queue
 	-> { input -> t :: PullTee -> output; t [1] -> ToHostSniffers($DEV) }
 	-> ToDevice($DEV);
-arpq[1]	-> q;
-c[1]	-> t :: Tee
+arpq [1]	-> q;
+c [1]	-> t :: Tee
 	-> [1] arpq;
 t[1]	-> host :: ToHost;
 c[2]	-> host;
