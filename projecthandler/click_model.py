@@ -11,7 +11,7 @@ from lib.emparser.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.clickparser import mainrdcl
-
+import os.path
 
 
 class ClickProject(Project):
@@ -29,8 +29,21 @@ class ClickProject(Project):
         example_id = request.POST.get('example-click-id', '')
         data_project = {}
         return data_project
+    
+    @classmethod
+    def get_example_list(cls):
+        path = 'usecases/CLICK'
+        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        return dirs        
 
-    def getType(self):
+    @classmethod
+    def get_new_descriptor(cls,descriptor_type, request_id):
+
+        json_template = ''
+        return json_template
+
+
+    def get_type(self):
         return "click"
 
     def __str__(self):
@@ -49,6 +62,11 @@ class ClickProject(Project):
         }
 
         return result
+
+    def get_graph_data_json_topology(self, descriptor_id):
+        project = self.get_descriptor(descriptor_id, self.get_type())
+        topology = mainrdcl.importprojectjson(project)
+        return topology
 
 
     # def get_descriptors(self, type_descriptor):
@@ -82,7 +100,7 @@ class ClickProject(Project):
     #         result = False
     #     return result
 
-    def create_descriptor(self, descriptor_name,type_descriptor, new_data, data_type):
+    def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         try:
             utility = Util()
             print type_descriptor, data_type
