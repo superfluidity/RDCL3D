@@ -129,7 +129,7 @@ def parserAllView_new(file_click, nx_topology):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    #print json_data
+    print json_data
     return json_data
 
     #print element
