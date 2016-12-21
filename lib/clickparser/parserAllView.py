@@ -12,9 +12,6 @@ def remove_tab(line):
     return line
 
 def generateTopology(element, connection, nx_topology):
-    # nx_topology.add_node(int(node_id_value), city = node_name_value, country = node_country_value, type_node = 'core' )
-    # add_edge(src, dst, flow_id, {'size':flow_dict['out']['size'], 'path':[]})
-
     for e in range(0, len(element)):
         nx_topology.add_node(element[e]['name'], element=element[e]['element'], config=element[e]['config'],
                              flowcode='', processing='', portcount='')
@@ -29,21 +26,26 @@ def generateJsont3d(element, connection):
     return json_data
 
 
+
 def parserAllView(file_click, nx_topology):
     # with open('/home/user/Progetto_Superfluidity/test-rdcl/lib/clickparser/'+file_click,'r') as f:
-
+    l = 0
     words = []
+    
+    file_click_list = []
     element = {}
     connection = {}
     line2 = ''
     concatenate_conf = False
     concatenate_compound = False
+    concatenate_line = False
     list_lines = []
+    compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
+                                                                                    #con il relativo nome del compound 
 
     text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
     #print text
     for line in text.splitlines():
-        
         if line[0] == '/' or line[0] == '*':
             continue
 
@@ -55,66 +57,82 @@ def parserAllView(file_click, nx_topology):
                 line = line[0:len(line) - 1].strip()                                # in eccesso
         except IndexError:
             continue
-        
-        #line = line.strip(';')                                                      # elimina ;
-        if line[len(line)-1]==';':
-            line=line[0:len(line)-1]
 
-        #print line 
-        if concatenate_conf:                                                        # concatena la dichiarazione di elementi che viene scritta su
-            if line[len(line) - 1] == ',':                                          # diverse righe
-                #line = remove_tab(line)
-                line = line2 + ' ' + line
-            elif line[len(line) - 1] == ')':
-                #line = remove_tab(line)
-                line = line2 + ' ' + line
-                concatenate_conf = False
-       
-        if  line[len(line) - 1] == ',':                                              # avvia la concatenazione degli elementi dichiarati su diverse righe
-            #line = remove_tab(line)
-            line2 = line
-            concatenate_conf = True
+        #if string.find(line, 'elementclass'):
+        #    print ''   
+
+        if concatenate_line:
+            if line[len(line)-1]==';' or line[len(line)-2]==';':
+                concatenate_line = False
+                line = line2+' '+line.strip()
+                line2=''
+                
+            else:
+                line2 = line2+' '+line.strip()
+                continue
+
+        if line[len(line)-1]!=';' and concatenate_line == False:
+            concatenate_line = True
+            line2 = line.strip()
             continue
         
-        #print line      
+        if string.find(line, '{')!=-1 and string.find(line, '}')!=-1:                           # crea il nodo che corrisponde al compound element
+            compound_line=line[string.find(line, '{')+1:string.find(line, '}')]                 # contiene tutta la dichiarazione del compound elment
+            name = subgraph_element(compound_line, compound_element, element)
+            line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
+
         
-        if string.find(line, '[') != -1:                                            # questo blocco modifica l'intera linea per gestire la lettura
-            index = string.find(line, '[')                                          # delle porte di uscita dell'elemento che possono essere scritte
-            if line[index - 1] == ' ' and line[index - 2].islower():                # sia come [num]port che [num] port
-                line = line[0:index - 1] + '' + line[index:]
+        words2 = []
+        
+        explicit_elment_decl(line, element,'', 'click', words)
+        implicit_element_decl(line, element,'', 'click', words, words2)
+        
+        for i in range(0,len(words2)):
+            try:
+                index = words2.index('::')
+                del words2[index+1]
+                del words2[index]
+            except ValueError:
+                break
+        
+        for w in words2:
+            file_click_list.append(w)
 
-        if string.find(line, '{') != -1:                                            # concatena la dichiarazione dei compound element con la riga successiva
-            line2 = line
-            concatenate_compound = True
-            continue
-        elif concatenate_compound:
-            line = line2 + ' ' + line
-            concatenate_compound = False
-            line2 = ''
+        load_list(line, words)
 
-            line = compound_element(line)
-        print line
-        #print concatenate_conf
-        #print line
-        #explicit_elment_decl(line, element)
-        #implicit_element_decl(line, element)
-        #load_list(line, words)
+    
+    #rename_element_list(element, words)
+    
+    file_click_list_prov = []
+    for line in compound_element.items():
+        words3 = []
+        explicit_elment_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
+        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words3)
 
-    rename_element_list(element, words)
-    # print words
+        for i in range(0,len(words3)):
+            try:
+                index = words3.index('::')
+                del words3[index+1]
+                words3[index-1] = line[1]['name']+'.'+ words3[index-1]
+                del words3[index]
+            except ValueError:
+                break
 
-    connection_decl(words, connection, element)
-    print element
-    print '\n\n'
-    print connection
-    # print '\n'
-    # print element
-    # print'\n \n \n \n'
-    # print words
-    # print connection
+        for w in words3:
+            file_click_list_prov.append(w)
+    
+    print file_click_list_prov 
+    
+
+    connection_decl(file_click_list, connection, element)
+    #print connection
     words[:] = []
 
-    # generateTopology(element, connection, nx_topology)
     json_data = generateJsont3d(element, connection)
-    #print json_data
+    print json_data
     return json_data
+
+    #print element
+    #print connection
+        #print line
+
