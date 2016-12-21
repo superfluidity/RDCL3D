@@ -2,84 +2,61 @@ name: Click                             #Model name
 description: click                      #Model description
 version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
-node:                                   #List of nodes, with id and label used in the gui (We can add more fields)
-    OSHI-CR:
-        label: cro
-    OSHI-PE:
-        label: peo
-    CE:
-        label: cer
-    VS:
-        label: vs
-    OF Controller:
-        label: ctr
+nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
+    element:
+    compound_element:
+    group_element:
 
 
 layer:                                  #List of Layers
-    Data:
-        nodes:                  #List of node to be visualized in the current layer
-            OSHI-CR:
-            OSHI-PE:
-            CE:
-            OF Controller:
-        allowed_edges:                  #List of allowed edges between the layer's nodes
-            CE:                        #Edge's source
-                destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
-                    OSHI-PE:
-                        direct_edge: false
-                    CE:
-                        direct_edge: false
-            OSHI-CR:
+    click:
+        nodes:
+            element:
+            compound_element:
+            group_element:
+        allowed_edges:
+            element:
                 destination:
-                    OSHI-CR:
+                    element:
                         direct_edge: false
-                    OSHI-PE:
+                    compound_element:
                         direct_edge: false
-                    OF Controller:
+                    group_element:
                         direct_edge: false
-
-            OSHI-PE:
+            compound_element:
                 destination:
-                    OSHI-CR:
+                    element:
                         direct_edge: false
-                    OSHI-PE:
+                    compound_element:
+                        direct_edge: false
+                    group_element:
+                        direct_edge: false
+            group_element:
+                destination:
+                    element:
+                        direct_edge: false
+                    compound_element:
+                        direct_edge: false
+                    group_element:
                         direct_edge: false
 
-            OF Controller:
-                 destination:
-                     OSHI-CR:
-                        direct_edge: false
-
-    Vll:
+    compound_element:
         nodes:
-            CE:
+            element:
         allowed_edges:
-            CE:
-                destination:                  #List of edge's destination with the list of controls callback id to call when there is a connections
-                    CE:
-                        direct_edge: false
-    PW:
-        nodes:
-            CE:
-        allowed_edges:
-            CE:
-                destination:                #List of edge's destination with the list of controls callback id to call when there is a connections
-                    CE:
+            element:
+                destination:
+                    element:
                         direct_edge: false
 
-    Control:
+    group_element:
         nodes:
-            OSHI-CR:
-            OSHI-PE:
-            OF Controller:
+            element:
         allowed_edges:
-
-    VS:
-        nodes:
-            VS:
-            CE:
-        allowed_edges:
-
+            element:
+                destination:
+                    element:
+                        direct_edge: false
 
 
 
