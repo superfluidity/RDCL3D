@@ -36,10 +36,13 @@ def parserAllView(file_click, nx_topology):
     element = {}
     connection = {}
     line2 = ''
+    elem_class_control=False
     concatenate_conf = False
     concatenate_compound = False
     concatenate_line = False
+    element_class_lines=[]
     list_lines = []
+    ele_class_element = {}
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
     compound_element_prov = {}
@@ -59,8 +62,21 @@ def parserAllView(file_click, nx_topology):
         except IndexError:
             continue
 
-        #if string.find(line, 'elementclass'):
-        #    print ''   
+###############################ClassElementControl#################################### 
+        if string.find(line, 'elementclass') != -1:
+            elem_class_control=True
+            line2 = line
+            continue
+        if elem_class_control==True and string.find(line, '}') !=-1:
+            elem_class_control=False
+            element_class_lines=load_list(line2,element_class_lines)
+            subgraph_ele_class(element_class_lines,ele_class_element,element) #(compound_line, compound_element, element)
+            continue    
+        
+        if elem_class_control:
+            line2=line2 + ' ' + line                   
+            continue
+######################################################################################
 
         if concatenate_line:                                                        # utilizzato per concatenare le righe fino al ;
             if line[len(line)-1]==';' or line[len(line)-2]==';':
@@ -100,9 +116,10 @@ def parserAllView(file_click, nx_topology):
         for w in words2:                                                                        # inserisce tutte le righe in una lista che verra' passata
             file_click_list.append(w)                                                           # alla funzione connection_decl
 
-        #load_list(line, words)
+        load_list(line, words)
+    ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
+    print element_class_lines
 
-    
     #rename_element_list(element, words)
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
@@ -140,7 +157,7 @@ def parserAllView(file_click, nx_topology):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    print json_data
+    #print json_data
     return json_data
 
     #print element
