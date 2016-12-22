@@ -467,7 +467,7 @@ def graph_positions(request, project_id=None):
 @login_required
 def unused_vnf(request, project_id=None, nsd_id=None):
     if request.method == 'GET':
-        print 'into unused_vnf : ',project_id, nsd_id
+        print 'in method unused_vnf : ',project_id, nsd_id #TODO log
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_unused_vnf(nsd_id)
         status_code = 500 if result == None else 200
@@ -479,33 +479,37 @@ def unused_vnf(request, project_id=None, nsd_id=None):
 @login_required
 def add_element(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        existing_vnf = request.POST.get('existing_vnf')
-        if element_type == 'ns_cp':
-            result = projects[0].add_ns_sap(group_id, element_id)
-        elif element_type == 'ns_vl':
-            result = projects[0].add_ns_vl(group_id, element_id)
-        elif element_type == 'vnf':
-            if existing_vnf == 'true':
-                result = projects[0].add_ns_existing_vnf(group_id, element_id)
-            else:
-                result = projects[0].add_ns_vnf(group_id, element_id)
-        elif element_type == 'vnf_vl':
-            result = projects[0].add_vnf_intvl(group_id, element_id)
-        elif element_type == 'vnf_ext_cp':
-            result = projects[0].add_vnf_vnfextcpd(group_id, element_id)
-        elif element_type == 'vnf_vdu':
-            result = projects[0].add_vnf_vdu(group_id, element_id)
-        elif element_type == 'vnf_vdu_cp':
-            vdu_id = request.POST.get('choice')
-            result = projects[0].add_vnf_vducp(group_id, vdu_id, element_id)
-        elif element_type == 'vnffg':
-            print group_id, element_id
-            result = projects[0].add_vnffg(group_id, element_id)
+        #result = False
+        # projects = EtsiManoProject.objects.filter(id=project_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_add_element(request)
+
+        # group_id = request.POST.get('group_id')
+        # element_id = request.POST.get('element_id')
+        # element_type = request.POST.get('element_type')
+        # existing_vnf = request.POST.get('existing_vnf')
+        # if element_type == 'ns_cp':
+        #     result = projects[0].add_ns_sap(group_id, element_id)
+        # elif element_type == 'ns_vl':
+        #     result = projects[0].add_ns_vl(group_id, element_id)
+        # elif element_type == 'vnf':
+        #     if existing_vnf == 'true':
+        #         result = projects[0].add_ns_existing_vnf(group_id, element_id)
+        #     else:
+        #         result = projects[0].add_ns_vnf(group_id, element_id)
+        # elif element_type == 'vnf_vl':
+        #     result = projects[0].add_vnf_intvl(group_id, element_id)
+        # elif element_type == 'vnf_ext_cp':
+        #     result = projects[0].add_vnf_vnfextcpd(group_id, element_id)
+        # elif element_type == 'vnf_vdu':
+        #     result = projects[0].add_vnf_vdu(group_id, element_id)
+        # elif element_type == 'vnf_vdu_cp':
+        #     vdu_id = request.POST.get('choice')
+        #     result = projects[0].add_vnf_vducp(group_id, vdu_id, element_id)
+        # elif element_type == 'vnffg':
+        #     print group_id, element_id
+        #     result = projects[0].add_vnffg(group_id, element_id)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -515,27 +519,30 @@ def add_element(request, project_id=None):
 @login_required
 def remove_element(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        print element_id
-        if element_type == 'ns_cp':
-            result = projects[0].remove_ns_sap(group_id, element_id)
-        elif element_type == 'ns_vl':
-            result = projects[0].remove_ns_vl(group_id, element_id)
-        elif element_type == 'vnf':
-            result = projects[0].remove_ns_vnf(group_id, element_id)
-        elif element_type == 'vnf_vl':
-            result = projects[0].remove_vnf_intvl(group_id, element_id)
-        elif element_type == 'vnf_ext_cp':
-            result = projects[0].remove_vnf_vnfextcpd(group_id, element_id)
-        elif element_type == 'vnf_vdu':
-            result = projects[0].remove_vnf_vdu(group_id, element_id)
-        elif element_type == 'vnf_vdu_cp':
-            vdu_id = request.POST.get('choice')
-            result = projects[0].remove_vnf_vducp(group_id, vdu_id, element_id)
+        #result = False
+        # projects = EtsiManoProject.objects.filter(id=project_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_remove_element(request)
+
+        # group_id = request.POST.get('group_id')
+        # element_id = request.POST.get('element_id')
+        # element_type = request.POST.get('element_type')
+        # print 'in remove_element : ', element_id #TODO log
+        # if element_type == 'ns_cp':
+        #     result = projects[0].remove_ns_sap(group_id, element_id)
+        # elif element_type == 'ns_vl':
+        #     result = projects[0].remove_ns_vl(group_id, element_id)
+        # elif element_type == 'vnf':
+        #     result = projects[0].remove_ns_vnf(group_id, element_id)
+        # elif element_type == 'vnf_vl':
+        #     result = projects[0].remove_vnf_intvl(group_id, element_id)
+        # elif element_type == 'vnf_ext_cp':
+        #     result = projects[0].remove_vnf_vnfextcpd(group_id, element_id)
+        # elif element_type == 'vnf_vdu':
+        #     result = projects[0].remove_vnf_vdu(group_id, element_id)
+        # elif element_type == 'vnf_vdu_cp':
+        #     vdu_id = request.POST.get('choice')
+        #     result = projects[0].remove_vnf_vducp(group_id, vdu_id, element_id)
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -545,38 +552,42 @@ def remove_element(request, project_id=None):
 @login_required
 def add_link(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = projects[0].link_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = projects[0].link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            vdu_id = request.POST.get('choice')
-            vnf_id = source['info']['group'][0]
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            result = projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = projects[0].link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        # result = False
+        # projects = EtsiManoProject.objects.filter(id=project_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_add_link(request)
+
+
+        # source = json.loads(request.POST.get('source'))
+        # destination = json.loads(request.POST.get('destination'))
+        # source_type = source['info']['type']
+        # destination_type = destination['info']['type']
+        # if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+        #     vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+        #     sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+        #     result = projects[0].link_vl_sap(source['info']['group'][0], vl_id, sap_id)
+        # elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
+        #     vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+        #     vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+        #     ns_id = source['info']['group'][0]
+        #     vnf_ext_cp = request.POST.get('choice')
+        #     result = projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
+        # if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+        #     vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+        #     sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+        #     ns_id = source['info']['group'][0]
+        #     vnf_ext_cp = request.POST.get('choice')
+        #     result = projects[0].link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
+        # elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+        #     vdu_id = request.POST.get('choice')
+        #     vnf_id = source['info']['group'][0]
+        #     intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+        #     vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+        #     result = projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
+        # elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+        #     vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+        #     intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+        #     result = projects[0].link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -586,36 +597,39 @@ def add_link(request, project_id=None):
 @login_required
 def remove_link(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = projects[0].unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = projects[0].unlink_vl_vnf(ns_id, vl_id, vnf_id)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = projects[0].unlink_vl_sap(ns_id, vnf_id, sap_id)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            print source, destination
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            vnf_id = source['info']['group'][0]
-            result = projects[0].unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = projects[0].unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        # result = False
+        # projects = EtsiManoProject.objects.filter(id=project_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_remove_link(request)
+
+        # source = json.loads(request.POST.get('source'))
+        # destination = json.loads(request.POST.get('destination'))
+        # source_type = source['info']['type']
+        # destination_type = destination['info']['type']
+        # if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+        #     vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+        #     sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+        #     result = projects[0].unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
+        # elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
+        #     vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+        #     vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+        #     ns_id = source['info']['group'][0]
+        #     result = projects[0].unlink_vl_vnf(ns_id, vl_id, vnf_id)
+        # if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+        #     vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+        #     sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+        #     ns_id = source['info']['group'][0]
+        #     result = projects[0].unlink_vl_sap(ns_id, vnf_id, sap_id)
+        # elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+        #     print source, destination
+        #     intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+        #     vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+        #     vnf_id = source['info']['group'][0]
+        #     result = projects[0].unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
+        # elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+        #     vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+        #     intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+        #     result = projects[0].unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -624,16 +638,22 @@ def remove_link(request, project_id=None):
 
 @login_required
 def add_node_to_vnffg(request, project_id=None):
-    print "add_node_to_vnffg"
+    print "add_node_to_vnffg" #TODO log
     if request.method == 'POST':
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        vnffg_id = request.POST.get('vnffg_id')
-        print group_id, element_id, element_type, vnffg_id
-        result = projects[0].add_node_to_vnffg(group_id, vnffg_id, element_type, element_id)
-    status_code = 200 if result else 500
-    response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+        # projects = EtsiManoProject.objects.filter(id=project_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].add_node_to_vnffg(request)
+        # group_id = request.POST.get('group_id')
+        # element_id = request.POST.get('element_id')
+        # element_type = request.POST.get('element_type')
+        # vnffg_id = request.POST.get('vnffg_id')
+        # print group_id, element_id, element_type, vnffg_id
+        # result = projects[0].add_node_to_vnffg(group_id, vnffg_id, element_type, element_id)
+    # status_code = 200 if result else 500
+    # response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+    # response["Access-Control-Allow-Origin"] = "*"
+    # return response
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
