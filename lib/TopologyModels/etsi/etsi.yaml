@@ -2,114 +2,110 @@ name: Etsi16                            #Model name
 description: etsi 16                    #Model description
 version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
-layer:                                  #List of layer
-    -   ns
-    -   vnf
-node:                                   #List of nodes, with id and label used in the gui (We can add more fields)
-    -   id: vnf
+nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
+    vnf:
         label: VNF
-    -   id: ns_vl
+    ns_vl:
         label: VL
-    -   id: ns_cp
+    ns_cp:
         label: SAP
-    -   id: vnf_vl
+    vnf_vl:
         label: intVL
-    -   id: vnf_vdu
+    vnf_vdu:
         label: VduCP
-    -   id: vnf_exp_cp
+    vnf_exp_cp:
         label: ExtCP
-    -   id: vnf_vdu_cp
+    vnf_vdu_cp:
         label: VDU
 layer:                                  #List of Layers
-    -   id: ns
-        list_of_nodes:                  #List of node to be visualized in the current layer
-            -   vnf
-            -   ns_vl
-            -   ns_cp
+    ns:
+        nodes:                  #List of node to be visualized in the current layer
+            vnf:
+            ns_vl:
+            ns_cp:
         allowed_edges:                  #List of allowed edges between the layer's nodes
-            -   source: vnf             #Edge's source
+            vnf:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
-                    -   id: ns_vl
+                    ns_vl:
                         callback:
                             -   chooseVnfExp
                         direct_edge: false
-                    -   id: ns_cp
+                    ns_cp:
                         callback:
                             -   nsCpExclusiveConnection
                             -   chooseVnfExp
                         direct_edge: false
-            -   source: ns_vl
+            ns_vl:
                 destination:
-                    -   id: vnf
+                    vnf:
                         callback:
                             -   chooseVnfExp
                         direct_edge: false
-                destination:
-                    -   id: ns_cp
+                    ns_cp:
                         callback:
                             -   nsCpExclusiveConnection
                         direct_edge: false
 
-            -   source: ns_cp
+            ns_cp:
                 destination:
-                    -   id: vnf
+                    vnf:
                         callback:
                             -   nsCpExclusiveConnection
                             -   chooseVnfExp
                         direct_edge: false
-                    -   id: ns_vl
+                    ns_vl:
                         callback:
                             -   nsCpExclusiveConnection
                         direct_edge: false
 
-    -   id: vnf
+    vnf:
         list_of_nodes:
-            -   vnf_vl
-            -   vnf_vdu
-            -   vnf_exp_cp
-            -   vnf_vdu_cp
+            vnf_vl:
+            vnf_vdu:
+            vnf_exp_cp:
+            vnf_vdu_cp:
         allowed_edges:
-            -   source: vnf_vl
+            vnf_vl:
                 destination:
-                    -   id: vnf_vdu_cp
+                    vnf_vdu_cp:
                         callback:
                             -   getVduConnectedToVduCp
                         direct_edge: false
-                    -   id: vnf_exp_cp
+                    vnf_exp_cp:
                         direct_edge: false
-            -   source: vnf_vdu
+            vnf_vdu:
                 destination:
-                    -   id: vnf_vdu_cp
+                    vnf_vdu_cp:
                         direct_edge: false
-            -   source: vnf_exp_cp
+            vnf_exp_cp:
                 destination:
-                    -   id: vnf_vl
+                    vnf_vl:
                         direct_edge: false
-                    -   id: vnf_vdu_cp
+                    vnf_vdu_cp:
                         callback:
                             -   getVduConnectedToVduCp
                         direct_edge: false
-            -   source: vnf_vdu_cp
+            vnf_vdu_cp:
                 destination:
-                    -   id: vnf_vdu
+                    vnf_vdu:
                         direct_edge: false
-                    -   id: vnf_exp_cp
+                    vnf_exp_cp:
                         direct_edge: false
 
 
 callback:                             #List of callbacks used to controll the link
-  -   id: chooseVnfExp                #Choose the VnfExp of the vnf with id vnf_id
+  chooseVnfExp:                       #Choose the VnfExp of the vnf with id vnf_id
       file: etsi_controller.js
-      function_name: chooseVnfExp
-      argument:
-          -   vnf_id
-  -   id: nsCpExclusiveConnection     #Check if the ns_cp with ns_cp_id id has not other connection
+#      function_name: chooseVnfExp
+#      argument:
+#          -   vnf_id
+  nsCpExclusiveConnection:            #Check if the ns_cp with ns_cp_id id has not other connection
       file: etsi_controller.js
-      function_name: chooseVnfExp
-      argument:
-          -   ns_cp_id
-  -   id: getVduConnectedToVduCp      #Return the vnf_vdu if connected to the vnf_vdu_cp
+ #     function_name: chooseVnfExp
+ #     argument:
+ #         -   ns_cp_id
+  getVduConnectedToVduCp:             #Return the vnf_vdu if connected to the vnf_vdu_cp
       file: etsi_controller.js
-      function_name: getVduConnectedToVduCp
-      argument:
-          -   vnf_vdu_cp
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
