@@ -42,6 +42,7 @@ def parserAllView(file_click, nx_topology):
     list_lines = []
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
+    compound_element_prov = {}
 
     text = "".join([s for s in file_click.splitlines(True) if s.strip("\r\n")])
 
@@ -61,7 +62,7 @@ def parserAllView(file_click, nx_topology):
         #if string.find(line, 'elementclass'):
         #    print ''   
 
-        if concatenate_line:
+        if concatenate_line:                                                        # utilizzato per concatenare le righe fino al ;
             if line[len(line)-1]==';' or line[len(line)-2]==';':
                 concatenate_line = False
                 line = line2+' '+line.strip()
@@ -77,7 +78,10 @@ def parserAllView(file_click, nx_topology):
             continue
         
         if string.find(line, '{')!=-1 and string.find(line, '}')!=-1:                           # crea il nodo che corrisponde al compound element
-            compound_line=line[string.find(line, '{')+1:string.find(line, '}')]                 # contiene tutta la dichiarazione del compound elment
+            compound_list = []
+            element_list = load_list(line,compound_list)
+
+            compound_line=line[string.find(line, '{')+1:string.find(line, '}')]                 # contiene tutta la dichiarazione del compound element
             name = subgraph_element(compound_line, compound_element, element)
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
@@ -85,24 +89,24 @@ def parserAllView(file_click, nx_topology):
         explicit_elment_decl(line, element,'', 'click', words)
         implicit_element_decl(line, element,'', 'click', words, words2)
     
-        for i in range(0,len(words2)):
-            try:
-                index = words2.index('::')
+        for i in range(0,len(words2)):                                                          # ad ogni riga sostituisce il da dichiarazione dell'elemento 
+            try:                                                                                # con il nome dell'elemento. Per semplificare la dichiarazione 
+                index = words2.index('::')                                                      # delle connessioni
                 del words2[index+1]
                 del words2[index]
             except ValueError:
                 break
        
-        for w in words2:
-            file_click_list.append(w)
+        for w in words2:                                                                        # inserisce tutte le righe in una lista che verra' passata
+            file_click_list.append(w)                                                           # alla funzione connection_decl
 
-        load_list(line, words)
+        #load_list(line, words)
 
     
     #rename_element_list(element, words)
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
-    file_click_list_prov = []
-    
+
+    file_click_list_compound=[]
     for line in compound_element.items():
         
         words3 = []
@@ -117,12 +121,18 @@ def parserAllView(file_click, nx_topology):
                 del words3[index]
             except ValueError:
                 break
+        line[1]['compound']=words3
 
-        for w in words3:
-            file_click_list_prov.append(w)
-    #print words3
-    #print file_click_list_prov 
-    
+    for e in compound_element.items():
+        for i in range(0,len(file_click_list)):
+            if e[1]['name'] == file_click_list[i]:
+                for j in range(0,len(e[1]['compound'])):
+                    if e[1]['compound'][j] == 'input':
+                        e[1]['compound'][j] = file_click_list[i-2]
+                    if e[1]['compound'][j] == 'output':
+                        e[1]['compound'][j] = file_click_list[i+2]
+
+
     ##############################################################################################################################################
 
     connection_decl(file_click_list, connection, element)

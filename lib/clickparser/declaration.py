@@ -11,109 +11,6 @@ def nameGenerator(element, type_element):      		#nome di default class@num
 	
 	return type_element+'@'+str(num+1)
 
-'''
-def rename_element_list(element,words):			#controlla che non ci siano ridondanze tra le dichiarazioni 
-	element2=copy.deepcopy(element)				#ed in tal caso rinomina l'elemento in modo incrementale
-	names=[]									#TOFIX: Deve controllare se si trova tra due graffe (compound element)
-	start=0										#ed in tal caso deve rinominare l'elemento come subgraph.nomelemento
-	old_name=''
-	new_name=''
-
-
-	m=0
-	for i in range(0,len(words)):
-		if words[i]=='::':
-			if len(names)==0:
-				names.append(words[i-1])
-				continue
-			contr=False
-			for n in names:
-				if n == words[i-1]:
-					contr=True
-					old_name=words[i-1]
-					m=m+1
-					words[i-1]=n+str(m)
-					new_name=words[i-1]			
-					for k in range(i,len(words)):
-						if words[k]=='->':
-							if string.find(words[k-1],'[')!=-1:
-								index=string.find(words[k-1],'[')
-								if words[k-1][0:index]==old_name:
-									words[k-1]=new_name+words[k-1][index:]
-							elif words[k-1]==old_name:
-									words[k-1]=new_name
-									
-					for k in range(i,len(words)):
-						if words[k]=='->':
-							if string.find(words[k+1],']')!=-1:
-								index=string.find(words[k+1],']')								
-								if words[k+1][index+1:]==old_name:
-									words[k+1]=words[k+1][0:index+1]+new_name
-							elif words[k+1]==old_name:
-									words[k+1]=new_name
-					break
-
-
-				
-			if contr==False:
-				names.append(words[i-1])
-
-	
-	names=[]
-	z=0
-	for i in range(0,len(element)):
-		if len(names)==0:
-			names.append(element[i]['name'])
-			continue
-		contr=False
-		for n in names:
-			if n == element[i]['name']:
-				contr=True
-				z=z+1
-				element[i]['name']=n+str(z)
-				break
-		if contr==False:
-			names.append(element[i]['name'])				
-
-	
-	for i in range(0,len(words)-1):
-		if words[i]=='->': 
-			if words[i-2]!='::' and words[i-1][0].isupper():
-				index=string.find(words[i-1],'(')
-				if index!=-1:
-					word=words[i-1][0:index]
-				else:
-					word=words[i-1]
-				for e in element2.items():
-					if word==e[1]['element']:
-						words[i-1]=e[1]['name']
-						e[1]['element']='-1'
-						break
-			try:			
-				if words[i+2]!='::' and words[i+1][0].isupper():
-					index=string.find(words[i+1],'(')
-					if index!=-1:
-						word=words[i+1][0:index]
-					else:
-						word=words[i+1]
-					for e in element2.items():
-						if word==e[1]['element']:
-							words[i+1]=e[1]['name']
-							e[1]['element']='-1'
-							break
-			except IndexError:
-				if words[i+1][0].isupper():
-					index=string.find(words[i+1],'(')
-					if index!=-1:
-						word=words[i+1][0:index]
-					else:
-						word=words[i+1]
-					for e in element2.items():
-						if word==e[1]['element']:
-							words[i+1]=e[1]['name']
-							e[1]['element']='-1'
-							break
-'''
 
 def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 	comma=[]
@@ -238,7 +135,6 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []
 
 	words = load_list(line,words)
-	
 	for w in words:
 		words2.append(w)
 
@@ -255,6 +151,7 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 
 def subgraph_element(line, compound_element, element):
 
+	print line
 	name=nameGenerator(element, 'subgraph')
 	element[len(element)]=({'element':'compound', 'name':name, 'config':[],'group':'click'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
