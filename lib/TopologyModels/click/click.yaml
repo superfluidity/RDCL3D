@@ -5,7 +5,6 @@ designer: Pierluigi Greto               #Model designer
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     element:
     compound_element:
-    group_element:
 
 
 layer:                                  #List of Layers
@@ -13,7 +12,6 @@ layer:                                  #List of Layers
         nodes:
             element:
             compound_element:
-            group_element:
         allowed_edges:
             element:
                 destination:
@@ -24,14 +22,6 @@ layer:                                  #List of Layers
                     group_element:
                         direct_edge: false
             compound_element:
-                destination:
-                    element:
-                        direct_edge: false
-                    compound_element:
-                        direct_edge: false
-                    group_element:
-                        direct_edge: false
-            group_element:
                 destination:
                     element:
                         direct_edge: false
@@ -49,14 +39,7 @@ layer:                                  #List of Layers
                     element:
                         direct_edge: false
 
-    group_element:
-        nodes:
-            element:
-        allowed_edges:
-            element:
-                destination:
-                    element:
-                        direct_edge: false
+
 
 
 
