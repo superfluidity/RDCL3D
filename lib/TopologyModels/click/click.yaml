@@ -19,28 +19,12 @@ layer:                                  #List of Layers
                         direct_edge: false
                     compound_element:
                         direct_edge: false
-                    group_element:
-                        direct_edge: false
             compound_element:
                 destination:
                     element:
                         direct_edge: false
                     compound_element:
                         direct_edge: false
-                    group_element:
-                        direct_edge: false
-
-    compound_element:
-        nodes:
-            element:
-        allowed_edges:
-            element:
-                destination:
-                    element:
-                        direct_edge: false
-
-
-
 
 
 callback:                             #List of callbacks used to controll the link
