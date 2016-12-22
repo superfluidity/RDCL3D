@@ -5,6 +5,7 @@ designer: Pierluigi Greto               #Model designer
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     element:
     compound_element:
+    class_element:
 
 
 layer:                                  #List of Layers
@@ -12,6 +13,7 @@ layer:                                  #List of Layers
         nodes:
             element:
             compound_element:
+            class_element:
         allowed_edges:
             element:
                 destination:
@@ -19,12 +21,25 @@ layer:                                  #List of Layers
                         direct_edge: false
                     compound_element:
                         direct_edge: false
+                    class_element:
+                        direct_edge: false
             compound_element:
                 destination:
                     element:
                         direct_edge: false
                     compound_element:
                         direct_edge: false
+                    class_element:
+                        direct_edge: false
+            class_element:
+                destination:
+                    element:
+                        direct_edge: false
+                    compound_element:
+                        direct_edge: false
+                    class_element:
+                        direct_edge: false
+
 
 
 callback:                             #List of callbacks used to controll the link
