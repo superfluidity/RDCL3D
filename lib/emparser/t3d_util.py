@@ -121,4 +121,5 @@ class T3DUtil:
         except Exception as e:
             self.log.error('Exception build_graph_from_project')
             raise
+
         return graph_object
