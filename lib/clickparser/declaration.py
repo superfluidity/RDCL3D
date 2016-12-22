@@ -3,7 +3,7 @@ import copy
 from utility import *
 
 			
-def explicit_elment_decl(line, element, name_subgraph, group, words):
+def explicit_element_decl(line, element, name_subgraph, group, words):
 	config = False
 	words=[]
 	index=[]
@@ -42,14 +42,45 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	
 
 
-def subgraph_element(line, compound_element, element):
+def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
+	config = False
+	words=[]
+	index=[]
 
-	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'compound', 'name':name, 'config':[],'group':'click'})
-	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
+	words = load_list(line,words)
 
-	return name
+	for i in range(0,len(words)):
+		if words[i] =='::':
+			index.append(i)	
 
+	for i in index:
+			
+		if string.find(words[i+1], '(') !=-1 and string.find(words[i+1], ')') !=-1:
+			explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
+			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}
+		elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
+			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)
+			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}	
+
+
+
+def implicit_compound_decl(line, element, name_subgraph, group, words, words2):
+	words = []
+
+	words = load_list(line,words)
+	for w in words:
+		words2.append(w)
+
+	for i in range(0,len(words)):
+		index=string.find(words[i],'(')
+		if words[i][0].isupper():
+			if words[i-1]!='::':
+				if string.find(words[i], '(') !=-1 and string.find(words[i], ')') !=-1:
+					implicit_element_decl_with_conf(i, words, element, name_subgraph, group, words2)
+		
+				elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
+					implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
+	
 
 
 def subgraph_ele_class(class_element_lines,ele_class_element ,element):    

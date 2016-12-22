@@ -33,7 +33,7 @@ def parserAllView(file_click):
     l = 0
     words = []
     
-    file_click_list = []
+    connection_list = []
     element = {}
     connection = {}
     line2 = ''
@@ -100,11 +100,11 @@ def parserAllView(file_click):
             element_list = load_list(line,compound_list)
 
             compound_line=line[string.find(line, '{')+1:string.find(line, '}')]                 # contiene tutta la dichiarazione del compound element
-            name = subgraph_element(compound_line, compound_element, element)
+            name = subgraph_element_name(compound_line, compound_element, element)
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
         words2 = []
-        explicit_elment_decl(line, element,'', 'click', words)
+        explicit_element_decl(line, element,'', 'click', words)
         implicit_element_decl(line, element,'', 'click', words, words2)
     
         for i in range(0,len(words2)):                                                          # ad ogni riga sostituisce il da dichiarazione dell'elemento 
@@ -114,9 +114,9 @@ def parserAllView(file_click):
                 del words2[index]
             except ValueError:
                 break
-       
+    
         for w in words2:                                                                        # inserisce tutte le righe in una lista che verra' passata
-            file_click_list.append(w)                                                           # alla funzione connection_decl
+            connection_list.append(w)                                                           # alla funzione connection_decl
 
         load_list(line, words)
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
@@ -128,36 +128,31 @@ def parserAllView(file_click):
     #rename_element_list(element, words)
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
-    file_click_list_compound=[]
-    for line in compound_element.items():
+    element_renamed={}
+    for comp in compound_element.items():
         
         words3 = []
-        explicit_elment_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words)
-        implicit_element_decl(line[1]['compound'], element, line[1]['name']+'.', line[1]['name'], words, words3)
-        #print words3
-        for i in range(0,len(words3)):
-            try:
-                index = words3.index('::')
-                del words3[index+1]
-                words3[index-1] = line[1]['name']+'.'+ words3[index-1]
-                del words3[index]
-            except ValueError:
-                break
-        line[1]['compound']=words3
+        explicit_compound_decl(comp[1]['compound'], element, comp[1]['name']+'.', comp[1]['name'], words, element_renamed)
+        implicit_compound_decl(comp[1]['compound'], element, comp[1]['name']+'.', comp[1]['name'], words, words3)
+        rename_compound_element(words3, comp, element_renamed)
 
     for e in compound_element.items():
-        for i in range(0,len(file_click_list)):
-            if e[1]['name'] == file_click_list[i]:
+        for i in range(0,len(connection_list)):
+            if e[1]['name'] == connection_list[i]:
                 for j in range(0,len(e[1]['compound'])):
                     if e[1]['compound'][j] == 'input':
-                        e[1]['compound'][j] = file_click_list[i-2]
+                        e[1]['compound'][j] = connection_list[i-2]
                     if e[1]['compound'][j] == 'output':
-                        e[1]['compound'][j] = file_click_list[i+2]
+                        e[1]['compound'][j] = connection_list[i+2]
 
     #print compound_element
     ##############################################################################################################################################
+    for c in compound_element.items():
+        for e in c[1]['compound']:
+            connection_list.append(e)
+    print connection_list
 
-    connection_decl(file_click_list, connection, element)
+    connection_decl(connection_list, connection, element)
     #print connection
     words[:] = []
 

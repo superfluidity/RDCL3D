@@ -58,6 +58,45 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 
 
 
+def subgraph_element_name(line, compound_element, element):
+
+	name=nameGenerator(element, 'subgraph')
+	element[len(element)]=({'element':'compound', 'name':name, 'config':[],'group':'click'})
+	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
+
+	return name
+
+
+
+def rename_compound_element(words3, compound, element_renamed):
+	for i in range(0,len(words3)):														# rinomina gli elementi del compound contenuti in word3
+            try:
+                index = words3.index('::')
+                del words3[index+1]
+                words3[index-1] = compound[1]['name']+'.'+ words3[index-1]
+                del words3[index]
+            except ValueError:
+                break
+	compound[1]['compound']=words3
+
+	for i in range(0,len(words3)):														# rinomina gli elementi precedentementi dichiarati e che hanno ancora
+		for e in element_renamed.items():												# ancora il loro nome originale
+			if words3[i] == e[1]['origin_name']:
+				words3[i] = e[1]['new_name']
+			elif string.find(words3[i], '[')!=-1:
+				start = string.find(words3[i], '[')
+				stop = string.find(words3[i], ']')
+				if start == 0:
+					name = words3[i][stop+1:]
+				elif stop == len(words3[i])-1:
+					name = words3[i][0:start]	
+				if name == e[1]['origin_name']:
+					words3[i] = e[1]['new_name']
+	print words3
+
+
+
+
 def nameGenerator(element, type_element):      		#nome di default class@num
 	num=0
 	for i in range(0,len(element)):
