@@ -3,6 +3,7 @@ import copy
 import networkx as nx
 from declaration import *
 from createJson import *
+from utility import *
 
 def remove_tab(line):
     if string.find(line,'\t') != -1:
@@ -149,7 +150,7 @@ def parserAllView(file_click, nx_topology):
                     if e[1]['compound'][j] == 'output':
                         e[1]['compound'][j] = file_click_list[i+2]
 
-
+    print compound_element
     ##############################################################################################################################################
 
     connection_decl(file_click_list, connection, element)
@@ -157,10 +158,6 @@ def parserAllView(file_click, nx_topology):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    #print json_data
+    print json_data
     return json_data
-
-    #print element
-    #print connection
-        #print line
 
