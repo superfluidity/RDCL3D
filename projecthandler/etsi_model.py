@@ -766,4 +766,4 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-Project.add_project_type('etsi', EtsiManoProject)
+# Project.add_project_type('etsi', EtsiManoProject)

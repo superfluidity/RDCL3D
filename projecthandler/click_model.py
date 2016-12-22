@@ -144,4 +144,4 @@ class ClickProject(Project):
         return result
 
 
-Project.add_project_type('click', ClickProject)
+# Project.add_project_type('click', ClickProject)

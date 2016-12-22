@@ -16,6 +16,9 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import json
 
+Project.add_project_type('etsi', EtsiManoProject)
+Project.add_project_type('click', ClickProject)
+
 
 @login_required
 def home(request):
@@ -464,7 +467,7 @@ def graph_positions(request, project_id=None):
 @login_required
 def unused_vnf(request, project_id=None, nsd_id=None):
     if request.method == 'GET':
-        print project_id, nsd_id
+        print 'into unused_vnf : ',project_id, nsd_id
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_unused_vnf(nsd_id)
         status_code = 500 if result == None else 200
