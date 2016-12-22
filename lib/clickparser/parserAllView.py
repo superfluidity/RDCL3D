@@ -28,7 +28,7 @@ def generateJsont3d(element, connection):
 
 
 
-def parserAllView(file_click, nx_topology):
+def parserAllView(file_click):
     # with open('/home/user/Progetto_Superfluidity/test-rdcl/lib/clickparser/'+file_click,'r') as f:
     l = 0
     words = []
@@ -70,10 +70,11 @@ def parserAllView(file_click, nx_topology):
             continue
         if elem_class_control==True and string.find(line, '}') !=-1:
             elem_class_control=False
-            element_class_lines=load_list(line2,element_class_lines)
-            subgraph_ele_class(element_class_lines,ele_class_element,element) #(compound_line, compound_element, element)
+            element_class_lines=load_list(line2,element_class_lines)                #va a dividere tutte le parole del class element
+            ###########
+            provatext=subgraph_ele_class(element_class_lines,ele_class_element,element)       #(contenutodellelementclass, dizionario delle classelement,dizionario element)
             continue    
-        
+            ###########
         if elem_class_control:
             line2=line2 + ' ' + line                   
             continue
@@ -119,7 +120,10 @@ def parserAllView(file_click, nx_topology):
 
         load_list(line, words)
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
-    print element_class_lines
+    #print element_class_lines
+
+    #print provatext
+    
 
     #rename_element_list(element, words)
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
@@ -150,7 +154,7 @@ def parserAllView(file_click, nx_topology):
                     if e[1]['compound'][j] == 'output':
                         e[1]['compound'][j] = file_click_list[i+2]
 
-    print compound_element
+    #print compound_element
     ##############################################################################################################################################
 
     connection_decl(file_click_list, connection, element)

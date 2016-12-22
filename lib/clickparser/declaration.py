@@ -52,12 +52,32 @@ def subgraph_element(line, compound_element, element):
 
 
 
-#FIXME = Deve prendere il nome del class element
 def subgraph_ele_class(class_element_lines,ele_class_element ,element):    
-	name=nameGenerator(element, 'subgraph_element_class')
-	element[len(element)]=({'element':'class_element', 'name':name, 'config':[],'group':'click'})
-	ele_class_element[len(ele_class_element)] = ({'name':name, 'compound':class_element_lines})
+	class_element_cont=[]
+	
+	i=0																	#trova il nome della element class
+	while i < len(class_element_lines):
+		l=class_element_lines[i]
+		if l=='elementclass':
+			name=class_element_lines[i+1]
+		i=i+1	
 
+	for z in class_element_lines:
+		if z!='elementclass' and z!='{' and z!='}' and z!=name:
+			class_element_cont.append(z)			
+		
+	print '*****************************'
+	text = ' '.join(class_element_cont)	
+
+
+	print text
+	print '*************************************'
+	#FIXME => questo va via perche element class non deve andare in elmement
+	element[len(element)]=({'element':'class_element', 'name':name, 'config':[],'group':'click'})
+	#FIXME => 
+	ele_class_element[len(ele_class_element)] = ({'name':name, 'elementclasscontenent':class_element_lines})
+	print ele_class_element
+	return text
 
 
 def connection_decl(words, connection, element):
