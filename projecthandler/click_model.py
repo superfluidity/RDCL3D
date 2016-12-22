@@ -7,7 +7,7 @@ from StringIO import StringIO
 import zipfile
 import json
 import yaml
-from lib.emparser.util import Util
+from lib.etsiparser.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.clickparser import mainrdcl
@@ -144,5 +144,4 @@ class ClickProject(Project):
         return result
 
 
-
-Project.add_project_type('click', ClickProject)
+# Project.add_project_type('click', ClickProject)

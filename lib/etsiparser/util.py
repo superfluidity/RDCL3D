@@ -90,7 +90,7 @@ class Util:
 
     def validate_json_schema(self, type_descriptor, data):
         try:
-            schema = self.loadjsonfile("lib/emparser/schemas/"+type_descriptor+".json")
+            schema = self.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
             jsonschema.validate(data, schema)
             return True
         except Exception as e:
