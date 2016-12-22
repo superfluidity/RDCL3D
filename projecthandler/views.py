@@ -8,9 +8,9 @@ from projecthandler.etsi_model import EtsiManoProject
 # from projecthandler.models import ClickProject
 from projecthandler.click_model import ClickProject
 from sf_user.models import CustomUser
-from lib.emparser.util import Util
-# from lib.emparser.t3d_util import T3DUtil
-#from lib.emparser import emparser
+from lib.etsiparser.util import Util
+# from lib.etsiparser.t3d_util import T3DUtil
+#from lib.etsiparser import etsiparser
 from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -61,14 +61,14 @@ def create_new_project(request):
             #     ns_files = request.FILES.getlist('ns_files')
             #     vnf_files = request.FILES.getlist('vnf_files')
             #     if ns_files or vnf_files:
-            #         data_project = emparser.importprojectfile(ns_files, vnf_files)
+            #         data_project = etsiparser.importprojectfile(ns_files, vnf_files)
 
             elif start_from == 'example':
                 # data_project = EtsiManoProject.data_project_from_example(request)
                 data_project = project_class.data_project_from_example(request)
 
                 # example_id = request.POST.get('example-etsi-id', '')
-                # data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
+                # data_project = etsiparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
 
             
             # project = EtsiManoProject.create_project (name, user, False, info, data_project)

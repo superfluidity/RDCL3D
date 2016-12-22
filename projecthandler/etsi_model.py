@@ -7,11 +7,11 @@ from StringIO import StringIO
 import zipfile
 import json
 import yaml
-from lib.emparser.util import Util
+from lib.etsiparser.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.emparser.t3d_util import T3DUtil
-from lib.emparser import emparser
+from lib.etsiparser.t3d_util import T3DUtil
+from lib.etsiparser import etsiparser
 import os.path
 
         # project_types['etsi']= projecthandler.etsi_model.EtsiManoProject
@@ -26,13 +26,13 @@ class EtsiManoProject(Project):
         vnf_files = request.FILES.getlist('vnf_files')
         data_project = {}
         if ns_files or vnf_files:
-            data_project = emparser.importprojectfile(ns_files, vnf_files)
+            data_project = etsiparser.importprojectfile(ns_files, vnf_files)
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-etsi-id', '')
-        data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
+        data_project = etsiparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
         return data_project
 
     @classmethod
@@ -606,7 +606,7 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
+            EtsiManoProjectintcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             intcp_descriptor['intVirtualLinkDesc'] = intvl_id
             self.data_project = current_data
             self.update()
