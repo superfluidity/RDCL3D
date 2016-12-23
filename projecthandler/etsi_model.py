@@ -14,11 +14,11 @@ from lib.etsiparser.t3d_util import T3DUtil
 from lib.etsiparser import etsiparser
 import os.path
 
-        # project_types['etsi']= projecthandler.etsi_model.EtsiManoProject
+        # project_types['etsi']= projecthandler.etsi_model.EtsiProject
         # project_types['click']= ClickProject
 
 
-class EtsiManoProject(Project):
+class EtsiProject(Project):
 
     @classmethod
     def data_project_from_files(cls, request):
@@ -730,7 +730,8 @@ class EtsiManoProject(Project):
         try:
             current_data = json.loads(self.data_project)
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            EtsiManoProjectintcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
+            #TODO non capisco queste due righe qui sotto
+            intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             intcp_descriptor['intVirtualLinkDesc'] = intvl_id
             self.data_project = current_data
             self.update()
@@ -880,7 +881,7 @@ class EtsiManoProject(Project):
             element_type = request.POST.get('element_type')
             vnffg_id = request.POST.get('vnffg_id')
             # print group_id, element_id, element_type, vnffg_id
-            
+
             current_data = json.loads(self.data_project)
             vnffg = next((x for x in current_data['nsd'][group_id]['vnffgd'] if x['vnffgdId'] == vnffg_id), None)
             if element_type == 'ns_vl':
@@ -897,4 +898,4 @@ class EtsiManoProject(Project):
             result = False
         return result
 
-# Project.add_project_type('etsi', EtsiManoProject)
+# Project.add_project_type('etsi', EtsiProject)
