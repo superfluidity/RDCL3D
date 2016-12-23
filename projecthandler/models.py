@@ -41,7 +41,7 @@ class Project(models.Model):
 
     @classmethod
     def create_project(cls, name, user, validated, info, data_project):
-        # project = EtsiManoProject.objects.create(name=name, owner=user, validated=False, info=info,
+        # project = EtsiProject.objects.create(name=name, owner=user, validated=False, info=info,
         #                                                  data_project=data_project)
         project = cls.objects.create(name=name, owner=user, validated=False, info=info,
                                                        data_project=data_project)
@@ -258,7 +258,7 @@ class Project(models.Model):
 #         return self.name
 
 
-# class EtsiManoProject(Project):
+# class EtsiProject(Project):
 
 #     def getType(self):
 #         return "etsi"

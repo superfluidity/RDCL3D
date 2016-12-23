@@ -1,12 +1,8 @@
+import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
-from projecthandler.models import Project
-#from projecthandler.models import EtsiManoProject
-from projecthandler.etsi_model import EtsiManoProject
-# from projecthandler.models import ClickProject
-from projecthandler.click_model import ClickProject
 from sf_user.models import CustomUser
 from lib.etsiparser.util import Util
 # from lib.etsiparser.t3d_util import T3DUtil
@@ -14,9 +10,12 @@ from lib.etsiparser.util import Util
 from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-import json
 
-Project.add_project_type('etsi', EtsiManoProject)
+from projecthandler.models import Project
+from projecthandler.etsi_model import EtsiProject
+from projecthandler.click_model import ClickProject
+
+Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
 
 
@@ -42,7 +41,7 @@ def create_new_project(request):
             project_class = project_types[type]
 
         # if type == 'etsi':
-        #     project_class = EtsiManoProject
+        #     project_class = EtsiProject
         # elif type == 'click':
         #     project_class = ClickProject
         else:
@@ -58,7 +57,7 @@ def create_new_project(request):
                 data_project = {}
 
             elif start_from == 'files':
-                # data_project = EtsiManoProject.data_project_from_files(request)
+                # data_project = EtsiProject.data_project_from_files(request)
                 data_project = project_class.data_project_from_files(request)
 
             #     ns_files = request.FILES.getlist('ns_files')
@@ -67,17 +66,17 @@ def create_new_project(request):
             #         data_project = etsiparser.importprojectfile(ns_files, vnf_files)
 
             elif start_from == 'example':
-                # data_project = EtsiManoProject.data_project_from_example(request)
+                # data_project = EtsiProject.data_project_from_example(request)
                 data_project = project_class.data_project_from_example(request)
 
                 # example_id = request.POST.get('example-etsi-id', '')
                 # data_project = etsiparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
 
             
-            # project = EtsiManoProject.create_project (name, user, False, info, data_project)
+            # project = EtsiProject.create_project (name, user, False, info, data_project)
             project = project_class.create_project (name, user, False, info, data_project)
 
-            # project = EtsiManoProject.objects.create (name=name, owner=user, validated=False, info=info,
+            # project = EtsiProject.objects.create (name=name, owner=user, validated=False, info=info,
             #                                          data_project=data_project)
 
         # elif type == 'click':
@@ -274,7 +273,7 @@ def download(request, project_id=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     if request.method == 'POST':
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         in_memory = projects[0].get_zip_archive()
 
         response = HttpResponse(content_type="application/zip")
@@ -480,7 +479,7 @@ def unused_vnf(request, project_id=None, nsd_id=None):
 def add_element(request, project_id=None):
     if request.method == 'POST':
         #result = False
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_add_element(request)
 
@@ -520,7 +519,7 @@ def add_element(request, project_id=None):
 def remove_element(request, project_id=None):
     if request.method == 'POST':
         #result = False
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_remove_element(request)
 
@@ -553,7 +552,7 @@ def remove_element(request, project_id=None):
 def add_link(request, project_id=None):
     if request.method == 'POST':
         # result = False
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_add_link(request)
 
@@ -598,7 +597,7 @@ def add_link(request, project_id=None):
 def remove_link(request, project_id=None):
     if request.method == 'POST':
         # result = False
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_remove_link(request)
 
@@ -640,7 +639,7 @@ def remove_link(request, project_id=None):
 def add_node_to_vnffg(request, project_id=None):
     print "add_node_to_vnffg" #TODO log
     if request.method == 'POST':
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].add_node_to_vnffg(request)
         # group_id = request.POST.get('group_id')
