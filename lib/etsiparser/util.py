@@ -136,3 +136,7 @@ class Util:
         return dirs
 
 
+    def get_graph_model(self):
+        file_path = 'lib/TopologyModels/etsi/etsi.yaml'
+        return self.loadyamlfile(file_path)
+

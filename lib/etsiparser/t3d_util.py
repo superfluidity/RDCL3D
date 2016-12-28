@@ -82,6 +82,7 @@ class T3DUtil:
             'vertices': [],
             'edges': [],
             'graph_parameters': {'vnffgIds': []},
+            'model': Util().get_graph_model()
         }
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
