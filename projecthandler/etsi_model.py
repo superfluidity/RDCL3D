@@ -41,6 +41,11 @@ class EtsiProject(Project):
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
         return {'etsi_example' : dirs}
 
+    @classmethod
+    def get_graph_model(cls):
+        file_path = 'lib/TopologyModels/etsi/etsi.yaml'
+        return Util().loadyamlfile(file_path)        
+
 
     @classmethod
     def get_new_descriptor(cls,descriptor_type, request_id):
@@ -81,7 +86,7 @@ class EtsiProject(Project):
     def get_graph_data_json_topology(self, descriptor_id):
         test_t3d = T3DUtil()
         project = self.get_dataproject()
-        topology = test_t3d.build_graph_from_project(project)
+        topology = test_t3d.build_graph_from_project(project, self.get_graph_model())
         return json.dumps(topology)
 
     # def get_descriptors(self, type_descriptor):

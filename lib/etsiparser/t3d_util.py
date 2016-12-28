@@ -76,13 +76,14 @@ class T3DUtil:
                 link['group'].append(vnffgdId)
 
 
-    def build_graph_from_project(self, json_project):
+    def build_graph_from_project(self, json_project, model):
         #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],
             'graph_parameters': {'vnffgIds': []},
-            'model': Util().get_graph_model()
+            # 'model': Util().get_graph_model()
+            'model': model
         }
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
