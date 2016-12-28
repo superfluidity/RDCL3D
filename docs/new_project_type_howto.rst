@@ -2,16 +2,19 @@
 How to create a new project type
 =====
 
-Server side
+Server side (python django)
 -----------
 
 HTML templates
+--------------
+
+Client side (javascript)
 -----------
 
 
 
 Syntax examples
------------
+---------------
 Example of code block: ::
 
     git clone https://github.com/openstack/heat-translator
