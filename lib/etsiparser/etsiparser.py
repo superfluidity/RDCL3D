@@ -2,7 +2,7 @@ import json
 import pyaml
 import yaml
 from util import Util
-from t3d_util import T3DUtil
+from t3d_util import rdcl3d_util
 import logging
 import traceback
 import glob
@@ -59,7 +59,7 @@ def importprojectfile(ns_files, vnf_files):
 if __name__ == '__main__':
 
     test = Util()
-    test_t3d = T3DUtil()
+    test_rdcl = rdcl3d_util()
 
     #yaml_object = yaml.load(yaml_string)
     #log.debug(yaml_string)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     try:
         #importProject('../../sf_dev/examples/my_example/JSON', 'json')
         project = importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
-        topology = test_t3d.build_graph_from_project(project)
+        topology = test_rdcl.build_graph_from_project(project)
         test.writejsonfile('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON/t3d.json', topology)
 
         # json_object_from_file = test.loadjsonfile('../../sf_dev/examples/my_example/JSON/nsd.json')
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         #yaml_object_from_file = test.loadyamlfile('../../sf_dev/examples/nsd_iperf_cs/nsd.yaml')
         #log.debug(pyaml.dump(yaml_object_from_file))
         #test.writeyamlfile('../../sf_dev/examples/nsd_iperf_cs/nsd_test.yaml', yaml_object_from_file)
-        #test.writejsonfile('../../sf_dev/examples/nsd_iperf_cs/nsd_test.json', test_t3d.build_graph_from_baton((json_object_from_file)))
+        #test.writejsonfile('../../sf_dev/examples/nsd_iperf_cs/nsd_test.json', test_rdcl.build_graph_from_baton((json_object_from_file)))
     except IOError as e:
         #log.error('Error test')
         traceback.print_exc()

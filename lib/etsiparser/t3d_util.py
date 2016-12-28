@@ -1,10 +1,10 @@
 import json
 import logging
 import copy
-from util import Util
+# from util import Util
 
 
-class T3DUtil:
+class rdcl3d_util:
 
     node_t3d_base = {
         'info': {
@@ -19,7 +19,7 @@ class T3DUtil:
 
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG)
-        self.log = logging.getLogger('T3DUtil')
+        self.log = logging.getLogger('rdcl3d_util')
 
     def add_link(self, source, target, view, group, graph_object ):
         if (source is None) or (target is None):
@@ -76,7 +76,7 @@ class T3DUtil:
                 link['group'].append(vnffgdId)
 
 
-    def build_graph_from_project(self, json_project, model):
+    def build_graph_from_project(self, json_project, model={}):
         #print "json_project ",json_project
         graph_object = {
             'vertices': [],
