@@ -10,8 +10,9 @@ import yaml
 from lib.etsiparser.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.etsiparser.t3d_util import rdcl3d_util
+from lib.etsiparser.rdcl3d_util import Rdcl3d_util
 from lib.etsiparser import etsiparser
+
 import os.path
 
         # project_types['etsi']= projecthandler.etsi_model.EtsiProject
@@ -33,6 +34,7 @@ class EtsiProject(Project):
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-etsi-id', '')
         data_project = etsiparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
+        # data_project = importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
         return data_project
 
     @classmethod
@@ -84,7 +86,7 @@ class EtsiProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        test_t3d = rdcl3d_util()
+        test_t3d = Rdcl3d_util()
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
         return json.dumps(topology)

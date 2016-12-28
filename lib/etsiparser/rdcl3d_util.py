@@ -4,7 +4,7 @@ import copy
 # from util import Util
 
 
-class rdcl3d_util:
+class Rdcl3d_util:
 
     node_t3d_base = {
         'info': {
@@ -19,7 +19,7 @@ class rdcl3d_util:
 
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG)
-        self.log = logging.getLogger('rdcl3d_util')
+        self.log = logging.getLogger('Rdcl3d_util')
 
     def add_link(self, source, target, view, group, graph_object ):
         if (source is None) or (target is None):

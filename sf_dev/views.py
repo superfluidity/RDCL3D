@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from lib.etsiparser import etsiparser
-from lib.etsiparser.t3d_util import rdcl3d_util
+from lib.etsiparser.rdcl3d_util import Rdcl3d_util
 from lib.etsiparser.util import Util
 from django.http import HttpResponse
 import json
@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 
 
 def base(request, configuration_id=None):
-    test_t3d = rdcl3d_util()
+    test_t3d = Rdcl3d_util()
     emautil = Util()
     #topology_baton = emautil.loadjsonfile('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/nsd_oimsc_unique/nsd.json')
     project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
@@ -22,7 +22,7 @@ def base(request, configuration_id=None):
 
 
 def d3js(request, configuration_id=None):
-    test_t3d = rdcl3d_util()
+    test_t3d = Rdcl3d_util()
     emautil = Util()
     # topology_baton = emautil.loadjsonfile('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/nsd_oimsc_unique/nsd.json')
     project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
@@ -36,7 +36,7 @@ def d3js(request, configuration_id=None):
 
 # Create your views here.
 def topology_test(request, configuration_id=None):
-    test_t3d = rdcl3d_util()
+    test_t3d = Rdcl3d_util()
     project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     # print response

@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from sf_user.models import CustomUser
 from lib.etsiparser.util import Util
-# from lib.etsiparser.t3d_util import rdcl3d_util
+# from lib.etsiparser.rdcl3d_util import Rdcl3d_util
 #from lib.etsiparser import etsiparser
 from lib.clickparser import mainrdcl
 from django.http import HttpResponse
@@ -253,7 +253,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
     response["Access-Control-Allow-Origin"] = "*"
 
     # if prj_token == 'etsi':
-    #     test_t3d = rdcl3d_util()
+    #     test_t3d = Rdcl3d_util()
     #     project = projects[0].get_dataproject()
     #     topology = test_t3d.build_graph_from_project(project)
     #     # print response

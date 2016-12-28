@@ -2,7 +2,7 @@ import json
 import pyaml
 import yaml
 from util import Util
-from t3d_util import rdcl3d_util
+from rdcl3d_util import Rdcl3d_util
 import logging
 import traceback
 import glob
@@ -59,7 +59,7 @@ def importprojectfile(ns_files, vnf_files):
 if __name__ == '__main__':
 
     test = Util()
-    test_rdcl = rdcl3d_util()
+    test_rdcl = Rdcl3d_util()
 
     #yaml_object = yaml.load(yaml_string)
     #log.debug(yaml_string)
