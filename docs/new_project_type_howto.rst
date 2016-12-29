@@ -29,6 +29,14 @@ as a filter on the overall graph representation.
 
 Server side (python django)
 -----------
+To introduce a new project type, the base classes for project, GUI graph representation and parser
+need to be specialized. There is a bash script that assists in the process of creating the
+python files for the new project type. The script is ``scripts/new_project_type.sh`` and must be executed 
+providing as a parameter the name of the project type (with Capital Case for first letter). Assuming that
+the name of the project type is Newtype, the script will be executed as follows: ::
+    bash scripts/new_project_type.sh Newtype
+
+
 
 HTML templates
 --------------
