@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from lib.etsi import etsiparser
-from lib.rdcl_graph import RdclGraph
+from lib.etsi.etsi_parser import EtsiParser
+from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
 from lib.util import Util
 from django.http import HttpResponse
 import json
@@ -11,10 +11,10 @@ from django.template.loader import render_to_string
 
 
 def base(request, configuration_id=None):
-    test_t3d = RdclGraph()
+    test_t3d = EtsiRdclGraph()
     # emautil = Util()
     #topology_baton = emautil.loadjsonfile('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/nsd_oimsc_unique/nsd.json')
-    project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
+    project = EtsiParser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     print type(topology)
     
@@ -22,10 +22,10 @@ def base(request, configuration_id=None):
 
 
 def d3js(request, configuration_id=None):
-    test_t3d = RdclGraph()
+    test_t3d = EtsiRdclGraph()
     # emautil = Util()
     # topology_baton = emautil.loadjsonfile('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/nsd_oimsc_unique/nsd.json')
-    project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
+    project = EtsiParser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     print type(topology)
 
@@ -36,8 +36,8 @@ def d3js(request, configuration_id=None):
 
 # Create your views here.
 def topology_test(request, configuration_id=None):
-    test_t3d = RdclGraph()
-    project = etsiparser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
+    test_t3d = EtsiRdclGraph()
+    project = EtsiParser.importproject('/Users/francesco/Workspace/sf_t3d/sf_dev/examples/my_example/JSON', 'json')
     topology = test_t3d.build_graph_from_project(project)
     # print response
     response =  HttpResponse(json.dumps(topology), content_type="application/json")

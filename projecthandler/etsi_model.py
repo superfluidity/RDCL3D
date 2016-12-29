@@ -11,8 +11,8 @@ import copy
 from lib.util import Util
 # from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.rdcl_graph import RdclGraph
-from lib.etsi import etsiparser
+from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
+from lib.etsi.etsi_parser import EtsiParser
 
 
 import os.path
@@ -24,7 +24,7 @@ PATH_TO_SCHEMAS = 'lib/etsi/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
 DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/etsi/etsi.yaml'
-EXAMPLES_FOLDER = 'usecases/ETSI'
+EXAMPLES_FOLDER = 'usecases/ETSI/'
 
 class EtsiProject(Project):
 
@@ -34,13 +34,13 @@ class EtsiProject(Project):
         vnf_files = request.FILES.getlist('vnf_files')
         data_project = {}
         if ns_files or vnf_files:
-            data_project = etsiparser.importprojectfile(ns_files, vnf_files)
+            data_project = EtsiParser.importprojectfile(ns_files, vnf_files)
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-etsi-id', '')
-        data_project = etsiparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
+        data_project = EtsiParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
         # data_project = importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
         return data_project
 
@@ -132,7 +132,7 @@ class EtsiProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        test_t3d = RdclGraph()
+        test_t3d = EtsiRdclGraph()
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
         return json.dumps(topology)
