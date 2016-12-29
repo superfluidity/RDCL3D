@@ -2,7 +2,7 @@ import json
 import pyaml
 import yaml
 from lib.util import Util
-from lib.rdcl3d_util import Rdcl3d_util
+from lib.rdcl_graph import RdclGraph
 import logging
 import traceback
 import glob
@@ -67,7 +67,7 @@ def importprojectfile(ns_files, vnf_files):
 if __name__ == '__main__':
 
     # test = Util()
-    test_rdcl = Rdcl3d_util()
+    test_rdcl = RdclGraph()
 
     #yaml_object = yaml.load(yaml_string)
     #log.debug(yaml_string)

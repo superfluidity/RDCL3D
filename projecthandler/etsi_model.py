@@ -11,7 +11,7 @@ import copy
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.rdcl3d_util import Rdcl3d_util
+from lib.rdcl_graph import RdclGraph
 from lib.etsiparser import etsiparser
 
 
@@ -129,13 +129,14 @@ class EtsiProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        test_t3d = Rdcl3d_util()
+        test_t3d = RdclGraph()
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
         return json.dumps(topology)
 
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
+        '''Creates a descriptor of a given type from a json or yaml representation'''
         try:
             # utility = Util()
             print type_descriptor, data_type
@@ -156,7 +157,7 @@ class EtsiProject(Project):
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data
-            self.validated = validate
+            self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
             self.update()
             result = new_descriptor_id
         except Exception as e:
@@ -167,22 +168,6 @@ class EtsiProject(Project):
 
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
-
-    # def get_zip_archive(self):
-    #     in_memory = StringIO()
-    #     try:
-    #         current_data = json.loads(self.data_project)
-    #         zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
-    #         for desc_type in current_data:
-    #             for current_desc in current_data[desc_type]:
-    #                 zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
-
-    #         zip.close()
-    #     except Exception as e:
-    #         print e
-
-    #     in_memory.flush()
-    #     return in_memory
 
 
     def edit_graph_positions(self, positions):

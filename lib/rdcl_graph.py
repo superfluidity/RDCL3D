@@ -3,9 +3,9 @@ import logging
 import copy
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('Rdcl3d_util')
+log = logging.getLogger('RdclGraph')
 
-class Rdcl3d_util(object):
+class RdclGraph(object):
 
     node_t3d_base = {
         'info': {
@@ -77,6 +77,8 @@ class Rdcl3d_util(object):
 
 
     def build_graph_from_project(self, json_project, model={}):
+        '''Creates a single graph for a whole project'''
+
         #print "json_project ",json_project
         graph_object = {
             'vertices': [],
