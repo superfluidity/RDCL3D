@@ -29,22 +29,36 @@ as a filter on the overall graph representation.
 
 Server side (python django)
 -----------
+To introduce a new project type, the base classes for project, GUI graph representation and parser
+need to be specialized. There is a bash script that assists in the process of creating the
+python files for the new project type. The script is ``scripts/new_project_type.sh`` and must be executed 
+providing as a parameter the name of the project type (with Capital Case for first letter). Assuming that
+the name of the project type is Newtype, the script will be executed as follows: ::
+    bash scripts/new_project_type.sh Newtype
+
+After running the script, the following python modules will be created. Please edit them as needed
+to implement the specific methods of the new project type: ::
+    projecthandler/newtype_model.py
+    lib/newtype/newtype_rdcl_graph.py
+    lib/newtype/newtype_parser.py
+    
+In the module ``projecthandler/views.py`` the following lines needs to be added: ::
+    from projecthandler.newtype_model import NewtypeProject
+    Project.add_project_type('newtype', NewtypeProject)
+    
+There is also a script to delete a project type (use it with care, it deletes all files and folders
+of Newtype): ::
+    bash scripts/clean_project_type.sh Newtype
 
 HTML templates
 --------------
+A set of html templates needs to be added for a new project type. The html templates are located in 
+the folder ``projecthandler/template/project/newtype/``. The above described scripts ``scripts/new_project_type.sh``
+also takes care of creating a default version of the html templates.
+
 
 Client side (javascript)
 -----------
 
 
-
-Syntax examples (to be deleted...)
----------------
-Example of code block: ::
-
-    git clone https://github.com/openstack/heat-translator
-    cd heat-translator
-    sudo python setup.py install
-
-Example of monospaced text: ``--template-file``. Example of italic text *this is italic*. Example of bold text: **this is bold**
 
