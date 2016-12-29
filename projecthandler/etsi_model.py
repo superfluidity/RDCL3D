@@ -30,11 +30,17 @@ class EtsiProject(Project):
 
     @classmethod
     def data_project_from_files(cls, request):
-        ns_files = request.FILES.getlist('ns_files')
-        vnf_files = request.FILES.getlist('vnf_files')
-        data_project = {}
-        if ns_files or vnf_files:
-            data_project = EtsiParser.importprojectfile(ns_files, vnf_files)
+        # ns_files = request.FILES.getlist('ns_files')
+        # vnf_files = request.FILES.getlist('vnf_files')
+
+        file_dict = {}
+        for my_key in request.FILES.keys():
+            file_dict [my_key]= request.FILES.getlist(my_key)
+
+        data_project = EtsiParser.importprojectfiles(file_dict)
+        # data_project = {}
+        # if ns_files or vnf_files:
+        #     data_project = EtsiParser.importprojectfiles(ns_files, vnf_files)
         return data_project
 
     @classmethod
@@ -46,7 +52,7 @@ class EtsiProject(Project):
 
     @classmethod
     def get_example_list(cls):
-        '''Returns a list of directories, in each directory there is a project example'''
+        """Returns a list of directories, in each directory there is a project example"""
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
@@ -77,7 +83,7 @@ class EtsiProject(Project):
 
     @classmethod
     def get_descriptor_template(cls, type_descriptor):
-        '''Returns a descriptor template for a given descriptor type'''
+        """Returns a descriptor template for a given descriptor type"""
         
         try:
             schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
@@ -139,7 +145,7 @@ class EtsiProject(Project):
 
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
-        '''Creates a descriptor of a given type from a json or yaml representation'''
+        """Creates a descriptor of a given type from a json or yaml representation"""
         try:
             # utility = Util()
             print type_descriptor, data_type
@@ -171,25 +177,6 @@ class EtsiProject(Project):
 
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
-
-
-    def edit_graph_positions(self, positions):
-        print positions
-        try:
-            current_data = json.loads(self.data_project)
-            if 'positions' not in current_data:
-                current_data['positions'] = {}
-            if 'vertices' not in current_data['positions']:
-                current_data['positions']['vertices'] = {}
-            if 'vertices' in positions:
-                current_data['positions']['vertices'].update(positions['vertices'])
-            self.data_project = current_data
-            self.update()
-            result = True
-        except Exception as e:
-            print 'exception', e
-            result = False
-        return result
 
     def get_add_element(self, request):
 

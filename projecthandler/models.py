@@ -20,7 +20,7 @@ class Project(models.Model):
     updated_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     info = models.TextField(default='No info')
     data_project = jsonfield.JSONField(default={})
-    '''Stores a validated JSON representation of the project'''
+    """Stores a validated JSON representation of the project"""
 
     validated = models.BooleanField(default=False)
 
@@ -78,8 +78,27 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def edit_graph_positions(self, positions):
+        # print positions
+        try:
+            current_data = json.loads(self.data_project)
+            if 'positions' not in current_data:
+                current_data['positions'] = {}
+            if 'vertices' not in current_data['positions']:
+                current_data['positions']['vertices'] = {}
+            if 'vertices' in positions:
+                current_data['positions']['vertices'].update(positions['vertices'])
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            print 'exception', e
+            result = False
+        return result
+
+
     def get_descriptors(self, type_descriptor):
-        '''Returns all descriptors of a given type'''
+        """Returns all descriptors of a given type"""
 
         try:
             current_data = json.loads(self.data_project)
@@ -89,7 +108,7 @@ class Project(models.Model):
         return result
 
     def get_descriptor(self, descriptor_id, type_descriptor):
-        '''Returns a specific descriptor'''
+        """Returns a specific descriptor"""
 
         try:
             current_data = json.loads(self.data_project)

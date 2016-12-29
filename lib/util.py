@@ -23,7 +23,7 @@ class Util(object):
 
     @classmethod
     def yaml2json(cls, object_yaml):
-        '''Converts a yaml object into a json representation'''
+        """Converts a yaml object into a json representation"""
 
         log.debug('yaml2json')
         return json.dumps(object_yaml, sort_keys=True, indent=2)
@@ -35,11 +35,11 @@ class Util(object):
 
     @classmethod
     def openfile(cls, filepath, mode='r', buffering=1):
-        '''Returns an open file given a filepath
+        """Returns an open file given a filepath
 
         If the filepath is already an open file, returns into
         Raises Exception
-        '''
+        """
 
         log.debug('reading file ' + filepath)
         try:
@@ -54,10 +54,10 @@ class Util(object):
 
     @classmethod
     def loadyamlfile(cls, name):
-        '''Returns a yaml object from a filename or an open file
+        """Returns a yaml object from a filename or an open file
 
         Raises Exception
-        '''
+        """
 
         yaml_object = None
         try:
@@ -74,10 +74,10 @@ class Util(object):
 
     @classmethod
     def loadjsonfile(cls, name):
-        '''Returns a json object from a filename or an open file
+        """Returns a json object from a filename or an open file
 
         Raises Exception
-        '''
+        """
 
         json_object = None
         try:
@@ -96,10 +96,10 @@ class Util(object):
 
     @classmethod
     def writejsonfile(cls, name, json_object):
-        '''Writes the dump of a json obj to a filename or an open file
+        """Writes the dump of a json obj to a filename or an open file
 
         Raises Exception
-        '''
+        """
 
         try:
             log.debug('writejsonfile ' + name)
@@ -114,10 +114,10 @@ class Util(object):
 
     @classmethod
     def writeyamlfile(cls, name, yaml_object):
-        '''Writes the dump of a yaml obj to a filename or an open file
+        """Writes the dump of a yaml obj to a filename or an open file
 
         Raises Exception
-        '''
+        """
 
         try:
             log.debug('writeyamlfile ' + name)
@@ -132,10 +132,10 @@ class Util(object):
 
     @classmethod
     def validate_json_schema(cls, reference_schema, data):
-        '''Validates a json data against a json schema
+        """Validates a json data against a json schema
 
         Raises Exception
-        '''
+        """
 
         try:
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
@@ -149,7 +149,7 @@ class Util(object):
 
     # @classmethod
     # def get_descriptor_template(cls, type_descriptor):
-    #     '''Returns a descriptor template for a given descriptor type'''
+    #     """Returns a descriptor template for a given descriptor type"""
 
     #     try:
     #         schema = cls.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
