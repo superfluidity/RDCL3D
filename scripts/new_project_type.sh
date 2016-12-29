@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# new_project_type
+# usage:
 # bash scripts/new_project_type.sh Example
 
 #$1 Firstcapital
@@ -28,4 +30,10 @@ sed -i -e "s/Exampletoken/$1/g" lib/${1,,}/__init__.py
 sed -i -e "s/exampletoken/${1,,}/g" lib/${1,,}/__init__.py
 sed -i -e "s/EXAMPLETOKEN/${1^^}/g" lib/${1,,}/__init__.py
 
+#html templates
+
+mkdir projecthandler/template/project/${1,,}
+cp -r projecthandler/template/project/example/* projecthandler/template/project/${1,,} 
+
+find projecthandler/template/project/${1,,} -name "*example*" -exec rename "s/example/${1,,}/g" {} \;
 
