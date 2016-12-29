@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from lib.etsiparser import etsiparser
+from lib.etsi import etsiparser
 from lib.rdcl_graph import RdclGraph
 from lib.util import Util
 from django.http import HttpResponse

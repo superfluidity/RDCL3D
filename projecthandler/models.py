@@ -20,6 +20,8 @@ class Project(models.Model):
     updated_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     info = models.TextField(default='No info')
     data_project = jsonfield.JSONField(default={})
+    '''Stores a validated JSON representation of the project'''
+
     validated = models.BooleanField(default=False)
 
     #InheritanceManager
@@ -77,6 +79,8 @@ class Project(models.Model):
         return self.name
 
     def get_descriptors(self, type_descriptor):
+        '''Returns all descriptors of a given type'''
+
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
@@ -85,6 +89,8 @@ class Project(models.Model):
         return result
 
     def get_descriptor(self, descriptor_id, type_descriptor):
+        '''Returns a specific descriptor'''
+
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
@@ -103,7 +109,7 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            print 'Exception in delete_descriptor', e
             result = False
         return result
 
@@ -117,7 +123,7 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            print 'Exception in clone_descriptor', e
             result = False
         return result
 
@@ -139,7 +145,7 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            print 'Exception in edit_descriptor', e
             result = False
         return result
 

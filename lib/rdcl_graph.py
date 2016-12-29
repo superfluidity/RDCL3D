@@ -6,6 +6,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('RdclGraph')
 
 class RdclGraph(object):
+    '''Operates on the graph representation used for the GUI graph views'''
 
     node_t3d_base = {
         'info': {

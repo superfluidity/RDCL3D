@@ -8,7 +8,7 @@ import zipfile
 import json
 import yaml
 from lib.util import Util
-from model_utils.managers import InheritanceManager
+# from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.clickparser import mainrdcl
 import os.path

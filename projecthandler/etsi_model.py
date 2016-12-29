@@ -9,10 +9,10 @@ import json
 import yaml
 import copy
 from lib.util import Util
-from model_utils.managers import InheritanceManager
+# from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.rdcl_graph import RdclGraph
-from lib.etsiparser import etsiparser
+from lib.etsi import etsiparser
 
 
 import os.path
@@ -20,10 +20,11 @@ import os.path
         # project_types['etsi']= projecthandler.etsi_model.EtsiProject
         # project_types['click']= ClickProject
 
-PATH_TO_SCHEMAS = 'lib/etsiparser/schemas/'
+PATH_TO_SCHEMAS = 'lib/etsi/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
 DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/etsi/etsi.yaml'
+EXAMPLES_FOLDER = 'usecases/ETSI'
 
 class EtsiProject(Project):
 
@@ -45,7 +46,9 @@ class EtsiProject(Project):
 
     @classmethod
     def get_example_list(cls):
-        path = 'usecases/ETSI'
+        '''Returns a list of directories, in each directory there is a project example'''
+
+        path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
         return {'etsi_example' : dirs}
 
@@ -148,7 +151,7 @@ class EtsiProject(Project):
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
 
-            # schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             reference_schema = self.get_json_schema_by_type(type_descriptor)
             validate = Util.validate_json_schema(reference_schema, new_descriptor)
             new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[

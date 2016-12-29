@@ -138,7 +138,7 @@ class Util(object):
         '''
 
         try:
-            # schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             # print 'type_descriptor : '+type_descriptor
             jsonschema.validate(data, reference_schema)
             return True
