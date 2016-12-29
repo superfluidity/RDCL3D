@@ -1,8 +1,9 @@
 import json
 import logging
 import copy
-# from util import Util
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('Rdcl3d_util')
 
 class Rdcl3d_util(object):
 
@@ -18,8 +19,7 @@ class Rdcl3d_util(object):
     }
 
     def __init__(self):
-        logging.basicConfig(level=logging.DEBUG)
-        self.log = logging.getLogger('Rdcl3d_util')
+        pass
 
     def add_link(self, source, target, view, group, graph_object ):
         if (source is None) or (target is None):
@@ -87,7 +87,7 @@ class Rdcl3d_util(object):
         }
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
-            self.log.debug('build t3d graph from project json')
+            log.debug('build t3d graph from project json')
             if 'vnfd' in json_project:
                 for vnfd_id in json_project['vnfd']:
                     self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
@@ -121,7 +121,7 @@ class Rdcl3d_util(object):
                             self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
                         self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
         except Exception as e:
-            self.log.error('Exception build_graph_from_project')
+            log.error('Exception build_graph_from_project')
             raise
 
         return graph_object
