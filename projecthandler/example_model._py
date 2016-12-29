@@ -1,0 +1,167 @@
+from __future__ import unicode_literals
+
+from django.db import models
+from django.utils import timezone
+import jsonfield
+from StringIO import StringIO
+import zipfile
+import json
+import yaml
+import copy
+from lib.util import Util
+# from model_utils.managers import InheritanceManager
+from projecthandler.models import Project
+from lib.exampletoken.exampletoken_rdcl_graph import ExampletokenRdclGraph
+from lib.exampletoken.exampletoken_parser import ExampletokenParser
+
+
+import os.path
+
+        # project_types['exampletoken']= projecthandler.exampletoken_model.ExampletokenProject
+        # project_types['click']= ClickProject
+
+PATH_TO_SCHEMAS = 'lib/exampletoken/schemas/'
+PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
+DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
+GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/exampletoken/exampletoken.yaml'
+EXAMPLES_FOLDER = 'usecases/EXAMPLETOKEN/'
+
+class ExampletokenProject(Project):
+
+    @classmethod
+    def data_project_from_files(cls, request):
+        # ns_files = request.FILES.getlist('ns_files')
+        # vnf_files = request.FILES.getlist('vnf_files')
+        data_project = {}
+        if ns_files or vnf_files:
+            data_project = ExampletokenParser.importprojectfile(ns_files, vnf_files)
+        return data_project
+
+    @classmethod
+    def data_project_from_example(cls, request):
+        example_id = request.POST.get('example-exampletoken-id', '')
+        data_project = ExampletokenParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
+        # data_project = importprojectdir('usecases/EXAMPLETOKEN/' + example_id + '/JSON', 'json')
+        return data_project
+
+    @classmethod
+    def get_example_list(cls):
+        '''Returns a list of directories, in each directory there is a project example'''
+
+        path = EXAMPLES_FOLDER
+        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        return {'exampletoken_example' : dirs}
+
+    @classmethod
+    def get_graph_model(cls):
+        file_path = GRAPH_MODEL_FULL_NAME
+        return Util.loadyamlfile(file_path)        
+
+    @classmethod
+    def get_json_schema_by_type(cls, type_descriptor):
+        schema = PATH_TO_SCHEMAS+type_descriptor+".json"
+        return schema        
+
+    @classmethod
+    def get_new_descriptor(cls,descriptor_type, request_id):
+        # util = Util()
+
+        json_template = cls.get_descriptor_template(descriptor_type)
+        if descriptor_type == 'nsd':
+            json_template['nsdIdentifier'] = request_id
+            json_template['nsdInvariantId'] = request_id
+        else:
+            json_template['vnfdId'] = request_id
+
+        return json_template
+
+    @classmethod
+    def get_descriptor_template(cls, type_descriptor):
+        '''Returns a descriptor template for a given descriptor type'''
+        
+        try:
+            schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
+            # print 'type_descriptor : '+type_descriptor
+            return schema
+        except Exception as e:
+            # log.error('Exception in get descriptor template') #TODO(stefano) add logging
+            print 'Exception in get descriptor template'
+            return False
+
+    @classmethod
+    def get_clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
+        new_descriptor = copy.deepcopy(descriptor)
+
+        return  new_descriptor
+
+
+
+    def get_type(self):
+        return "exampletoken"
+
+    def __str__(self):
+        return self.name
+
+    def get_overview_data(self):
+        current_data = json.loads(self.data_project)
+        result = {
+            'owner': self.owner.__str__(),
+            'name': self.name,
+            'updated_date': self.updated_date.__str__(),
+            'info': self.info,
+            'type': 'exampletoken',
+            # 'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
+            # 'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,
+            # 'vld': len(current_data['vld'].keys()) if 'vld' in current_data else 0,
+            # 'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
+            'validated': self.validated
+        }
+
+        return result
+
+    def get_graph_data_json_topology(self, descriptor_id):
+        test_t3d = ExampletokenRdclGraph()
+        project = self.get_dataproject()
+        topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
+        return json.dumps(topology)
+
+
+    def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
+        '''Creates a descriptor of a given type from a json or yaml representation'''
+        result = False
+        try:
+
+        except Exception as e:
+            print 'Exception in create descriptor', e
+        return result
+
+
+    def set_validated(self, value):
+        self.validated = True if value is not None and value == True else False
+
+
+    def get_add_element(self, request):
+
+        result = False
+
+        return result        
+
+    def get_remove_element(self, request):
+
+        result = False
+
+        return result        
+
+    def get_add_link(self, request):
+
+        result = False
+
+        return result        
+
+    def get_remove_link(self, request):
+
+        result = False
+
+        return result        
+
+

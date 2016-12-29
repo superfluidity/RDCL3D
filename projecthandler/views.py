@@ -50,14 +50,16 @@ def create_new_project(request):
         # if type == 'etsi':
 
             if start_from == 'scratch':
+                # print 'from scratch'
                 data_project = {}
 
             elif start_from == 'files':
+                # print 'from files'
                 # data_project = EtsiProject.data_project_from_files(request)
                 data_project = project_class.data_project_from_files(request)
 
-
             elif start_from == 'example':
+                # print 'from example'
                 # data_project = EtsiProject.data_project_from_example(request)
                 data_project = project_class.data_project_from_example(request)
             
