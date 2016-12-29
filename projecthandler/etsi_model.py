@@ -30,16 +30,17 @@ class EtsiProject(Project):
 
     @classmethod
     def data_project_from_files(cls, request):
-        # print request.FILES.keys()
-        # print 'yyyyyyyyyyyy'
-        # print request.FILES['ns_files']
-        ns_files = request.FILES.getlist('ns_files')
-        # print ns_files
-        
-        vnf_files = request.FILES.getlist('vnf_files')
-        data_project = {}
-        if ns_files or vnf_files:
-            data_project = EtsiParser.importprojectfile(ns_files, vnf_files)
+        # ns_files = request.FILES.getlist('ns_files')
+        # vnf_files = request.FILES.getlist('vnf_files')
+
+        file_dict = {}
+        for my_key in request.FILES.keys():
+            file_dict [my_key]= request.FILES.getlist(my_key)
+
+        data_project = EtsiParser.importprojectfiles(file_dict)
+        # data_project = {}
+        # if ns_files or vnf_files:
+        #     data_project = EtsiParser.importprojectfiles(ns_files, vnf_files)
         return data_project
 
     @classmethod

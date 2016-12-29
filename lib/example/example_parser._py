@@ -9,9 +9,9 @@ import glob
 import os
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('EtsiParser')
+log = logging.getLogger('ExampletokenParser')
 
-class EtsiParser(Parser):
+class ExampletokenParser(Parser):
     """Parser methods for etsi project type
 
     There is no actual parsing involved here, because the
@@ -19,13 +19,13 @@ class EtsiParser(Parser):
     """
 
     def __init__(self):
-        super(EtsiParser, self).__init__()
+        super(ExampletokenParser, self).__init__()
     
     @classmethod        
     def importprojectdir(cls,dir_project, type):
         """Imports all files from NSD and VNFDs folders under a given folder
 
-        this method is specific for Etsi project type
+        this method is specific for Exampletoken project type
         """
 
         project = {
