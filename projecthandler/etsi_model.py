@@ -11,7 +11,7 @@ import copy
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.etsiparser.rdcl3d_util import Rdcl3d_util
+from lib.rdcl3d_util import Rdcl3d_util
 from lib.etsiparser import etsiparser
 
 
