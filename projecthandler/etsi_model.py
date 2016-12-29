@@ -8,7 +8,7 @@ import zipfile
 import json
 import yaml
 import copy
-from lib.etsiparser.util import Util
+from lib.util import Util
 from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.etsiparser.rdcl3d_util import Rdcl3d_util

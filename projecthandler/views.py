@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from sf_user.models import CustomUser
-from lib.etsiparser.util import Util
+from lib.util import Util
 # from lib.etsiparser.rdcl3d_util import Rdcl3d_util
 #from lib.etsiparser import etsiparser
 from lib.clickparser import mainrdcl

@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from lib.etsiparser import etsiparser
 from lib.etsiparser.rdcl3d_util import Rdcl3d_util
-from lib.etsiparser.util import Util
+from lib.util import Util
 from django.http import HttpResponse
 import json
 from django.middleware.csrf import get_token

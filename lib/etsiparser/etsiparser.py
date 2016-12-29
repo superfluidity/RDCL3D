@@ -1,7 +1,7 @@
 import json
 import pyaml
 import yaml
-from util import Util
+from lib.util import Util
 from rdcl3d_util import Rdcl3d_util
 import logging
 import traceback

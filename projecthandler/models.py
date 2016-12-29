@@ -7,7 +7,7 @@ from StringIO import StringIO
 import zipfile
 import json
 import yaml
-from lib.etsiparser.util import Util
+from lib.util import Util
 from model_utils.managers import InheritanceManager
 #import projecthandler.etsi_model
 
