@@ -3,7 +3,7 @@ import yaml
 import pyaml
 import logging
 import jsonschema
-import copy
+# import copy
 import os.path
 
 _lib_name = 'Util'
@@ -138,7 +138,7 @@ class Util(object):
         '''
 
         try:
-            # schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             # print 'type_descriptor : '+type_descriptor
             jsonschema.validate(data, reference_schema)
             return True
@@ -147,33 +147,35 @@ class Util(object):
             log.error('Exception validate json schema')
             return False
 
-    @classmethod
-    def get_descriptor_template(cls, type_descriptor):
-        try:
-            schema = cls.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
-            # print 'type_descriptor : '+type_descriptor
-            return schema
-        except Exception as e:
-            log.error('Exception in get descriptor template')
-            return False
+    # @classmethod
+    # def get_descriptor_template(cls, type_descriptor):
+    #     '''Returns a descriptor template for a given descriptor type'''
 
-    @classmethod
-    def clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
-        new_descriptor = copy.deepcopy(descriptor)
-        if (type_descriptor == 'vnfd'):
-            new_extention = "_"+new_descriptor_id
-            new_descriptor['vnfdId'] = new_descriptor_id;
-            new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor['vnfProductName'] is not None else new_descriptor['vnfProductName']
-            for vnfExtCpd in new_descriptor['vnfExtCpd']:
-                vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else vnfExtCpd['cpdId']
-        if (type_descriptor == 'nsd'):
-            new_extention = "_" + new_descriptor_id
-            new_descriptor['nsdIdentifier'] = new_descriptor_id
-            new_descriptor['nsdName'] = new_descriptor_id
-            new_descriptor['nsdInvariantId'] = new_descriptor_id
-            for sapd in new_descriptor['sapd']:
-                sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
-        return  new_descriptor
+    #     try:
+    #         schema = cls.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
+    #         # print 'type_descriptor : '+type_descriptor
+    #         return schema
+    #     except Exception as e:
+    #         log.error('Exception in get descriptor template')
+    #         return False
+
+    # @classmethod
+    # def get_clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
+    #     new_descriptor = copy.deepcopy(descriptor)
+    #     if (type_descriptor == 'vnfd'):
+    #         new_extention = "_"+new_descriptor_id
+    #         new_descriptor['vnfdId'] = new_descriptor_id;
+    #         new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor['vnfProductName'] is not None else new_descriptor['vnfProductName']
+    #         for vnfExtCpd in new_descriptor['vnfExtCpd']:
+    #             vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else vnfExtCpd['cpdId']
+    #     if (type_descriptor == 'nsd'):
+    #         new_extention = "_" + new_descriptor_id
+    #         new_descriptor['nsdIdentifier'] = new_descriptor_id
+    #         new_descriptor['nsdName'] = new_descriptor_id
+    #         new_descriptor['nsdInvariantId'] = new_descriptor_id
+    #         for sapd in new_descriptor['sapd']:
+    #             sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
+    #     return  new_descriptor
 
 
     # def get_etsi_example_list(self):
