@@ -5,12 +5,12 @@ import copy
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('RdclGraph')
 
+
 class RdclGraph(object):
-    '''Operates on the graph representation used for the GUI graph views'''
+    """ Operates on the graph representation used for the GUI graph views """
 
     node_t3d_base = {
         'info': {
-            'frozen': False,
             'property': {
                 'custom_label': '',
             },
