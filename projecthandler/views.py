@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from sf_user.models import CustomUser
 from lib.etsiparser.util import Util
-# from lib.etsiparser.t3d_util import T3DUtil
+# from lib.etsiparser.rdcl3d_util import Rdcl3d_util
 #from lib.etsiparser import etsiparser
 from lib.clickparser import mainrdcl
 from django.http import HttpResponse
@@ -253,7 +253,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
     response["Access-Control-Allow-Origin"] = "*"
 
     # if prj_token == 'etsi':
-    #     test_t3d = T3DUtil()
+    #     test_t3d = Rdcl3d_util()
     #     project = projects[0].get_dataproject()
     #     topology = test_t3d.build_graph_from_project(project)
     #     # print response
@@ -348,14 +348,14 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
         request_id = request.GET.get('id', '')
 
-        util = Util()
+        # util = Util()
 
         json_template = projects[0].get_new_descriptor(descriptor_type, request_id)
 
         # if prj_token == 'etsi':
         #     # page = 'etsi/descriptor/descriptor_new.html'
 
-        #     json_template = util.get_descriptor_template(descriptor_type)
+        #     json_template = Util.get_descriptor_template(descriptor_type)
         #     if descriptor_type == 'nsd':
         #         json_template['nsdIdentifier'] = request_id
         #         json_template['nsdInvariantId'] = request_id
@@ -366,7 +366,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         #     # page = 'click/descriptor/descriptor_new.html'
         #     json_template = ''
 
-        descriptor_string_yaml = util.json2yaml(json_template)
+        descriptor_string_yaml = Util.json2yaml(json_template)
         descriptor_string_json = json.dumps(json_template)
 
         return render(request, page, {
@@ -439,9 +439,9 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         #     page = 'etsi/descriptor/descriptor_view.html'
         # elif project_overview['type'] == 'click':
         #     page = 'click/descriptor/descriptor_view.html'
-        utility = Util()
+        # utility = Util()
         descriptor_string_json = json.dumps(descriptor)
-        descriptor_string_yaml = utility.json2yaml(descriptor)
+        descriptor_string_yaml = Util.json2yaml(descriptor)
         # print descriptor
         return render(request, page, {
             'project_id': project_id,
