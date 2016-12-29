@@ -18,10 +18,10 @@ class Parser(object):
     
     @classmethod        
     def importprojectdir(cls,dir_project, type):
-        '''Imports all files under a given folder
+        """Imports all files under a given folder
 
         Returns an empty project
-        '''
+        """
 
         project = {}
         return project

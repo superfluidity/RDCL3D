@@ -23,10 +23,10 @@ class EtsiParser(Parser):
     
     @classmethod        
     def importprojectdir(cls,dir_project, type):
-        '''Imports all files from NSD and VNFDs folders under a given folder
+        """Imports all files from NSD and VNFDs folders under a given folder
 
         this method is specific for Etsi project type
-        '''
+        """
 
         project = {
             'nsd': {},
@@ -58,10 +58,10 @@ class EtsiParser(Parser):
 
     @classmethod
     def importprojectfile(cls,ns_files, vnf_files):
-        '''Imports an array of NS files and an array of VNF files
+        """Imports an array of NS files and an array of VNF files
 
         this method is specific for Etsi project type
-        '''
+        """
         project = {
             'nsd': {},
             'vnfd': {}

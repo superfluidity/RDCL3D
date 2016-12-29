@@ -20,7 +20,7 @@ class Project(models.Model):
     updated_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     info = models.TextField(default='No info')
     data_project = jsonfield.JSONField(default={})
-    '''Stores a validated JSON representation of the project'''
+    """Stores a validated JSON representation of the project"""
 
     validated = models.BooleanField(default=False)
 
@@ -98,7 +98,7 @@ class Project(models.Model):
 
 
     def get_descriptors(self, type_descriptor):
-        '''Returns all descriptors of a given type'''
+        """Returns all descriptors of a given type"""
 
         try:
             current_data = json.loads(self.data_project)
@@ -108,7 +108,7 @@ class Project(models.Model):
         return result
 
     def get_descriptor(self, descriptor_id, type_descriptor):
-        '''Returns a specific descriptor'''
+        """Returns a specific descriptor"""
 
         try:
             current_data = json.loads(self.data_project)

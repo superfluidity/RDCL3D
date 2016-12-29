@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('EtsiRdclGraph')
 
 class EtsiRdclGraph(RdclGraph):
-    '''Operates on the graph representation used for the GUI graph views'''
+    """Operates on the graph representation used for the GUI graph views"""
 
     def __init__(self):
         pass
@@ -40,7 +40,7 @@ class EtsiRdclGraph(RdclGraph):
 
 
     def build_graph_from_project(self, json_project, model={}):
-        '''Creates a single graph for a whole project'''
+        """Creates a single graph for a whole project"""
 
         #print "json_project ",json_project
         graph_object = {

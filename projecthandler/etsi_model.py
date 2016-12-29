@@ -51,7 +51,7 @@ class EtsiProject(Project):
 
     @classmethod
     def get_example_list(cls):
-        '''Returns a list of directories, in each directory there is a project example'''
+        """Returns a list of directories, in each directory there is a project example"""
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
@@ -82,7 +82,7 @@ class EtsiProject(Project):
 
     @classmethod
     def get_descriptor_template(cls, type_descriptor):
-        '''Returns a descriptor template for a given descriptor type'''
+        """Returns a descriptor template for a given descriptor type"""
         
         try:
             schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
@@ -144,7 +144,7 @@ class EtsiProject(Project):
 
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
-        '''Creates a descriptor of a given type from a json or yaml representation'''
+        """Creates a descriptor of a given type from a json or yaml representation"""
         try:
             # utility = Util()
             print type_descriptor, data_type

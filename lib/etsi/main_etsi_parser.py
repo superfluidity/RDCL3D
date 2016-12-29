@@ -9,10 +9,10 @@ import traceback
 import glob
 import os
 
-''' 
+"""
 TODO(stefano) I have created this module to clean up etsi_parser.py
 may be it can be deleted 
-'''
+"""
 
 
 logging.basicConfig(level=logging.DEBUG)
