@@ -11,19 +11,21 @@ associated to the same file type or there can be file types that do not have a c
 For example for the "Etsi" project type we have the NSD graph view that describes a given Network Service and the VNFD
 graph view that describes the internal of a VNF.
 
-| Base class for project types: ``Project``, module: ``projecthandler/models.py``  
-| Derived classes: ``ProjectTypeProject``, module: ``projecthandler/project_type_model.py``  
-
 The RDCL 3D server side logic builds the graph representations starting from the descriptor files.
 In general, the approach is to create a comprehensive graph representation (e.g. includind the whole 
 project) and then to represent subsets of this graph by proper filtering. A *graph view* can be seen
 as a filter on the overall graph representation.
 
-Base class for GUI graph representation: ``RdclGraph``, module: ``lib/rdcl_graph.py``
-Derived classes: ``ProjectTypeRdclGraph``, module ``lib/project_type/project_type_rdcl_graph.py`` 
-
-Base class for parsing descriptors: ``Parser``, module: ``lib/parser.py``
-Derived classes: ``ProjectTypeParser``, module ``lib/project_type/project_type_parser.py``
+|   
+| Base class for project types: ``Project``, module: ``projecthandler/models.py``  
+| Derived classes: ``ProjectTypeProject``, module: ``projecthandler/project_type_model.py``  
+|   
+| Base class for GUI graph representation: ``RdclGraph``, module: ``lib/rdcl_graph.py``  
+| Derived classes: ``ProjectTypeRdclGraph``, module ``lib/project_type/project_type_rdcl_graph.py``   
+|   
+| Base class for parsing descriptors: ``Parser``, module: ``lib/parser.py``  
+| Derived classes: ``ProjectTypeParser``, module ``lib/project_type/project_type_parser.py``  
+|   
 
 Server side (python django)
 -----------
