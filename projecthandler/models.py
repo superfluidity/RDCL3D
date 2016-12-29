@@ -113,7 +113,7 @@ class Project(models.Model):
         try:
             current_data = json.loads(self.data_project)
             descriptor = current_data[type_descriptor][descriptor_id]
-            new_descriptor = Util().clone_descriptor(descriptor, type_descriptor, new_id)
+            new_descriptor = Util.clone_descriptor(descriptor, type_descriptor, new_id)
             current_data[type_descriptor][new_id] = new_descriptor
             self.data_project = current_data
             self.update()
@@ -125,15 +125,15 @@ class Project(models.Model):
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
-            utility = Util()
+            #utility = Util()
             print descriptor_id, type_descriptor
             current_data = json.loads(self.data_project)
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
             else:
                 yaml_object = yaml.load(new_data)
-                new_descriptor = json.loads(utility.yaml2json(yaml_object))
-            utility.validate_json_schema(type_descriptor, new_descriptor)
+                new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            Util.validate_json_schema(type_descriptor, new_descriptor)
             current_data[type_descriptor][descriptor_id] = new_descriptor
             self.data_project = current_data
             self.update()

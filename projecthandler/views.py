@@ -348,14 +348,14 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     if request.method == 'GET':
         request_id = request.GET.get('id', '')
 
-        util = Util()
+        # util = Util()
 
         json_template = projects[0].get_new_descriptor(descriptor_type, request_id)
 
         # if prj_token == 'etsi':
         #     # page = 'etsi/descriptor/descriptor_new.html'
 
-        #     json_template = util.get_descriptor_template(descriptor_type)
+        #     json_template = Util.get_descriptor_template(descriptor_type)
         #     if descriptor_type == 'nsd':
         #         json_template['nsdIdentifier'] = request_id
         #         json_template['nsdInvariantId'] = request_id
@@ -366,7 +366,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         #     # page = 'click/descriptor/descriptor_new.html'
         #     json_template = ''
 
-        descriptor_string_yaml = util.json2yaml(json_template)
+        descriptor_string_yaml = Util.json2yaml(json_template)
         descriptor_string_json = json.dumps(json_template)
 
         return render(request, page, {
@@ -439,9 +439,9 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         #     page = 'etsi/descriptor/descriptor_view.html'
         # elif project_overview['type'] == 'click':
         #     page = 'click/descriptor/descriptor_view.html'
-        utility = Util()
+        # utility = Util()
         descriptor_string_json = json.dumps(descriptor)
-        descriptor_string_yaml = utility.json2yaml(descriptor)
+        descriptor_string_yaml = Util.json2yaml(descriptor)
         # print descriptor
         return render(request, page, {
             'project_id': project_id,

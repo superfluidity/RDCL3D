@@ -9,22 +9,31 @@ import os.path
 _lib_name = 'Util'
 
 
-class Util:
+logging.basicConfig(level=logging.DEBUG)
+fh = logging.FileHandler('rdcl.log')
+log = logging.getLogger('UtilLogger')
+log.addHandler(fh)
+
+class Util(object):
 
     def __init__(self):
-        logging.basicConfig(level=logging.DEBUG)
-        self.log = logging.getLogger('UtilLogger')
+        # logging.basicConfig(level=logging.DEBUG)
+        # self.log = logging.getLogger('UtilLogger')
+        pass
 
-    def yaml2json(self, object_yaml):
-        self.log.debug('yaml2json')
+    @classmethod
+    def yaml2json(cls, object_yaml):
+        log.debug('yaml2json')
         return json.dumps(object_yaml, sort_keys=True, indent=2)
 
-    def json2yaml(self, object_json):
-        self.log.debug('json2yaml')
+    @classmethod
+    def json2yaml(cls, object_json):
+        log.debug('json2yaml')
         return yaml.safe_dump(object_json, default_flow_style=False)
 
-    def openfile(self, filepath, mode='r', buffering=1):
-        self.log.debug('reading file ' + filepath)
+    @classmethod
+    def openfile(cls, filepath, mode='r', buffering=1):
+        log.debug('reading file ' + filepath)
         try:
             if isinstance(filepath, file):
                 return filepath
@@ -32,82 +41,91 @@ class Util:
                 return open(filepath, mode, buffering)
 
         except IOError as e:
-            self.log.error('IOError: '.format(e.errno, e.strerror))
-        raise
+            log.error('IOError: '.format(e.errno, e.strerror))
+            raise
 
-    def loadyamlfile(self, name):
+    @classmethod
+    def loadyamlfile(cls, name):
         yaml_object = None
         try:
             if isinstance(name, file):
                 yaml_object = yaml.load(name)
             else:
-                yaml_file = self.openfile(name)
+                yaml_file = cls.openfile(name)
                 yaml_object = yaml.load(yaml_file)
 
             return yaml_object
         except Exception as e:
-            self.log.error('Exception loadYamlFile')
+            log.error('Exception loadYamlFile')
             raise
 
-    def loadjsonfile(self, name):
+    @classmethod
+    def loadjsonfile(cls, name):
         json_object = None
         try:
             #raise IOError('error from throws')
             if isinstance(name, file):
                 json_object = json.load(name)
             else:
-                json_file = self.openfile(name)
+                # json_file = self.openfile(name)
+                json_file = cls.openfile(name)
                 json_object = json.load(json_file)
 
             return json_object
         except Exception as e:
-            self.log.error('Exception loadJsonFile', e)
-        raise
+            log.error('Exception loadJsonFile', e)
+            raise
 
-    def writejsonfile(self, name, json_object):
+    @classmethod
+    def writejsonfile(cls, name, json_object):
         try:
-            self.log.debug('writejsonfile ' + name)
+            log.debug('writejsonfile ' + name)
             if isinstance(name, file):
                 json_object = json.dump(json_object, name)
             else:
-                json_file = self.openfile(name, 'w')
+                json_file = cls.openfile(name, 'w')
                 json_object = json.dump(json_object, json_file,separators=(',',': '), indent=4)
         except Exception as e:
-            self.log.error('Exception writejsonfile')
+            log.error('Exception writejsonfile')
             raise
 
-    def writeyamlfile(self, name, yaml_object):
+    @classmethod
+    def writeyamlfile(cls, name, yaml_object):
         try:
-            self.log.debug('writeyamlfile ' + name)
+            log.debug('writeyamlfile ' + name)
             if isinstance(name, file):
                 yaml_object = pyaml.dump(yaml_object, name, safe=True)
             else:
-                yaml_file = self.openfile(name, 'w')
+                yaml_file = cls.openfile(name, 'w')
                 yaml_object = pyaml.dump(yaml_object, yaml_file, safe=True)
         except Exception as e:
-            self.log.error('Exception writeyamlfile')
+            log.error('Exception writeyamlfile')
             raise
 
-    def validate_json_schema(self, type_descriptor, data):
+    @classmethod
+    def validate_json_schema(cls, type_descriptor, data):
         try:
-            schema = self.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            # print 'type_descriptor : '+type_descriptor
             jsonschema.validate(data, schema)
             return True
         except Exception as e:
             print e
-            self.log.error('Exception validate json schema')
+            log.error('Exception validate json schema')
             return False
 
-
-    def get_descriptor_template(self, type_descriptor):
+    @classmethod
+    def get_descriptor_template(cls, type_descriptor):
         try:
-            schema = self.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
+            schema = cls.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
+            # print 'type_descriptor : '+type_descriptor
             return schema
         except Exception as e:
-            self.log.error('Exception validate json schema')
+            log.error('Exception in get descriptor template')
             return False
 
-    def clone_descriptor (self, descriptor, type_descriptor, new_descriptor_id):
+    @classmethod
+    def clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
         new_descriptor = copy.deepcopy(descriptor)
         if (type_descriptor == 'vnfd'):
             new_extention = "_"+new_descriptor_id

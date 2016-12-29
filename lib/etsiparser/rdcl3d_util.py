@@ -4,7 +4,7 @@ import copy
 # from util import Util
 
 
-class Rdcl3d_util:
+class Rdcl3d_util(object):
 
     node_t3d_base = {
         'info': {
