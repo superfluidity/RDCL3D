@@ -18,6 +18,7 @@ import os.path
         # project_types['etsi']= projecthandler.etsi_model.EtsiProject
         # project_types['click']= ClickProject
 
+PATH_TO_SCHEMAS = "lib/etsiparser/schemas/"
 
 class EtsiProject(Project):
 
@@ -48,6 +49,10 @@ class EtsiProject(Project):
         file_path = 'lib/TopologyModels/etsi/etsi.yaml'
         return Util.loadyamlfile(file_path)        
 
+    @classmethod
+    def get_json_schema_by_type(cls, type_descriptor):
+        schema = PATH_TO_SCHEMAS+type_descriptor+".json"
+        return schema        
 
     @classmethod
     def get_new_descriptor(cls,descriptor_type, request_id):
@@ -167,7 +172,10 @@ class EtsiProject(Project):
                 # utility = Util()
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
-            validate = Util.validate_json_schema(type_descriptor, new_descriptor)
+
+            # schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            reference_schema = self.get_json_schema_by_type(type_descriptor)
+            validate = Util.validate_json_schema(reference_schema, new_descriptor)
             new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[
                 'nsdIdentifier']
             if not type_descriptor in current_data:
@@ -178,7 +186,7 @@ class EtsiProject(Project):
             self.update()
             result = new_descriptor_id
         except Exception as e:
-            print 'exception create descriptor', e
+            print 'Exception in create descriptor', e
             result = False
         return result
 

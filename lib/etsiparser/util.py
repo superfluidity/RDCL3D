@@ -23,6 +23,8 @@ class Util(object):
 
     @classmethod
     def yaml2json(cls, object_yaml):
+        '''Converts a yaml object into a json representation'''
+
         log.debug('yaml2json')
         return json.dumps(object_yaml, sort_keys=True, indent=2)
 
@@ -33,6 +35,12 @@ class Util(object):
 
     @classmethod
     def openfile(cls, filepath, mode='r', buffering=1):
+        '''Returns an open file given a filepath
+
+        If the filepath is already an open file, returns into
+        Raises Exception
+        '''
+
         log.debug('reading file ' + filepath)
         try:
             if isinstance(filepath, file):
@@ -46,6 +54,11 @@ class Util(object):
 
     @classmethod
     def loadyamlfile(cls, name):
+        '''Returns a yaml object from a filename or an open file
+
+        Raises Exception
+        '''
+
         yaml_object = None
         try:
             if isinstance(name, file):
@@ -61,6 +74,11 @@ class Util(object):
 
     @classmethod
     def loadjsonfile(cls, name):
+        '''Returns a json object from a filename or an open file
+
+        Raises Exception
+        '''
+
         json_object = None
         try:
             #raise IOError('error from throws')
@@ -78,6 +96,11 @@ class Util(object):
 
     @classmethod
     def writejsonfile(cls, name, json_object):
+        '''Writes the dump of a json obj to a filename or an open file
+
+        Raises Exception
+        '''
+
         try:
             log.debug('writejsonfile ' + name)
             if isinstance(name, file):
@@ -91,6 +114,11 @@ class Util(object):
 
     @classmethod
     def writeyamlfile(cls, name, yaml_object):
+        '''Writes the dump of a yaml obj to a filename or an open file
+
+        Raises Exception
+        '''
+
         try:
             log.debug('writeyamlfile ' + name)
             if isinstance(name, file):
@@ -103,11 +131,16 @@ class Util(object):
             raise
 
     @classmethod
-    def validate_json_schema(cls, type_descriptor, data):
+    def validate_json_schema(cls, reference_schema, data):
+        '''Validates a json data against a json schema
+
+        Raises Exception
+        '''
+
         try:
-            schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/etsiparser/schemas/"+type_descriptor+".json")
             # print 'type_descriptor : '+type_descriptor
-            jsonschema.validate(data, schema)
+            jsonschema.validate(data, reference_schema)
             return True
         except Exception as e:
             print e
