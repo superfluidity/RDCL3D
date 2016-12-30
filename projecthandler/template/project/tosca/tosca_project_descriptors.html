@@ -15,7 +15,7 @@
   {% endifequal %} Descriptors
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'etsi_project_left_sidebar.html' %}
+    {% include 'tosca/tosca_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -24,7 +24,7 @@
     <li><a>  {% ifequal descriptor_type 'nsd' %}
               NS
             {% else%}
-            VNF
+            TOSCA YAML
          {% endifequal %} Descriptors</a></li>
 
 {% endblock %}
@@ -48,7 +48,7 @@
     {% endif %}
 {% endif %}
 <div class="row">
-    {% include "etsi/descriptor/descriptorlist.html" %}
+    {% include "tosca/descriptor/descriptorlist.html" %}
 </div>
 {% endblock %}
 

@@ -28,7 +28,7 @@
 
 
 {% block left_sidebar %}
-    {% include 'etsi_project_left_sidebar.html' %}
+    {% include 'tosca/tosca_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -37,7 +37,7 @@
     <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'nsd' %}
           NS
         {% else%}
-        VNF
+        TOSCA YAML
      {% endifequal %} Descriptors</a></li>
     <li><a >{{descriptor_id}}</a></li>
 

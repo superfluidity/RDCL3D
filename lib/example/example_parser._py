@@ -12,10 +12,8 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ExampletokenParser')
 
 class ExampletokenParser(Parser):
-    """Parser methods for etsi project type
+    """Parser methods for exampletoken project type
 
-    There is no actual parsing involved here, because the
-    descriptor files are already JSON!
     """
 
     def __init__(self):

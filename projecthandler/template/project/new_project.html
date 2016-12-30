@@ -141,7 +141,22 @@
                             </div>
 
                         </div>
+                    </div>
+                    <div id="div-file-upload-tosca" style="display: none;">
+                        <h4>Select Descriptors File from your computer</h4>
 
+                        <div class="tab-pane col-md-6" id="toscayaml-upload">
+
+                            <!-- Standar Form -->
+                            <h3>Tosca YAML files</h3>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="file" name="toscayaml_files" id="toscayaml-js-upload-files" multiple
+                                           onchange="handleFiles(this.files)">
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                     <div id="div-example-etsi" style="display: none;">
                         <h4>Choose an Example</h4>

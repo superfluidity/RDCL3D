@@ -172,6 +172,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 
     # elif project_overview['type'] == 'click':
     #     page = 'click/click_project_descriptors.html'
+    print "YYYYYYYYY ", page
 
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
