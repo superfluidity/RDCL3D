@@ -11,8 +11,8 @@
             </div>
         </div>
         <div class="box-body">
-            {% if descriptor_type == 'nsd' %}
-                {% include 'descriptorlist_nsd.html' %}
+            {% if descriptor_type == 'toscayaml' %}
+                {% include 'tosca/descriptor/descriptorlist_toscayaml.html' %}
             {% elif descriptor_type == 'vnfd' %}
                 {% include 'descriptorlist_vnfd.html' %}
             {% endif %}

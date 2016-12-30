@@ -99,11 +99,12 @@ class Project(models.Model):
 
     def get_descriptors(self, type_descriptor):
         """Returns all descriptors of a given type"""
-
+        print "xxxxxxxxxxx", type_descriptor
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
         except Exception:
+            print 'exception in get_descriptors', e
             result = {}
         return result
 
