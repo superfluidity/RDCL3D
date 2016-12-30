@@ -50,11 +50,29 @@ There is also a script to delete a project type (use it with care, it deletes al
 of Newtype): ::
     bash scripts/clean_project_type.sh Newtype
 
+which descriptors will be part of the model ?? The ``data_project`` attribute of the Project class
+stores a validated JSON representation of the project, for each descriptor type there is a key and the
+value is a list of descriptors
+
+which modules do we need to change ?
+
+get_overview_data in projecthandler/newtype_model.py 
+
+create_descriptor in projecthandler/newtype_model.py (when it is used??)
+
+importprojectfiles in newtype_parser.py
+
 HTML templates
 --------------
 A set of html templates needs to be added for a new project type. The html templates are located in 
 the folder ``projecthandler/template/project/newtype/``. The above described scripts ``scripts/new_project_type.sh``
 also takes care of creating a default version of the html templates.
+
+projecthandler/template/project/new_project.html :
+add the entry for the new project at line 69
+
+projecthandler/template/project/tosca/tosca_project_details.html :
+change the file types
 
 
 Client side (javascript)
