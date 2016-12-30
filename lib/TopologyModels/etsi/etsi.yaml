@@ -42,26 +42,38 @@ layer:                                  #List of Layers
                     ns_vl:
                         callback: linkVnftoNsVl
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_cp:
                         callback: linkVnftoNsCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
             ns_vl:
                 destination:
                     vnf:
                         callback: linkVnftoNsVl
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_cp:
                         callback: nsCpExclusiveConnection
                         direct_edge: false
+                        removable:
+                            callback: removeLink
 
             ns_cp:
                 destination:
                     vnf:
                         callback: linkVnftoNsCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_vl:
                         callback: nsCpExclusiveConnection
                         direct_edge: false
+                        removable:
+                            callback: removeLink
 
     vnf:
         nodes:                  #List of node to be visualized in the current layer
@@ -91,19 +103,27 @@ layer:                                  #List of Layers
                     vnf_vdu_cp:
                         callback: linkVltoVduCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     vnf_ext_cp:
                         callback: linkVnfVltoExpCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
             vnf_ext_cp:
                 destination:
                     vnf_vl:
                         callback: linkVnfVltoExpCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
             vnf_vdu_cp:
                 destination:
                     vnf_vl:
                         callback: linkVltoVduCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
 
 
 
@@ -151,5 +171,8 @@ callback:                             #List of callbacks used to controll the li
       file: etsi_controller.js
       class: EtsiController
   removeVnfVduCp:
+      file: etsi_controller.js
+      class: EtsiController
+  removeLink:
       file: etsi_controller.js
       class: EtsiController

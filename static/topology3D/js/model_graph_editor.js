@@ -118,7 +118,6 @@ dreamer.ManoGraphEditor = (function(global) {
      * @returns {boolean}
      */
     ManoGraphEditor.prototype.removeNode = function(node, success, error) {
-        console.log('REMOVEEEEEEEEEEEEEE NODEEEEEEEEEEE')
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
@@ -184,21 +183,39 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeLink = function(link) {
+    ManoGraphEditor.prototype.removeLink = function(link, success, error) {
+        var self = this;
         var s = link.source;
         var d = link.target;
         var source_type = s.info.type;
         var destination_type = d.info.type;
-        if ((source_type == 'vnf_vdu' && destination_type == 'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type == 'vnf_vdu')) {
-            alert('You should delete the VDU CP')
-        } else {
-            var self = this;
-            new dreamer.GraphRequests().removeLink(s, d, function() {
+        var current_layer = self.getCurrentView()
+        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]
+            && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable
+        ){
+            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback){
+                var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback;
+                var c = self.model.callback[callback].class;
+                var controller = new dreamer[c]();
+                controller[callback](self, link, function(){
+                    self._deselectAllNodes();
+                    self._deselectAllLinks();
+                    self.parent.removeLink.call(self, link.index);
+                    if(success)
+                        success();
+                }, error);
+            }else{
                 self._deselectAllNodes();
                 self._deselectAllLinks();
                 self.parent.removeLink.call(self, link.index);
-            });
+                if(success)
+                    success();
+            }
+
+        } else {
+            alert("You can't delete the link" );
         }
+
 
     };
 

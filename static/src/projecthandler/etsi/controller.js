@@ -239,6 +239,7 @@ dreamer.EtsiController = (function(global) {
         });
     };
 
+
     EtsiController.prototype.removeVnfVduCp= function(self, node, success, error){
         var vdu_links = $.grep(self.d3_graph.links, function(e) {
             return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
@@ -253,11 +254,19 @@ dreamer.EtsiController = (function(global) {
     };
 
     EtsiController.prototype.removeNode= function(self, node, success, error){
-                console.log('remove node')
-
         new dreamer.GraphRequests().removeNode(node, null, function() {
                 if(success){
                     success();
+            }
+        });
+    };
+
+    EtsiController.prototype.removeLink= function(self, link, success, error){
+        var s = link.source;
+        var d = link.target;
+        new dreamer.GraphRequests().removeLink(s, d, function() {
+            if(success){
+                success();
             }
         });
     };
