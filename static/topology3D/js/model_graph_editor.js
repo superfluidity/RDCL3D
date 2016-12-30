@@ -73,17 +73,22 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new node.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addNode = function(args, success, error) {
+    ManoGraphEditor.prototype.addNode = function(node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView()
-        var node_type = args.info.type;
+        var node_type = node.info.type;
         self.model.layer[current_layer].nodes[node_type]
         if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
-            console.log(self.model.layer[current_layer].nodes[node_type].addable)
             if(self.model.layer[current_layer].nodes[node_type].addable.callback){
                 var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, args, success, error)
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function(){
+                    self.parent.addNode.call(self, node);
+                    if(success)
+                        success();
+                }, error);
+            }else{
+                self.parent.addNode.call(self, node);
             }
         }
     };
@@ -148,96 +153,35 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new Link.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addLink = function(s, d) {
+    ManoGraphEditor.prototype.addLink = function(s, d, success, error) {
+        var self = this;
         var source_id = s.id;
         var target_id = d.id;
+        var source_type = s.info.type;
+        var destination_type = d.info.type;
         var link = {
             source: source_id,
             target: target_id,
             view: this.filter_parameters.link.view[0],
             group: this.filter_parameters.link.group,
         };
-        var source_type = s.info.type;
-        var destination_type = d.info.type;
-        if ((source_type == 'ns_vl' && destination_type == 'ns_cp') || (source_type == 'ns_cp' && destination_type == 'ns_vl')) {
-            var cp_id = source_type == 'ns_cp' ? source_id : target_id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == cp_id || e.target.id == cp_id);
-            });
-            var self = this;
-            new dreamer.GraphRequests().addLink(s, d, null, function() {
-                self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
-                self.parent.addLink.call(self, link);
-            });
-        } else if ((source_type == 'ns_vl' && destination_type == 'vnf') || (source_type == 'vnf' && destination_type == 'ns_vl')) {
-            var vnf_id = source_type == 'vnf' ? source_id : target_id;
-            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group == vnf_id && e.info.type == 'vnf_ext_cp');
-            });
-            var self = this;
-            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-                new dreamer.GraphRequests().addLink(s, d, choice, function() {
+        var current_layer = self.getCurrentView()
+        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]){
+            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback){
+                var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
+                var c = self.model.callback[callback].class;
+                var controller = new dreamer[c]();
+                controller[callback](self, s, d, function(){
                     self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
-                    $('#modal_create_link_chooser').modal('hide');
-                });
-            });
-
-        } else if ((source_type == 'ns_cp' && destination_type == 'vnf') || (source_type == 'vnf' && destination_type == 'ns_cp')) {
-            var vnf_id = source_type == 'vnf' ? source_id : target_id;
-            var ns_cp_id = source_type == 'ns_cp' ? source_id : target_id;
-            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group == vnf_id && e.info.type == 'vnf_ext_cp');
-            });
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == ns_cp_id || e.target.id == ns_cp_id);
-            });
-            var self = this;
-            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-                new dreamer.GraphRequests().addLink(s, d, choice, function() {
-                    if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                        self.removeLink(old_link[0].index);
-                    }
-                    self._deselectAllNodes();
-                    self.parent.addLink.call(self, link);
-                    $('#modal_create_link_chooser').modal('hide');
-                });
-            });
-
-        } else if ((source_type == 'vnf_vl' && destination_type == 'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type == 'vnf_vl')) {
-            var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
-            });
-            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')
-            });
-
-            var self = this;
-            new dreamer.GraphRequests().addLink(s, d, vdu_id, function() {
+                    if(success)
+                        success();
+                }, error);
+            }else{
                 self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
                 self.parent.addLink.call(self, link);
-            });
-        } else if ((source_type == 'vnf_ext_cp' && destination_type == 'vnf_vl') || (source_type == 'vnf_vl' && destination_type == 'vnf_ext_cp')) {
-            var self = this;
-            var vnf_ext_cp_id = source_type == 'vnf_ext_cp' ? source_id : target_id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_ext_cp_id || e.target.id == vnf_ext_cp_id);
-            });
-            new dreamer.GraphRequests().addLink(s, d, null, function() {
-                self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
-                self.parent.addLink.call(self, link);
-            });
+            }
+
         } else {
             alert("You can't link a " + source_type + " with a " + destination_type);
         }
