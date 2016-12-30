@@ -22,14 +22,14 @@ layer:                                  #List of Layers
         nodes:                  #List of node to be visualized in the current layer
             vnf:
                 addable:
-                    callback: chooseId
+                    callback: addVnf
                 expands : vnf
             ns_vl:
                 addable:
-                    callback: chooseId
+                    callback: addNode
             ns_cp:
                 addable:
-                    callback: chooseId
+                    callback: addNode
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
@@ -68,13 +68,17 @@ layer:                                  #List of Layers
     vnf:
         nodes:
             vnf_vl:
-              addable: true
+              addable:
+                callback: addNode
             vnf_vdu:
-              addable: true
+              addable:
+                callback: addVnfVdu
             vnf_ext_cp:
-              addable: true
+              addable:
+                callback: addNode
             vnf_vdu_cp:
-              addable: true
+              addable:
+                callback: addVnfVduCp
         allowed_edges:
             vnf_vl:
                 destination:
@@ -123,7 +127,26 @@ callback:                             #List of callbacks used to controll the li
   #    function_name: getVduConnectedToVduCp
   #    argument:
   #        -   vnf_vdu_cp
-  chooseId:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+  addVnf:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+    file: etsi_controller.js
+    class: EtsiController
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
+  addNode:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+    file: etsi_controller.js
+    class: EtsiController
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
+
+  addVnfVdu:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+    file: etsi_controller.js
+    class: EtsiController
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
+  addVnfVduCp:             #Return the vnf_vdu if connected to the vnf_vdu_cp
     file: etsi_controller.js
     class: EtsiController
   #    function_name: getVduConnectedToVduCp

@@ -83,95 +83,9 @@ dreamer.ManoGraphEditor = (function(global) {
             if(self.model.layer[current_layer].nodes[node_type].addable.callback){
                 var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, args)
-
-
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, args, success, error)
             }
-        }/*
-        if (args.info.type === 'vnf') {
-            if (args.existing_vnf) {
-
-            } else {
-                new dreamer.GraphRequests().addNode(args, null, function() {
-                    self.parent.addNode.call(self, args);
-                    var vnf_ext_cp = {
-                        'id': 'vnf_ext_cp' + "_" + args.id,
-                        'info': {
-                            'type': 'vnf_ext_cp',
-                            'group': [args.id]
-                        },
-                        'x': args.x,
-                        'y': args.y
-                    }
-                    new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function() {
-                        self.parent.addNode.call(self, vnf_ext_cp);
-                        if (success)
-                            success();
-                    });
-                });
-            }
-        } else if (args.info.type === 'vnf_vdu') {
-            new dreamer.GraphRequests().addNode(args, null, function() {
-                self.parent.addNode.call(self, args);
-                var vdu_id = args.id;
-                var vnf_vdu_cp = {
-                    'id': 'vnf_vdu_cp' + "_" + generateUID(),
-                    'info': {
-                        'type': 'vnf_vdu_cp',
-                        'group': [args.info.group[0]]
-                    },
-                    'x': args.x - (args.x * 0.1),
-                    'y': args.y - (args.y * 0.1)
-                }
-                new dreamer.GraphRequests().addNode(vnf_vdu_cp, vdu_id, function() {
-                    self.parent.addNode.call(self, vnf_vdu_cp);
-                    var link = {
-                        source: args.id,
-                        target: vnf_vdu_cp.id,
-                        view: self.filter_parameters.link.view[0],
-                        group: [args.info.group[0]],
-                    };
-                    self.parent.addLink.call(self, link);
-                    if (success)
-                        success();
-                });
-
-            });
-        } else if (args.info.type === 'vnf_vdu_cp') {
-            var vnf_id = args.info.group[0];
-            var vnf_vdus = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group.indexOf(vnf_id) >= 0 && e.info.type == 'vnf_vdu');
-            });
-            var self = this;
-            if (success)
-                success();
-            if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <= 0) {
-                alert('You should add a VDU')
-            } else {
-                showChooserModal('Select the VDU to link', vnf_vdus, function(choice) {
-                    new dreamer.GraphRequests().addNode(args, choice, function() {
-                        self.parent.addNode.call(self, args);
-                        var link = {
-                            source: args.id,
-                            target: choice,
-                            view: self.filter_parameters.link.view[0],
-                            group: [args.info.group[0]],
-                        };
-
-                        self.parent.addLink.call(self, link);
-
-                        $('#modal_create_link_chooser').modal('hide');
-                    });
-                });
-            }
-
-        } else {
-            new dreamer.GraphRequests().addNode(args, null, function() {
-                self.parent.addNode.call(self, args);
-                if (success)
-                    success();
-            });
-        }*/
+        }
     };
 
     ManoGraphEditor.prototype.addVnffg = function(node_info, success) {
