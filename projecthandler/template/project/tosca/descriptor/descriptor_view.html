@@ -19,10 +19,10 @@
 {% block title_header_big %}
     {{ block.super }}
     Edit
-{% ifequal descriptor_type 'nsd' %}
-          NS
+{% ifequal descriptor_type 'toscayaml' %}
+        TOSCA YAML
         {% else%}
-        VNF
+        UNKNOWN
      {% endifequal %} Descriptor
 {% endblock %}
 
@@ -34,10 +34,10 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'nsd' %}
-          NS
-        {% else%}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'toscayaml' %}
         TOSCA YAML
+        {% else%}
+        UNKNOWN
      {% endifequal %} Descriptors</a></li>
     <li><a >{{descriptor_id}}</a></li>
 
