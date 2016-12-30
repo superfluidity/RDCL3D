@@ -31,6 +31,7 @@ sed -i -e "s/exampletoken/${1,,}/g" lib/${1,,}/__init__.py
 sed -i -e "s/EXAMPLETOKEN/${1^^}/g" lib/${1,,}/__init__.py
 
 #usecases
+
 mkdir usecases/${1^^}
 
 

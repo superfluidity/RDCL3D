@@ -13,5 +13,12 @@ rm projecthandler/${1,,}_model.py
 
 rm -r lib/${1,,}
 
+#usecases
+
+rm -r usecases/${1^^}
+
+
+#html templates
+
 rm -r projecthandler/template/project/${1,,}
 
