@@ -56,6 +56,8 @@ A set of html templates needs to be added for a new project type. The html templ
 the folder ``projecthandler/template/project/newtype/``. The above described scripts ``scripts/new_project_type.sh``
 also takes care of creating a default version of the html templates.
 
+projecthandler/template/project/new_project.html :
+add the entry for the new project at line 69
 
 Client side (javascript)
 -----------
