@@ -1,0 +1,28 @@
+<div id="div-file-upload-click" class="start-selector" style="display: none;">
+    <h4>Select Descriptors File from your computer</h4>
+
+    <div class="tab-pane col-md-6" id="cfg-upload">
+
+        <!-- Standar Form -->
+        <h3>Configuration files</h3>
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" name="cfg_files" id="cfg-js-upload-files" multiple
+                       onchange="handleFiles(this.files)">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="div-example-click" class="start-selector" style="display: none;">
+    <h4>Choose an Example</h4>
+    <select id="example-click" name="example-click-id">
+        {% for id in click_example %}
+        <option value="{{id}}">
+            {{id}}
+        </option>
+        {% endfor %}
+    </select>
+
+</div>

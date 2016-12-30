@@ -4,7 +4,7 @@
 
 {% block head_block %}
 {{ block.super }}
-
+    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 {% endblock %}
 
 {% block left_sidebar %}
@@ -52,26 +52,14 @@
                         <div class="form-group col-xs-4">
                             <p for="projectInfo">Info</p>
                             <input type="text" class="form-control" name="info" id="projectInfo"
-                                   placeholder="Description info">
+                                   placeholder="Short Description">
                         </div>
                         <div class="form-group col-xs-5">
-                            <p for="typeButtonsSelect">Type</p>
+                            <p for="typeButtonsSelect">Project Type</p>
+                            <select id="select_type" class="js-example-basic-single " style="width: 75%">
 
-                            <div id="typeButtonsSelect" class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="type" id="option1" autocomplete="off" value="etsi"
-                                           checked> Etsi 16
-                                </label>
-                                <label class="btn btn-primary">
-                                    <input type="radio" name="type" id="option2" autocomplete="off" value="click"> Click
-                                </label>
-                                <label class="btn btn-primary" disabled>
-                                    <input type="radio" name="type" id="option3" autocomplete="off" value="superfluidity" > Superfluidity
-                                </label>
-                                <label class="btn btn-primary" >
-                                    <input type="radio" name="type" id="option4" autocomplete="off" value="tosca" > Tosca
-                                </label>
-                            </div>
+                            </select>
+
                         </div>
 
                     </div>
@@ -97,91 +85,11 @@
                             </div>
                         </div>
                     </div>
+                    <div id="typeStartContainer" class="row">
 
-                    <div id="div-file-upload-etsi" style="display: none;">
-                        <h4>Select Descriptors File from your computer</h4>
-
-                        <div class="tab-pane col-md-6" id="ns-upload">
-
-                            <!-- Standar Form -->
-                            <h3>Network Service</h3>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <input type="file" accept=".json, .yaml" name="ns_files" id="ns-js-upload-files" multiple
-                                           onchange="handleFiles(this.files)">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="tab-pane col-md-6" id="vnf-upload">
-
-                            <!-- Standar Form -->
-                            <h3>Virtual Network Function</h3>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <input type="file" accept=".json, .yaml" name="vnf_files" id="vnf-js-upload-files" multiple
-                                           onchange="handleFiles(this.files)">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="div-file-upload-click" style="display: none;">
-                        <h4>Select Descriptors File from your computer</h4>
-
-                        <div class="tab-pane col-md-6" id="cfg-upload">
-
-                            <!-- Standar Form -->
-                            <h3>Configuration files</h3>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <input type="file" name="cfg_files" id="cfg-js-upload-files" multiple
-                                           onchange="handleFiles(this.files)">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="div-file-upload-tosca" style="display: none;">
-                        <h4>Select Descriptors File from your computer</h4>
-
-                        <div class="tab-pane col-md-6" id="toscayaml-upload">
-
-                            <!-- Standar Form -->
-                            <h3>Tosca YAML files</h3>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <input type="file" name="toscayaml_files" id="toscayaml-js-upload-files" multiple
-                                           onchange="handleFiles(this.files)">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="div-example-etsi" style="display: none;">
-                        <h4>Choose an Example</h4>
-                        <select id="example-etsi" name="example-etsi-id">
-                            {% for id in etsi_example %}
-                               <option value="{{id}}">
-                                   {{id}}
-                               </option>
-                            {% endfor %}
-                        </select>
-
+                        {% autoescape off %}{{ type_container_template }}{% endautoescape %}
 
                     </div>
-                    <div id="div-example-click" style="display: none;">
-                        <h4>Choose an Example</h4>
-                            <select id="example-click" name="example-click-id">
-                            {% for id in click_example %}
-                               <option value="{{id}}">
-                                   {{id}}
-                               </option>
-                            {% endfor %}
-                        </select>
-
-                    </div>
-
 
                     <!-- /.box-body -->
                 </div>
@@ -198,11 +106,13 @@
 
 {% block resource_block %}
 {{ block.super }}
+    <!-- Select2 -->
+    <script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
 
-
+    <script src="{% static "src/projecthandler/new_project.js" %}"></script>
 <script>
-
-
+var data_type_selector ={{ data_type_selector |safe }};
+/*
 function handleFiles(files){
 console.log(files);
 for (var i = 0; i < files.length; i++) {
@@ -224,20 +134,7 @@ function removeFile(file_id){
 
 }
 
-function handleTypeChoose(type){
 
-    if(type == 'click'){
-
-    }
-    else if ( type == 'etsi'){
-
-
-    }
-    else if ( type == 'superfluidity'){
-
-
-    }
-}
 
 function startFromChoose(start){
     resetSelectors();
@@ -266,22 +163,13 @@ function resetSelectors(){
 
 $(document).ready(function () {
 
-    $("#typeButtonsSelect :input").change(function(e) {
-        handleTypeChoose(this.value)
-    });
-
-    $("#startButtonsSelect :input").change(function() {
-        startFromChoose(this.value);
-    });
-
-
     {% if project_id %}
       window.location.href='{% url "projects:open_project" project_id %}';
     {% endif %}
 });
 
 
-
+*/
 
 </script>
 {% endblock %}

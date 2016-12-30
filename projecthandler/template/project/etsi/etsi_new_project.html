@@ -1,0 +1,41 @@
+<div id="div-file-upload-etsi" class="start-selector" style="display: none;">
+    <h4>Select Descriptors File from your computer</h4>
+
+    <div class="tab-pane col-md-6" id="ns-upload">
+
+        <!-- Standar Form -->
+        <h3>Network Service</h3>
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" accept=".json, .yaml" name="ns_files" id="ns-js-upload-files" multiple
+                       onchange="handleFiles(this.files)">
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane col-md-6" id="vnf-upload">
+
+        <!-- Standar Form -->
+        <h3>Virtual Network Function</h3>
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" accept=".json, .yaml" name="vnf_files" id="vnf-js-upload-files" multiple
+                       onchange="handleFiles(this.files)">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="div-example-etsi" class="start-selector" style="display: none;">
+    <h4>Choose an Example</h4>
+    <select id="example-etsi" name="example-etsi-id">
+        {% for id in etsi_example %}
+        <option value="{{id}}">
+            {{id}}
+        </option>
+        {% endfor %}
+    </select>
+
+
+</div>

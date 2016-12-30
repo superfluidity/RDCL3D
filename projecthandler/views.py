@@ -5,7 +5,6 @@ from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from sf_user.models import CustomUser
 from lib.util import Util
-from lib.clickparser import mainrdcl
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
@@ -34,7 +33,6 @@ def create_new_project(request):
         type = request.POST.get('type', '')
         start_from = request.POST.get('startfrom', 'scratch')
 
-
         project_types = Project.get_project_types()
         if type in project_types:
             project_class = project_types[type]
@@ -44,12 +42,12 @@ def create_new_project(request):
         # elif type == 'click':
         #     project_class = ClickProject
         else:
-            #FIXME this error is not handled 
+            # FIXME this error is not handled
             error_msgs.push('Project type undefined.')
 
         try:
 
-        # if type == 'etsi':
+            # if type == 'etsi':
 
             if start_from == 'scratch':
                 # print 'from scratch'
@@ -64,32 +62,40 @@ def create_new_project(request):
                 # print 'from example'
                 # data_project = EtsiProject.data_project_from_example(request)
                 data_project = project_class.data_project_from_example(request)
-            
-            # project = EtsiProject.create_project (name, user, False, info, data_project)
-            project = project_class.create_project (name, user, False, info, data_project)
 
+            # project = EtsiProject.create_project (name, user, False, info, data_project)
+            project = project_class.create_project(name, user, False, info, data_project)
 
         except Exception as e:
-            print 'Error creating '+type+' project! Please retry.'
+            print 'Error creating ' + type + ' project! Please retry.'
             print e
-            return render(request, 'error.html', {'error_msg': 'Error creating '+type+' project! Please retry.'})
+            return render(request, 'error.html', {'error_msg': 'Error creating ' + type + ' project! Please retry.'})
 
         return render(request, 'new_project.html', {'project_id': project.id})
 
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
-        
-        examples_by_type = {}
-        
+        result = {}
+        data_type_selector = [{
+            'id': '-1',
+            'text': 'Select an option'
+        }]
+        type_container_template = []
         project_types = Project.get_project_types()
+        print "project_types", project_types.keys()
         for type in project_types:
             project_class = project_types[type]
-            examples_by_type.update(project_class.get_example_list())
+            result.update(project_class.get_example_list())
+            data_type_selector.append({
+                'id': type,
+                'text': type,
+                'value': type
+            })
+            type_container_template.append(type + '/' + type + '_new_project.html')
 
-
-        return render(request, 'new_project.html', examples_by_type)
-        # return render(request, 'new_project.html', {'etsi_example': Util().get_etsi_example_list(),
-        #                                             'click_example': Util().get_click_example_list()})
+        result.update({'data_type_selector': json.dumps(data_type_selector)})
+        result.update({'type_container_template': render_to_string(type_container_template)})
+        return render(request, 'new_project.html', result)
 
 
 @login_required
@@ -114,8 +120,8 @@ def open_project(request, project_id=None):
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
         #                      example: 'etsi/etsi_project_details.html'
-        return render(request, prj_token+'/'+prj_token+'_project_details.html',
-                          {'project_overview': project_overview, 'project_id': project_id})
+        return render(request, prj_token + '/' + prj_token + '_project_details.html',
+                      {'project_overview': project_overview, 'project_id': project_id})
         # if project_overview['type'] == 'etsi':
         #     return render(request, 'etsi/etsi_project_details.html',
         #                   {'project_overview': project_overview, 'project_id': project_id})
@@ -145,8 +151,8 @@ def delete_project(request, project_id=None):
             project_overview = projects[0].get_overview_data()
             prj_token = project_overview['type']
             #                 example: 'etsi/etsi_project_delete.html'
-            return render(request, prj_token+'/'+prj_token+'_project_delete.html',
-                              {'project_id': project_id, 'project_name': project_overview['name']})
+            return render(request, prj_token + '/' + prj_token + '_project_delete.html',
+                          {'project_id': project_id, 'project_name': project_overview['name']})
             # if project_overview['type'] == 'etsi':
             #     return render(request, 'etsi/etsi_project_delete.html',
             #                   {'project_id': project_id, 'project_name': project_overview['name']})
@@ -166,7 +172,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
 
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
     # if project_overview['type'] == 'etsi':
     #     page = 'etsi/etsi_project_descriptors.html'
 
@@ -186,13 +192,12 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 @login_required
 def graph(request, project_id=None):
     if request.method == 'GET':
-
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
         # example : 'etsi/project_graph.html'
-        return render(request, prj_token+'/project_graph.html', {
+        return render(request, prj_token + '/project_graph.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
             'collapsed_sidebar': True
@@ -229,7 +234,7 @@ def download(request, project_id=None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {  #TODO REFACTOR
+        return render(request, 'download_etsi.html', {  # TODO REFACTOR
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
         })
@@ -242,7 +247,7 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
     # if project_overview['type'] == 'etsi':
     #     page = 'etsi/etsi_project_descriptors.html'
     # elif project_overview['type'] == 'click':
@@ -267,7 +272,7 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
     result = projects[0].clone_descriptor(descriptor_type, descriptor_id, new_id)
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
     # if project_overview['type'] == 'etsi':
     #     page = 'etsi/etsi_project_descriptors.html'
     # elif project_overview['type'] == 'click':
@@ -289,7 +294,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/descriptor/descriptor_new.html'
+    page = prj_token + '/descriptor/descriptor_new.html'
     if request.method == 'GET':
         request_id = request.GET.get('id', '')
 
@@ -314,7 +319,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
-            desc_name = request.POST.get('it')  #TODO capire 'it' che significa ???
+            desc_name = request.POST.get('it')  # TODO capire 'it' che significa ???
 
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
@@ -361,7 +366,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
-        page = prj_token+'/descriptor/descriptor_view.html'
+        page = prj_token + '/descriptor/descriptor_view.html'
 
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
         # if project_overview['type'] == 'etsi':
@@ -395,7 +400,7 @@ def graph_positions(request, project_id=None):
 @login_required
 def unused_vnf(request, project_id=None, nsd_id=None):
     if request.method == 'GET':
-        print 'in method unused_vnf : ',project_id, nsd_id #TODO log
+        print 'in method unused_vnf : ', project_id, nsd_id  # TODO log
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_unused_vnf(nsd_id)
         status_code = 500 if result == None else 200
@@ -407,8 +412,6 @@ def unused_vnf(request, project_id=None, nsd_id=None):
 @login_required
 def add_element(request, project_id=None):
     if request.method == 'POST':
-        #result = False
-        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_add_element(request)
 
@@ -421,8 +424,6 @@ def add_element(request, project_id=None):
 @login_required
 def remove_element(request, project_id=None):
     if request.method == 'POST':
-        #result = False
-        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_remove_element(request)
 
@@ -435,8 +436,6 @@ def remove_element(request, project_id=None):
 @login_required
 def add_link(request, project_id=None):
     if request.method == 'POST':
-        # result = False
-        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_add_link(request)
 
@@ -449,8 +448,6 @@ def add_link(request, project_id=None):
 @login_required
 def remove_link(request, project_id=None):
     if request.method == 'POST':
-        # result = False
-        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_remove_link(request)
 
@@ -462,9 +459,8 @@ def remove_link(request, project_id=None):
 
 @login_required
 def add_node_to_vnffg(request, project_id=None):
-    print "add_node_to_vnffg" #TODO log
+    print "add_node_to_vnffg"  # TODO log
     if request.method == 'POST':
-        # projects = EtsiProject.objects.filter(id=project_id)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].add_node_to_vnffg(request)
 
