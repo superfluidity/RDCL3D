@@ -23,13 +23,19 @@ layer:                                  #List of Layers
             vnf:
                 addable:
                     callback: addVnf
+                removable:
+                    callback: removeNode
                 expands : vnf
             ns_vl:
                 addable:
                     callback: addNode
+                removable:
+                    callback: removeNode
             ns_cp:
                 addable:
                     callback: addNode
+                removable:
+                    callback: removeNode
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
@@ -62,15 +68,23 @@ layer:                                  #List of Layers
             vnf_vl:
                 addable:
                     callback: addNode
+                removable:
+                    callback: removeNode
             vnf_vdu:
                 addable:
                     callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
             vnf_ext_cp:
                 addable:
                     callback: addNode
+                removable:
+                    callback: removeNode
             vnf_vdu_cp:
                 addable:
                     callback: addVnfVduCp
+                removable:
+                    callback: removeVnfVduCp
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf_vl:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
@@ -128,5 +142,14 @@ callback:                             #List of callbacks used to controll the li
       file: etsi_controller.js
       class: EtsiController
   linkVnfVltoExpCp:
+      file: etsi_controller.js
+      class: EtsiController
+  removeNode:
+      file: etsi_controller.js
+      class: EtsiController
+  removeVnfVdu:
+      file: etsi_controller.js
+      class: EtsiController
+  removeVnfVduCp:
       file: etsi_controller.js
       class: EtsiController

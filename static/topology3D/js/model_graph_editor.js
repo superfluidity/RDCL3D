@@ -77,7 +77,6 @@ dreamer.ManoGraphEditor = (function(global) {
         var self = this;
         var current_layer = self.getCurrentView()
         var node_type = node.info.type;
-        self.model.layer[current_layer].nodes[node_type]
         if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
             if(self.model.layer[current_layer].nodes[node_type].addable.callback){
                 var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
@@ -118,33 +117,26 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeNode = function(node) {
+    ManoGraphEditor.prototype.removeNode = function(node, success, error) {
         console.log('REMOVEEEEEEEEEEEEEE NODEEEEEEEEEEE')
         var self = this;
-        if (node.info.type === 'vnf_vdu') {
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu_cp' || e.target.info.type == 'vnf_vdu_cp')
-            });
-            for (var i in vdu_links) {
-                var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
-                self.parent.removeNode.call(self, cp_node);
+        var current_layer = self.getCurrentView();
+        var node_type = node.info.type;
+        if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].removable ){
+                console.log(self.model.layer[current_layer].nodes[node_type].removable.callback)
+            if(self.model.layer[current_layer].nodes[node_type].removable.callback){
+                var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
+                var controller = new dreamer[c]();
+                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function(){
+                    self.parent.removeNode.call(self, node);
+                    if(success)
+                        success();
+                }, error);
+            }else{
+                self.parent.removeNode.call(self, node);
             }
-            new dreamer.GraphRequests().removeNode(node, null, function() {
-                self.parent.removeNode.call(self, node);
-            });
-        } else if (node.info.type === 'vnf_vdu_cp') {
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
-            });
-            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
-            console.log(vdu_id)
-            new dreamer.GraphRequests().removeNode(node, vdu_id, function() {
-                self.parent.removeNode.call(self, node);
-            });
         } else {
-            new dreamer.GraphRequests().removeNode(node, null, function() {
-                self.parent.removeNode.call(self, node);
-            });
+            alert("You can't remove a " + node.info.type );
         }
     };
 
