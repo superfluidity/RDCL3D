@@ -223,6 +223,45 @@ dreamer.EtsiController = (function(global) {
             }
         });
     };
+
+    EtsiController.prototype.removeVnfVdu= function(self, node, success, error){
+        var vdu_links = $.grep(self.d3_graph.links, function(e) {
+            return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu_cp' || e.target.info.type == 'vnf_vdu_cp')
+        });
+        for (var i in vdu_links) {
+            var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
+            self.parent.removeNode.call(self, cp_node);
+        }
+        new dreamer.GraphRequests().removeNode(node, null, function() {
+            if(success){
+                success();
+            }
+        });
+    };
+
+    EtsiController.prototype.removeVnfVduCp= function(self, node, success, error){
+        var vdu_links = $.grep(self.d3_graph.links, function(e) {
+            return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
+        });
+        var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
+        console.log(vdu_id)
+        new dreamer.GraphRequests().removeNode(node, vdu_id, function() {
+            if(success){
+                success();
+            }
+        });
+    };
+
+    EtsiController.prototype.removeNode= function(self, node, success, error){
+                console.log('remove node')
+
+        new dreamer.GraphRequests().removeNode(node, null, function() {
+                if(success){
+                    success();
+            }
+        });
+    };
+
     return EtsiController;
 
 
