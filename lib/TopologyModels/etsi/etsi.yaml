@@ -22,7 +22,7 @@ layer:                                  #List of Layers
         nodes:                  #List of node to be visualized in the current layer
             vnf:
                 addable:
-                    callback: chooseVnfId
+                    callback: chooseId
                 expands : vnf
             ns_vl:
                 addable:
@@ -107,16 +107,25 @@ layer:                                  #List of Layers
 callback:                             #List of callbacks used to controll the link
   chooseVnfExp:                       #Choose the VnfExp of the vnf with id vnf_id
       file: etsi_controller.js
+      class: EtsiController
 #      function_name: chooseVnfExp
 #      argument:
 #          -   vnf_id
   nsCpExclusiveConnection:            #Check if the ns_cp with ns_cp_id id has not other connection
       file: etsi_controller.js
+      class: EtsiController
  #     function_name: chooseVnfExp
  #     argument:
  #         -   ns_cp_id
   getVduConnectedToVduCp:             #Return the vnf_vdu if connected to the vnf_vdu_cp
       file: etsi_controller.js
+      class: EtsiController
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
+  chooseId:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+    file: etsi_controller.js
+    class: EtsiController
   #    function_name: getVduConnectedToVduCp
   #    argument:
   #        -   vnf_vdu_cp

@@ -75,13 +75,22 @@ dreamer.ManoGraphEditor = (function(global) {
      */
     ManoGraphEditor.prototype.addNode = function(args, success, error) {
         var self = this;
+        var current_layer = self.getCurrentView()
+        var node_type = args.info.type;
+        self.model.layer[current_layer].nodes[node_type]
+        if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
+            console.log(self.model.layer[current_layer].nodes[node_type].addable)
+            if(self.model.layer[current_layer].nodes[node_type].addable.callback){
+                var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
+                var controller = new dreamer[c]();
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, args)
+
+
+            }
+        }/*
         if (args.info.type === 'vnf') {
             if (args.existing_vnf) {
-                new dreamer.GraphRequests().addNode(args, null, function() {
-                    self.parent.addNode.call(self, args);
-                    if (success)
-                        success();
-                });
+
             } else {
                 new dreamer.GraphRequests().addNode(args, null, function() {
                     self.parent.addNode.call(self, args);
@@ -162,7 +171,7 @@ dreamer.ManoGraphEditor = (function(global) {
                 if (success)
                     success();
             });
-        }
+        }*/
     };
 
     ManoGraphEditor.prototype.addVnffg = function(node_info, success) {
@@ -398,10 +407,8 @@ dreamer.ManoGraphEditor = (function(global) {
                     if (c_node.info.type != undefined) {
                         var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
                         if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
-                            console.log(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands)
                             if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
                                 var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
-                                console.log(Object.keys(self.model.layer[new_layer].nodes))
                                 self.handleFiltersParams({
                                 node: {
                                     type: Object.keys(self.model.layer[new_layer].nodes),
@@ -420,21 +427,26 @@ dreamer.ManoGraphEditor = (function(global) {
                 },
                 'contextmenu': d3.contextMenu([{
                     title: 'Show graph',
-                    action: function(elm, d, i) {
-                        if (d.info.type != undefined) {
-                            if (d.info.type == 'vnf')
+                    action: function(elm, c_node, i) {
+                       if (c_node.info.type != undefined) {
+                        var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
+                        if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
+                            if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
+                                var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
                                 self.handleFiltersParams({
-                                    node: {
-                                        type: ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'],
-                                        group: [d.id]
-                                    },
-                                    link: {
-                                        group: [d.id],
-                                        view: ['vnf']
-                                    }
-                                });
+                                node: {
+                                    type: Object.keys(self.model.layer[new_layer].nodes),
+                                    group: [c_node.id]
+                                },
+                                link: {
+                                    group: [c_node.id],
+                                    view: [c_node.info.type ]
+                                }
+                            });
 
+                            }
                         }
+                    }
                     }
                 }, {
                     title: 'Edit',
