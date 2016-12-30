@@ -103,7 +103,7 @@ class Project(models.Model):
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
-        except Exception:
+        except Exception as e:
             print 'exception in get_descriptors', e
             result = {}
         return result
@@ -114,8 +114,8 @@ class Project(models.Model):
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
-        except Exception:
-            print "Exception in get_descriptor"
+        except Exception as e:
+            print "Exception in get_descriptor", e
             result = {}
 
         return result
