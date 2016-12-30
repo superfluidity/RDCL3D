@@ -5,6 +5,7 @@ import logging
 import jsonschema
 # import copy
 import os.path
+import uuid 
 
 _lib_name = 'Util'
 
@@ -146,6 +147,10 @@ class Util(object):
             print e
             log.error('Exception validate json schema')
             return False
+
+    @classmethod
+    def get_unique_id(cls):
+        return uuid.uuid4().hex[:6].upper()
 
     # @classmethod
     # def get_descriptor_template(cls, type_descriptor):

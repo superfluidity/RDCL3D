@@ -11,22 +11,29 @@ import copy
 from lib.util import Util
 # from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.exampletoken.exampletoken_rdcl_graph import ExampletokenRdclGraph
-from lib.exampletoken.exampletoken_parser import ExampletokenParser
+from lib.tosca.tosca_rdcl_graph import ToscaRdclGraph
+from lib.tosca.tosca_parser import ToscaParser
 
 
 import os.path
 
-        # project_types['exampletoken']= projecthandler.exampletoken_model.ExampletokenProject
+        # project_types['tosca']= projecthandler.tosca_model.ToscaProject
         # project_types['click']= ClickProject
 
-PATH_TO_SCHEMAS = 'lib/exampletoken/schemas/'
+PATH_TO_SCHEMAS = 'lib/tosca/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
 DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
-GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/exampletoken/exampletoken.yaml'
-EXAMPLES_FOLDER = 'usecases/EXAMPLETOKEN/'
+GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/tosca/tosca.yaml'
+EXAMPLES_FOLDER = 'usecases/TOSCA/'
 
-class ExampletokenProject(Project):
+class ToscaProject(Project):
+    """Tosca class
+
+    The data model has the following descriptors:
+    'toscayaml'
+
+    """
+
 
     @classmethod
     def data_project_from_files(cls, request):
@@ -35,14 +42,14 @@ class ExampletokenProject(Project):
         for my_key in request.FILES.keys():
             file_dict [my_key]= request.FILES.getlist(my_key)
 
-        data_project = ExampletokenParser.importprojectfiles(file_dict)
+        data_project = ToscaParser.importprojectfiles(file_dict)
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
-        example_id = request.POST.get('example-exampletoken-id', '')
-        data_project = ExampletokenParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
-        # data_project = importprojectdir('usecases/EXAMPLETOKEN/' + example_id + '/JSON', 'json')
+        example_id = request.POST.get('example-tosca-id', '')
+        data_project = ToscaParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
+        # data_project = importprojectdir('usecases/TOSCA/' + example_id + '/JSON', 'json')
         return data_project
 
     @classmethod
@@ -51,7 +58,7 @@ class ExampletokenProject(Project):
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'exampletoken_example' : dirs}
+        return {'tosca_example' : dirs}
 
     @classmethod
     def get_graph_model(cls):
@@ -68,11 +75,12 @@ class ExampletokenProject(Project):
         # util = Util()
 
         json_template = cls.get_descriptor_template(descriptor_type)
-        if descriptor_type == 'nsd':
-            json_template['nsdIdentifier'] = request_id
-            json_template['nsdInvariantId'] = request_id
+        if descriptor_type == 'toscayaml':
+            pass
+            # json_template['nsdIdentifier'] = request_id
+            # json_template['nsdInvariantId'] = request_id
         else:
-            json_template['vnfdId'] = request_id
+            return {}
 
         return json_template
 
@@ -98,7 +106,7 @@ class ExampletokenProject(Project):
 
 
     def get_type(self):
-        return "exampletoken"
+        return "tosca"
 
     def __str__(self):
         return self.name
@@ -110,7 +118,8 @@ class ExampletokenProject(Project):
             'name': self.name,
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
-            'type': 'exampletoken',
+            'type': 'tosca',
+            'toscayaml' : len(current_data['toscayaml'].keys()) if 'toscayaml' in current_data else 0,
             # 'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
             # 'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,
             # 'vld': len(current_data['vld'].keys()) if 'vld' in current_data else 0,
@@ -121,17 +130,48 @@ class ExampletokenProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        test_t3d = ExampletokenRdclGraph()
+        test_t3d = ToscaRdclGraph()
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
         return json.dumps(topology)
 
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
-        """Creates a descriptor of a given type from a json or yaml representation"""
+        """Creates a descriptor of a given type from a json or yaml representation
+
+        Returns the descriptor id or False
+        """
         result = False
         try:
-            pass
+            print type_descriptor, data_type
+            current_data = json.loads(self.data_project)
+            if data_type == 'json':
+                new_descriptor = json.loads(new_data)
+            elif data_type == 'yaml':
+                # utility = Util()
+                yaml_object = yaml.load(new_data)
+                new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            else:
+                print 'Unknown data type'
+                return False
+
+            if type_descriptor == 'toscayaml':
+
+                if descriptor_name is None: 
+                    new_descriptor_id = Util.get_unique_id()
+                else:
+                    new_descriptor_id = descriptor_name 
+                if not type_descriptor in current_data:
+                    current_data[type_descriptor] = {}
+                current_data[type_descriptor][new_descriptor_id] = new_descriptor
+                self.data_project = current_data
+                self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+                self.update()
+                result = new_descriptor_id
+
+            else:
+                return False
+
         except Exception as e:
             print 'Exception in create descriptor', e
         return result

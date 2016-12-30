@@ -12,9 +12,11 @@ from django.contrib.auth.decorators import login_required
 from projecthandler.models import Project
 from projecthandler.etsi_model import EtsiProject
 from projecthandler.click_model import ClickProject
+from projecthandler.tosca_model import ToscaProject
 
 Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
+Project.add_project_type('tosca', ToscaProject)
 
 
 @login_required

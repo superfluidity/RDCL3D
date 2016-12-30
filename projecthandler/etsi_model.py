@@ -27,6 +27,15 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/etsi/etsi.yaml'
 EXAMPLES_FOLDER = 'usecases/ETSI/'
 
 class EtsiProject(Project):
+    """Etsi Project class
+
+    The data model has the following descriptors:
+    'nsd'
+    'vnfd'
+    'vnffgd'
+    'vld'
+
+    """
 
     @classmethod
     def data_project_from_files(cls, request):
@@ -145,17 +154,24 @@ class EtsiProject(Project):
 
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
-        """Creates a descriptor of a given type from a json or yaml representation"""
+        """Creates a descriptor of a given type from a json or yaml representation
+
+        Returns the descriptor id or False
+        """
+
         try:
             # utility = Util()
             print type_descriptor, data_type
             current_data = json.loads(self.data_project)
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
-            else:
+            elif data_type == 'yaml':
                 # utility = Util()
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            else:
+                print 'Unknown data type'
+                return False
 
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             reference_schema = self.get_json_schema_by_type(type_descriptor)
