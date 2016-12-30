@@ -9,9 +9,9 @@ import glob
 import os
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('EtsiParser')
+log = logging.getLogger('ToscaParser')
 
-class EtsiParser(Parser):
+class ToscaParser(Parser):
     """Parser methods for etsi project type
 
     There is no actual parsing involved here, because the
@@ -19,18 +19,17 @@ class EtsiParser(Parser):
     """
 
     def __init__(self):
-        super(EtsiParser, self).__init__()
+        super(ToscaParser, self).__init__()
     
     @classmethod        
     def importprojectdir(cls,dir_project, type):
         """Imports all files from NSD and VNFDs folders under a given folder
 
-        this method is specific for Etsi project type
+        this method is specific for Tosca project type
         """
 
         project = {
-            'nsd': {},
-            'vnfd': {},
+            'toscayaml': {},
             'positions': {}
         }
         # my_util = Util()
@@ -40,7 +39,7 @@ class EtsiParser(Parser):
         #import network service description
         #in root directory file name nsd.json / nsd.yaml
         for nsd_filename in glob.glob(os.path.join(NSD_PATH, '*.json')):
-            log.debug(nsd_filename)
+            print nsd_filename
             nsd_object = Util.loadjsonfile(nsd_filename)
             project['nsd'][nsd_object['nsdIdentifier']] = nsd_object
 
@@ -64,20 +63,16 @@ class EtsiParser(Parser):
         The keys in the dictionary are the file types
         """
         project = {
-            'nsd': {},
-            'vnfd': {}
+            'toscayaml': {}
         }
 
-        if 'ns_files' in file_dict:
-            ns_files = file_dict['ns_files']
-            for file in ns_files:
-                nsd =json.loads(file.read())
-                project['nsd'][nsd['nsdIdentifier']] = nsd
-        if 'vnf_files' in file_dict:
-            vnf_files = file_dict['vnf_files']
-            for file in vnf_files:
-                vnf =json.loads(file.read())
-                project['vnfd'][vnf['vnfdId']] = vnf
+        if 'toscayaml_files' in file_dict:
+            tmp_files = file_dict['toscayaml_files']
+            for file in tmp_files:
+
+                yaml_object = yaml.load(file)
+                toscajson = json.loads(Util.yaml2json(yaml_object))
+                project['toscayaml'][Util.get_unique_id()] = toscajson
 
         return project
 
