@@ -60,7 +60,7 @@ class ToscaParser(Parser):
     # def importprojectfiles(cls,ns_files, vnf_files):
         """Imports descriptors (extracted from the new project POST)
 
-        The keys in the dictionary are the file types
+        The keys in the file dictionary are the file types
         """
         project = {
             'toscayaml': {}
@@ -72,7 +72,9 @@ class ToscaParser(Parser):
 
                 yaml_object = yaml.load(file)
                 toscajson = json.loads(Util.yaml2json(yaml_object))
-                project['toscayaml'][Util.get_unique_id()] = toscajson
+                filename = os.path.splitext(os.path.basename(str(file)))[0]
+                # project['toscayaml'][Util.get_unique_id()] = toscajson
+                project['toscayaml'][filename] = toscajson
 
         return project
 

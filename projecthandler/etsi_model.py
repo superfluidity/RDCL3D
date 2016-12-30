@@ -67,10 +67,10 @@ class EtsiProject(Project):
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
         return {'etsi_example' : dirs}
 
-    @classmethod
-    def get_graph_model(cls):
-        file_path = GRAPH_MODEL_FULL_NAME
-        return Util.loadyamlfile(file_path)        
+    # @classmethod
+    # def get_graph_model(cls):
+    #     file_path = GRAPH_MODEL_FULL_NAME
+    #     return Util.loadyamlfile(file_path)        
 
     @classmethod
     def get_json_schema_by_type(cls, type_descriptor):
@@ -149,7 +149,8 @@ class EtsiProject(Project):
     def get_graph_data_json_topology(self, descriptor_id):
         test_t3d = EtsiRdclGraph()
         project = self.get_dataproject()
-        topology = test_t3d.build_graph_from_project(project, model=self.get_graph_model())
+        topology = test_t3d.build_graph_from_project(project,
+                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
 

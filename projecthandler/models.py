@@ -47,6 +47,20 @@ class Project(models.Model):
                                                        data_project=data_project)
         return project
 
+    @classmethod
+    def get_graph_model(cls, file_path):
+        """Returns the model of the graph of the project type as a yaml object
+
+        Returns an empty dict if there is no file with the model
+        """
+        # file_path = GRAPH_MODEL_FULL_NAME
+        graph_model = {}
+        try:
+            graph_model = Util.loadyamlfile(file_path)
+        except Exception as e:
+            pass
+        return graph_model       
+
 
     def get_type(self):
         return "Base"
@@ -99,7 +113,7 @@ class Project(models.Model):
 
     def get_descriptors(self, type_descriptor):
         """Returns all descriptors of a given type"""
-        print "xxxxxxxxxxx", type_descriptor
+
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
