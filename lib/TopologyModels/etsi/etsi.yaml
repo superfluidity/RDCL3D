@@ -134,7 +134,7 @@ action:           #Action to show on rightclick on a node/link
     link:
 
 
-callback:                             #List of callbacks used 
+callback:                             #List of callbacks used
   chooseVnfExp:
       file: etsi_controller.js
       class: EtsiController

@@ -4,8 +4,11 @@ version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     element:
+        label: ClickElement
     compound_element:
+        label:  CompoundElement
     class_element:
+        label: ClassElement
 
 
 layer:                                  #List of Layers
@@ -13,13 +16,18 @@ layer:                                  #List of Layers
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
-                addable:
+                addable: true
+                removable: true
             compound_element:
                 #if the expands key is missing it defaults to false
                 #if it is present the value represents the layer in which the node is expanded
                 #by default the representation will be filtered by the group equal to the node name
                 expands : click
+                addable: true
+                removable: true
             class_element:
+                addable: true
+                removable: true
                 expands : click
         allowed_edges:
             element:
@@ -27,27 +35,38 @@ layer:                                  #List of Layers
                     element:
                         #if the direct_key is missing it defaults to false
                         direct_edge: false
+                        removable: true
                     compound_element:
                         direct_edge: false
+                        removable: true
                     class_element:
                         direct_edge: false
+                        removable: true
             compound_element:
                 destination:
                     element:
                         direct_edge: false
+                        removable: true
                     compound_element:
                         direct_edge: false
+                        removable: true
                     class_element:
                         direct_edge: false
+                        removable: true
             class_element:
                 destination:
                     element:
                         direct_edge: false
+                        removable: true
                     compound_element:
                         direct_edge: false
+                        removable: true
                     class_element:
                         direct_edge: false
+                        removable: true
 
-
+action:           #Action to show on rightclick on a node/link
+    node:
+    link:
 
 callback:                             #List of callbacks used to controll the link
