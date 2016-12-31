@@ -790,7 +790,9 @@ dreamer.GraphEditor = (function(global) {
 
     }
 
-    GraphEditor.prototype.refreshGraphParameters = function() {}
+    GraphEditor.prototype.refreshGraphParameters = function(graphParameters) {
+        this.eventHandler.fire("refresh_graph_parameters", graphParameters);
+    }
 
     /**
      * Log utility
