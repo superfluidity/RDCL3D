@@ -271,6 +271,26 @@ dreamer.EtsiController = (function(global) {
         });
     };
 
+    EtsiController.prototype.addToCurrentVNFFG= function(self, args, error){
+        var d = args.d;
+        if (selected_vnffgId && self.getCurrentView() == 'ns' && d.info.group.indexOf(selected_vnffgId) < 0) {
+            d.vnffgId = selected_vnffgId;
+            new dreamer.GraphRequests().addNodeToVnffg(d, function(result) {
+                d.info.group.push(selected_vnffgId)
+                var links = $.grep(self.d3_graph.links, function(e) {
+                    return (e.source.id == d.id || e.target.id == d.id);
+                });
+                for (var i in links) {
+                    console.log(links[i])
+                    if (links[i].source.info.group.indexOf(selected_vnffgId) >= 0 && links[i].target.info.group.indexOf(selected_vnffgId) >= 0) {
+                        links[i].group.push(selected_vnffgId)
+                    }
+                }
+                show_all_change();
+            });
+        }
+    };
+
     return EtsiController;
 
 
