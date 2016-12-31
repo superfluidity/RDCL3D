@@ -58,7 +58,7 @@ dreamer.ManoGraphEditor = (function(global) {
             //console.log(data.graph_parameters)
             self.model = data.model;
             self._setupBehaviorsOnEvents();
-            self.refreshGraphParameters();
+            self.refreshGraphParameters(self.d3_graph.graph_parameters);
             self.refresh();
             self.startForce();
             setTimeout(function() {
@@ -92,15 +92,6 @@ dreamer.ManoGraphEditor = (function(global) {
         }
     };
 
-    ManoGraphEditor.prototype.addVnffg = function(node_info, success) {
-        var self = this;
-        new dreamer.GraphRequests().addVnffg(node_info, function(result) {
-            if (success)
-                success();
-            self.d3_graph.graph_parameters.vnffgIds.push(node_info.id)
-            self.refreshGraphParameters();
-        });
-    };
 
 
     /**
@@ -413,13 +404,6 @@ dreamer.ManoGraphEditor = (function(global) {
         return this.filter_parameters.link.view[0];
 
     }
-    ManoGraphEditor.prototype.refreshGraphParameters = function() {
-        setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
-    }
-    ManoGraphEditor.prototype.getVnffgParameter = function() {
-        return this.d3_graph.graph_parameters.vnffgIds;
-    }
-
     /**
      * Log utility
      */

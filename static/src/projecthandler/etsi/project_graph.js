@@ -33,7 +33,7 @@ $(document).ready(function() {
         }
     }
     graph_editor.addListener("filters_changed", changeFilter);
-
+    graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
     graph_editor.addListener("right_click_node", function(a, args) {
         //console.log("node_selected", a, args);
@@ -215,10 +215,12 @@ function showChooserModal(title, chooses, callback){
 
 }
 
-function setVnffgIds(vnffgIds){
-    var self = $(this);
-    if(vnffgIds == null) return;
+function refreshGraphParameters(e, graphParameters){
 
+    var self = $(this);
+    if(graphParameters == null) return;
+    var vnffgIds = graphParameters.vnffgIds;
+    if(vnffgIds == null) return;
 
     $("#selection_vnffg").empty();
     $("#selection_vnffg").append('<option value="Global">Global</option>')
@@ -250,10 +252,15 @@ function newVnffg(){
                             'group': [group]
                             }
                         }
-                    graph_editor.addVnffg(node_information, function(){
+                new dreamer.GraphRequests().addVnffg(node_information, function(result) {
 
-                        $('#modal_choose_node_id').modal('hide');
+                    $('#modal_choose_node_id').modal('hide');
+                    graph_editor.d3_graph.graph_parameters.vnffgIds.push(node_information.id)
+                    graph_editor.refreshGraphParameters();
                 });
+
+
+
             });
             $('#modal_choose_node_id').modal('show');
 }
