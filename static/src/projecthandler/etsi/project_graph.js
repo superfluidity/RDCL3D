@@ -263,11 +263,11 @@ function show_all_change(e){
     var vnffgId = selected_vnffgId;
     if(e) show_all = e.checked;
     if(show_all) {
-        graph_editor.handleVnffgParameter("Global", "invisible");
-        graph_editor.handleVnffgParameter(vnffgId, "matted");
+        handleVnffgParameter("Global", "invisible");
+        handleVnffgParameter(vnffgId, "matted");
     } else {
-        graph_editor.handleVnffgParameter("Global", "matted");
-        graph_editor.handleVnffgParameter(vnffgId, "invisible");
+        handleVnffgParameter("Global", "matted");
+        handleVnffgParameter(vnffgId, "invisible");
     }
 }
 
@@ -279,3 +279,57 @@ function clickVnffg(){
 
 }
 
+function handleVnffgParameter(vnffgId, class_name) {
+        /*
+        if(this.old_vnffg != null){
+            var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.node.group.splice(index, 1);
+            index = this.filter_parameters.link.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.link.group.splice(index, 1);
+        }
+        if(vnffgId != "Global"){
+            this.old_vnffg = vnffgId;
+            this.filter_parameters.node.group.push(vnffgId);
+            this.filter_parameters.link.group.push(vnffgId);
+
+        }else{
+            this.old_vnffg = null;
+        }
+        this.handleFiltersParams(this.filter_parameters, true);
+        */
+
+        if (vnffgId != "Global") {
+            selected_vnffgId = vnffgId;
+            graph_editor.setNodeClass(class_name, function(d) {
+                var result = false;
+                if (d.info.group.indexOf(vnffgId) < 0) {
+                    result = true;
+                }
+                console.log(result);
+                return result;
+            });
+
+            graph_editor.setLinkClass(class_name, function(d) {
+                var result = false;
+                if (d.group.indexOf(vnffgId) < 0) {
+                    result = true;
+                }
+                console.log(result);
+                return result;
+            });
+
+        } else {
+            selected_vnffgId = null;
+            graph_editor.setNodeClass(class_name, function(d) {
+                var result = false;
+                return result;
+            });
+
+            graph_editor.setLinkClass(class_name, function(d) {
+                var result = false;
+                return result;
+            });
+        }
+    }

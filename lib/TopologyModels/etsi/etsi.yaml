@@ -126,8 +126,15 @@ layer:                                  #List of Layers
                             callback: removeLink
 
 
+action:           #Action to show on rightclick on a node/link
+    node:
+        addToCurrentVNFFG:
+            title: Add to current VNFFG
+            callback: addToCurrentVNFFG
+    link:
 
-callback:                             #List of callbacks used to controll the link
+
+callback:                             #List of callbacks used 
   chooseVnfExp:
       file: etsi_controller.js
       class: EtsiController
@@ -174,5 +181,8 @@ callback:                             #List of callbacks used to controll the li
       file: etsi_controller.js
       class: EtsiController
   removeLink:
+      file: etsi_controller.js
+      class: EtsiController
+  addToCurrentVNFFG:
       file: etsi_controller.js
       class: EtsiController
