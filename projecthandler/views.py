@@ -1,17 +1,18 @@
 import json
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.template.loader import render_to_string
-from django.middleware.csrf import get_token
-from sf_user.models import CustomUser
-from lib.util import Util
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 
-from projecthandler.models import Project
-from projecthandler.etsi_model import EtsiProject
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import render
+from django.template.loader import render_to_string
+
+from lib.util import Util
 from projecthandler.click_model import ClickProject
+from projecthandler.etsi_model import EtsiProject
+from projecthandler.models import Project
 from projecthandler.tosca_model import ToscaProject
+from sf_user.models import CustomUser
 
 Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
@@ -80,21 +81,23 @@ def create_new_project(request):
             'id': '-1',
             'text': 'Select an option'
         }]
-        type_container_template = []
+        type_example_files = {}
+        type_container_template = ''
         project_types = Project.get_project_types()
         print "project_types", project_types.keys()
         for type in project_types:
             project_class = project_types[type]
-            result.update(project_class.get_example_list())
+            type_example_files.update(project_class.get_example_list())
             data_type_selector.append({
                 'id': type,
                 'text': type,
                 'value': type
             })
-            type_container_template.append(type + '/' + type + '_new_project.html')
+            type_container_template += render_to_string(type + '/' + type + '_new_project.html')
 
+        result.update({'type_example_files': type_example_files})
         result.update({'data_type_selector': json.dumps(data_type_selector)})
-        result.update({'type_container_template': render_to_string(type_container_template)})
+        result.update({'type_container_template': type_container_template})
         return render(request, 'new_project.html', result)
 
 

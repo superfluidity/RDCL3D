@@ -7,8 +7,7 @@
         <h3>Configuration files</h3>
         <div class="form-inline">
             <div class="form-group">
-                <input type="file" name="cfg_files" id="cfg-js-upload-files" multiple
-                       onchange="handleFiles(this.files)">
+                <input type="file" name="cfg_files" id="cfg-js-upload-files" multiple>
             </div>
         </div>
 
@@ -17,12 +16,8 @@
 
 <div id="div-example-click" class="start-selector" style="display: none;">
     <h4>Choose an Example</h4>
-    <select id="example-click" name="example-click-id">
-        {% for id in click_example %}
-        <option value="{{id}}">
-            {{id}}
-        </option>
-        {% endfor %}
+    <select id="example-click" class="example-selector" data-type="click" name="example-click-id">
+
     </select>
 
 </div>

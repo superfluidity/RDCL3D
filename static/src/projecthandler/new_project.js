@@ -2,12 +2,28 @@
  *      New Project page
  **/
 
-function resetSelectors(){
-    $('start-selector').hide();
+function handleTypeChoose(type){
+    $('#startGroup').show();
 }
 
-function handleTypeChoose(type){
 
+function startFromChoose(start){
+    resetStartFromInputs()
+    //resetSelectors();
+    var type = $('#select_type').val();
+
+    if(start == 'scratch'){
+
+    }
+    if ( start == 'files')
+        $('#div-file-upload-'+type).show();
+    else if ( start == 'example')
+        $('#div-example-'+type).show();
+
+}
+
+function resetStartFromInputs(){
+    $('input[type="file"]').val('');
 
 }
 
@@ -37,6 +53,8 @@ $(document).ready(function() {
     });
 
 
-
+    $('div[class="start-selector"]').each(function(index,item){
+        console.log($(item).data('name'), $(item))
+    });
 
 });

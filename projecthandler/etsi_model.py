@@ -1,30 +1,25 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from django.utils import timezone
-import jsonfield
-from StringIO import StringIO
-import zipfile
-import json
-import yaml
 import copy
-from lib.util import Util
-# from model_utils.managers import InheritanceManager
-from projecthandler.models import Project
-from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
-from lib.etsi.etsi_parser import EtsiParser
-
-
+import json
 import os.path
 
-        # project_types['etsi']= projecthandler.etsi_model.EtsiProject
-        # project_types['click']= ClickProject
+import yaml
+
+from lib.etsi.etsi_parser import EtsiParser
+from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
+from lib.util import Util
+from projecthandler.models import Project
+
+# project_types['etsi']= projecthandler.etsi_model.EtsiProject
+# project_types['click']= ClickProject
 
 PATH_TO_SCHEMAS = 'lib/etsi/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
 DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/etsi/etsi.yaml'
 EXAMPLES_FOLDER = 'usecases/ETSI/'
+
 
 class EtsiProject(Project):
     """Etsi Project class
@@ -44,7 +39,7 @@ class EtsiProject(Project):
 
         file_dict = {}
         for my_key in request.FILES.keys():
-            file_dict [my_key]= request.FILES.getlist(my_key)
+            file_dict[my_key] = request.FILES.getlist(my_key)
 
         data_project = EtsiParser.importprojectfiles(file_dict)
         # data_project = {}
@@ -65,7 +60,7 @@ class EtsiProject(Project):
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'etsi_example' : dirs}
+        return {'etsi_example': dirs}
 
     # @classmethod
     # def get_graph_model(cls):
@@ -74,11 +69,11 @@ class EtsiProject(Project):
 
     @classmethod
     def get_json_schema_by_type(cls, type_descriptor):
-        schema = PATH_TO_SCHEMAS+type_descriptor+".json"
-        return schema        
+        schema = PATH_TO_SCHEMAS + type_descriptor + ".json"
+        return schema
 
     @classmethod
-    def get_new_descriptor(cls,descriptor_type, request_id):
+    def get_new_descriptor(cls, descriptor_type, request_id):
         # util = Util()
 
         json_template = cls.get_descriptor_template(descriptor_type)
@@ -93,9 +88,9 @@ class EtsiProject(Project):
     @classmethod
     def get_descriptor_template(cls, type_descriptor):
         """Returns a descriptor template for a given descriptor type"""
-        
+
         try:
-            schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
+            schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES + type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX)
             # print 'type_descriptor : '+type_descriptor
             return schema
         except Exception as e:
@@ -104,14 +99,17 @@ class EtsiProject(Project):
             return False
 
     @classmethod
-    def get_clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
+    def get_clone_descriptor(cls, descriptor, type_descriptor, new_descriptor_id):
         new_descriptor = copy.deepcopy(descriptor)
         if (type_descriptor == 'vnfd'):
-            new_extention = "_"+new_descriptor_id
+            new_extention = "_" + new_descriptor_id
             new_descriptor['vnfdId'] = new_descriptor_id;
-            new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor['vnfProductName'] is not None else new_descriptor['vnfProductName']
+            new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor[
+                                                                                                       'vnfProductName'] is not None else \
+                new_descriptor['vnfProductName']
             for vnfExtCpd in new_descriptor['vnfExtCpd']:
-                vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else vnfExtCpd['cpdId']
+                vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else \
+                    vnfExtCpd['cpdId']
         if (type_descriptor == 'nsd'):
             new_extention = "_" + new_descriptor_id
             new_descriptor['nsdIdentifier'] = new_descriptor_id
@@ -119,9 +117,7 @@ class EtsiProject(Project):
             new_descriptor['nsdInvariantId'] = new_descriptor_id
             for sapd in new_descriptor['sapd']:
                 sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
-        return  new_descriptor
-
-
+        return new_descriptor
 
     def get_type(self):
         return "etsi"
@@ -150,9 +146,8 @@ class EtsiProject(Project):
         test_t3d = EtsiRdclGraph()
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project,
-                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+                                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
-
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         """Creates a descriptor of a given type from a json or yaml representation
@@ -183,14 +178,13 @@ class EtsiProject(Project):
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data
-            self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+            self.validated = validate  # TODO(stefano) not clear if this is the validation for the whole project
             self.update()
             result = new_descriptor_id
         except Exception as e:
             print 'Exception in create descriptor', e
             result = False
         return result
-
 
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
@@ -224,7 +218,7 @@ class EtsiProject(Project):
             print group_id, element_id
             result = self.add_vnffg(group_id, element_id)
 
-        return result        
+        return result
 
     def get_remove_element(self, request):
 
@@ -232,7 +226,7 @@ class EtsiProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
-        print 'in get_remove_element : ', element_id #TODO log
+        print 'in get_remove_element : ', element_id  # TODO log
         if element_type == 'ns_cp':
             result = self.remove_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
@@ -249,7 +243,7 @@ class EtsiProject(Project):
             vdu_id = request.POST.get('choice')
             result = self.remove_vnf_vducp(group_id, vdu_id, element_id)
 
-        return result        
+        return result
 
     def get_add_link(self, request):
 
@@ -284,7 +278,7 @@ class EtsiProject(Project):
             vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
             intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
             result = self.link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
-        return result        
+        return result
 
     def get_remove_link(self, request):
 
@@ -317,7 +311,7 @@ class EtsiProject(Project):
             vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
             intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
             result = self.unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
-        return result        
+        return result
 
     def get_unused_vnf(self, nsd_id):
         try:
@@ -329,7 +323,7 @@ class EtsiProject(Project):
                         result.append(vnf)
         except Exception as e:
             print 'exception', e
-            result = None #TODO maybe we should use False ?
+            result = None  # TODO maybe we should use False ?
         return result
 
     # NS operations: add/remove VL
@@ -618,7 +612,7 @@ class EtsiProject(Project):
                 for vnfExtCpd in current_data['vnfd'][vnf_id]['vnfExtCpd']:
                     print  vnfExtCpd['cpdId']
                     if vnfExtCpd['cpdId'] in virtual_link_connectivity['cpdId']:
-                        print "removing : ", vnfExtCpd['cpdId'] #TODO log
+                        print "removing : ", vnfExtCpd['cpdId']  # TODO log
                         virtual_link_connectivity['cpdId'].remove(vnfExtCpd['cpdId'])
                 if not virtual_link_connectivity['cpdId']:
                     vnf_profile['nsVirtualLinkConnectivity'].remove(virtual_link_connectivity)
@@ -712,7 +706,7 @@ class EtsiProject(Project):
         try:
             current_data = json.loads(self.data_project)
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            #TODO non capisco queste due righe qui sotto
+            # TODO non capisco queste due righe qui sotto
             intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             intcp_descriptor['intVirtualLinkDesc'] = intvl_id
             self.data_project = current_data
