@@ -60,7 +60,7 @@ class EtsiProject(Project):
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'etsi_example': dirs}
+        return {'etsi': dirs}
 
     # @classmethod
     # def get_graph_model(cls):

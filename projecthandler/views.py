@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 
 from lib.util import Util
@@ -38,41 +39,32 @@ def create_new_project(request):
         if type in project_types:
             project_class = project_types[type]
 
-        # if type == 'etsi':
-        #     project_class = EtsiProject
-        # elif type == 'click':
-        #     project_class = ClickProject
         else:
             # FIXME this error is not handled
-            error_msgs.push('Project type undefined.')
+            error_msgs.append('Project type undefined.')
+            return render(request, 'error.html', {'error_msg': 'Error creating new project, project type undefined. Please retry.'})
 
         try:
 
-            # if type == 'etsi':
-
             if start_from == 'scratch':
-                # print 'from scratch'
+                print 'from scratch'
                 data_project = {}
 
             elif start_from == 'files':
-                # print 'from files'
-                # data_project = EtsiProject.data_project_from_files(request)
+                print 'from files'
                 data_project = project_class.data_project_from_files(request)
 
             elif start_from == 'example':
-                # print 'from example'
-                # data_project = EtsiProject.data_project_from_example(request)
+                print 'from example'
                 data_project = project_class.data_project_from_example(request)
 
-            # project = EtsiProject.create_project (name, user, False, info, data_project)
             project = project_class.create_project(name, user, False, info, data_project)
 
         except Exception as e:
             print 'Error creating ' + type + ' project! Please retry.'
             print e
             return render(request, 'error.html', {'error_msg': 'Error creating ' + type + ' project! Please retry.'})
-
-        return render(request, 'new_project.html', {'project_id': project.id})
+        return redirect('projects:open_project', project_id=project.id)
 
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
@@ -95,9 +87,10 @@ def create_new_project(request):
             })
             type_container_template += render_to_string(type + '/' + type + '_new_project.html')
 
-        result.update({'type_example_files': type_example_files})
+        result.update({'type_example_files': json.dumps(type_example_files)})
         result.update({'data_type_selector': json.dumps(data_type_selector)})
         result.update({'type_container_template': type_container_template})
+        result.update({'csrf_token': csrf_token_value})
         return render(request, 'new_project.html', result)
 
 
@@ -110,7 +103,7 @@ def user_projects(request):
     # print list(projects)
     html = render_to_string('projectlist.html', {
         'projects': list(projects),
-        "csrf_token_value": csrf_token_value
+        'csrf_token': csrf_token_value
     })
     # if request.is_ajax():
     return JsonResponse({'html': html});
@@ -122,15 +115,8 @@ def open_project(request, project_id=None):
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
-        #                      example: 'etsi/etsi_project_details.html'
         return render(request, prj_token + '/' + prj_token + '_project_details.html',
                       {'project_overview': project_overview, 'project_id': project_id})
-        # if project_overview['type'] == 'etsi':
-        #     return render(request, 'etsi/etsi_project_details.html',
-        #                   {'project_overview': project_overview, 'project_id': project_id})
-        # elif project_overview['type'] == 'click':
-        #     return render(request, 'click/click_project_details.html',
-        #                   {'project_overview': project_overview, 'project_id': project_id})
 
     except Exception as e:
         print e
@@ -154,14 +140,9 @@ def delete_project(request, project_id=None):
             project_overview = projects[0].get_overview_data()
             prj_token = project_overview['type']
             #                 example: 'etsi/etsi_project_delete.html'
+            print  prj_token + '/' + prj_token + '_project_delete.html', project_overview['name']
             return render(request, prj_token + '/' + prj_token + '_project_delete.html',
                           {'project_id': project_id, 'project_name': project_overview['name']})
-            # if project_overview['type'] == 'etsi':
-            #     return render(request, 'etsi/etsi_project_delete.html',
-            #                   {'project_id': project_id, 'project_name': project_overview['name']})
-            # elif project_overview['type'] == 'click':
-            #     return render(request, 'click/click_project_delete.html',
-            #                   {'project_id': project_id, 'project_name': project_overview['name']})
 
         except Exception as e:
             print e
@@ -176,12 +157,6 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     prj_token = project_overview['type']
 
     page = prj_token + '/' + prj_token + '_project_descriptors.html'
-    # if project_overview['type'] == 'etsi':
-    #     page = 'etsi/etsi_project_descriptors.html'
-
-    # elif project_overview['type'] == 'click':
-    #     page = 'click/click_project_descriptors.html'
-    print "YYYYYYYYY ", page
 
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),

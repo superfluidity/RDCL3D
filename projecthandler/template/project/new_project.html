@@ -5,6 +5,21 @@
 {% block head_block %}
 {{ block.super }}
     <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
+
+    <style type="text/css">
+
+  input:required:invalid, input:focus:invalid {
+
+    background-position: right top;
+    background-repeat: no-repeat;
+  }
+  input:required:valid {
+
+    background-position: right top;
+    background-repeat: no-repeat;
+  }
+
+</style>
 {% endblock %}
 
 {% block left_sidebar %}
@@ -47,7 +62,7 @@
                         <div class="form-group col-xs-3">
                             <p for="projectName">Project Name</p>
                             <input type="text" class="form-control input-sm" name="name" id="projectName"
-                                   placeholder="Enter Project name">
+                                   placeholder="Enter Project name" required>
                         </div>
                         <div class="form-group col-xs-4">
                             <p for="projectInfo">Info</p>
@@ -56,6 +71,8 @@
                         </div>
                         <div class="form-group col-xs-5">
                             <p for="typeButtonsSelect">Project Type</p>
+                            <input type="hidden" class="form-control input-sm" name="type" id="projectType"
+                                    required>
                             <select id="select_type" class="js-example-basic-single form-control" style="width: 75%">
 
                             </select>
@@ -65,21 +82,22 @@
                     </div>
                     <div class="row">
                         <div id="startGroup" class="form-group col-xs-5" style="display: none;">
-                            <p for="startButtonsSelect">Start From</p>
+
 
                             <div id="startButtonsSelect" class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-primary">
-                                    <input type="radio" name="startfrom" id="s-scratch" autocomplete="off" value="scratch">
-                                     Empty project
-                                </label>
-                                <label class="btn btn-primary">
-                                    <input type="radio" name="startfrom" id="s-files" autocomplete="off" value="files">
-                                     Exisiting files
-                                </label>
-                                <label class="btn btn-primary">
-                                    <input type="radio" name="startfrom" id="s-example" autocomplete="off" value="example">
+                                <label id="s-example" class="btn btn-primary">
+                                    <input type="radio" name="startfrom" autocomplete="off" value="example">
                                      Example project
                                 </label>
+                                <label id="s-scratch" class="btn btn-primary active">
+                                    <input id="scratch" type="radio" name="startfrom" autocomplete="off" value="scratch">
+                                     Empty project
+                                </label>
+                                <label id="s-files" class="btn btn-primary">
+                                    <input type="radio" name="startfrom" autocomplete="off" value="files">
+                                     Load files
+                                </label>
+
 
                             </div>
                         </div>
@@ -93,7 +111,7 @@
                     <!-- /.box-body -->
                 </div>
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button id="createButton" type="submit" class="btn btn-primary" disabled>Create</button>
                 </div>
             </form>
         </div>
@@ -110,8 +128,13 @@
 
     <script src="{% static "src/projecthandler/new_project.js" %}"></script>
 <script>
+{% if data_type_selector %}
 var data_type_selector ={{ data_type_selector |safe }};
+{% endif %}
 
+{% if type_example_files %}
+var type_example_files = {{type_example_files | safe}};
+{% endif %}
 
 </script>
 {% endblock %}
