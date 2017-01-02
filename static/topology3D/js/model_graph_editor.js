@@ -57,6 +57,7 @@ dreamer.ManoGraphEditor = (function(global) {
             self.d3_graph.graph_parameters = data.graph_parameters;
             //console.log(data.graph_parameters)
             self.model = data.model;
+            self.refreshGui();
             self._setupBehaviorsOnEvents();
             self.refreshGraphParameters(self.d3_graph.graph_parameters);
             self.refresh();
@@ -386,6 +387,31 @@ dreamer.ManoGraphEditor = (function(global) {
                 'contextmenu': d3.contextMenu(contextmenuLinksAction)
             }
         };
+    };
+
+     ManoGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
+        this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
+        this.refreshGui();
+    };
+
+     ManoGraphEditor.prototype.refreshGui = function(args) {
+        var self = this;
+        console.log(self)
+        if(!self.model){
+            return;
+        }
+
+        var type_property = self.getTypeProperty();
+        $("#draggable-container").empty()
+        for (var i in this.model.layer[self.getCurrentView()].nodes) {
+            var node = this.model.layer[self.getCurrentView()].nodes[i]
+            if(node.addable){
+                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+            }
+        }
+        var newLi = $("<li id=" + JSON.stringify(self.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(self.getCurrentGroup()) + "," + JSON.stringify(this.filter_parameters) + ")'>" + self.getCurrentGroup() + "</a></li>");
+        $('#breadcrumb').append(newLi);
     };
 
     ManoGraphEditor.prototype.exploreLayer = function(args) {
