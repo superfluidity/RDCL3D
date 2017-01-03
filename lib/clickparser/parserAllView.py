@@ -18,7 +18,7 @@ def generateTopology(element, connection, nx_topology):
                              flowcode='', processing='', portcount='')
 
     for c in range(0, len(connection)):
-        nx_topology.add_edge(connection[c]['source'], connection[c]['dest'], 'port_config',
+        nx_topology.add_edge(connection[c]['source'], connection[c]['target'], 'port_config',
                              {'port_input': connection[c]['port-input'], 'port_output': connection[c]['port-output']})
 
 

@@ -35,8 +35,8 @@ def nx_2_t3d_json(element, connection, json_out_file):
         edge_dict['source'] = connection[i]['source']
         edge_dict[LINK_GROUP] = connection[i]['group']
         #edge_dict['group'].append('click')
-        edge_dict['target'] = connection[i]['dest']
-        edge_dict[LINK_TYPE_KEY] = connection[i]['type']
+        edge_dict['target'] = connection[i]['target']
+        edge_dict[LINK_TYPE_KEY] = connection[i]['view']
 
         edge_list.append(edge_dict)
 

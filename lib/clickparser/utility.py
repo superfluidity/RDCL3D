@@ -156,10 +156,18 @@ def load_list(line, words):
 	return words_new
 
 
-def handle_group(connection):
-	for c in connection.items():
-		if string.find(c[1]['dest'],'.')!=-1:
-			c[1]['group'] = c[1]['dest'][0:string.find(c[1]['dest'],'.')]
+def handle_edgeslevel(connection):
+	for c in connection.items():														#gestisce l'attributo group dei compound element
+		if string.find(c[1]['target'],'.')!=-1:
+			c[1]['group'] = c[1]['target'][0:string.find(c[1]['target'],'.')]
 		elif string.find(c[1]['source'],'.')!=-1:
 			c[1]['group'] = c[1]['source'][0:string.find(c[1]['source'],'.')]
+
+	connection2 = connection.copy() 
+
+	for c in connection.items():
+		if c[1]['group'] != 'click':
+			for c1 in connection2.items():
+				if c1[1]['target'] == c[1]['group']:
+					c[1]['view'] = c1[1]['view']+1
 			
