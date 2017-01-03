@@ -42,7 +42,7 @@ def guest_login(request):
 
     guest_user_name = "Guest_"+str(uuid.uuid4())
     guest_user_email = guest_user_name+"@guest.it"
-    guest_user = CustomUser.objects.create(username=guest_user_name, is_guest_user="True", email=guest_user_email)
+    guest_user = CustomUser.objects.create(username=guest_user_name, is_guest_user="True", email=guest_user_email, first_name='User', last_name='Guest')
     print guest_user.username
     #user = authenticate(username=guest_user.username, password="guest")
     #print user.is_active

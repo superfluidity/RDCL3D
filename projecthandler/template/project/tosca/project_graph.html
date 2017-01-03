@@ -13,7 +13,7 @@
     {{ block.super }}
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'etsi_project_left_sidebar.html' %}
+    {% include 'tosca/tosca_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -33,11 +33,11 @@
     </div>
 </div>
 
-{% include 'modals/edit_descriptor.html' %}
+{% include 'tosca/modals/edit_descriptor.html' %}
 
-{% include 'modals/create_link_chooser.html' %}
-{% include 'modals/choose_node_id.html' %}
-{% include 'modal/modalKeyboardInfo.html' %}
+{% include 'tosca/modals/create_link_chooser.html' %}
+{% include 'tosca/modals/choose_node_id.html' %}
+{% include 'tosca/modal/modalKeyboardInfo.html' %}
 {% endblock %}
 
 {% block resource_block %}

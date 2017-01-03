@@ -34,7 +34,7 @@ class ClickProject(Project):
     def get_example_list(cls):
         path = 'usecases/CLICK'
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return dirs        
+        return {'click' : dirs}
 
     @classmethod
     def get_new_descriptor(cls,descriptor_type, request_id):
