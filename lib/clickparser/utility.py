@@ -156,3 +156,10 @@ def load_list(line, words):
 	return words_new
 
 
+def handle_group(connection):
+	for c in connection.items():
+		if string.find(c[1]['dest'],'.')!=-1:
+			c[1]['group'] = c[1]['dest'][0:string.find(c[1]['dest'],'.')]
+		elif string.find(c[1]['source'],'.')!=-1:
+			c[1]['group'] = c[1]['source'][0:string.find(c[1]['source'],'.')]
+			

@@ -141,15 +141,15 @@ def parserAllView(file_click, nx_topology):
                     if e[1]['compound'][j] == 'output':
                         e[1]['compound'][j] = connection_list[i+2]
 
-    print compound_element
+    #print compound_element
     ##############################################################################################################################################
     for c in compound_element.items():
         for e in c[1]['compound']:
             connection_list.append(e)
-    print connection_list
+    #print connection_list
 
     connection_decl(connection_list, connection, element)
-    #print connection
+    print connection
     words[:] = []
 
     json_data = generateJsont3d(element, connection)

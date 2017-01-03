@@ -125,6 +125,7 @@ def connection_decl(words, connection, element):
 					
 			connection[len(connection)]=({'source':name_element_source, 'dest':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'type':0})
 
+	handle_group(connection)
 
 '''	
 def compound_element(line):
