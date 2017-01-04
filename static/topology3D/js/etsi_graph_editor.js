@@ -38,7 +38,7 @@ dreamer.ManoGraphEditor = (function(global) {
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
-        //this.type_property["unrecognized"]["shape"] = d3.symbolCross;
+        this.type_property["unrecognized"]["shape"] = this.parent.get_d3_symbol(args.gui_properties["default"]["shape"]);
 
         Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
             //console.log(key);
@@ -56,7 +56,6 @@ dreamer.ManoGraphEditor = (function(global) {
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
-            //console.log(data.graph_parameters)
             self.refreshGraphParameters();
             self.refresh();
             self.startForce();

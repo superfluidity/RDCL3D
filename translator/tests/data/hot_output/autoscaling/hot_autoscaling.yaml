@@ -1,0 +1,39 @@
+heat_template_version: 2013-05-23
+
+description: >
+  Template for deploying servers based on policies.
+
+parameters: {}
+resources:
+  asg_group:
+    type: OS::Heat::AutoScalingGroup
+    properties:
+      min_size: 2
+      desired_capacity: 3
+      resource:
+        type: asg_res.yaml
+      max_size: 10
+  asg_scale_out:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      auto_scaling_group_id:
+        get_resource: asg_group
+      adjustment_type: change_in_capacity
+      scaling_adjustment: 1
+  asg_scale_in:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      auto_scaling_group_id:
+        get_resource: asg_group
+      adjustment_type: change_in_capacity
+      scaling_adjustment: -1
+  asg_alarm:
+    type: OS::Aodh::Alarm
+    properties:
+      meter_name: cpu_util
+      description: Simple node autoscaling
+      period: 60
+      statistic: avg
+      threshold: 1
+      comparison_operator: gt
+outputs: {}

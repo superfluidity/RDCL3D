@@ -368,7 +368,7 @@ dreamer.GraphEditor = (function(global) {
                 .filter(this.node_filter_cb))
 
             .filter(function(d) { 
-                return self._node_property_by_type(d.info.type, 'image') == undefined  })
+                return (d.info.type == undefined) || (self._node_property_by_type(d.info.type, 'image') == undefined)  })
 
             .append("svg:path")
                 .attr("d", d3.symbol()

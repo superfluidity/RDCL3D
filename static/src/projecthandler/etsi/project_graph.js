@@ -47,6 +47,7 @@ $(document).ready(function() {
 //***STEFANO
         gui_properties: example_gui_properties
     });
+    // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
 
 });
