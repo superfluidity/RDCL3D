@@ -18,7 +18,7 @@ def generateTopology(element, connection, nx_topology):
                              flowcode='', processing='', portcount='')
 
     for c in range(0, len(connection)):
-        nx_topology.add_edge(connection[c]['source'], connection[c]['dest'], 'port_config',
+        nx_topology.add_edge(connection[c]['source'], connection[c]['target'], 'port_config',
                              {'port_input': connection[c]['port-input'], 'port_output': connection[c]['port-output']})
 
 
@@ -150,10 +150,10 @@ def parserAllView(file_click):
     for c in compound_element.items():
         for e in c[1]['compound']:
             connection_list.append(e)
-    print connection_list
+    #print connection_list
 
     connection_decl(connection_list, connection, element)
-    #print connection
+    print connection
     words[:] = []
 
     json_data = generateJsont3d(element, connection)

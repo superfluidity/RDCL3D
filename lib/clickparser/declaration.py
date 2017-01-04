@@ -143,8 +143,9 @@ def connection_decl(words, connection, element):
 				else:
 					name_element_dest=words[i+1]
 					
-			connection[len(connection)]=({'source':name_element_source, 'dest':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'type':0})
+			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'view':0})
 
+	handle_edgeslevel(connection)
 
 '''	
 def compound_element(line):
