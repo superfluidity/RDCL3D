@@ -13,13 +13,14 @@ layer:                                  #List of Layers
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
-                addable: true
+                addable:
             compound_element:
                 #if the expands key is missing it defaults to false
                 #if it is present the value represents the layer in which the node is expanded
                 #by default the representation will be filtered by the group equal to the node name
                 expands : click
             class_element:
+                expands : click
         allowed_edges:
             element:
                 destination:

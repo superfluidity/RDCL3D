@@ -2,7 +2,7 @@ name: Etsi16                            #Model name
 description: etsi 16                    #Model description
 version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
-nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
+nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     vnf:
         label: VNF
     ns_vl:
@@ -21,8 +21,15 @@ layer:                                  #List of Layers
     ns:
         nodes:                  #List of node to be visualized in the current layer
             vnf:
+                addable:
+                    callback: chooseId
+                expands : vnf
             ns_vl:
+                addable:
+                    callback: chooseId
             ns_cp:
+                addable:
+                    callback: chooseId
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
@@ -59,11 +66,15 @@ layer:                                  #List of Layers
                         direct_edge: false
 
     vnf:
-        list_of_nodes:
+        nodes:
             vnf_vl:
+              addable: true
             vnf_vdu:
-            vnf_exp_cp:
+              addable: true
+            vnf_ext_cp:
+              addable: true
             vnf_vdu_cp:
+              addable: true
         allowed_edges:
             vnf_vl:
                 destination:
@@ -96,16 +107,25 @@ layer:                                  #List of Layers
 callback:                             #List of callbacks used to controll the link
   chooseVnfExp:                       #Choose the VnfExp of the vnf with id vnf_id
       file: etsi_controller.js
+      class: EtsiController
 #      function_name: chooseVnfExp
 #      argument:
 #          -   vnf_id
   nsCpExclusiveConnection:            #Check if the ns_cp with ns_cp_id id has not other connection
       file: etsi_controller.js
+      class: EtsiController
  #     function_name: chooseVnfExp
  #     argument:
  #         -   ns_cp_id
   getVduConnectedToVduCp:             #Return the vnf_vdu if connected to the vnf_vdu_cp
       file: etsi_controller.js
+      class: EtsiController
+  #    function_name: getVduConnectedToVduCp
+  #    argument:
+  #        -   vnf_vdu_cp
+  chooseId:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+    file: etsi_controller.js
+    class: EtsiController
   #    function_name: getVduConnectedToVduCp
   #    argument:
   #        -   vnf_vdu_cp
