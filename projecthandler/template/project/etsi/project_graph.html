@@ -13,7 +13,7 @@
     {{ block.super }}
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'etsi_project_left_sidebar.html' %}
+    {% include 'etsi/etsi_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -33,11 +33,11 @@
     </div>
 </div>
 
-{% include 'modals/edit_descriptor.html' %}
+{% include 'etsi/descriptor/modals/edit_descriptor.html' %}
 
-{% include 'modals/create_link_chooser.html' %}
-{% include 'modals/choose_node_id.html' %}
-{% include 'modal/modalKeyboardInfo.html' %}
+{% include 'etsi/descriptor/modals/create_link_chooser.html' %}
+{% include 'etsi/descriptor/modals/choose_node_id.html' %}
+{% include 'etsi/modal/modalKeyboardInfo.html' %}
 {% endblock %}
 
 {% block resource_block %}
@@ -54,6 +54,7 @@
 
     <script src="{% static "src/projecthandler/etsi/gui_properties.js" %}"></script>
     <script src="{% static "src/projecthandler/etsi/project_graph.js" %}"></script>
+    <script src="{% static "src/projecthandler/etsi/controller.js" %}"></script>
     <script src="{% static "topology3D/js/d3-context-menu.js" %}"></script>
 
 <script>

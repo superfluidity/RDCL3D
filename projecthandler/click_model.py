@@ -7,8 +7,8 @@ from StringIO import StringIO
 import zipfile
 import json
 import yaml
-from lib.emparser.util import Util
-from model_utils.managers import InheritanceManager
+from lib.util import Util
+# from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
 from lib.clickparser import mainrdcl
 import os.path
@@ -34,7 +34,7 @@ class ClickProject(Project):
     def get_example_list(cls):
         path = 'usecases/CLICK'
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return dirs        
+        return {'click' : dirs}
 
     @classmethod
     def get_new_descriptor(cls,descriptor_type, request_id):
@@ -120,29 +120,28 @@ class ClickProject(Project):
             result = False
         return result
 
-    def set_data_project(self, new_data, validated):
-        self.data_project = new_data
-        self.set_validated(validated)
-        self.update()
+    # def set_data_project(self, new_data, validated):
+    #     self.data_project = new_data
+    #     self.set_validated(validated)
+    #     self.update()
 
-    def edit_graph_positions(self, positions):
-        print positions
-        try:
-            current_data = json.loads(self.data_project)
-            if 'positions' not in current_data:
-                current_data['positions'] = {}
-            if 'vertices' not in current_data['positions']:
-                current_data['positions']['vertices'] = {}
-            if 'vertices' in positions:
-                current_data['positions']['vertices'].update(positions['vertices'])
-            self.data_project = current_data
-            self.update()
-            result = True
-        except Exception as e:
-            print 'exception', e
-            result = False
-        return result
+    # def edit_graph_positions(self, positions):
+    #     print positions
+    #     try:
+    #         current_data = json.loads(self.data_project)
+    #         if 'positions' not in current_data:
+    #             current_data['positions'] = {}
+    #         if 'vertices' not in current_data['positions']:
+    #             current_data['positions']['vertices'] = {}
+    #         if 'vertices' in positions:
+    #             current_data['positions']['vertices'].update(positions['vertices'])
+    #         self.data_project = current_data
+    #         self.update()
+    #         result = True
+    #     except Exception as e:
+    #         print 'exception', e
+    #         result = False
+    #     return result
 
 
-
-Project.add_project_type('click', ClickProject)
+# Project.add_project_type('click', ClickProject)

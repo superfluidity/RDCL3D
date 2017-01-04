@@ -1,0 +1,67 @@
+{% extends "project_delete.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block left_sidebar %}
+    {% include 'tosca/tosca_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+<div class="row">
+    {% if project_id  %}
+        <div class="col-sm-5">
+      <div class="box box-danger">
+        <div class="box-header with-border">
+              <i class="fa fa-warning"></i>
+
+              <h3 class="box-title">Warning</h3>
+        </div>
+          <div class="box-body">
+              <form role="form" method="post">
+                  {% csrf_token %}
+                  <div class="box-body">
+
+                        <p>The Project <strong>{{project_name}}</strong> will be deleted!</p>
+
+
+                      <!-- /.box-body -->
+
+                  </div>
+                   <div class="box-footer">
+                          <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+              </form>
+
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+
+
+    <script>
+
+
+
+
+
+    </script>
+{% endblock %}
+

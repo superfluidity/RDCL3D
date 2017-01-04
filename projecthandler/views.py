@@ -1,26 +1,28 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.template.loader import render_to_string
-from django.middleware.csrf import get_token
-from projecthandler.models import Project
-#from projecthandler.models import EtsiManoProject
-from projecthandler.etsi_model import EtsiManoProject
-# from projecthandler.models import ClickProject
-from projecthandler.click_model import ClickProject
-from sf_user.models import CustomUser
-from lib.emparser.util import Util
-# from lib.emparser.t3d_util import T3DUtil
-#from lib.emparser import emparser
-from lib.clickparser import mainrdcl
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 import json
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import render
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
+
+from lib.util import Util
+from projecthandler.click_model import ClickProject
+from projecthandler.etsi_model import EtsiProject
+from projecthandler.models import Project
+from projecthandler.tosca_model import ToscaProject
+from sf_user.models import CustomUser
+
+Project.add_project_type('etsi', EtsiProject)
+Project.add_project_type('click', ClickProject)
+Project.add_project_type('tosca', ToscaProject)
 
 
 @login_required
 def home(request):
     return render(request, 'home.html', {})
-
 
 
 @login_required
@@ -33,85 +35,63 @@ def create_new_project(request):
         type = request.POST.get('type', '')
         start_from = request.POST.get('startfrom', 'scratch')
 
-
         project_types = Project.get_project_types()
         if type in project_types:
             project_class = project_types[type]
 
-        # if type == 'etsi':
-        #     project_class = EtsiManoProject
-        # elif type == 'click':
-        #     project_class = ClickProject
         else:
-            #FIXME this error is not handled 
-            error_msgs.push('Project type undefined.')
-
+            # FIXME this error is not handled
+            error_msgs.append('Project type undefined.')
+            return render(request, 'error.html', {'error_msg': 'Error creating new project, project type undefined. Please retry.'})
 
         try:
 
-        # if type == 'etsi':
-
             if start_from == 'scratch':
+                print 'from scratch'
                 data_project = {}
 
             elif start_from == 'files':
-                # data_project = EtsiManoProject.data_project_from_files(request)
+                print 'from files'
                 data_project = project_class.data_project_from_files(request)
 
-            #     ns_files = request.FILES.getlist('ns_files')
-            #     vnf_files = request.FILES.getlist('vnf_files')
-            #     if ns_files or vnf_files:
-            #         data_project = emparser.importprojectfile(ns_files, vnf_files)
-
             elif start_from == 'example':
-                # data_project = EtsiManoProject.data_project_from_example(request)
+                print 'from example'
                 data_project = project_class.data_project_from_example(request)
 
-                # example_id = request.POST.get('example-etsi-id', '')
-                # data_project = emparser.importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
-
-            
-            # project = EtsiManoProject.create_project (name, user, False, info, data_project)
-            project = project_class.create_project (name, user, False, info, data_project)
-
-            # project = EtsiManoProject.objects.create (name=name, owner=user, validated=False, info=info,
-            #                                          data_project=data_project)
-
-        # elif type == 'click':
-
-        #     if start_from == 'files':
-        #         cfg_files = request.FILES.getlist('cfg_files')
-        #         data_project = mainrdcl.importprojectfile(cfg_files)
-        #     elif start_from == 'example':
-        #         ##FIXME
-        #         example_id = request.POST.get('example-click-id', '')
-        #         data_project = {}
-        #     project = ClickProject.objects.create(name=name, owner=user, validated=False, info=info,
-        #                                           data_project=data_project)
-        # else:
-        #     error_msgs.push('Project type undefined.')
+            project = project_class.create_project(name, user, False, info, data_project)
 
         except Exception as e:
-            print 'Error creating '+type+' project! Please retry.'
+            print 'Error creating ' + type + ' project! Please retry.'
             print e
-            return render(request, 'error.html', {'error_msg': 'Error creating '+type+' project! Please retry.'})
-
-        return render(request, 'new_project.html', {'project_id': project.id})
+            return render(request, 'error.html', {'error_msg': 'Error creating ' + type + ' project! Please retry.'})
+        return redirect('projects:open_project', project_id=project.id)
 
     elif request.method == 'GET':
         csrf_token_value = get_token(request)
-        
-        examples_by_type = {}
-        
+        result = {}
+        data_type_selector = [{
+            'id': '-1',
+            'text': 'Select an option'
+        }]
+        type_example_files = {}
+        type_container_template = ''
         project_types = Project.get_project_types()
+        print "project_types", project_types.keys()
         for type in project_types:
             project_class = project_types[type]
-            examples_by_type.update(project_class.get_example_list())
+            type_example_files.update(project_class.get_example_list())
+            data_type_selector.append({
+                'id': type,
+                'text': type,
+                'value': type
+            })
+            type_container_template += render_to_string(type + '/' + type + '_new_project.html')
 
-
-        return render(request, 'new_project.html', examples_by_type)
-        # return render(request, 'new_project.html', {'etsi_example': Util().get_etsi_example_list(),
-        #                                             'click_example': Util().get_click_example_list()})
+        result.update({'type_example_files': json.dumps(type_example_files)})
+        result.update({'data_type_selector': json.dumps(data_type_selector)})
+        result.update({'type_container_template': type_container_template})
+        result.update({'csrf_token': csrf_token_value})
+        return render(request, 'new_project.html', result)
 
 
 @login_required
@@ -123,7 +103,7 @@ def user_projects(request):
     # print list(projects)
     html = render_to_string('projectlist.html', {
         'projects': list(projects),
-        "csrf_token_value": csrf_token_value
+        'csrf_token': csrf_token_value
     })
     # if request.is_ajax():
     return JsonResponse({'html': html});
@@ -135,15 +115,8 @@ def open_project(request, project_id=None):
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
-        #                      example: 'etsi/etsi_project_details.html'
-        return render(request, prj_token+'/'+prj_token+'_project_details.html',
-                          {'project_overview': project_overview, 'project_id': project_id})
-        # if project_overview['type'] == 'etsi':
-        #     return render(request, 'etsi/etsi_project_details.html',
-        #                   {'project_overview': project_overview, 'project_id': project_id})
-        # elif project_overview['type'] == 'click':
-        #     return render(request, 'click/click_project_details.html',
-        #                   {'project_overview': project_overview, 'project_id': project_id})
+        return render(request, prj_token + '/' + prj_token + '_project_details.html',
+                      {'project_overview': project_overview, 'project_id': project_id})
 
     except Exception as e:
         print e
@@ -167,14 +140,9 @@ def delete_project(request, project_id=None):
             project_overview = projects[0].get_overview_data()
             prj_token = project_overview['type']
             #                 example: 'etsi/etsi_project_delete.html'
-            return render(request, prj_token+'/'+prj_token+'_project_delete.html',
-                              {'project_id': project_id, 'project_name': project_overview['name']})
-            # if project_overview['type'] == 'etsi':
-            #     return render(request, 'etsi/etsi_project_delete.html',
-            #                   {'project_id': project_id, 'project_name': project_overview['name']})
-            # elif project_overview['type'] == 'click':
-            #     return render(request, 'click/click_project_delete.html',
-            #                   {'project_id': project_id, 'project_name': project_overview['name']})
+            print  prj_token + '/' + prj_token + '_project_delete.html', project_overview['name']
+            return render(request, prj_token + '/' + prj_token + '_project_delete.html',
+                          {'project_id': project_id, 'project_name': project_overview['name']})
 
         except Exception as e:
             print e
@@ -188,12 +156,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
 
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
-    # if project_overview['type'] == 'etsi':
-    #     page = 'etsi/etsi_project_descriptors.html'
-
-    # elif project_overview['type'] == 'click':
-    #     page = 'click/click_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
 
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
@@ -207,36 +170,16 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
 @login_required
 def graph(request, project_id=None):
     if request.method == 'GET':
-
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
         # example : 'etsi/project_graph.html'
-        return render(request, prj_token+'/project_graph.html', {
+        return render(request, prj_token + '/project_graph.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
             'collapsed_sidebar': True
         })
-
-        # type = request.GET.get('type')
-        # if type == 'ns' or type == 'vnf': # questo va sostituito con un if a livello di project type a breve, e poi sostituito con una cosa parametrica come sopra 
-        #     csrf_token_value = get_token(request)
-        #     projects = Project.objects.filter(id=project_id).select_subclasses()
-        #     return render(request, 'etsi/project_graph.html', {
-        #         'project_id': project_id,
-        #         'project_overview_data': projects[0].get_overview_data(),
-        #         'collapsed_sidebar': True
-        #     })
-
-        # elif type == 'click':
-        #     csrf_token_value = get_token(request)
-        #     projects = Project.objects.filter(id=project_id).select_subclasses()
-        #     return render(request, 'click/click_project_graph.html', {
-        #         'project_id': project_id,
-        #         'project_overview_data': projects[0].get_overview_data(),
-        #         'collapsed_sidebar': True
-        #     })
 
 
 @login_required
@@ -250,19 +193,6 @@ def graph_data(request, project_id=None, descriptor_id=None):
     response = HttpResponse(topology, content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
 
-    # if prj_token == 'etsi':
-    #     test_t3d = T3DUtil()
-    #     project = projects[0].get_dataproject()
-    #     topology = test_t3d.build_graph_from_project(project)
-    #     # print response
-    #     response = HttpResponse(json.dumps(topology), content_type="application/json")
-    #     response["Access-Control-Allow-Origin"] = "*"
-    # elif prj_token == 'click':
-    #     project = projects[0].get_descriptor(descriptor_id, prj_token)
-    #     topology = mainrdcl.importprojectjson(project)
-    #     response = HttpResponse(topology, content_type="application/json")
-    #     response["Access-Control-Allow-Origin"] = "*"
-    
     return response
 
 
@@ -271,7 +201,7 @@ def download(request, project_id=None):
     csrf_token_value = get_token(request)
     projects = Project.objects.filter(id=project_id).select_subclasses()
     if request.method == 'POST':
-        # projects = EtsiManoProject.objects.filter(id=project_id)
+        # projects = EtsiProject.objects.filter(id=project_id)
         in_memory = projects[0].get_zip_archive()
 
         response = HttpResponse(content_type="application/zip")
@@ -282,7 +212,7 @@ def download(request, project_id=None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {  #TODO REFACTOR
+        return render(request, 'download_etsi.html', {  # TODO REFACTOR
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
         })
@@ -295,7 +225,7 @@ def delete_descriptor(request, project_id=None, descriptor_type=None, descriptor
     result = projects[0].delete_descriptor(descriptor_type, descriptor_id)
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
     # if project_overview['type'] == 'etsi':
     #     page = 'etsi/etsi_project_descriptors.html'
     # elif project_overview['type'] == 'click':
@@ -320,7 +250,7 @@ def clone_descriptor(request, project_id=None, descriptor_type=None, descriptor_
     result = projects[0].clone_descriptor(descriptor_type, descriptor_id, new_id)
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/'+prj_token+'_project_descriptors.html'
+    page = prj_token + '/' + prj_token + '_project_descriptors.html'
     # if project_overview['type'] == 'etsi':
     #     page = 'etsi/etsi_project_descriptors.html'
     # elif project_overview['type'] == 'click':
@@ -342,29 +272,13 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
     projects = Project.objects.filter(id=project_id).select_subclasses()
     project_overview = projects[0].get_overview_data()
     prj_token = project_overview['type']
-    page = prj_token+'/descriptor/descriptor_new.html'
+    page = prj_token + '/descriptor/descriptor_new.html'
     if request.method == 'GET':
         request_id = request.GET.get('id', '')
 
-        util = Util()
-
         json_template = projects[0].get_new_descriptor(descriptor_type, request_id)
 
-        # if prj_token == 'etsi':
-        #     # page = 'etsi/descriptor/descriptor_new.html'
-
-        #     json_template = util.get_descriptor_template(descriptor_type)
-        #     if descriptor_type == 'nsd':
-        #         json_template['nsdIdentifier'] = request_id
-        #         json_template['nsdInvariantId'] = request_id
-        #     else:
-        #         json_template['vnfdId'] = request_id
-
-        # elif prj_token == 'click':
-        #     # page = 'click/descriptor/descriptor_new.html'
-        #     json_template = ''
-
-        descriptor_string_yaml = util.json2yaml(json_template)
+        descriptor_string_yaml = Util.json2yaml(json_template)
         descriptor_string_json = json.dumps(json_template)
 
         return render(request, page, {
@@ -383,7 +297,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
-            desc_name = request.POST.get('it')  #TODO capire 'it' che significa ???
+            desc_name = request.POST.get('it')  # TODO capire 'it' che significa ???
 
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
@@ -430,16 +344,16 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
-        page = prj_token+'/descriptor/descriptor_view.html'
+        page = prj_token + '/descriptor/descriptor_view.html'
 
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
         # if project_overview['type'] == 'etsi':
         #     page = 'etsi/descriptor/descriptor_view.html'
         # elif project_overview['type'] == 'click':
         #     page = 'click/descriptor/descriptor_view.html'
-        utility = Util()
+        # utility = Util()
         descriptor_string_json = json.dumps(descriptor)
-        descriptor_string_yaml = utility.json2yaml(descriptor)
+        descriptor_string_yaml = Util.json2yaml(descriptor)
         # print descriptor
         return render(request, page, {
             'project_id': project_id,
@@ -464,7 +378,7 @@ def graph_positions(request, project_id=None):
 @login_required
 def unused_vnf(request, project_id=None, nsd_id=None):
     if request.method == 'GET':
-        print project_id, nsd_id
+        print 'in method unused_vnf : ', project_id, nsd_id  # TODO log
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].get_unused_vnf(nsd_id)
         status_code = 500 if result == None else 200
@@ -476,33 +390,9 @@ def unused_vnf(request, project_id=None, nsd_id=None):
 @login_required
 def add_element(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        existing_vnf = request.POST.get('existing_vnf')
-        if element_type == 'ns_cp':
-            result = projects[0].add_ns_sap(group_id, element_id)
-        elif element_type == 'ns_vl':
-            result = projects[0].add_ns_vl(group_id, element_id)
-        elif element_type == 'vnf':
-            if existing_vnf == 'true':
-                result = projects[0].add_ns_existing_vnf(group_id, element_id)
-            else:
-                result = projects[0].add_ns_vnf(group_id, element_id)
-        elif element_type == 'vnf_vl':
-            result = projects[0].add_vnf_intvl(group_id, element_id)
-        elif element_type == 'vnf_ext_cp':
-            result = projects[0].add_vnf_vnfextcpd(group_id, element_id)
-        elif element_type == 'vnf_vdu':
-            result = projects[0].add_vnf_vdu(group_id, element_id)
-        elif element_type == 'vnf_vdu_cp':
-            vdu_id = request.POST.get('choice')
-            result = projects[0].add_vnf_vducp(group_id, vdu_id, element_id)
-        elif element_type == 'vnffg':
-            print group_id, element_id
-            result = projects[0].add_vnffg(group_id, element_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_add_element(request)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -512,27 +402,9 @@ def add_element(request, project_id=None):
 @login_required
 def remove_element(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        print element_id
-        if element_type == 'ns_cp':
-            result = projects[0].remove_ns_sap(group_id, element_id)
-        elif element_type == 'ns_vl':
-            result = projects[0].remove_ns_vl(group_id, element_id)
-        elif element_type == 'vnf':
-            result = projects[0].remove_ns_vnf(group_id, element_id)
-        elif element_type == 'vnf_vl':
-            result = projects[0].remove_vnf_intvl(group_id, element_id)
-        elif element_type == 'vnf_ext_cp':
-            result = projects[0].remove_vnf_vnfextcpd(group_id, element_id)
-        elif element_type == 'vnf_vdu':
-            result = projects[0].remove_vnf_vdu(group_id, element_id)
-        elif element_type == 'vnf_vdu_cp':
-            vdu_id = request.POST.get('choice')
-            result = projects[0].remove_vnf_vducp(group_id, vdu_id, element_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_remove_element(request)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -542,38 +414,9 @@ def remove_element(request, project_id=None):
 @login_required
 def add_link(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = projects[0].link_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = projects[0].link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = projects[0].link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            vdu_id = request.POST.get('choice')
-            vnf_id = source['info']['group'][0]
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            result = projects[0].link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = projects[0].link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_add_link(request)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -583,36 +426,9 @@ def add_link(request, project_id=None):
 @login_required
 def remove_link(request, project_id=None):
     if request.method == 'POST':
-        result = False
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = projects[0].unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = projects[0].unlink_vl_vnf(ns_id, vl_id, vnf_id)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = projects[0].unlink_vl_sap(ns_id, vnf_id, sap_id)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            print source, destination
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            vnf_id = source['info']['group'][0]
-            result = projects[0].unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = projects[0].unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].get_remove_link(request)
+
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
@@ -621,16 +437,12 @@ def remove_link(request, project_id=None):
 
 @login_required
 def add_node_to_vnffg(request, project_id=None):
-    print "add_node_to_vnffg"
+    print "add_node_to_vnffg"  # TODO log
     if request.method == 'POST':
-        projects = EtsiManoProject.objects.filter(id=project_id)
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
-        element_type = request.POST.get('element_type')
-        vnffg_id = request.POST.get('vnffg_id')
-        print group_id, element_id, element_type, vnffg_id
-        result = projects[0].add_node_to_vnffg(group_id, vnffg_id, element_type, element_id)
-    status_code = 200 if result else 500
-    response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        result = projects[0].add_node_to_vnffg(request)
+
+        status_code = 200 if result else 500
+        response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response

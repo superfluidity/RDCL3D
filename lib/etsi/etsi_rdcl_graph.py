@@ -1,53 +1,16 @@
 import json
 import logging
 import copy
-from util import Util
+from lib.rdcl_graph import RdclGraph
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('EtsiRdclGraph')
 
-class T3DUtil:
-
-    node_t3d_base = {
-        'info': {
-            'frozen': False,
-            'property': {
-                'custom_label': '',
-            },
-            'type': '',
-            'group': []
-        }
-    }
+class EtsiRdclGraph(RdclGraph):
+    """Operates on the graph representation used for the GUI graph views"""
 
     def __init__(self):
-        logging.basicConfig(level=logging.DEBUG)
-        self.log = logging.getLogger('T3DUtil')
-
-    def add_link(self, source, target, view, group, graph_object ):
-        if (source is None) or (target is None):
-            return;
-        edge_obj = {
-            'source': source,
-            'target': target,
-            'view': view,
-            'group': [group]
-        }
-        if edge_obj not in graph_object['edges']:
-            graph_object['edges'].append(edge_obj)
-
-    def add_node(self, id, type, group, positions, graph_object):
-        if id is None:
-            return
-        node = next((x for x in graph_object['vertices'] if x['id'] == id), None)
-        if node is not None:
-            node['info']['group'].append(group)
-        else:
-            node = copy.deepcopy(self.node_t3d_base)
-            node['id'] = id
-            node['info']['type'] = type
-            node['info']['group'].append(group)
-            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
-                node['fx'] = positions['vertices'][id]['x']
-                node['fy'] = positions['vertices'][id]['y']
-            graph_object['vertices'].append(node)
+        pass
 
     def create_vnf_views(self, vnfd, positions, graph_object):
         for vl in vnfd['intVirtualLinkDesc']:
@@ -76,16 +39,20 @@ class T3DUtil:
                 link['group'].append(vnffgdId)
 
 
-    def build_graph_from_project(self, json_project):
+    def build_graph_from_project(self, json_project, model={}):
+        """Creates a single graph for a whole project"""
+
         #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],
             'graph_parameters': {'vnffgIds': []},
+            # 'model': Util().get_graph_model()
+            'model': model
         }
         try:
             positions = json_project['positions'] if 'positions' in json_project else False
-            self.log.debug('build t3d graph from project json')
+            log.debug('build t3d graph from project json')
             if 'vnfd' in json_project:
                 for vnfd_id in json_project['vnfd']:
                     self.create_vnf_views(json_project['vnfd'][vnfd_id], positions, graph_object)
@@ -119,7 +86,7 @@ class T3DUtil:
                             self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
                         self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
         except Exception as e:
-            self.log.error('Exception build_graph_from_project')
+            log.error('Exception in build_graph_from_project')
             raise
 
         return graph_object
