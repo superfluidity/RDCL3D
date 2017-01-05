@@ -23,7 +23,7 @@ FromDevice($DEV)
 	-> ip :: IPClassifier(icmp echo-reply, -)
 	-> ping :: ICMPPingSource($DEV, $DADDR)
 	-> SetIPAddress($GW)
-	-> arpq :: ARPQuerier($DEV)
+	-> arpq  ::  ARPQuerier($DEV)
 	-> IPPrint
 	-> q :: Queue
 	-> { input -> t :: PullTee -> output; t [1] -> ToHostSniffers($DEV) }

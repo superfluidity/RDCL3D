@@ -27,6 +27,7 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []
 
 	words = load_list(line,words)
+
 	for w in words:
 		words2.append(w)
 
@@ -68,6 +69,7 @@ def implicit_compound_decl(line, element, name_subgraph, group, words, words2):
 	words = []
 
 	words = load_list(line,words)
+	
 	for w in words:
 		words2.append(w)
 
@@ -92,6 +94,9 @@ def subgraph_ele_class(class_element_lines,ele_class_element ,element):
 
 
 def connection_decl(words, connection, element):
+	print 'words'
+	print words
+	print '\n'
 	for i in range(0,len(words)):
 		if words[i] == '->':
 			port_input=0
@@ -99,10 +104,21 @@ def connection_decl(words, connection, element):
 
 			if words[i-2]=='::': 
 				name_element_source=words[i-3]
-			elif string.find(words[i-1],'[')!=-1:
-				index=string.find(words[i-1],'[')
-				port_input=words[i-1][index+1:index+2]
-				name_element_source=words[i-1][0:index]
+				
+			elif string.find(words[i-1],'[')!=-1:        
+				if string.find(words[i-1],'[') == 0:
+					index = string.find(words[i-1],']')
+					words[i-1] = words[i-1][index+1:]
+
+				if string.find(words[i-1],'[')!=-1:
+					index=string.find(words[i-1],'[')
+					port_input=words[i-1][index+1:index+2]
+					name_element_source=words[i-1][0:index]
+					print name_element_source
+				else:
+					name_element_source=words[i-1]
+					print name_element_source
+					
 			else:
 				name_element_source=words[i-1]	
 					

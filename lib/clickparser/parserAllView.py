@@ -103,9 +103,11 @@ def parserAllView(file_click, nx_topology):
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
         words2 = []
+        
         explicit_element_decl(line, element,'', 'click', words)
+        #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
-    
+        #print'###'
         for i in range(0,len(words2)):                                                          # ad ogni riga sostituisce il da dichiarazione dell'elemento 
             try:                                                                                # con il nome dell'elemento. Per semplificare la dichiarazione 
                 index = words2.index('::')                                                      # delle connessioni
@@ -113,11 +115,12 @@ def parserAllView(file_click, nx_topology):
                 del words2[index]
             except ValueError:
                 break
-    
+
         for w in words2:                                                                        # inserisce tutte le righe in una lista che verra' passata
             connection_list.append(w)                                                           # alla funzione connection_decl
 
         load_list(line, words)
+
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
     print element_class_lines
 
@@ -146,9 +149,10 @@ def parserAllView(file_click, nx_topology):
     for c in compound_element.items():
         for e in c[1]['compound']:
             connection_list.append(e)
-    #print connection_list
-
+    
     connection_decl(connection_list, connection, element)
+    print element
+    print '\n'
     print connection
     words[:] = []
 

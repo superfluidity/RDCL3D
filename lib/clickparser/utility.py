@@ -114,7 +114,13 @@ def load_list(line, words):
 	word2=''
 	word3=''
 
+	line_old=['::','->']
+	line_new=[' :: ',' -> ']
+	for i in range(0,len(line_old)):											#gestisce le dichiarazione esplice degli elementi
+		line=line.replace(line_old[i],line_new[i])								#es.: name::element o name :: element
+
 	for word in line.split():
+		#print word
 		if conf:
 			if word[len(word)-1]==')' or word[len(word)-2]==')':
 				word=word2+' '+word
@@ -137,7 +143,6 @@ def load_list(line, words):
 			word=word3+''+word
 			port=False
 
-
 		if word[len(word)-1]==';':
 			word=word[0:len(word)-1]
 
@@ -147,12 +152,15 @@ def load_list(line, words):
 	for i in range(0,len(words)):																#usato per gestire il tipo di dichiarazione di porta d'uscita
 		words_new.append(words[i])																#es.:  port[num] o port [num]
 		try:
-			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->':
+			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->' and words[i-1] != '->':
+				print words[i]
 				words_new[i-1]=words_new[i-1]+''+words[i]
 				del words_new[len(words_new)-1]
 		except IndexError:
 			continue
-
+	#print'words_new'
+	#print words_new
+	#print '########'
 	return words_new
 
 
