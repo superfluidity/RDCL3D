@@ -639,6 +639,7 @@ dreamer.GraphEditor = (function(global) {
             //log(d.info.type + " " + self.filter_parameters.node.type + " group: " + self.filter_parameters.node.group + "- " + d.info.group)
                 // check filter by node type
             if (self.filter_parameters.node.type.length > 0) {
+                
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
                     cond_view = false;
             }

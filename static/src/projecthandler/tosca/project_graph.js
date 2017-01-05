@@ -20,14 +20,15 @@ $.urlParam = function(name) {
 
 $(document).ready(function() {
     var descriptor_type = $.urlParam('type');
-    var type = descriptor_type == 'click'  ? ['click'] : ['click'];
+    var type = descriptor_type == 'toscayaml'  ? ['*'] : ['*'];
+    // console.log('DESCRIPTOR TYPE : '+descriptor_type);
     var params = {
         node: {
-            type: type,
+            type: [],
             group: []
         },
         link: {
-            group: [type],
+            group: [],
             view: []
         }
     }
@@ -46,7 +47,7 @@ $(document).ready(function() {
         gui_properties: example_gui_properties,
         descriptor_id: $.urlParam('id')
     });
-   // graph_editor.handleFiltersParams(params);
+    graph_editor.handleFiltersParams(params);
 
     $('#draggable-container').hide();
     $('#vnffg_options').hide();
@@ -104,6 +105,9 @@ function savePositions(el) {
 
 function changeFilter(e, c) {
     console.log("changeFilter");
+    $("#title_header").text("TOSCA YAML Graph Viewer");
+    // $("#vnffg_box").hide();
+    // $("#vnffg_options").prop("disabled",true);
 
 }
 
