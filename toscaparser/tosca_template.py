@@ -115,6 +115,10 @@ class ToscaTemplate(object):
                 self.outputs = self._outputs()
                 self._handle_nested_tosca_templates_with_topology()
                 self.graph = ToscaGraph(self.nodetemplates)
+            else:
+                log.debug('topology_template.tpl is False')
+
+
 
         ExceptionCollector.stop()
         self.verify_template()

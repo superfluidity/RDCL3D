@@ -32,10 +32,15 @@ class ToscaRdclGraph(RdclGraph):
             log.debug('build graph from project json')
 
             # print json.dumps(json_project, sort_keys=True, indent=4, separators=(',', ': '))
+            print json.dumps(json_project['toscayaml'], sort_keys=True, indent=4, separators=(',', ': '))
+
 
             path = '/home/user/RDCL/heat-translator/translator/tests/data/network/tosca_two_servers_one_network.yaml'
+
+
             # tosca = ToscaTemplate(path, parsed_params, a_file)
-            tosca = ToscaTemplate(path, {}, True)
+            tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][json_project['toscayaml'].keys()[0]])
+
             version = tosca.version
             if tosca.version:
                 print("\nversion: " + version)
@@ -66,13 +71,17 @@ class ToscaRdclGraph(RdclGraph):
                     for output in outputs:
                         print("\t" + output.name)
 
-            for node in tosca.graph.nodetemplates:
-                if node.name in tosca.graph.vertices:
-                    print 'node '+node.name+' is related to:'
-                    self.add_node(node.name, node.type, 'vnf', positions, graph_object)
-                    related = tosca.graph.vertex(node.name).related_nodes
-                    for related_node in related:
-                        print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
+            if hasattr(tosca, 'graph'):
+                for node in tosca.graph.nodetemplates:
+                    if node.name in tosca.graph.vertices:
+                        print 'node '+node.name+' is related to:'
+                        self.add_node(node.name, node.type, 'vnf', positions, graph_object)
+                        related = tosca.graph.vertex(node.name).related_nodes
+                        for related_node in related:
+                            print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
+                            self.add_link(node.name, related_node.name, 'vnf', 'all_group', graph_object)
+            else :    
+                log.debug('tosca template has no graph')
 
             # #THIS IS FOR THE TRANSLATION INTO HOT TEMPLATES
             # translator = TOSCATranslator(tosca, {}, False,
