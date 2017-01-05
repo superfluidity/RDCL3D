@@ -4,14 +4,14 @@ from parserAllView import *
 import os
 
 
-def run_command(type_view, cfg_files, nx_topology):
+def run_command(type_view, cfg_files):
     if type_view == 'View':
-        json_click = parserView(cfg_files, nx_topology)
+        json_click = parserView(cfg_files)
 
     elif type_view == 'AllView':
-        json_click = parserAllView(cfg_files, nx_topology)
+        json_click = parserAllView(cfg_files)
     elif type_view == 'DetailView':
-        json_click = parserDetailView(cfg_files, nx_topology)
+        json_click = parserDetailView(cfg_files)
 
     return json_click
 
@@ -39,10 +39,10 @@ def parse_cmd_line():
 '''
 
 def importprojectjson(cfg_files):
-    nx_topology = nx.MultiDiGraph()
+    #nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
     type_view = 'AllView'
-    json_click = run_command(type_view, cfg_files, nx_topology)
+    json_click = run_command(type_view, cfg_files)
     '''
     if len(nx_topology)!=0:
         xml2py(nx_topology)
