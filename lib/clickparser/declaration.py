@@ -3,16 +3,31 @@ import copy
 from utility import *
 
 			
-def explicit_element_decl(line, element, name_subgraph, group, words):
+def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict):
 	config = False
 	words=[]
 	index=[]
+	ele_class_name=''
 
 	words = load_list(line,words)
+	#for ir in ele_class_dict.items():
+	#	print ele_class_dict[ir]['name']
+	#	ir = ir +1
+
 
 	for i in range(0,len(words)):
 		if words[i] =='::':
-			index.append(i)	
+			index.append(i)
+			for c1 in range(0,len(words[i+1])):
+				if words[i+1][c1] == '(':
+					break
+				ele_class_name = ele_class_name + words[i+1][c1]
+			for c2 in ele_class_dict.keys(): 
+				if ele_class_name == ele_class_dict[c2]['name']:
+					element_class_handler(words[i-1],ele_class_dict[c2]['elementclasscontenent'])	
+
+
+
 
 	for i in index:
 			
@@ -22,12 +37,16 @@ def explicit_element_decl(line, element, name_subgraph, group, words):
 			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)	
 
 
+def element_class_handler(name_element_class,ele_class_cont):			#riceve il nome del element class e il contenuto
+
+	print name_element_class
+	print ele_class_cont
 
 def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []
 
 	words = load_list(line,words)
-
+	
 	for w in words:
 		words2.append(w)
 
@@ -85,9 +104,12 @@ def implicit_compound_decl(line, element, name_subgraph, group, words, words2):
 	
 
 
-def subgraph_ele_class(class_element_lines,ele_class_element ,element):    
+def subgraph_ele_class(line2,ele_class_element):    
 	class_element_cont=[]
+	class_element_lines=[]
 	
+	class_element_lines=load_list(line2,class_element_lines)
+	#print class_element_lines
 	i=0																	#trova il nome della element class
 	while i < len(class_element_lines):
 		l=class_element_lines[i]
@@ -99,24 +121,16 @@ def subgraph_ele_class(class_element_lines,ele_class_element ,element):
 		if z!='elementclass' and z!='{' and z!='}' and z!=name:
 			class_element_cont.append(z)			
 		
-	print '*****************************'
-	text = ' '.join(class_element_cont)	
-
-
-	print text
-	print '*************************************'
-	#FIXME => questo va via perche element class non deve andare in elmement
-	element[len(element)]=({'element':'class_element', 'name':name, 'config':[],'group':'click'})
-	#FIXME => 
-	ele_class_element[len(ele_class_element)] = ({'name':name, 'elementclasscontenent':class_element_lines})
-	print ele_class_element
-	return text
+	 
+	ele_class_element[len(ele_class_element)] = ({'name':name, 'elementclasscontenent':class_element_cont})
+	
+	
 
 
 def connection_decl(words, connection, element):
-	print 'words'
-	print words
-	print '\n'
+	#print 'words'
+	#print words
+	#print '\n'
 	for i in range(0,len(words)):
 		if words[i] == '->':
 			port_input=0
@@ -134,10 +148,10 @@ def connection_decl(words, connection, element):
 					index=string.find(words[i-1],'[')
 					port_input=words[i-1][index+1:index+2]
 					name_element_source=words[i-1][0:index]
-					print name_element_source
+					#print name_element_source
 				else:
 					name_element_source=words[i-1]
-					print name_element_source
+					#print name_element_source
 					
 			else:
 				name_element_source=words[i-1]	
