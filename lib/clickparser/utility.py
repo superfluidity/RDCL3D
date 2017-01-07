@@ -120,7 +120,6 @@ def load_list(line, words):
 		line=line.replace(line_old[i],line_new[i])								#es.: name::element o name :: element
 
 	for word in line.split():
-		#print word
 		if conf:
 			if word[len(word)-1]==')' or word[len(word)-2]==')':
 				word=word2+' '+word
@@ -153,7 +152,6 @@ def load_list(line, words):
 		words_new.append(words[i])																#es.:  port[num] o port [num]
 		try:
 			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->' and words[i-1] != '->':
-				print words[i]
 				words_new[i-1]=words_new[i-1]+''+words[i]
 				del words_new[len(words_new)-1]
 		except IndexError:

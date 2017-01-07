@@ -134,10 +134,8 @@ def connection_decl(words, connection, element):
 					index=string.find(words[i-1],'[')
 					port_input=words[i-1][index+1:index+2]
 					name_element_source=words[i-1][0:index]
-					print name_element_source
 				else:
 					name_element_source=words[i-1]
-					print name_element_source
 					
 			else:
 				name_element_source=words[i-1]	
