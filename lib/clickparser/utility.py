@@ -92,7 +92,7 @@ def rename_compound_element(words3, compound, element_renamed):
 					name = words3[i][0:start]	
 				if name == e[1]['origin_name']:
 					words3[i] = e[1]['new_name']
-	print words3
+	#print words3
 
 
 

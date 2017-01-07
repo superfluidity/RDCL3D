@@ -41,9 +41,9 @@ def parserAllView(file_click):
     concatenate_conf = False
     concatenate_compound = False
     concatenate_line = False
-    element_class_lines=[]
+    
     list_lines = []
-    ele_class_element = {}
+    ele_class_dict = {}
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
     compound_element_prov = {}
@@ -68,11 +68,11 @@ def parserAllView(file_click):
             elem_class_control=True
             line2 = line
             continue
+            ###########
         if elem_class_control==True and string.find(line, '}') !=-1:
             elem_class_control=False
-            element_class_lines=load_list(line2,element_class_lines)                #va a dividere tutte le parole del class element
-            ###########
-            provatext=subgraph_ele_class(element_class_lines,ele_class_element,element)       #(contenutodellelementclass, dizionario delle classelement,dizionario element)
+            subgraph_ele_class(line2,ele_class_dict)       #(contenutodellelementclass, dizionario delle classelement,dizionario element)
+            line2=''
             continue    
             ###########
         if elem_class_control:
@@ -105,7 +105,7 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words)
+        explicit_element_decl(line, element,'', 'click', words, ele_class_dict)
         #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
         #print'###'
@@ -123,12 +123,10 @@ def parserAllView(file_click):
         load_list(line, words)
 
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
-    #print element_class_lines
+    #print '#############'
+    #print ele_class_dict
 
-    #print provatext
-    
 
-    #rename_element_list(element, words)
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
     element_renamed={}
@@ -155,12 +153,12 @@ def parserAllView(file_click):
             connection_list.append(e)
     
     connection_decl(connection_list, connection, element)
-    print element
+    #print element
     print '\n'
-    print connection
+    #print connection
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    print json_data
+    #print json_data
     return json_data
 
