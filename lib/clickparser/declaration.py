@@ -108,8 +108,11 @@ def subgraph_ele_class(line2,ele_class_element):
 	class_element_cont=[]
 	class_element_lines=[]
 	
+	print line2
 	class_element_lines=load_list(line2,class_element_lines)
-	#print class_element_lines
+	print '#####'
+	print class_element_lines
+	print '######'
 	i=0																	#trova il nome della element class
 	while i < len(class_element_lines):
 		l=class_element_lines[i]
@@ -151,10 +154,6 @@ def connection_decl(words, connection, element):
 				else:
 					name_element_source=words[i-1]
 					#print name_element_source
-				else:
-					name_element_source=words[i-1]
-					#print name_element_source
-					
 			else:
 				name_element_source=words[i-1]	
 					

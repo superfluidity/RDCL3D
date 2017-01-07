@@ -114,6 +114,11 @@ def load_list(line, words):
 	word2=''
 	word3=''
 
+	line_old=' ['
+	line_new='['
+
+	line=line.replace(line_old,line_new)
+
 	line_old=['::','->']
 	line_new=[' :: ',' -> ']
 	for i in range(0,len(line_old)):											#gestisce le dichiarazione esplice degli elementi
@@ -148,6 +153,7 @@ def load_list(line, words):
 		words.append(word)
 
 	words_new=[]	
+	'''
 	for i in range(0,len(words)):																#usato per gestire il tipo di dichiarazione di porta d'uscita
 		words_new.append(words[i])																#es.:  port[num] o port [num]
 		try:
@@ -159,7 +165,8 @@ def load_list(line, words):
 	#print'words_new'
 	#print words_new
 	#print '########'
-	return words_new
+	'''
+	return words
 
 
 def handle_edgeslevel(connection):
