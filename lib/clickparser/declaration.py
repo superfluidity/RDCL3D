@@ -49,7 +49,6 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	
 	for w in words:
 		words2.append(w)
-
 	for i in range(0,len(words)):
 		index=string.find(words[i],'(')
 		if words[i][0].isupper():

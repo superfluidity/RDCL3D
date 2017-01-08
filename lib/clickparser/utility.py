@@ -98,14 +98,27 @@ def rename_compound_element(words3, compound, element_renamed):
 
 
 def nameGenerator(element, type_element):      		#nome di default class@num
-	num=0
+	implicit_name = False
+
+	for e in element.items():
+		if string.find(e[1]['name'],'@')!=-1 and string.find(e[1]['name'],'.')==-1:
+			index = string.find(e[1]['name'],'@')
+			num = int(e[1]['name'][index+1:])
+			implicit_name = True
+
+	if implicit_name :
+		name = type_element+'@'+str(num+1)
+	else:
+		name = type_element+'@0'
+
+	'''
 	for i in range(0,len(element)):
 		for j in range(0,len(element)):
 			pos=string.find(element[i]['name'], str(j))
 			if pos != -1:
 				num = j
-	
-	return type_element+'@'+str(num+1)
+	'''
+	return name
 
 
 def load_list(line, words):
@@ -119,8 +132,8 @@ def load_list(line, words):
 
 	line=line.replace(line_old,line_new)
 
-	line_old=['::','->']
-	line_new=[' :: ',' -> ']
+	line_old=['::','->',' ;']
+	line_new=[' :: ',' -> ',';']
 	for i in range(0,len(line_old)):											#gestisce le dichiarazione esplice degli elementi
 		line=line.replace(line_old[i],line_new[i])								#es.: name::element o name :: element
 
