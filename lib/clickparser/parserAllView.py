@@ -105,7 +105,7 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words, ele_class_dict)
+        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,connection)
         #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
         #print'###'

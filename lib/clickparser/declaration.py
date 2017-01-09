@@ -3,29 +3,31 @@ import copy
 from utility import *
 
 			
-def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict):
+def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict,connection):
 	config = False
 	words=[]
 	index=[]
 	ele_class_name=''
 
 	words = load_list(line,words)
-	#for ir in ele_class_dict.items():
-	#	print ele_class_dict[ir]['name']
-	#	ir = ir +1
+	control = False	
 
 
 	for i in range(0,len(words)):
+		control = False	
+
 		if words[i] =='::':
-			index.append(i)
+			#index.append(i)
 			for c1 in range(0,len(words[i+1])):
 				if words[i+1][c1] == '(':
 					break
 				ele_class_name = ele_class_name + words[i+1][c1]
 			for c2 in ele_class_dict.keys(): 
 				if ele_class_name == ele_class_dict[c2]['name']:
-					element_class_handler(words[i-1],ele_class_dict[c2]['elementclasscontenent'])	
-
+					control = True
+					element_class_handler(element,words[i-1],ele_class_dict[c2]['name'],ele_class_dict[c2]['elementclasscontenent'],ele_class_dict[c2]['elementclassstr'],connection)	
+			if control == False:
+				index.append(i)
 
 
 
@@ -37,10 +39,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)	
 
 
-def element_class_handler(name_element_class,ele_class_cont):			#riceve il nome del element class e il contenuto
 
-	print name_element_class
-	print ele_class_cont
 
 def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 	words = []
@@ -60,8 +59,23 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 				elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
 					implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
 	
+def element_class_handler(element, name_element,name_element_class,ele_class_cont,elementclassstr,connection):			#riceve il nome del element class e il contenuto
+	words=[]
+	words3=[]
+	element_renamed={}
 
+	print name_element
+	print name_element_class
+	print ele_class_cont
+	#print elementclassstr
 
+	#FIXME => il config va letto e inserito
+	element[len(element)]=({'element':name_element_class, 'name':name_element, 'config':'','group':'click'})
+	
+	explicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, element_renamed)
+	implicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, words3)
+	connection_decl(ele_class_cont, connection, element)
+	
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
 	config = False
 	words=[]
@@ -107,7 +121,8 @@ def implicit_compound_decl(line, element, name_subgraph, group, words, words2):
 def subgraph_ele_class(line2,ele_class_element):    
 	class_element_cont=[]
 	class_element_lines=[]
-	
+	class_element_str=''
+	control = False
 	class_element_lines=load_list(line2,class_element_lines)
 	#print class_element_lines
 	i=0																	#trova il nome della element class
@@ -121,15 +136,24 @@ def subgraph_ele_class(line2,ele_class_element):
 		if z!='elementclass' and z!='{' and z!='}' and z!=name:
 			class_element_cont.append(z)			
 		
-	 
-	ele_class_element[len(ele_class_element)] = ({'name':name, 'elementclasscontenent':class_element_cont})
+	for w1 in line2:
+		if w1=='{':
+			control=True
+			continue
+		if w1=='}':
+			control=False
+			break	  
+		if control == True:
+			class_element_str=class_element_str + w1
+
+	ele_class_element[len(ele_class_element)] = ({'name':name, 'elementclasscontenent':class_element_cont, 'elementclassstr':class_element_str})
 	
 	
 
 
 def connection_decl(words, connection, element):
 	#print 'words'
-	#print words
+	print words
 	#print '\n'
 	for i in range(0,len(words)):
 		if words[i] == '->':
