@@ -12,10 +12,9 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ToscaParser')
 
 class ToscaParser(Parser):
-    """Parser methods for etsi project type
+    """Parser methods for tosca project type
 
-    There is no actual parsing involved here, because the
-    descriptor files are already JSON!
+
     """
 
     def __init__(self):
@@ -23,7 +22,7 @@ class ToscaParser(Parser):
     
     @classmethod        
     def importprojectdir(cls,dir_project, type):
-        """Imports all files from NSD and VNFDs folders under a given folder
+        """Imports all files under a given folder
 
         this method is specific for Tosca project type
         """

@@ -143,6 +143,9 @@ class ToscaProject(Project):
         project = self.get_dataproject()
         topology = test_t3d.build_graph_from_project(project,
                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+
+        # print json.dumps(topology)
+
         return json.dumps(topology)
 
 

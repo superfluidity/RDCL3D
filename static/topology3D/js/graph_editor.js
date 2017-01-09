@@ -368,7 +368,7 @@ dreamer.GraphEditor = (function(global) {
                 .filter(this.node_filter_cb))
 
             .filter(function(d) { 
-                return self._node_property_by_type(d.info.type, 'image') == undefined  })
+                return (d.info.type == undefined) || (self._node_property_by_type(d.info.type, 'image') == undefined)  })
 
             .append("svg:path")
                 .attr("d", d3.symbol()
@@ -639,6 +639,7 @@ dreamer.GraphEditor = (function(global) {
             //log(d.info.type + " " + self.filter_parameters.node.type + " group: " + self.filter_parameters.node.group + "- " + d.info.group)
                 // check filter by node type
             if (self.filter_parameters.node.type.length > 0) {
+                
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
                     cond_view = false;
             }

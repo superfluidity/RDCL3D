@@ -21,10 +21,10 @@ $.urlParam = function(name) {
 
 $(document).ready(function() {
     var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
-    var type = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
+    var allowed_types = descriptor_type == 'ns'  ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
     var params = {
         node: {
-            type: type,
+            type: allowed_types,
             group: [$.urlParam('id')]
         },
         link: {
@@ -47,6 +47,7 @@ $(document).ready(function() {
 //***STEFANO
         gui_properties: example_gui_properties
     });
+    // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
 
 });

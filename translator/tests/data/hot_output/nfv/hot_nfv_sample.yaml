@@ -1,0 +1,79 @@
+heat_template_version: 2013-05-23
+
+description: >
+  Template for deploying a single server with predefined properties.
+
+parameters: {}
+resources:
+
+  VDU1:
+    type: OS::Nova::Server
+    properties:
+      flavor: m1.medium
+      image: rhel-6.5-test-image
+      networks:
+      - port: { get_resource: CP1 }
+      user_data_format: SOFTWARE_CONFIG
+
+    depends_on:
+      - VDU2
+      - BlockStorage
+
+  VDU2:
+    type: OS::Nova::Server
+    properties:
+      flavor: m1.medium
+      image: rhel-6.5-test-image
+      networks:
+      - port: { get_resource: CP2 }
+      user_data_format: SOFTWARE_CONFIG
+
+  BlockStorage:
+    type: OS::Cinder::Volume
+    properties:
+      size: 10
+
+  tosca.relationships.attachesto_1:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid:
+        get_resource: VDU1
+      mountpoint: /data
+      volume_id:
+        get_resource: BlockStorage
+
+  CP1:
+    type: OS::Neutron::Port
+    properties:
+      fixed_ips:
+        - ip_address: '192.168.0.55'
+      network: { get_resource: VL1 }
+
+  CP2:
+    type: OS::Neutron::Port
+    properties:
+      fixed_ips:
+        - ip_address: '192.168.0.56'
+      network: { get_resource: VL1 }
+
+  VL1:
+    type: OS::Neutron::Net
+    properties:
+      name: test_net
+      value_specs:
+        provider:network_type: vxlan
+        provider:segmentation_id: 100
+
+  VL1_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      ip_version: 4
+      allocation_pools:
+      - end: 192.168.0.200
+        start: 192.168.0.50
+      gateway_ip: 192.168.0.1
+      cidr: 192.168.0.0/24
+      network: { get_resource: VL1 }
+
+outputs: {}
+

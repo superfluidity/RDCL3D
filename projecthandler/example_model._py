@@ -51,7 +51,7 @@ class ExampletokenProject(Project):
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'exampletoken_example' : dirs}
+        return {'exampletoken' : dirs}
 
     @classmethod
     def get_graph_model(cls):
