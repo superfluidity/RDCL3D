@@ -20,7 +20,7 @@ elementclass RatedSampler2 {
   rs [0] -> [0] output;
   rs [1] -> t :: Tee;
   t [0] -> [0] output;
-  
+  t [1] -> [1] output;
 };
 
 

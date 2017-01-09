@@ -98,14 +98,27 @@ def rename_compound_element(words3, compound, element_renamed):
 
 
 def nameGenerator(element, type_element):      		#nome di default class@num
-	num=0
+	implicit_name = False
+
+	for e in element.items():
+		if string.find(e[1]['name'],'@')!=-1 and string.find(e[1]['name'],'.')==-1:
+			index = string.find(e[1]['name'],'@')
+			num = int(e[1]['name'][index+1:])
+			implicit_name = True
+
+	if implicit_name :
+		name = type_element+'@'+str(num+1)
+	else:
+		name = type_element+'@0'
+
+	'''
 	for i in range(0,len(element)):
 		for j in range(0,len(element)):
 			pos=string.find(element[i]['name'], str(j))
 			if pos != -1:
 				num = j
-	
-	return type_element+'@'+str(num+1)
+	'''
+	return name
 
 
 def load_list(line, words):
@@ -114,13 +127,17 @@ def load_list(line, words):
 	word2=''
 	word3=''
 
-	line_old=['::','->']
-	line_new=[' :: ',' -> ']
+	line_old=' ['
+	line_new='['
+
+	line=line.replace(line_old,line_new)
+
+	line_old=['::','->',' ;']
+	line_new=[' :: ',' -> ',';']
 	for i in range(0,len(line_old)):											#gestisce le dichiarazione esplice degli elementi
 		line=line.replace(line_old[i],line_new[i])								#es.: name::element o name :: element
 
 	for word in line.split():
-		#print word
 		if conf:
 			if word[len(word)-1]==')' or word[len(word)-2]==')':
 				word=word2+' '+word
@@ -149,11 +166,11 @@ def load_list(line, words):
 		words.append(word)
 
 	words_new=[]	
+	'''
 	for i in range(0,len(words)):																#usato per gestire il tipo di dichiarazione di porta d'uscita
 		words_new.append(words[i])																#es.:  port[num] o port [num]
 		try:
 			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->' and words[i-1] != '->':
-				#print words[i]
 				words_new[i-1]=words_new[i-1]+''+words[i]
 				del words_new[len(words_new)-1]
 		except IndexError:
@@ -161,7 +178,8 @@ def load_list(line, words):
 	#print'words_new'
 	#print words_new
 	#print '########'
-	return words_new
+	'''
+	return words
 
 
 def handle_edgeslevel(connection):

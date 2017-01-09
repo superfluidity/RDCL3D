@@ -44,6 +44,7 @@ def parserAllView(file_click):
     
     list_lines = []
     ele_class_dict = {}
+    ele_class_connections={}
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
     compound_element_prov = {}
@@ -105,7 +106,7 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,connection)
+        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,ele_class_connections,connection)
         #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
         #print'###'
@@ -124,9 +125,9 @@ def parserAllView(file_click):
 
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
     #print '#############'
+    #print ele_class_connections
+    #print '*************'
     #print ele_class_dict
-
-
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
     element_renamed={}
@@ -151,7 +152,11 @@ def parserAllView(file_click):
     for c in compound_element.items():
         for e in c[1]['compound']:
             connection_list.append(e)
-    
+
+    ##############################################################################################################################################
+    #print connection_list
+    connection_element_class_cleaner (connection_list,ele_class_connections)
+
     connection_decl(connection_list, connection, element)
     #print element
     print '\n'

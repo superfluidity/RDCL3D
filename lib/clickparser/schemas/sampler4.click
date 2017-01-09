@@ -30,6 +30,6 @@ PollDevice(eth2) -> s0 :: RatedSampler(20000);
 s0 [0] -> Queue -> ToDevice(eth1);
 s0 [1] -> ToHostSniffers(sampler);
 
-PollDevice(eth1) -> s1 :: RatedSampler2(20000);
+PollDevice(eth1) -> s1 :: RatedSampler(20000);
 s1 [0] -> Queue -> ToDevice(eth2);
 s1 [1] -> ToHostSniffers(sampler);
