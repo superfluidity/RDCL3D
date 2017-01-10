@@ -33,7 +33,7 @@ $(document).ready(function() {
         }
     }
     graph_editor.addListener("filters_changed", changeFilter);
-
+    graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
     graph_editor.addListener("right_click_node", function(a, args) {
         //console.log("node_selected", a, args);
@@ -185,13 +185,6 @@ function changeFilter(e, c) {
         $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled",true);
     }
-    $("#draggable-container").empty()
-    for (var i in c.node.type) {
-        var event = 'event.dataTransfer.setData("text/plain","' + c.node.type[i] + '")'
-        $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + c.node.type[i] + '"  ondragstart=' + event + ' style="background-color: ' + type_property[c.node.type[i]].color + ' !important;"><p>' + type_property[c.node.type[i]].name + '</p></span>');
-    }
-    var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(c) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
-    $('#breadcrumb').append(newLi);
 }
 
 function openEditor(project_id){
@@ -216,10 +209,12 @@ function showChooserModal(title, chooses, callback){
 
 }
 
-function setVnffgIds(vnffgIds){
-    var self = $(this);
-    if(vnffgIds == null) return;
+function refreshGraphParameters(e, graphParameters){
 
+    var self = $(this);
+    if(graphParameters == null) return;
+    var vnffgIds = graphParameters.vnffgIds;
+    if(vnffgIds == null) return;
 
     $("#selection_vnffg").empty();
     $("#selection_vnffg").append('<option value="Global">Global</option>')
@@ -251,10 +246,15 @@ function newVnffg(){
                             'group': [group]
                             }
                         }
-                    graph_editor.addVnffg(node_information, function(){
+                new dreamer.GraphRequests().addVnffg(node_information, function(result) {
 
-                        $('#modal_choose_node_id').modal('hide');
+                    $('#modal_choose_node_id').modal('hide');
+                    graph_editor.d3_graph.graph_parameters.vnffgIds.push(node_information.id)
+                    graph_editor.refreshGraphParameters();
                 });
+
+
+
             });
             $('#modal_choose_node_id').modal('show');
 }
@@ -264,11 +264,11 @@ function show_all_change(e){
     var vnffgId = selected_vnffgId;
     if(e) show_all = e.checked;
     if(show_all) {
-        graph_editor.handleVnffgParameter("Global", "invisible");
-        graph_editor.handleVnffgParameter(vnffgId, "matted");
+        handleVnffgParameter("Global", "invisible");
+        handleVnffgParameter(vnffgId, "matted");
     } else {
-        graph_editor.handleVnffgParameter("Global", "matted");
-        graph_editor.handleVnffgParameter(vnffgId, "invisible");
+        handleVnffgParameter("Global", "matted");
+        handleVnffgParameter(vnffgId, "invisible");
     }
 }
 
@@ -280,3 +280,57 @@ function clickVnffg(){
 
 }
 
+function handleVnffgParameter(vnffgId, class_name) {
+        /*
+        if(this.old_vnffg != null){
+            var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.node.group.splice(index, 1);
+            index = this.filter_parameters.link.group.indexOf(this.old_vnffg);
+            if(index >= 0)
+                this.filter_parameters.link.group.splice(index, 1);
+        }
+        if(vnffgId != "Global"){
+            this.old_vnffg = vnffgId;
+            this.filter_parameters.node.group.push(vnffgId);
+            this.filter_parameters.link.group.push(vnffgId);
+
+        }else{
+            this.old_vnffg = null;
+        }
+        this.handleFiltersParams(this.filter_parameters, true);
+        */
+
+        if (vnffgId != "Global") {
+            selected_vnffgId = vnffgId;
+            graph_editor.setNodeClass(class_name, function(d) {
+                var result = false;
+                if (d.info.group.indexOf(vnffgId) < 0) {
+                    result = true;
+                }
+                console.log(result);
+                return result;
+            });
+
+            graph_editor.setLinkClass(class_name, function(d) {
+                var result = false;
+                if (d.group.indexOf(vnffgId) < 0) {
+                    result = true;
+                }
+                console.log(result);
+                return result;
+            });
+
+        } else {
+            selected_vnffgId = null;
+            graph_editor.setNodeClass(class_name, function(d) {
+                var result = false;
+                return result;
+            });
+
+            graph_editor.setLinkClass(class_name, function(d) {
+                var result = false;
+                return result;
+            });
+        }
+    }
