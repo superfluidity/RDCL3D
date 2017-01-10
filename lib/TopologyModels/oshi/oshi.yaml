@@ -19,36 +19,52 @@ layer:                                  #List of Layers
     Data:
         nodes:                  #List of node to be visualized in the current layer
             OSHI-CR:
+                addable: true
+                removable: true
             OSHI-PE:
+                addable: true
+                removable: true
             CE:
+                addable: true
+                removable: true
             OF Controller:
+                addable: true
+                removable: true
         allowed_edges:                  #List of allowed edges between the layer's nodes
             CE:                        #Edge's source
                 destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
                     OSHI-PE:
                         direct_edge: false
+                        removable: true
                     CE:
                         direct_edge: false
+                        removable: true
             OSHI-CR:
                 destination:
                     OSHI-CR:
                         direct_edge: false
+                        removable: true
                     OSHI-PE:
                         direct_edge: false
+                        removable: true
                     OF Controller:
                         direct_edge: false
+                        removable: true
 
             OSHI-PE:
                 destination:
                     OSHI-CR:
                         direct_edge: false
+                        removable: true
                     OSHI-PE:
                         direct_edge: false
+                        removable: true
 
             OF Controller:
                  destination:
                      OSHI-CR:
                         direct_edge: false
+                        removable: true
 
     Vll:
         nodes:
@@ -58,6 +74,7 @@ layer:                                  #List of Layers
                 destination:                  #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
                         direct_edge: false
+                        removable: true
     PW:
         nodes:
             CE:
@@ -66,6 +83,7 @@ layer:                                  #List of Layers
                 destination:                #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
                         direct_edge: false
+                        removable: true
 
     Control:
         nodes:
@@ -81,6 +99,10 @@ layer:                                  #List of Layers
         allowed_edges:
 
 
+
+action:           #Action to show on rightclick on a node/link
+    node:
+    link:
 
 
 callback:                             #List of callbacks used to controll the link

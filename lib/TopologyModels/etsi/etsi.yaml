@@ -22,110 +22,167 @@ layer:                                  #List of Layers
         nodes:                  #List of node to be visualized in the current layer
             vnf:
                 addable:
-                    callback: chooseId
+                    callback: addVnf
+                removable:
+                    callback: removeNode
                 expands : vnf
             ns_vl:
                 addable:
-                    callback: chooseId
+                    callback: addNode
+                removable:
+                    callback: removeNode
             ns_cp:
                 addable:
-                    callback: chooseId
+                    callback: addNode
+                removable:
+                    callback: removeNode
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
                     ns_vl:
-                        callback:
-                            -   chooseVnfExp
+                        callback: linkVnftoNsVl
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_cp:
-                        callback:
-                            -   nsCpExclusiveConnection
-                            -   chooseVnfExp
+                        callback: linkVnftoNsCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
             ns_vl:
                 destination:
                     vnf:
-                        callback:
-                            -   chooseVnfExp
+                        callback: linkVnftoNsVl
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_cp:
-                        callback:
-                            -   nsCpExclusiveConnection
+                        callback: nsCpExclusiveConnection
                         direct_edge: false
+                        removable:
+                            callback: removeLink
 
             ns_cp:
                 destination:
                     vnf:
-                        callback:
-                            -   nsCpExclusiveConnection
-                            -   chooseVnfExp
+                        callback: linkVnftoNsCp
                         direct_edge: false
+                        removable:
+                            callback: removeLink
                     ns_vl:
-                        callback:
-                            -   nsCpExclusiveConnection
+                        callback: nsCpExclusiveConnection
                         direct_edge: false
+                        removable:
+                            callback: removeLink
 
     vnf:
-        nodes:
+        nodes:                  #List of node to be visualized in the current layer
             vnf_vl:
-              addable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
             vnf_vdu:
-              addable: true
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
             vnf_ext_cp:
-              addable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
             vnf_vdu_cp:
-              addable: true
-        allowed_edges:
-            vnf_vl:
-                destination:
+                addable:
+                    callback: addVnfVduCp
+                removable:
+                    callback: removeVnfVduCp
+        allowed_edges:                  #List of allowed edges between the layer's nodes
+            vnf_vl:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
                     vnf_vdu_cp:
-                        callback:
-                            -   getVduConnectedToVduCp
+                        callback: linkVltoVduCp
                         direct_edge: false
-                    vnf_exp_cp:
+                        removable:
+                            callback: removeLink
+                    vnf_ext_cp:
+                        callback: linkVnfVltoExpCp
                         direct_edge: false
-            vnf_vdu:
-                destination:
-                    vnf_vdu_cp:
-                        direct_edge: false
-            vnf_exp_cp:
+                        removable:
+                            callback: removeLink
+            vnf_ext_cp:
                 destination:
                     vnf_vl:
+                        callback: linkVnfVltoExpCp
                         direct_edge: false
-                    vnf_vdu_cp:
-                        callback:
-                            -   getVduConnectedToVduCp
-                        direct_edge: false
+                        removable:
+                            callback: removeLink
             vnf_vdu_cp:
                 destination:
-                    vnf_vdu:
+                    vnf_vl:
+                        callback: linkVltoVduCp
                         direct_edge: false
-                    vnf_exp_cp:
-                        direct_edge: false
+                        removable:
+                            callback: removeLink
 
 
-callback:                             #List of callbacks used to controll the link
-  chooseVnfExp:                       #Choose the VnfExp of the vnf with id vnf_id
+action:           #Action to show on rightclick on a node/link
+    node:
+        addToCurrentVNFFG:
+            title: Add to current VNFFG
+            callback: addToCurrentVNFFG
+    link:
+
+
+callback:                             #List of callbacks used
+  chooseVnfExp:
       file: etsi_controller.js
       class: EtsiController
-#      function_name: chooseVnfExp
-#      argument:
-#          -   vnf_id
-  nsCpExclusiveConnection:            #Check if the ns_cp with ns_cp_id id has not other connection
+  nsCpExclusiveConnection:
       file: etsi_controller.js
       class: EtsiController
- #     function_name: chooseVnfExp
- #     argument:
- #         -   ns_cp_id
-  getVduConnectedToVduCp:             #Return the vnf_vdu if connected to the vnf_vdu_cp
+  getVduConnectedToVduCp:
       file: etsi_controller.js
       class: EtsiController
-  #    function_name: getVduConnectedToVduCp
-  #    argument:
-  #        -   vnf_vdu_cp
-  chooseId:             #Return the vnf_vdu if connected to the vnf_vdu_cp
-    file: etsi_controller.js
-    class: EtsiController
-  #    function_name: getVduConnectedToVduCp
-  #    argument:
-  #        -   vnf_vdu_cp
+  addVnf:
+      file: etsi_controller.js
+      class: EtsiController
+  addNode:
+      file: etsi_controller.js
+      class: EtsiController
+  addVnfVdu:
+      file: etsi_controller.js
+      class: EtsiController
+  addVnfVduCp:
+      file: etsi_controller.js
+      class: EtsiController
+  addLink:
+      file: etsi_controller.js
+      class: EtsiController
+  linkVnftoNsCp:
+      file: etsi_controller.js
+      class: EtsiController
+  linkVnftoNsVl:
+      file: etsi_controller.js
+      class: EtsiController
+  linkVltoVduCp:
+      file: etsi_controller.js
+      class: EtsiController
+  linkVnfVltoExpCp:
+      file: etsi_controller.js
+      class: EtsiController
+  removeNode:
+      file: etsi_controller.js
+      class: EtsiController
+  removeVnfVdu:
+      file: etsi_controller.js
+      class: EtsiController
+  removeVnfVduCp:
+      file: etsi_controller.js
+      class: EtsiController
+  removeLink:
+      file: etsi_controller.js
+      class: EtsiController
+  addToCurrentVNFFG:
+      file: etsi_controller.js
+      class: EtsiController
