@@ -250,7 +250,7 @@ function newVnffg(){
 
                     $('#modal_choose_node_id').modal('hide');
                     graph_editor.d3_graph.graph_parameters.vnffgIds.push(node_information.id)
-                    graph_editor.refreshGraphParameters();
+                    refreshGraphParameters(null, graph_editor.d3_graph.graph_parameters)
                 });
 
 
