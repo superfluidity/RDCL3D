@@ -48,7 +48,6 @@ class ToscaProject(Project):
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-tosca-id', '')
-        print "TOSCAAAAAAAAAAA", example_id
         data_project = ToscaParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/YAML', 'yaml')
         print data_project
         # data_project = importprojectdir('usecases/TOSCA/' + example_id + '/JSON', 'json')
@@ -100,9 +99,12 @@ class ToscaProject(Project):
         """Returns a descriptor template for a given descriptor type"""
         
         try:
-            schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
+            #schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES+type_descriptor+DESCRIPTOR_TEMPLATE_SUFFIX)
             # print 'type_descriptor : '+type_descriptor
-            return schema
+            #FixMe bisogna creare un template
+            yaml_object = Util().loadyamlfile('usecases/TOSCA/One-Server-Three-Networks/YAML/tosca_one_server_three_networks.yaml')
+            toscajson = json.loads(Util.yaml2json(yaml_object))
+            return toscajson
         except Exception as e:
             # log.error('Exception in get descriptor template') #TODO(stefano) add logging
             print 'Exception in get descriptor template'
@@ -180,7 +182,7 @@ class ToscaProject(Project):
                     current_data[type_descriptor] = {}
                 current_data[type_descriptor][new_descriptor_id] = new_descriptor
                 self.data_project = current_data
-                self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+                #self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
                 self.update()
                 result = new_descriptor_id
 

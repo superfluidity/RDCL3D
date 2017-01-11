@@ -17,11 +17,7 @@
 {% endblock %}
 {% block title_header_big %}
     {{ block.super }}
-  Create new {% ifequal descriptor_type 'nsd' %}
-          NS
-        {% else%}
-        VNF
-     {% endifequal %} descriptor
+  Create new TOSCA descriptor
 {% endblock %}
 
 
@@ -33,11 +29,7 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  {% ifequal descriptor_type 'nsd' %}
-          NS
-        {% else%}
-        VNF
-     {% endifequal %} Descriptors</a></li>
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">  TOSCA Descriptors</a></li>
     <li>Create Descriptor</li>
 {% endblock %}
 
@@ -295,6 +287,9 @@
             data.append('csrfmiddlewaretoken','{{csrf_token}}');
             data.append('type', type);
             data.append('text', text);
+
+            data.append('id', getParameterByName('id'));
+            console.log(getParameterByName('id'));
             console.log(text);
             $.ajax({
                     url: "new",
@@ -322,6 +317,16 @@
         window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
     }
 
-
+    function getParameterByName(name, url) {
+        if (!url) {
+          url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
     </script>
 {% endblock %}
