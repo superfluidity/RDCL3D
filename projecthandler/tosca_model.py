@@ -48,7 +48,9 @@ class ToscaProject(Project):
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-tosca-id', '')
-        data_project = ToscaParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
+        print "TOSCAAAAAAAAAAA", example_id
+        data_project = ToscaParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/YAML', 'yaml')
+        print data_project
         # data_project = importprojectdir('usecases/TOSCA/' + example_id + '/JSON', 'json')
         return data_project
 
@@ -58,7 +60,7 @@ class ToscaProject(Project):
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'tosca_example' : dirs}
+        return {'tosca' : dirs}
 
     # @classmethod
     # def get_graph_model(cls):
