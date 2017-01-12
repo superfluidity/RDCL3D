@@ -60,6 +60,15 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="form-group col-xs-3">
+                            <p for="typeButtonsSelect">Project Type</p>
+                            <input type="hidden" class="form-control input-sm" name="type" id="projectType"
+                                    required>
+                            <select id="select_type" class="js-example-basic-single form-control" style="width: 75%">
+
+                            </select>
+
+                        </div>
+                        <div class="form-group col-xs-4">
                             <p for="projectName">Project Name</p>
                             <input type="text" class="form-control input-sm" name="name" id="projectName"
                                    placeholder="Enter Project name" required>
@@ -69,15 +78,7 @@
                             <input type="text" class="form-control input-sm" name="info" id="projectInfo"
                                    placeholder="Short Description">
                         </div>
-                        <div class="form-group col-xs-5">
-                            <p for="typeButtonsSelect">Project Type</p>
-                            <input type="hidden" class="form-control input-sm" name="type" id="projectType"
-                                    required>
-                            <select id="select_type" class="js-example-basic-single form-control" style="width: 75%">
 
-                            </select>
-
-                        </div>
 
                     </div>
                     <div class="row">
@@ -85,13 +86,13 @@
 
 
                             <div id="startButtonsSelect" class="btn-group" data-toggle="buttons">
-                                <label id="s-example" class="btn btn-primary">
-                                    <input type="radio" name="startfrom" autocomplete="off" value="example">
-                                     Example project
-                                </label>
                                 <label id="s-scratch" class="btn btn-primary active">
                                     <input id="scratch" type="radio" name="startfrom" autocomplete="off" value="scratch">
                                      Empty project
+                                </label>
+                                <label id="s-example" class="btn btn-primary">
+                                    <input type="radio" name="startfrom" autocomplete="off" value="example">
+                                     Example project
                                 </label>
                                 <label id="s-files" class="btn btn-primary">
                                     <input type="radio" name="startfrom" autocomplete="off" value="files">
