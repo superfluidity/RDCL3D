@@ -238,19 +238,22 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 	print ele_class_connections
 
 	
-
+#Gestione dell'input e output senza porte
 	for c1 in ele_class_connections.items():
 		for i in range(0,len(connection_list)):
 			if connection_list[i]==c1[1]['element name']:
-				if connection_list[i-1]=='->':
-					for j in range(0,len(c1[1]['connection_elem_list'])):
-						if c1[1]['connection_elem_list'][j]=='input':
-							c1[1]['connection_elem_list'][j]=connection_list[i-2]
-				if connection_list[i+1]=='->':
-					for k in range(0,len(c1[1]['connection_elem_list'])):
-						if c1[1]['connection_elem_list'][k]=='output':
-							c1[1]['connection_elem_list'][k]=connection_list[i+2]
-
+				try:
+					if connection_list[i-1]=='->':
+						for j in range(0,len(c1[1]['connection_elem_list'])):
+							if c1[1]['connection_elem_list'][j]=='input':
+								c1[1]['connection_elem_list'][j]=connection_list[i-2]
+					if connection_list[i+1]=='->':
+						for k in range(0,len(c1[1]['connection_elem_list'])):
+							if c1[1]['connection_elem_list'][k]=='output':
+								c1[1]['connection_elem_list'][k]=connection_list[i+2]
+				except IndexError:
+					break
+	
 	print '********'
 
 
@@ -281,8 +284,32 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 											if c2[1]['connection_elem_list'][s]==port+'output':
 												c2[1]['connection_elem_list'][s]=connection_list[h+2]
 
-#FIXME=> manca la gestione input con porte
-
+#Gestione dell'input con porte
+	for c3 in ele_class_connections.items():
+		for l in range(0,len(connection_list)):
+				if connection_list[l].find(c3[1]['element name']) != -1:				
+					if connection_list[l].find('[')!=-1:
+						if connection_list[l-1]=='->':
+							for j in range(0,len(c3[1]['connection_elem_list'])):
+								if c3[1]['connection_elem_list'][j].find('input') != -1:
+									port=''
+									port_control=False
+									for letter in c3[1]['connection_elem_list'][j]:
+										if letter == '[':
+											port=port+letter
+											port_control = True
+											continue
+										if port_control == True:	
+											if letter == ']':
+												port=port+letter
+												port_control = False
+												break
+											port=port+letter
+										continue
+									if connection_list[l].find(port) != -1:
+										for p in range(0,len(c3[1]['connection_elem_list'])):
+											if c3[1]['connection_elem_list'][p]=='input'+port:
+												c3[1]['connection_elem_list'][p]=connection_list[h-2]
 
 
 
