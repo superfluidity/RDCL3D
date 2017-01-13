@@ -1,0 +1,43 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: TOSCA template to test file and Ansible Galaxy role artifacts
+
+node_types:
+  tosca.nodes.CustomWebServer:
+    derived_from: tosca.nodes.WebServer
+    artifacts:
+      my_galaxyansible_role:
+        file: user.role
+        type: tosca.artifacts.AnsibleGalaxy.role
+      web_content:
+        file: http://www.mycompany.org/content.tgz
+        type: tosca.artifacts.File
+    interfaces:
+      Standard:
+        create:
+          inputs:
+            content: { get_artifact: [ SELF, web_content ] }
+          implementation: install.sh
+
+topology_template:
+  node_templates:
+
+    customwebserver:
+      type: tosca.nodes.CustomWebServer
+      requirements:
+        - host: server
+
+    server:
+      type: tosca.nodes.Compute
+      capabilities:
+        host:
+         properties:
+           num_cpus: 1
+           mem_size: 1 GB
+        os:
+          properties:
+            type: Linux
+            distribution: Ubuntu
+            version: 12.04
+            architecture: x86_64
+

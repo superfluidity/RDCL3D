@@ -1,0 +1,52 @@
+heat_template_version: 2013-05-23
+
+description: >
+  TOSCA template to test get_* functions semantic
+
+parameters:
+  map_val:
+    type: string
+resources:
+  myapp_configure_deploy:
+    type: OS::Heat::SoftwareDeployment
+    properties:
+      input_values:
+        list_val: list_val_0
+      config:
+        get_resource: myapp_configure_config
+      server:
+        get_resource: server
+    depends_on:
+    - mysql_database
+  server:
+    type: OS::Nova::Server
+    properties:
+      flavor: m1.small
+      image: ubuntu-12.04-software-config-os-init
+      user_data_format: SOFTWARE_CONFIG
+  myapp_configure_config:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: script
+      config:
+        get_file: myapp_configure.sh
+outputs:
+  map_val:
+    description: map_val
+    value:
+      get_input: map_val
+  concat_map_val:
+    value:
+      str_replace:
+        params:
+          $s2: :8080
+          $s0: http://
+          $s1:
+            get_input: map_val
+        template: $s0$s1$s2
+  static_map_val:
+    value: static_value
+  test_list_of_functions:
+    value:
+    - get_input: map_val
+    - static_value

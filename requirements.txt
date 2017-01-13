@@ -5,8 +5,12 @@ functools32==3.2.3.post2
 jsonfield==1.0.3
 jsonschema==2.5.1
 networkx==1.11
+pbr==1.10.0
 publicsuffix==1.1.0
 pyaml==15.8.2
+python-dateutil==2.6.0
 PyYAML==3.12
+requests==2.12.4
+six==1.10.0
 url==0.2.0
 wheel==0.24.0

@@ -29,7 +29,6 @@ dreamer.ManoGraphEditor = (function(global) {
     //TODO this should be moved in graph_editor
     ManoGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
-        this.current_vnffg = null;
 
         if (args.gui_properties[GUI_VERSION]!= undefined) {
             args.gui_properties = args.gui_properties[GUI_VERSION];
@@ -58,7 +57,9 @@ dreamer.ManoGraphEditor = (function(global) {
             self.d3_graph.graph_parameters = data.graph_parameters;
             //console.log(data.graph_parameters)
             self.model = data.model;
-            self.refreshGraphParameters();
+            self.refreshGui();
+            self._setupBehaviorsOnEvents();
+            self.refreshGraphParameters(self.d3_graph.graph_parameters);
             self.refresh();
             self.startForce();
             setTimeout(function() {
@@ -73,116 +74,25 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new node.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addNode = function(args, success, error) {
+    ManoGraphEditor.prototype.addNode = function(node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView()
-        var node_type = args.info.type;
-        self.model.layer[current_layer].nodes[node_type]
+        var node_type = node.info.type;
         if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
-            console.log(self.model.layer[current_layer].nodes[node_type].addable)
             if(self.model.layer[current_layer].nodes[node_type].addable.callback){
                 var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, args)
-
-
-            }
-        }/*
-        if (args.info.type === 'vnf') {
-            if (args.existing_vnf) {
-
-            } else {
-                new dreamer.GraphRequests().addNode(args, null, function() {
-                    self.parent.addNode.call(self, args);
-                    var vnf_ext_cp = {
-                        'id': 'vnf_ext_cp' + "_" + args.id,
-                        'info': {
-                            'type': 'vnf_ext_cp',
-                            'group': [args.id]
-                        },
-                        'x': args.x,
-                        'y': args.y
-                    }
-                    new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function() {
-                        self.parent.addNode.call(self, vnf_ext_cp);
-                        if (success)
-                            success();
-                    });
-                });
-            }
-        } else if (args.info.type === 'vnf_vdu') {
-            new dreamer.GraphRequests().addNode(args, null, function() {
-                self.parent.addNode.call(self, args);
-                var vdu_id = args.id;
-                var vnf_vdu_cp = {
-                    'id': 'vnf_vdu_cp' + "_" + generateUID(),
-                    'info': {
-                        'type': 'vnf_vdu_cp',
-                        'group': [args.info.group[0]]
-                    },
-                    'x': args.x - (args.x * 0.1),
-                    'y': args.y - (args.y * 0.1)
-                }
-                new dreamer.GraphRequests().addNode(vnf_vdu_cp, vdu_id, function() {
-                    self.parent.addNode.call(self, vnf_vdu_cp);
-                    var link = {
-                        source: args.id,
-                        target: vnf_vdu_cp.id,
-                        view: self.filter_parameters.link.view[0],
-                        group: [args.info.group[0]],
-                    };
-                    self.parent.addLink.call(self, link);
-                    if (success)
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function(){
+                    self.parent.addNode.call(self, node);
+                    if(success)
                         success();
-                });
-
-            });
-        } else if (args.info.type === 'vnf_vdu_cp') {
-            var vnf_id = args.info.group[0];
-            var vnf_vdus = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group.indexOf(vnf_id) >= 0 && e.info.type == 'vnf_vdu');
-            });
-            var self = this;
-            if (success)
-                success();
-            if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <= 0) {
-                alert('You should add a VDU')
-            } else {
-                showChooserModal('Select the VDU to link', vnf_vdus, function(choice) {
-                    new dreamer.GraphRequests().addNode(args, choice, function() {
-                        self.parent.addNode.call(self, args);
-                        var link = {
-                            source: args.id,
-                            target: choice,
-                            view: self.filter_parameters.link.view[0],
-                            group: [args.info.group[0]],
-                        };
-
-                        self.parent.addLink.call(self, link);
-
-                        $('#modal_create_link_chooser').modal('hide');
-                    });
-                });
+                }, error);
+            }else{
+                self.parent.addNode.call(self, node);
             }
-
-        } else {
-            new dreamer.GraphRequests().addNode(args, null, function() {
-                self.parent.addNode.call(self, args);
-                if (success)
-                    success();
-            });
-        }*/
+        }
     };
 
-    ManoGraphEditor.prototype.addVnffg = function(node_info, success) {
-        var self = this;
-        new dreamer.GraphRequests().addVnffg(node_info, function(result) {
-            if (success)
-                success();
-            self.d3_graph.graph_parameters.vnffgIds.push(node_info.id)
-            self.refreshGraphParameters();
-        });
-    };
 
 
     /**
@@ -199,33 +109,25 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeNode = function(node) {
-        console.log('REMOVEEEEEEEEEEEEEE NODEEEEEEEEEEE')
+    ManoGraphEditor.prototype.removeNode = function(node, success, error) {
         var self = this;
-        if (node.info.type === 'vnf_vdu') {
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu_cp' || e.target.info.type == 'vnf_vdu_cp')
-            });
-            for (var i in vdu_links) {
-                var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
-                self.parent.removeNode.call(self, cp_node);
+        var current_layer = self.getCurrentView();
+        var node_type = node.info.type;
+        if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].removable ){
+                console.log(self.model.layer[current_layer].nodes[node_type].removable.callback)
+            if(self.model.layer[current_layer].nodes[node_type].removable.callback){
+                var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
+                var controller = new dreamer[c]();
+                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function(){
+                    self.parent.removeNode.call(self, node);
+                    if(success)
+                        success();
+                }, error);
+            }else{
+                self.parent.removeNode.call(self, node);
             }
-            new dreamer.GraphRequests().removeNode(node, null, function() {
-                self.parent.removeNode.call(self, node);
-            });
-        } else if (node.info.type === 'vnf_vdu_cp') {
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
-            });
-            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
-            console.log(vdu_id)
-            new dreamer.GraphRequests().removeNode(node, vdu_id, function() {
-                self.parent.removeNode.call(self, node);
-            });
         } else {
-            new dreamer.GraphRequests().removeNode(node, null, function() {
-                self.parent.removeNode.call(self, node);
-            });
+            alert("You can't remove a " + node.info.type );
         }
     };
 
@@ -234,96 +136,35 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new Link.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addLink = function(s, d) {
+    ManoGraphEditor.prototype.addLink = function(s, d, success, error) {
+        var self = this;
         var source_id = s.id;
         var target_id = d.id;
+        var source_type = s.info.type;
+        var destination_type = d.info.type;
         var link = {
             source: source_id,
             target: target_id,
             view: this.filter_parameters.link.view[0],
             group: this.filter_parameters.link.group,
         };
-        var source_type = s.info.type;
-        var destination_type = d.info.type;
-        if ((source_type == 'ns_vl' && destination_type == 'ns_cp') || (source_type == 'ns_cp' && destination_type == 'ns_vl')) {
-            var cp_id = source_type == 'ns_cp' ? source_id : target_id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == cp_id || e.target.id == cp_id);
-            });
-            var self = this;
-            new dreamer.GraphRequests().addLink(s, d, null, function() {
-                self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
-                self.parent.addLink.call(self, link);
-            });
-        } else if ((source_type == 'ns_vl' && destination_type == 'vnf') || (source_type == 'vnf' && destination_type == 'ns_vl')) {
-            var vnf_id = source_type == 'vnf' ? source_id : target_id;
-            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group == vnf_id && e.info.type == 'vnf_ext_cp');
-            });
-            var self = this;
-            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-                new dreamer.GraphRequests().addLink(s, d, choice, function() {
+        var current_layer = self.getCurrentView()
+        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]){
+            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback){
+                var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
+                var c = self.model.callback[callback].class;
+                var controller = new dreamer[c]();
+                controller[callback](self, s, d, function(){
                     self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
-                    $('#modal_create_link_chooser').modal('hide');
-                });
-            });
-
-        } else if ((source_type == 'ns_cp' && destination_type == 'vnf') || (source_type == 'vnf' && destination_type == 'ns_cp')) {
-            var vnf_id = source_type == 'vnf' ? source_id : target_id;
-            var ns_cp_id = source_type == 'ns_cp' ? source_id : target_id;
-            var vnf_ext_cps = $.grep(this.d3_graph.nodes, function(e) {
-                return (e.info.group == vnf_id && e.info.type == 'vnf_ext_cp');
-            });
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == ns_cp_id || e.target.id == ns_cp_id);
-            });
-            var self = this;
-            showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-                new dreamer.GraphRequests().addLink(s, d, choice, function() {
-                    if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                        self.removeLink(old_link[0].index);
-                    }
-                    self._deselectAllNodes();
-                    self.parent.addLink.call(self, link);
-                    $('#modal_create_link_chooser').modal('hide');
-                });
-            });
-
-        } else if ((source_type == 'vnf_vl' && destination_type == 'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type == 'vnf_vl')) {
-            var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
-            var vdu_links = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu')
-            });
-            var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')
-            });
-
-            var self = this;
-            new dreamer.GraphRequests().addLink(s, d, vdu_id, function() {
+                    if(success)
+                        success();
+                }, error);
+            }else{
                 self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
                 self.parent.addLink.call(self, link);
-            });
-        } else if ((source_type == 'vnf_ext_cp' && destination_type == 'vnf_vl') || (source_type == 'vnf_vl' && destination_type == 'vnf_ext_cp')) {
-            var self = this;
-            var vnf_ext_cp_id = source_type == 'vnf_ext_cp' ? source_id : target_id;
-            var old_link = $.grep(this.d3_graph.links, function(e) {
-                return (e.source.id == vnf_ext_cp_id || e.target.id == vnf_ext_cp_id);
-            });
-            new dreamer.GraphRequests().addLink(s, d, null, function() {
-                self._deselectAllNodes();
-                if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                    self.removeLink(old_link[0].index);
-                }
-                self.parent.addLink.call(self, link);
-            });
+            }
+
         } else {
             alert("You can't link a " + source_type + " with a " + destination_type);
         }
@@ -334,21 +175,39 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeLink = function(link) {
+    ManoGraphEditor.prototype.removeLink = function(link, success, error) {
+        var self = this;
         var s = link.source;
         var d = link.target;
         var source_type = s.info.type;
         var destination_type = d.info.type;
-        if ((source_type == 'vnf_vdu' && destination_type == 'vnf_vdu_cp') || (source_type == 'vnf_vdu_cp' && destination_type == 'vnf_vdu')) {
-            alert('You should delete the VDU CP')
-        } else {
-            var self = this;
-            new dreamer.GraphRequests().removeLink(s, d, function() {
+        var current_layer = self.getCurrentView()
+        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]
+            && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable
+        ){
+            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback){
+                var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback;
+                var c = self.model.callback[callback].class;
+                var controller = new dreamer[c]();
+                controller[callback](self, link, function(){
+                    self._deselectAllNodes();
+                    self._deselectAllLinks();
+                    self.parent.removeLink.call(self, link.index);
+                    if(success)
+                        success();
+                }, error);
+            }else{
                 self._deselectAllNodes();
                 self._deselectAllLinks();
                 self.parent.removeLink.call(self, link.index);
-            });
+                if(success)
+                    success();
+            }
+
+        } else {
+            alert("You can't delete the link" );
         }
+
 
     };
 
@@ -377,6 +236,89 @@ dreamer.ManoGraphEditor = (function(global) {
     ManoGraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
         var self = this;
+        var contextmenuNodesAction= [{
+                    title: 'Show graph',
+                    action: function(elm, c_node, i) {
+                       if (c_node.info.type != undefined) {
+                        var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
+                        if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
+                            if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
+                                var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
+                                self.handleFiltersParams({
+                                node: {
+                                    type: Object.keys(self.model.layer[new_layer].nodes),
+                                    group: [c_node.id]
+                                },
+                                link: {
+                                    group: [c_node.id],
+                                    view: [c_node.info.type ]
+                                }
+                            });
+
+                            }
+                        }
+                    }
+                    }
+                }, {
+                    title: 'Edit',
+                    action: function(elm, d, i) {
+                        if (d.info.type != undefined) {
+                            window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
+                        }
+                    }
+
+                }, {
+                    title: 'Delete',
+                    action: function(elm, d, i) {
+                        self.removeNode(d);
+                    }
+
+                }];
+        if(self.model && self.model.action && self.model.action.node ){
+            console.log(this.model)
+            for (var i in self.model.action.node){
+                var action = self.model.action.node[i]
+                contextmenuNodesAction.push({
+                title: action.title,
+                action: function(elm, d, i) {
+                        var callback = action.callback;
+                        var c = self.model.callback[callback].class;
+                        var controller = new dreamer[c]();
+                        var args = {elm: elm,
+                                    d: d,
+                                    i: i}
+
+                        controller[callback](self, args);
+                 }
+                });
+            }
+        }
+        var contextmenuLinksAction = [{
+                    title: 'Delete Link',
+                    action: function(elm, link, i) {
+                        self.removeLink(link);
+                    }
+
+                }];
+        if(self.model && self.model.action && self.model.action.link ){
+            for (var i in self.model.action.link){
+                var action = self.model.action.link[i]
+                contextmenuLinksAction.push({
+                title: action.title,
+                action: function(elm, link, i) {
+                        var callback = action.callback;
+                        var c = self.model.callback[callback].class;
+                        var controller = new dreamer[c]();
+                        var args = {elm: elm,
+                                    link: link,
+                                    i: i}
+
+                        controller[callback](self, args);
+                 }
+                });
+            }
+        }
+
         this.behavioursOnEvents = {
             'nodes': {
                 'click': function(d) {
@@ -425,71 +367,7 @@ dreamer.ManoGraphEditor = (function(global) {
                     }
 
                 },
-                'contextmenu': d3.contextMenu([{
-                    title: 'Show graph',
-                    action: function(elm, c_node, i) {
-                       if (c_node.info.type != undefined) {
-                        var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
-                        if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
-                            if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
-                                var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
-                                self.handleFiltersParams({
-                                node: {
-                                    type: Object.keys(self.model.layer[new_layer].nodes),
-                                    group: [c_node.id]
-                                },
-                                link: {
-                                    group: [c_node.id],
-                                    view: [c_node.info.type ]
-                                }
-                            });
-
-                            }
-                        }
-                    }
-                    }
-                }, {
-                    title: 'Edit',
-                    action: function(elm, d, i) {
-                        if (d.info.type != undefined) {
-                            if (d.info.type == 'vnf') {
-                                window.location.href = '/projects/' + self.project_id + '/descriptors/vnfd/' + d.id;
-
-                            } else {
-                                window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
-
-                            }
-                        }
-                    }
-
-                }, {
-                    title: 'Add to current VNFFG',
-                    action: function(elm, d, i) {
-                        if (self.current_vnffg && self.getCurrentView() == 'ns' && d.info.group.indexOf(self.current_vnffg) < 0) {
-                            d.vnffgId = self.current_vnffg;
-                            new dreamer.GraphRequests().addNodeToVnffg(d, function(result) {
-                                d.info.group.push(self.current_vnffg)
-                                var links = $.grep(self.d3_graph.links, function(e) {
-                                    return (e.source.id == d.id || e.target.id == d.id);
-                                });
-                                for (var i in links) {
-                                    console.log(links[i])
-                                    if (links[i].source.info.group.indexOf(self.current_vnffg) >= 0 && links[i].target.info.group.indexOf(self.current_vnffg) >= 0) {
-                                        links[i].group.push(self.current_vnffg)
-                                    }
-                                }
-                                show_all_change();
-                            });
-                        }
-                    }
-
-                }, {
-                    title: 'Delete',
-                    action: function(elm, d, i) {
-                        self.removeNode(d);
-                    }
-
-                }])
+                'contextmenu': d3.contextMenu(contextmenuNodesAction)
             },
             'links': {
                 'click': function(d) {
@@ -506,15 +384,34 @@ dreamer.ManoGraphEditor = (function(global) {
                     if (d != self._selected_link)
                         d3.select(this).style('stroke-width', 2);
                 },
-                'contextmenu': d3.contextMenu([{
-                    title: 'Delete Link',
-                    action: function(elm, link, i) {
-                        self.removeLink(link);
-                    }
-
-                }])
+                'contextmenu': d3.contextMenu(contextmenuLinksAction)
             }
         };
+    };
+
+     ManoGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
+        this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
+        this.refreshGui();
+    };
+
+     ManoGraphEditor.prototype.refreshGui = function(args) {
+        var self = this;
+        console.log(self)
+        if(!self.model){
+            return;
+        }
+
+        var type_property = self.getTypeProperty();
+        $("#draggable-container").empty()
+        for (var i in this.model.layer[self.getCurrentView()].nodes) {
+            var node = this.model.layer[self.getCurrentView()].nodes[i]
+            if(node.addable){
+                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+            }
+        }
+        var newLi = $("<li id=" + JSON.stringify(self.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(self.getCurrentGroup()) + "," + JSON.stringify(this.filter_parameters) + ")'>" + self.getCurrentGroup() + "</a></li>");
+        $('#breadcrumb').append(newLi);
     };
 
     ManoGraphEditor.prototype.exploreLayer = function(args) {
@@ -533,69 +430,6 @@ dreamer.ManoGraphEditor = (function(global) {
         return this.filter_parameters.link.view[0];
 
     }
-    ManoGraphEditor.prototype.refreshGraphParameters = function() {
-        setVnffgIds(this.d3_graph.graph_parameters.vnffgIds)
-    }
-    ManoGraphEditor.prototype.getVnffgParameter = function() {
-        return this.d3_graph.graph_parameters.vnffgIds;
-    }
-
-    ManoGraphEditor.prototype.handleVnffgParameter = function(vnffgId, class_name) {
-        /*
-        if(this.old_vnffg != null){
-            var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
-            if(index >= 0)
-                this.filter_parameters.node.group.splice(index, 1);
-            index = this.filter_parameters.link.group.indexOf(this.old_vnffg);
-            if(index >= 0)
-                this.filter_parameters.link.group.splice(index, 1);
-        }
-        if(vnffgId != "Global"){
-            this.old_vnffg = vnffgId;
-            this.filter_parameters.node.group.push(vnffgId);
-            this.filter_parameters.link.group.push(vnffgId);
-
-        }else{
-            this.old_vnffg = null;
-        }
-        this.handleFiltersParams(this.filter_parameters, true);
-        */
-
-        if (vnffgId != "Global") {
-            this.current_vnffg = vnffgId;
-            this.setNodeClass(class_name, function(d) {
-                var result = false;
-                if (d.info.group.indexOf(vnffgId) < 0) {
-                    result = true;
-                }
-                console.log(result);
-                return result;
-            });
-
-            this.setLinkClass(class_name, function(d) {
-                var result = false;
-                if (d.group.indexOf(vnffgId) < 0) {
-                    result = true;
-                }
-                console.log(result);
-                return result;
-            });
-
-        } else {
-            this.current_vnffg = null;
-            this.setNodeClass(class_name, function(d) {
-                var result = false;
-                return result;
-            });
-
-            this.setLinkClass(class_name, function(d) {
-                var result = false;
-                return result;
-            });
-        }
-    }
-
-
     /**
      * Log utility
      */

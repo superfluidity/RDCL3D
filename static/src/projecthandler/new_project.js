@@ -56,7 +56,6 @@ $(document).ready(function() {
 
     if(type_example_files){
         for (var key in type_example_files) {
-        console.log(key, "cristo")
           $('select[id="example-'+key+'"]').select2({
               placeholder: {
                 id: '-1',
