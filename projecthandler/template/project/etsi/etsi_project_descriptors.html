@@ -31,22 +31,7 @@
 
 {% block content_body %}
   	{{ block.super }}
-{% if alert_message %}
-    {% if alert_message.success %}
-        <div class="alert alert-success alert-dismissible fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-check"></i> Success</h4>
-            {{alert_message.message}}
-        </div>
-    {% endif %}
-    {% if not alert_message.success %}
-        <div class="alert alert-danger alert-dismissible fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-            {{alert_message.message}}
-        </div>
-    {% endif %}
-{% endif %}
+
 <div class="row">
     {% include "etsi/descriptor/descriptorlist.html" %}
 </div>
@@ -58,9 +43,6 @@
 {% block resource_block %}
   	{{ block.super }}
 
-
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
 
 
 
@@ -112,10 +94,6 @@ function cloneDescriptor(project_id, descriptor_type, descriptor_id){
 
 }
 
-
-function generateUID() {
-    return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
-}
     </script>
 {% endblock %}
 
