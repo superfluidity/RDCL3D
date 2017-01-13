@@ -1,18 +1,17 @@
 import argparse
 from parserView import *
 from parserAllView import *
-from parserDetailView import *
 import os
 
 
-def run_command(type_view, cfg_files, nx_topology):
+def run_command(type_view, cfg_files):
     if type_view == 'View':
-        json_click = parserView(cfg_files, nx_topology)
+        json_click = parserView(cfg_files)
 
     elif type_view == 'AllView':
-        json_click = parserAllView(cfg_files, nx_topology)
+        json_click = parserAllView(cfg_files)
     elif type_view == 'DetailView':
-        json_click = parserDetailView(cfg_files, nx_topology)
+        json_click = parserDetailView(cfg_files)
 
     return json_click
 
@@ -20,7 +19,7 @@ def run_command(type_view, cfg_files, nx_topology):
 # parse_click(args.file, nx_topology)
 
 
-
+'''
 def parse_cmd_line():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--f', dest='file', action='store', help='file click to parse')
@@ -37,13 +36,13 @@ def parse_cmd_line():
         sys.exit(1)
 
     return args
-
+'''
 
 def importprojectjson(cfg_files):
-    nx_topology = nx.MultiDiGraph()
+    #nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
-    type_view = 'View'
-    json_click = run_command(type_view, cfg_files, nx_topology)
+    type_view = 'AllView'
+    json_click = run_command(type_view, cfg_files)
     '''
     if len(nx_topology)!=0:
         xml2py(nx_topology)

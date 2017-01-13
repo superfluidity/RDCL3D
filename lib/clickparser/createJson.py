@@ -8,6 +8,8 @@ LINK_ID_KEY = 'id'
 
 LINK_TYPE_KEY = 'view'
 
+LINK_GROUP = 'group'
+
 NODE_TYPE_KEY = 'type'
 
 
@@ -21,7 +23,7 @@ def nx_2_t3d_json(element, connection, json_out_file):
         nodes_dict[VERTEX_INFO_KEY]['frozen'] = False
         nodes_dict[VERTEX_INFO_KEY][NODE_TYPE_KEY] = 'click'
         nodes_dict[VERTEX_INFO_KEY]['property'] = element[i]['config']
-        nodes_dict[VERTEX_INFO_KEY]['group'] = []
+        nodes_dict[VERTEX_INFO_KEY]['group'] = element[i]['group']
         nodes_dict[VERTEX_ID_KEY] = element[i]['name']
 
         nodes_list.append(nodes_dict)
@@ -31,10 +33,10 @@ def nx_2_t3d_json(element, connection, json_out_file):
     for i in range(0, len(connection)):
         edge_dict = {}
         edge_dict['source'] = connection[i]['source']
-        edge_dict['group'] = []
+        edge_dict[LINK_GROUP] = connection[i]['group']
         #edge_dict['group'].append('click')
-        edge_dict['target'] = connection[i]['dest']
-        edge_dict['view'] = []
+        edge_dict['target'] = connection[i]['target']
+        edge_dict[LINK_TYPE_KEY] = connection[i]['view']
 
         edge_list.append(edge_dict)
 
