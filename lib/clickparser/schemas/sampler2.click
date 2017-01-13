@@ -10,6 +10,7 @@ elementclass RatedSampler {
   input -> rs :: RatedSplitter($rate);
   rs [0] -> [0] output;
   rs [1] -> t :: Tee;
+  rs [2] -> Tee;	
   t [0] -> [0] output;
   t [1] -> [1] output;
 };

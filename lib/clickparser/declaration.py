@@ -76,10 +76,13 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 	explicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, element_renamed)
 	implicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, words3)
 
-	for c1 in ele_class_cont:
+	for c1 in words3:
 		renamed_element_content.append(c1)
 
+	print renamed_element_content
+	print '****'
 
+#Rename element content
 	for i in range(0,len(renamed_element_content)):
 			try:
 				index = renamed_element_content.index('::')
@@ -89,7 +92,7 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 			except ValueError:
 				break
 	
-	for i in range(0,len(renamed_element_content)):												# rinomina gli elementi precedentementi dichiarati e che hanno ancora
+	for i in range(0,len(renamed_element_content)):										# rinomina gli elementi precedentementi dichiarati e che hanno ancora
 		for e in element_renamed.items():												# ancora il loro nome originale
 			if renamed_element_content[i] == e[1]['origin_name']:
 				renamed_element_content[i] = e[1]['new_name']
@@ -103,6 +106,7 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 				if name == e[1]['origin_name']:
 					renamed_element_content[i] = e[1]['new_name']
 	
+	print renamed_element_content
 	return name_element,renamed_element_content
 	
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
@@ -234,8 +238,8 @@ def connection_decl(words, connection, element):
 
 def connection_element_class_cleaner (connection_list,ele_class_connections):
 	#  ele_class_connections{'element name':connection_elem_name, 'connection_elem_list':connection_elem_list}
-	print connection_list
-	print ele_class_connections
+	#print connection_list
+	#print ele_class_connections
 
 	
 #Gestione dell'input e output senza porte
@@ -254,7 +258,7 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 				except IndexError:
 					break
 	
-	print '********'
+	#print '********'
 
 
 #Gestione dell'output con porte
@@ -313,7 +317,7 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 
 
 
-	print ele_class_connections
+	#print ele_class_connections
 
 
 
