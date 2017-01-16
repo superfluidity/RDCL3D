@@ -212,7 +212,7 @@ def download(request, project_id=None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {  # TODO REFACTOR
+        return render(request, 'download.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
         })

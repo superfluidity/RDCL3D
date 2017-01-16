@@ -29,18 +29,10 @@
           <form role="form" method="post">
                   {% csrf_token %}
           <div class="box-body">
-
-
                       <p>Download the archive of all descriptor files. </p>
-
-
-
-
-
         </div><!-- /.box-body -->
           <div class="box-footer">
-                      <button type="submit" class="btn btn-primary" value="json"><i class="fa fa-file-archive-o"></i> Download JSON</button>
-                      <button type="submit" class="btn btn-primary" value="yaml" disabled><i class="fa fa-file-archive-o" ></i> Download YAML</button>
+                      <button type="submit" class="btn btn-primary" value="json"><i class="fa fa-file-archive-o"></i> Download</button>
                   </div>
               </form>
       </div><!-- /.box -->
@@ -49,23 +41,3 @@
 </div>
 
 {% endblock %}
-
-{% block resource_block %}
-  	{{ block.super }}
-
-
-    <script>
-
-
-
-
-$(document).ready(function () {
-
-
-});
-
-
-
-    </script>
-{% endblock %}
-

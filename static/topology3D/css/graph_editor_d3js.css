@@ -152,16 +152,10 @@
     user-select: none;
 }
 
-
 textarea {
   font-family: "Lucida Console", Monaco, monospace;
   height: 350px !important;
   resize: none;
-}
-
-#modal_dialog_edit_descriptor{
-  width: 96%;
-  max-width: 1100px;
 }
 
 .form-group {
