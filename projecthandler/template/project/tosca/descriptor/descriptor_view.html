@@ -51,7 +51,6 @@
     <ul class="nav nav-tabs">
         <li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-file-code-o"></i> YAML</a></li>
         <li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-file-code-o"></i> JSON</a></li>
-        <li id="form_li"><a href="#form" data-toggle="tab"><i class="fa fa-television"></i> Form View</a></li>
 
         <li class="pull-right"><button id="save" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save</button></li>
         <li class="pull-right"><button id="save_show_graph"type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph</button></li>
@@ -73,10 +72,7 @@
 
             </textarea>
         </div>
-        <div class="tab-pane" id="form">
-            {% include "tosca/descriptor/descriptor_form_view.html" %}
-        </div>
-        <!-- /.tab-pane -->
+
     </div>
     <!-- /.tab-content -->
 

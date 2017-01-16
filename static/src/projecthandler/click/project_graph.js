@@ -34,11 +34,6 @@ $(document).ready(function() {
     graph_editor.addListener("filters_changed", changeFilter);
 
 
-    graph_editor.addListener("right_click_node", function(a, args) {
-        //console.log("node_selected", a, args);
-        $('#modal_edit_descriptor').modal('show');
-    });
-
     // graph_editor initialization
     graph_editor.init({
         width: $('#graph_ed_container').width(),

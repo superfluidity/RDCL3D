@@ -15,11 +15,9 @@
  {% csrf_token %}
 
 
-{% include 'etsi/descriptor/modals/edit_descriptor.html' %}
-
-{% include 'etsi/descriptor/modals/create_link_chooser.html' %}
-{% include 'etsi/descriptor/modals/choose_node_id.html' %}
-{% include 'etsi/modal/modalKeyboardInfo.html' %}
+{% include 'etsi/descriptor/modal/create_link_chooser.html' %}
+{% include 'etsi/descriptor/modal/choose_node_id.html' %}
+{% include 'etsi/modal/modal_keyboard_info.html' %}
 {% endblock %}
 
 {% block resource_block %}
