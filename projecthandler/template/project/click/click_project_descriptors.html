@@ -3,61 +3,35 @@
 {% load staticfiles %}
 
 {% block head_block %}
-  	{{ block.super }}
+{{ block.super }}
 
 {% endblock %}
 {% block title_header_big %}
-    {{ block.super }}
-    Configurations
+{{ block.super }}
+Configurations
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'click/click_project_left_sidebar.html' %}
+{% include 'click/click_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
-  	{{ block.super }}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-    <li><a>  Configurations </a></li>
+{{ block.super }}
+<li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+<li><a> Configurations </a></li>
 
 {% endblock %}
 
 {% block content_body %}
-  	{{ block.super }}
-{% if alert_message %}
-    {% if alert_message.success %}
-        <div class="alert alert-success alert-dismissible fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-check"></i> Success</h4>
-            {{alert_message.message}}
-        </div>
-    {% endif %}
-    {% if not alert_message.success %}
-        <div class="alert alert-danger alert-dismissible fade in">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-            {{alert_message.message}}
-        </div>
-    {% endif %}
-{% endif %}
+{{ block.super }}
+
 <div class="row">
     {% include "click/descriptor/descriptorlist.html" %}
 </div>
 {% endblock %}
 
-
-
-
 {% block resource_block %}
-  	{{ block.super }}
-
-
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
-
-
-
-
-    <script>
+{{ block.super }}
+<script>
 
 
 function createNewDescriptor(project_id, descriptor_type){
@@ -86,9 +60,6 @@ $(document).ready(function () {
 });
 
 
-
-
-
-    </script>
+</script>
 {% endblock %}
 
