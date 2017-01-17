@@ -3,7 +3,7 @@ if (typeof dreamer === 'undefined') {
 }
 var level = {}
 
-dreamer.ManoGraphEditor = (function(global) {
+dreamer.ModelGraphEditor = (function(global) {
     'use strict';
 
     var DEBUG = true;
@@ -12,14 +12,14 @@ dreamer.ManoGraphEditor = (function(global) {
     var GUI_VERSION = "v1";
 
 
-    ManoGraphEditor.prototype = new dreamer.GraphEditor();
-    ManoGraphEditor.prototype.constructor = ManoGraphEditor;
-    ManoGraphEditor.prototype.parent = dreamer.GraphEditor.prototype;
+    ModelGraphEditor.prototype = new dreamer.GraphEditor();
+    ModelGraphEditor.prototype.constructor = ModelGraphEditor;
+    ModelGraphEditor.prototype.parent = dreamer.GraphEditor.prototype;
 
     /**
      * Constructor
      */
-    function ManoGraphEditor(args) {
+    function ModelGraphEditor(args) {
 
         log("Constructor");
 
@@ -27,7 +27,7 @@ dreamer.ManoGraphEditor = (function(global) {
 
 
     //TODO this should be moved in graph_editor
-    ManoGraphEditor.prototype.init = function(args) {
+    ModelGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
 
         if (args.gui_properties[GUI_VERSION]!= undefined) {
@@ -74,7 +74,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new node.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addNode = function(node, success, error) {
+    ModelGraphEditor.prototype.addNode = function(node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView()
         var node_type = node.info.type;
@@ -100,7 +100,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the node.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.updateDataNode = function(args) {
+    ModelGraphEditor.prototype.updateDataNode = function(args) {
         this.parent.updateDataNode.call(this, args);
     };
 
@@ -109,7 +109,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeNode = function(node, success, error) {
+    ModelGraphEditor.prototype.removeNode = function(node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
@@ -136,7 +136,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new Link.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.addLink = function(s, d, success, error) {
+    ModelGraphEditor.prototype.addLink = function(s, d, success, error) {
         var self = this;
         var source_id = s.id;
         var target_id = d.id;
@@ -175,7 +175,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    ManoGraphEditor.prototype.removeLink = function(link, success, error) {
+    ModelGraphEditor.prototype.removeLink = function(link, success, error) {
         var self = this;
         var s = link.source;
         var d = link.target;
@@ -212,7 +212,7 @@ dreamer.ManoGraphEditor = (function(global) {
     };
 
 
-    ManoGraphEditor.prototype.savePositions = function(data) {
+    ModelGraphEditor.prototype.savePositions = function(data) {
         var vertices = {}
         this.node.each(function(d) {
             vertices[d.id] = {}
@@ -233,7 +233,7 @@ dreamer.ManoGraphEditor = (function(global) {
      *
      *
      */
-    ManoGraphEditor.prototype._setupBehaviorsOnEvents = function() {
+    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
         var self = this;
         var contextmenuNodesAction= [{
@@ -389,12 +389,12 @@ dreamer.ManoGraphEditor = (function(global) {
         };
     };
 
-     ManoGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
+     ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
         this.refreshGui();
     };
 
-     ManoGraphEditor.prototype.refreshGui = function(args) {
+     ModelGraphEditor.prototype.refreshGui = function(args) {
         var self = this;
         console.log(self)
         if(!self.model){
@@ -414,19 +414,19 @@ dreamer.ManoGraphEditor = (function(global) {
         $('#breadcrumb').append(newLi);
     };
 
-    ManoGraphEditor.prototype.exploreLayer = function(args) {
+    ModelGraphEditor.prototype.exploreLayer = function(args) {
 
     };
 
-    ManoGraphEditor.prototype.getTypeProperty = function() {
+    ModelGraphEditor.prototype.getTypeProperty = function() {
         return this.type_property;
     };
 
-    ManoGraphEditor.prototype.getCurrentGroup = function() {
+    ModelGraphEditor.prototype.getCurrentGroup = function() {
         return this.filter_parameters.node.group[0];
 
     }
-    ManoGraphEditor.prototype.getCurrentView = function() {
+    ModelGraphEditor.prototype.getCurrentView = function() {
         return this.filter_parameters.link.view[0];
 
     }
@@ -440,11 +440,11 @@ dreamer.ManoGraphEditor = (function(global) {
 
 
 
-    return ManoGraphEditor;
+    return ModelGraphEditor;
 
 
 }(this));
 
 if (typeof module === 'object') {
-    module.exports = dreamer.ManoGraphEditor;
+    module.exports = dreamer.ModelGraphEditor;
 }

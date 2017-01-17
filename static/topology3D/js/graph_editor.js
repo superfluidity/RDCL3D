@@ -331,38 +331,6 @@ dreamer.GraphEditor = (function(global) {
             // .attr("class", "nodosdads")
             .attr("class", "node cleanable");
 
-        // STEFANO: below the original code, to be deleted when everything is OK
-        // this.node = this.svg.selectAll('.node')
-        //     .data(self.d3_graph.nodes
-        //         .filter(this.node_filter_cb))
-        //     .append("svg:path")
-        //     .attr("class", "node_path")
-        //     .attr("id", function(d) {
-        //         return "path_" + d.id;
-        //     })
-        //     .attr("d", d3.symbol()
-        //         .size(function(d) {
-        //             return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2.2);
-        //         })
-        //         .type(function(d) {
-        //             return self._node_property_by_type(d.info.type, 'shape');
-        //         })
-        //     )
-        //     .style("fill", function(d) {
-        //         return self._node_property_by_type(d.info.type, 'color');
-        //     })
-        //     .attr("transform", function() {
-        //         return "rotate(-45)";
-
-        //     })
-        //     .attr("stroke-width", 2.4)
-        //     .call(d3.drag()
-        //         .on("start", dragstarted)
-        //         .on("drag", dragged)
-        //         .on("end", dragended))
-        //      ;
-
-
         this.svg.selectAll('.node')
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
@@ -540,30 +508,6 @@ dreamer.GraphEditor = (function(global) {
         };
 
 
-
-    };
-
-    /**
-     *  Export Graph data.
-     *  @returns {Object} Graph object.
-     */
-    GraphEditor.prototype.exportJSONGraph = function() {
-
-    };
-
-    /**
-     *  Get the data tree of availables views
-     *  @returns {Object} object.
-     */
-    GraphEditor.prototype.getTreeViews = function() {
-
-    };
-
-    /**
-     *  Get the the type of Availables Nodes Of View
-     *  @returns {Object} object.
-     */
-    GraphEditor.prototype.getAvailablesNodesOfView = function() {
 
     };
 

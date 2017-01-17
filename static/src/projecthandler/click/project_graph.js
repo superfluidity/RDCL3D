@@ -1,5 +1,5 @@
 
-//ManoGraphEditor instance
+//GraphEditor instance
 var graph_editor = new dreamer.ClickGraphEditor();
 var selected_vnffgId = null;
 var show_all = null;

@@ -1,5 +1,5 @@
 
-//ManoGraphEditor instance
+//GraphEditor instance
 var graph_editor = new dreamer.ToscaGraphEditor();
 var selected_vnffgId = null;
 var show_all = null;
