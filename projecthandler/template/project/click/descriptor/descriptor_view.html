@@ -1,20 +1,8 @@
-{% extends "base.html" %}
+{% extends "descriptor/descriptor_view_base.html" %}
 
 {% load staticfiles %}
 
-{% block head_block %}
-{{ block.super }}
 
-
-<!-- Codemirror core CSS -->
-    <link rel="stylesheet" href="{% static "codemirror/lib/codemirror.css" %}">
-    <link rel="stylesheet" href="{% static "codemirror/addon/fold/foldgutter.css" %}" />
-    <link rel="stylesheet" href="{% static "codemirror/theme/neat.css" %}">
-    <link rel="stylesheet" href="{% static "codemirror/addon/dialog/dialog.css" %}">
-    <link rel="stylesheet" href="{% static "codemirror/addon/display/fullscreen.css" %}">
-     <link rel="stylesheet" href="{% static "css/drag_drop.css" %}">
-
-{% endblock %}
 {% block title_header_big %}
 {{ block.super }}
 Edit {{descriptor_type}} Descriptor
@@ -34,16 +22,15 @@ Edit {{descriptor_type}} Descriptor
 
 {% endblock %}
 
-{% block content_body %}
+{% block tab_pane_button_list %}
 {{ block.super }}
-<div class="row">
-    <div class="col-md-12">
-        <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-                <li class="active" id="editor_li"><a href="#editor" data-toggle="tab"><i class="fa fa-file-code-o"></i>
+<li class="active" id="editor_li"><a href="#editor" data-toggle="tab"><i class="fa fa-file-code-o"></i>
                     Editor</a></li>
+{% endblock %}
 
-                <li class="pull-right">
+{% block nav_buttons_list %}
+    {{ block.super }}
+<li class="pull-right">
                     <button id="save" type="button" class="btn btn-block btn-primary btn-sm" onclick="update(this.id)">
                         <i class="fa fa-save"></i> Save
                     </button>
@@ -57,52 +44,22 @@ Edit {{descriptor_type}} Descriptor
                     <button type="button" class="btn btn-block btn-primary btn-sm" onclick="goToGraph()"><i
                             class="fa fa-sitemap"></i> Show Graph
                     </button>
-                </li>
+                </li>{% endblock %}
 
-            </ul>
-            <div class="tab-content">
+{% block tab_pane_list %}
+{{ block.super }}
 
-
-                <!-- /.tab-pane -->
-                <div class="active tab-pane" id="editor_tab">
-			<textarea id="code_editor">
-            </textarea>
+<div class="active tab-pane" id="editor_tab">
+                    <textarea id="code_editor">
+                    </textarea>
                 </div>
                 <!-- /.tab-pane-->
 
-
-                <!-- /.tab-pane -->
-            </div>
-            <!-- /.tab-content -->
-
-
-        </div>
-
-    </div>
-</div>
 {% endblock %}
+
 
 {% block resource_block %}
 {{ block.super }}
-
-
-<script src="{% static "codemirror/lib/codemirror.js" %}"></script>
-    <script src="{% static "codemirror/lib/formatting.js" %}"></script>
-<script src="{% static "codemirror/addon/fold/foldcode.js" %}"></script>
-    <script src="{% static "codemirror/addon/fold/foldgutter.js" %}"></script>
-<script src="{% static "codemirror/addon/fold/brace-fold.js" %}"></script>
-    <script src="{% static "codemirror/mode/javascript/javascript.js" %}"></script>
-<script src="{% static "codemirror/mode/xml/xml.js" %}"></script>
-    <script src="{% static "codemirror/mode/markdown/markdown.js" %}"></script>
-<script src="{% static "codemirror/addon/search/searchcursor.js" %}"></script>
-    <script src="{% static "codemirror/addon/search/search.js" %}"></script>
-<script src="{% static "codemirror/addon/dialog/dialog.js" %}"></script>
-    <script src="{% static "codemirror/addon/display/autorefresh.js" %}"></script>
-<script src="{% static "codemirror/addon/edit/matchbrackets.js" %}"></script>
-    <script src="{% static "codemirror/addon/edit/closebrackets.js" %}"></script>
-<script src="{% static "codemirror/addon/display/fullscreen.js" %}"></script>
-    <script src="{% static "codemirror/keymap/sublime.js" %}"></script>
-
 
 <script>
 var editorClick;
@@ -197,4 +154,3 @@ function goToGraph(){
 
 </script>
 {% endblock %}
-

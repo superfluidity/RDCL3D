@@ -1,105 +1,32 @@
-{% extends "base.html" %}
-
-{% load staticfiles %}
-
-{% block head_block %}
-  	{{ block.super }}
-
-    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
-{% endblock %}
+{% extends "project_details.html" %}
 
 {% block left_sidebar %}
-    {% include 'click/click_project_left_sidebar.html' %}
+{% include 'click/click_project_left_sidebar.html' %}
 {% endblock %}
 
-{% block title_header_big %}
-    {{ block.super }}
-    {{project_overview.name}}
-{% endblock %}
-
-{% block title_header_small %}
-    {{ block.super }}
-    Overview
-{% endblock %}
-
-{% block breadcrumb_body %}
-  	{{ block.super }}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview.name}}</a></li>
-{% endblock %}
-
-{% block content_body %}
-  	{{ block.super }}
+{% block content_descritors_col %}
+{{ block.super }}
 <div class="row">
-    <div class="col-md-6">
-        <div class="box box-widget">
-            <div class="box-footer no-padding">
-                <ul class="nav nav-stacked">
-                    <li><a><b>Project Name:</b> <span class="pull-right">{{project_overview.name}}</span></a>
-                    </li>
-                    <li><a><b>Info:</b> <span
-                            class="pull-right">{{project_overview.info}}</span></a></li>
-                    <li><a><b>Last updated:</b> <span class="pull-right">{{project_overview.updated_date}}</span></a>
-                    </li>
-                    <li><a><b>Owner:</b> <span
-                            class="pull-right">{{project_overview.owner}}</span></a></li>
+    <div class="col-md-6 ">
 
-                    <li><a><b>Validated:</b>
-                        {% if project_overview.validated %}
-                        <span class="pull-right badge bg-green">{{project_overview.validated}}</span>
-                        {% else %}
-                        <span class="pull-right badge bg-red">{{project_overview.validated}}</span>
-                        {% endif %}
-                    </a>
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>{{project_overview.click}}</h3>
 
-                    </li>
-
-                </ul>
-
+                <p>Click File</p>
             </div>
-
+            <div class="icon">
+                <i class="fa fa-file-code-o"></i>
+            </div>
+            <a href="/projects/{{project_id}}/descriptors/click" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+            </a>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="row">
-            <div class="col-md-6 ">
 
-                <div class="small-box bg-aqua">
-                    <div class="inner">
-                        <h3>{{project_overview.click}}</h3>
-
-                        <p>Click File</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-file-code-o"></i>
-                    </div>
-                    <a href="/projects/{{project_id}}/descriptors/click" class="small-box-footer">
-                        More info <i class="fa fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-
-
-        </div>
-    </div>
 </div>
+<div class="row">
 
+
+</div>
 {% endblock %}
-
-{% block resource_block %}
-  	{{ block.super }}
-
-
-
-
-$(document).ready(function () {
-
-
-});
-
-
-
-    </script>
-{% endblock %}
-

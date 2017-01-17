@@ -1,5 +1,5 @@
 
-//ManoGraphEditor instance
+//GraphEditor instance
 var graph_editor = new dreamer.ToscaGraphEditor();
 var selected_vnffgId = null;
 var show_all = null;
@@ -35,11 +35,6 @@ $(document).ready(function() {
     graph_editor.addListener("filters_changed", changeFilter);
 
 
-    graph_editor.addListener("right_click_node", function(a, args) {
-        //console.log("node_selected", a, args);
-        $('#modal_edit_descriptor').modal('show');
-    });
-
     // graph_editor initialization
     graph_editor.init({
         width: $('#graph_ed_container').width(),
@@ -58,9 +53,7 @@ var filters = function(e, params) {
     $('#' + e).nextAll('li').remove();
 }
 
-function generateUID() {
-    return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
-}
+
 
 function initDropOnGraph(){
 

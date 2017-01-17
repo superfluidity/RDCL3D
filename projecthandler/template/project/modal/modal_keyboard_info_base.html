@@ -1,0 +1,37 @@
+<div id="modalTopologyInfoButton" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog ">
+		<div class="modal-content">
+			<div class="modal-header">
+
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">Keyboard shortcuts</h4>
+			</div>
+			<div class="modal-body">
+                <ul>
+
+                    <li>
+                        <p>Create edge: Select the first vertex by clicking on it. <span class="help-key">Shift</span> + <span class="help-key">left-click</span> on another vertex (different than the selected one).</p>
+                    </li>
+                    <li>
+                        <p> <span class="help-key">Delete</span> Delete selected nodes or link.</p>
+                    </li>
+
+                    <li>
+                        <p>Switch to automatic node positioning: Play/Pause</p>
+                    </li>
+					{% block left_sidebar %}
+
+					{% endblock %}
+                </ul>
+			</div>
+			<div class="modal-footer">
+
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

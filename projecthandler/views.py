@@ -212,7 +212,7 @@ def download(request, project_id=None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {  # TODO REFACTOR
+        return render(request, 'download.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
         })
@@ -297,8 +297,8 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
-            desc_name = request.POST.get('it')  # TODO capire 'it' che significa ???
-
+            desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
+        print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
         # if prj_token == 'etsi':
