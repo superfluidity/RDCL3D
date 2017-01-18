@@ -84,14 +84,12 @@ layer:                                  #List of Layers
                     CE:
                         direct_edge: false
                         removable: true
-
     Control:
         nodes:
             OSHI-CR:
             OSHI-PE:
             OF Controller:
         allowed_edges:
-
     VS:
         nodes:
             VS:

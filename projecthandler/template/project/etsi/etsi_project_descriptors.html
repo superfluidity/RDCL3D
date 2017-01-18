@@ -47,23 +47,6 @@
 
     <script>
 
-function createNewDescriptor(project_id, descriptor_type){
-    if(descriptor_type =='nsd'){
-        $("#modal_chooser_new_descriptor_name").text("New NS Descriptor");
-        $( "#input_choose_new_descriptor_name" ).val("ns_"+generateUID());
-    }else{
-        $("#modal_chooser_new_descriptor_name").text("New VNF Descriptor");
-        $( "#input_choose_new_descriptor_name" ).val("vnf_"+generateUID());
-    }
-     $('#save_new_descriptor_name').off('click').on('click', function(){
-        var descriptor_id = $( "#input_choose_new_descriptor_name" ).val();
-        console.log(descriptor_id);
-        window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/new?id='+descriptor_id ;
-    });
-    $('#modal_new_descriptor_name').modal('show');
-
-
-}
 
 $(document).ready(function () {
     window.setTimeout(function() {

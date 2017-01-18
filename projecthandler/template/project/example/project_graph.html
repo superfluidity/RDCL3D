@@ -1,58 +1,33 @@
-{% extends "base.html" %}
+{% extends "project_graph_base.html" %}
 
 {% load staticfiles %}
 
-{% block head_block %}
-  	{{ block.super }}
-    	<link rel="stylesheet" href="{% static "topology3D/css/graph_editor_d3js.css" %}">
-    	<link rel="stylesheet" href="{% static "topology3D/css/d3-context-menu.css" %}">
-
-    <link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
-{% endblock %}
 {% block title_header_big %}
     {{ block.super }}
 {% endblock %}
 {% block left_sidebar %}
-    {% include 'etsi/etsi_project_left_sidebar.html' %}
+    {% include 'exampletoken/exampletoken_project_left_sidebar.html' %}
 {% endblock %}
 
-{% block breadcrumb_body %}
-  	{{ block.super }}
-    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-{% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
  {% csrf_token %}
-<div class="row" >
-    <div class="col-md-12">
-        {% include 'topology_toolbar.html' %}
-        <div id="graph_ed_container" style="width: 100%; height:100%; background-color: white; border: 2px #3c8dbc solid;">
 
-        </div>
-    </div>
-</div>
 
-{% include 'descriptor/modal/create_link_chooser.html' %}
-{% include 'descriptor/modal/choose_node_id.html' %}
-{% include 'modal/modal_keyboard_info.html' %}
+{% include 'exampletoken/descriptor/modal/create_link_chooser.html' %}
+{% include 'exampletoken/descriptor/modal/choose_node_id.html' %}
+{% include 'exampletoken/modal/modal_keyboard_info.html' %}
 {% endblock %}
 
 {% block resource_block %}
   	{{ block.super }}
 
-    <script src="{% static "topology3D/js/event.js" %}"></script>
-    <script src="{% static "topology3D/js/graph_editor.js" %}"></script>
-    <script src="{% static "topology3D/js/etsi_graph_editor.js" %}"></script>
-    <script src="{% static "topology3D/js/graph_request.js" %}"></script>
-
-
-    <!-- d3.js -->
-    <script src="{% static "d3/d3.js" %}" charset="utf-8"></script>
-
-    <script src="{% static "src/projecthandler/etsi/gui_properties.js" %}"></script>
-    <script src="{% static "src/projecthandler/etsi/project_graph.js" %}"></script>
-    <script src="{% static "topology3D/js/d3-context-menu.js" %}"></script>
+    <script src="{% static "topology3D/js/model_graph_editor.js" %}"></script>
+    <!-- exampletoken -->
+    <script src="{% static "src/projecthandler/exampletoken/gui_properties.js" %}"></script>
+    <script src="{% static "src/projecthandler/exampletoken/project_graph.js" %}"></script>
+    <script src="{% static "src/projecthandler/exampletoken/controller.js" %}"></script>
 
 <script>
     graph_editor.project_id = '{{project_id}}'

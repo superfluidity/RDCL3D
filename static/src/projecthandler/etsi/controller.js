@@ -13,7 +13,7 @@ dreamer.EtsiController = (function(global) {
     /**
      * Constructor
      */
-    function EtsiController(node) {
+    function EtsiController() {
 
 
     }
