@@ -13,7 +13,6 @@
 
 import logging
 import os
-import json
 
 from copy import deepcopy
 from toscaparser.common.exception import ExceptionCollector
@@ -68,8 +67,6 @@ class ToscaTemplate(object):
     def __init__(self, path=None, parsed_params=None, a_file=True,
                  yaml_dict_tpl=None):
 
-        log.debug('Loading ToscaTemplate.')
-
         ExceptionCollector.start()
         self.a_file = a_file
         self.input_path = None
@@ -102,23 +99,15 @@ class ToscaTemplate(object):
             self.relationship_types = self._tpl_relationship_types()
             self.description = self._tpl_description()
             self.topology_template = self._topology_template()
-
-            # print 'TOPOLOGY TEMPLATE START -----------------'
-            # print json.dumps(self.topology_template.tpl, sort_keys=True, indent=4, separators=(',', ': '))
-            # print 'TOPOLOGY TEMPLATE END   -----------------'
-
             self.repositories = self._tpl_repositories()
             if self.topology_template.tpl:
                 self.inputs = self._inputs()
                 self.relationship_templates = self._relationship_templates()
                 self.nodetemplates = self._nodetemplates()
                 self.outputs = self._outputs()
+                self.policies = self._policies()
                 self._handle_nested_tosca_templates_with_topology()
                 self.graph = ToscaGraph(self.nodetemplates)
-            else:
-                log.debug('topology_template.tpl is False')
-
-
 
         ExceptionCollector.stop()
         self.verify_template()
@@ -171,6 +160,9 @@ class ToscaTemplate(object):
 
     def _tpl_topology_template(self):
         return self.tpl.get(TOPOLOGY_TEMPLATE)
+
+    def _policies(self):
+        return self.topology_template.policies
 
     def _get_all_custom_defs(self, imports=None):
         types = [IMPORTS, NODE_TYPES, CAPABILITY_TYPES, RELATIONSHIP_TYPES,

@@ -580,6 +580,10 @@ class ToscaTemplateTest(TestCase):
         exception.ExceptionCollector.assertExceptionMessage(
             exception.MissingRequiredFieldError, err9_msg)
 
+        err10_msg = _('Type "tosca.nodes.XYZ" is not a valid type.')
+        exception.ExceptionCollector.assertExceptionMessage(
+            exception.InvalidTypeError, err10_msg)
+
     def test_invalid_section_names(self):
         tosca_tpl = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -838,3 +842,12 @@ class ToscaTemplateTest(TestCase):
             os.path.dirname(os.path.abspath(__file__)),
             "data/dsl_definitions/test_nested_dsl_def.yaml")
         self.assertIsNotNone(ToscaTemplate(tosca_tpl))
+
+    def test_multiple_policies(self):
+        tosca_tpl = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "data/policies/test_tosca_nfv_multiple_policies.yaml")
+        tosca = ToscaTemplate(tosca_tpl)
+        self.assertEqual(
+            ['ALRM1', 'SP1', 'SP2'],
+            sorted([policy.name for policy in tosca.policies]))
