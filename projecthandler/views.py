@@ -293,12 +293,15 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         if request.POST.get('type') == "file":
             file = request.FILES['file']
             text = file.read()
+            print file.name.split(".")[0]
             type = file.name.split(".")[-1]
+            desc_name = file.name.split(".")[0]
+            print type
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
             desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
-        print desc_name
+        #print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
         # if prj_token == 'etsi':
