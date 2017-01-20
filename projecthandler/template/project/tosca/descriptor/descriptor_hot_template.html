@@ -85,11 +85,7 @@ $(document).ready(function() {
     editorYaml = CodeMirror(function(elt) {
         myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
     }, yaml_editor_settings);
-    var des_strings = {
-        {
-            descriptor_strings | safe
-        }
-    };
+    var des_strings = {{descriptor_strings | safe}};
     editorYaml.setValue(des_strings.descriptor_string_yaml);
 
 
