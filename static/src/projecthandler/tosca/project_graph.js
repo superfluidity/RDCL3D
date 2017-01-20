@@ -25,10 +25,12 @@ $(document).ready(function() {
     var params = {
         node: {
             type: [],
-            group: []
+            // group: []
+            group: [$.urlParam('id')]
         },
         link: {
-            group: [],
+            // group: [],
+            group: [$.urlParam('id')],
             view: []
         }
     }
