@@ -76,10 +76,8 @@ class TopologyTemplate(object):
             if (self.parsed_params and input.name not in self.parsed_params
                 or self.parsed_params is None) and input.required \
                     and input.default is None:
-                exception.ExceptionCollector.appendException(
-                    exception.MissingRequiredParameterError(
-                        what='Template',
-                        input_name=input.name))
+                log.warning(_('The required parameter %s '
+                              'is not provided') % input.name)
 
             inputs.append(input)
         return inputs
@@ -132,17 +130,17 @@ class TopologyTemplate(object):
         for policy in self._tpl_policies():
             for policy_name, policy_tpl in policy.items():
                 target_list = policy_tpl.get('targets')
+                target_objects = []
+                targets_type = "groups"
                 if target_list and len(target_list) >= 1:
-                    target_objects = []
-                    targets_type = "groups"
                     target_objects = self._get_policy_groups(target_list)
                     if not target_objects:
                         targets_type = "node_templates"
                         target_objects = self._get_group_members(target_list)
-                    policyObj = Policy(policy_name, policy_tpl,
-                                       target_objects, targets_type,
-                                       self.custom_defs)
-                    policies.append(policyObj)
+                policyObj = Policy(policy_name, policy_tpl,
+                                   target_objects, targets_type,
+                                   self.custom_defs)
+                policies.append(policyObj)
         return policies
 
     def _groups(self):

@@ -12,6 +12,7 @@
 # under the License.
 
 import logging
+import six
 from toscaparser.utils.gettextutils import _
 from translator.hot.syntax.hot_template import HotTemplate
 from translator.hot.translate_inputs import TranslateInputs
@@ -32,10 +33,9 @@ class TOSCATranslator(object):
         self.deploy = deploy
         self.csar_dir = csar_dir
         self.node_translator = None
-        log.info(_('Initialized parameters for translation.'))
+        log.info(_('Initialized parmaters for translation.'))
 
-    def _translate(self):
-        # print 'I AM IN TRANSLATE !!!!!!!!!!!!!!'
+    def _translate_to_hot_yaml(self):
         self._resolve_input()
         self.hot_template.description = self.tosca.description
         self.hot_template.parameters = self._translate_inputs()
@@ -48,32 +48,54 @@ class TOSCATranslator(object):
         if self.node_translator.hot_template_version is None:
             self.node_translator.hot_template_version = HotTemplate.LATEST
 
-    def output_to_yaml(self):
-        self._translate()
-        return self.hot_template.output_to_yaml(
-            self.node_translator.hot_template_version)
+    def translate(self):
+        """Translate to HOT YAML
 
-    def output_to_yaml_files_dict(self, base_filename):
-        self._translate()
+        This method produces a translated output for main template.
+        The nested template, if any referenced by main, will be created
+        as a separate file.
+        """
+        self._translate_to_hot_yaml()
+
+        # TODO(mvelten) go back to calling hot_template.output_to_yaml instead
+        # for stdout once embed_substack_templates is correctly implemented
+        # return self.hot_template.output_to_yaml(
+        #     self.node_translator.hot_template_version)
+        yaml_files = self.hot_template.output_to_yaml_files_dict(
+            "output.yaml",
+            self.node_translator.hot_template_version)
+        for name, content in six.iteritems(yaml_files):
+            if name != "output.yaml":
+                with open(name, 'w+') as f:
+                    f.write(content)
+
+        return yaml_files["output.yaml"]
+
+    def translate_to_yaml_files_dict(self, base_filename):
+        """Translate to HOT YAML
+
+        This method produces a translated output containing main and
+        any nested templates referenced by main. This output can be
+        programmatically stored into different files by using key as
+        template name and value as template content.
+        """
+        self._translate_to_hot_yaml()
         return self.hot_template.output_to_yaml_files_dict(
             base_filename,
             self.node_translator.hot_template_version)
 
     def _translate_inputs(self):
-        # print 'I AM IN TRANSLATE INPUTS!!!!!!!!!!!!!!'
         translator = TranslateInputs(self.tosca.inputs, self.parsed_params,
                                      self.deploy)
         return translator.translate()
 
     def _translate_outputs(self):
-        # print 'I AM IN TRANSLATE OUTPUTS!!!!!!!!!!!!!!'
         translator = TranslateOutputs(self.tosca.outputs, self.node_translator)
         return translator.translate()
 
     # check all properties for all node and ensure they are resolved
     # to actual value
     def _resolve_input(self):
-        # print 'I AM IN RESOLVE INPUTS!!!!!!!!!!!!!!'
         for n in self.tosca.nodetemplates:
             for node_prop in n.get_properties_objects():
                 if isinstance(node_prop.value, dict):
