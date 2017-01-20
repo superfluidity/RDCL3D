@@ -1,4 +1,3 @@
-
 from django.conf.urls import url, include
 from django.contrib import admin
 from projecthandler import views
@@ -19,13 +18,21 @@ urlpatterns = [
     url(r'^(?P<project_id>\d+)/graph/addlink$', views.add_link, name='addlink'),
     url(r'^(?P<project_id>\d+)/graph/removelink$', views.remove_link, name='removelink'),
     url(r'^(?P<project_id>\d+)/download(/$)', views.download, name='download_page'),
-    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)(/$)', views.show_descriptors, name='show_descriptors'),
-    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)(/$)', views.edit_descriptor, name='edit_descriptor'),
-    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)/delete$', views.delete_descriptor,
+    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)(/$)', views.show_descriptors,
+        name='show_descriptors'),
+    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)(/$)',
+        views.edit_descriptor, name='edit_descriptor'),
+    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)/delete$',
+        views.delete_descriptor,
         name='delete_descriptor'),
-    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)/clone$', views.clone_descriptor,
-            name='clone_descriptor'),
+    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)/clone$',
+        views.clone_descriptor,
+        name='clone_descriptor'),
+    url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/(?P<descriptor_id>[-\w]+)/action/(?P<action_name>[-\w]+)',
+        views.custom_action,
+        name='custom_action'),
     url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)/new$', views.new_descriptor,
-             name='new_descriptor'),
+        name='new_descriptor'),
+
 
 ]

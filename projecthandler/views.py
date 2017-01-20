@@ -449,3 +449,26 @@ def add_node_to_vnffg(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+
+@login_required
+def custom_action(request, project_id=None, descriptor_id=None, descriptor_type=None, action_name=None):
+    if request.method == 'GET':
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        print action_name
+        return globals()[action_name](request,project_id,projects[0], descriptor_id, descriptor_type)
+
+
+
+##### TOSCA metods #####
+@login_required
+def generatehottemplate(request, project_id=None, project=None, descriptor_id=None, descriptor_type=None):
+    project_overview = project.get_overview_data()
+    prj_token = project_overview['type']
+    page = prj_token + '/descriptor/descriptor_hot_template.html'
+    result = '' ##TODO inserire qui la chiamta sull'utility per la generazione dell'hot template
+    return render(request, page, {
+        'project_id': project_id,
+        'descriptor_id': descriptor_id,
+        'project_overview_data': project_overview,
+        'descriptor_type': descriptor_type,
+        'descriptor_strings': {'descriptor_string_yaml': result}})
