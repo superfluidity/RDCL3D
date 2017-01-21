@@ -12,7 +12,7 @@ from lib.util import Util
 from projecthandler.models import Project
 from lib.clickparser import mainrdcl
 import os.path
-
+###FIXME rename mainrdcl
 
 class ClickProject(Project):
 

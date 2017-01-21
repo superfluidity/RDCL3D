@@ -41,6 +41,8 @@ class EtsiProject(Project):
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
+        print file_dict
+
         data_project = EtsiParser.importprojectfiles(file_dict)
         # data_project = {}
         # if ns_files or vnf_files:
@@ -134,8 +136,6 @@ class EtsiProject(Project):
             'info': self.info,
             'type': 'etsi',
             'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
-            'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,
-            'vld': len(current_data['vld'].keys()) if 'vld' in current_data else 0,
             'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
             'validated': self.validated
         }
@@ -154,7 +154,6 @@ class EtsiProject(Project):
 
         Returns the descriptor id or False
         """
-
         try:
             # utility = Util()
             print type_descriptor, data_type
@@ -171,7 +170,8 @@ class EtsiProject(Project):
 
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             reference_schema = self.get_json_schema_by_type(type_descriptor)
-            validate = Util.validate_json_schema(reference_schema, new_descriptor)
+            #validate = Util.validate_json_schema(reference_schema, new_descriptor)
+            validate = False
             new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[
                 'nsdIdentifier']
             if not type_descriptor in current_data:

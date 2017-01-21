@@ -46,20 +46,6 @@
   	{{ block.super }}
     <script>
 
-function createNewDescriptor(project_id, descriptor_type){
-
-        $("#modal_chooser_new_descriptor_name").text("New TOSCA Descriptor");
-        $( "#input_choose_new_descriptor_name" ).val("tosca_"+generateUID());
-
-     $('#save_new_descriptor_name').off('click').on('click', function(){
-        var descriptor_id = $( "#input_choose_new_descriptor_name" ).val();
-        console.log(descriptor_id);
-        window.location.href='/projects/' + project_id + '/descriptors/' + descriptor_type + '/new?id='+descriptor_id ;
-    });
-    $('#modal_new_descriptor_name').modal('show');
-
-
-}
 
 $(document).ready(function () {
     window.setTimeout(function() {

@@ -152,7 +152,6 @@ class ToscaProject(Project):
 
         return json.dumps(topology)
 
-
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         """Creates a descriptor of a given type from a json or yaml representation
 
