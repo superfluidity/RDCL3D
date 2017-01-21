@@ -8,6 +8,8 @@ import traceback
 import glob
 import os
 
+
+
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ToscaParser')
 
@@ -24,7 +26,7 @@ class ToscaParser(Parser):
     def importprojectdir(cls,dir_project, type):
         """Imports all files under a given folder
 
-        this method is specific for Tosca project type
+        This method is specific for Tosca project type
         """
 
         project = {
@@ -34,7 +36,8 @@ class ToscaParser(Parser):
         for file in glob.glob(os.path.join(dir_project, '*.yaml')):
 
             yaml_object =  Util().loadyamlfile(file)
-            toscajson = json.loads(Util.yaml2json(yaml_object))
+            #toscajson = json.loads(Util.yaml2json(yaml_object))
+            toscajson = Util.json_loads_byteified(Util.yaml2json(yaml_object))
             filename = os.path.splitext(os.path.basename(str(file)))[0]
             # project['toscayaml'][Util.get_unique_id()] = toscajson
             if filename == 'vertices':
@@ -62,7 +65,8 @@ class ToscaParser(Parser):
             for file in tmp_files:
 
                 yaml_object = yaml.load(file)
-                toscajson = json.loads(Util.yaml2json(yaml_object))
+                #toscajson = json.loads(Util.yaml2json(yaml_object))
+                toscajson = Util.json_loads_byteified(Util.yaml2json(yaml_object))
                 filename = os.path.splitext(os.path.basename(str(file)))[0]
                 # project['toscayaml'][Util.get_unique_id()] = toscajson
                 project['toscayaml'][filename] = toscajson

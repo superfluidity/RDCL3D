@@ -18,6 +18,13 @@ log = logging.getLogger('model.py')
 project_types = {}
 
 class Project(models.Model):
+    """ Base class for project types
+
+    data_project stores a validated JSON representation of the project
+    get_dataproject() method returns the python dict representation of the project
+
+
+    """
     owner = models.ForeignKey('sf_user.CustomUser', db_column='owner')
     name = models.CharField(max_length=20)
     created_date = models.DateTimeField(default=timezone.now)
@@ -70,7 +77,12 @@ class Project(models.Model):
         return "Base"
 
     def get_dataproject(self):
-        current_data = json.loads(self.data_project)
+        """ Return the python dict representation of the project data
+
+        """
+        # current_data = json.loads(self.data_project)
+        current_data = Util.json_loads_byteified(self.data_project)
+
         return current_data
 
     def get_overview_data(self):
