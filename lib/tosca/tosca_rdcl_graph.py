@@ -18,7 +18,10 @@ class ToscaRdclGraph(RdclGraph):
 
 
     def build_graph_from_project(self, json_project, model={}):
-        """Creates a single graph for a whole project"""
+        """Creates a single graph for a whole project
+
+        json_project is the dict representation of the project
+        """
 
         #print "json_project ",json_project
         graph_object = {
@@ -32,7 +35,8 @@ class ToscaRdclGraph(RdclGraph):
             log.debug('build graph from project json')
 
             # print json.dumps(json_project, sort_keys=True, indent=4, separators=(',', ': '))
-            print json.dumps(json_project['toscayaml'], sort_keys=True, indent=4, separators=(',', ': '))
+            # print json_project['toscayaml']
+            # print json.dumps(json_project['toscayaml'], sort_keys=True, indent=4, separators=(',', ': '))
 
             #path = '/home/user/RDCL/heat-translator/translator/tests/data/network/tosca_two_servers_one_network.yaml'
             # tosca = ToscaTemplate(path, parsed_params, a_file)
@@ -101,7 +105,9 @@ class ToscaRdclGraph(RdclGraph):
                 # print(yaml_files['output.yaml'])
 
         except Exception as e:
+            print e
             log.error('Exception in build_graph_from_project')
             raise
 
         return graph_object
+
