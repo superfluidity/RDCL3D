@@ -1,6 +1,7 @@
 import json
-import pyaml
+
 import yaml
+
 from lib.util import Util
 from lib.parser import Parser
 import logging
@@ -10,6 +11,7 @@ import os
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('EtsiParser')
+
 
 class EtsiParser(Parser):
     """Parser methods for etsi project type
@@ -53,12 +55,10 @@ class EtsiParser(Parser):
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
             project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 
-        #log.debug('\n' + json.dumps(project))
         return project
 
     @classmethod
     def importprojectfiles(cls, file_dict):
-    # def importprojectfiles(cls,ns_files, vnf_files):
         """Imports descriptors (extracted from the new project POST)
 
         The keys in the dictionary are the file types
@@ -71,13 +71,28 @@ class EtsiParser(Parser):
         if 'ns_files' in file_dict:
             ns_files = file_dict['ns_files']
             for file in ns_files:
-                nsd =json.loads(file.read())
+                nsd = cls.descriptortojson(file.read())
                 project['nsd'][nsd['nsdIdentifier']] = nsd
         if 'vnf_files' in file_dict:
             vnf_files = file_dict['vnf_files']
             for file in vnf_files:
-                vnf =json.loads(file.read())
+                vnf =cls.descriptortojson(file.read())
                 project['vnfd'][vnf['vnfdId']] = vnf
 
         return project
+
+    @classmethod
+    def descriptortojson(cls, descriptor_string):
+
+        try:
+            json_object = json.load(descriptor_string)
+            return json_object
+        except Exception as e:
+            log.debug('The String is not JSON')
+        try:
+            yaml_object = yaml.load(descriptor_string)
+            return yaml_object
+        except:
+            log.debug('The String is not YAML')
+            raise Exception('The Etsi descriptor is not a valid JSON/YAML file')
 

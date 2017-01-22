@@ -1,16 +1,9 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from django.utils import timezone
-import jsonfield
-from StringIO import StringIO
-import zipfile
 import json
-import yaml
 from lib.util import Util
-# from model_utils.managers import InheritanceManager
 from projecthandler.models import Project
-from lib.clickparser import mainrdcl
+from lib.clickparser import click_parser
 import os.path
 
 
@@ -20,7 +13,7 @@ class ClickProject(Project):
     def data_project_from_files(cls, request):
 
         cfg_files = request.FILES.getlist('cfg_files')
-        data_project = mainrdcl.importprojectfile(cfg_files)
+        data_project = click_parser.importprojectfile(cfg_files)
         return data_project
 
     @classmethod
@@ -41,7 +34,6 @@ class ClickProject(Project):
 
         json_template = ''
         return json_template
-
 
     def get_type(self):
         return "click"
@@ -65,7 +57,7 @@ class ClickProject(Project):
 
     def get_graph_data_json_topology(self, descriptor_id):
         project = self.get_descriptor(descriptor_id, self.get_type())
-        topology = mainrdcl.importprojectjson(project)
+        topology = click_parser.importprojectjson(project)
         return topology
 
 

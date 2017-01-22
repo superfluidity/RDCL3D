@@ -9,11 +9,22 @@ import json
 import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
+import logging
 #import projecthandler.etsi_model
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('model.py')
 
 project_types = {}
 
 class Project(models.Model):
+    """ Base class for project types
+
+    data_project stores a validated JSON representation of the project
+    get_dataproject() method returns the python dict representation of the project
+
+
+    """
     owner = models.ForeignKey('sf_user.CustomUser', db_column='owner')
     name = models.CharField(max_length=20)
     created_date = models.DateTimeField(default=timezone.now)
@@ -66,7 +77,12 @@ class Project(models.Model):
         return "Base"
 
     def get_dataproject(self):
-        current_data = json.loads(self.data_project)
+        """ Return the python dict representation of the project data
+
+        """
+        # current_data = json.loads(self.data_project)
+        current_data = Util.json_loads_byteified(self.data_project)
+
         return current_data
 
     def get_overview_data(self):
@@ -106,10 +122,9 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.debug(e)
             result = False
         return result
-
 
     def get_descriptors(self, type_descriptor):
         """Returns all descriptors of a given type"""
@@ -118,7 +133,7 @@ class Project(models.Model):
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor]
         except Exception as e:
-            print 'exception in get_descriptors', e
+            log.debug(e)
             result = {}
         return result
 
@@ -129,21 +144,21 @@ class Project(models.Model):
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
-            print "Exception in get_descriptor", e
+            log.debug(e)
             result = {}
 
         return result
 
     def delete_descriptor(self, type_descriptor, descriptor_id):
         try:
-            print descriptor_id, type_descriptor
+            log.debug('delete descriptor'+ descriptor_id + ' ' + type_descriptor)
             current_data = json.loads(self.data_project)
             del (current_data[type_descriptor][descriptor_id])
             self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
-            print 'Exception in delete_descriptor', e
+            log.debug(e)
             result = False
         return result
 
@@ -157,14 +172,13 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'Exception in clone_descriptor', e
+            log.debug(e)
             result = False
         return result
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
-            #utility = Util()
-            print descriptor_id, type_descriptor #TODO(stefano) mettere logger
+            log.debug('editing ' + descriptor_id + ' ' + type_descriptor) #TODO(stefano) mettere logger
             current_data = json.loads(self.data_project)
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
@@ -179,10 +193,9 @@ class Project(models.Model):
             self.update()
             result = True
         except Exception as e:
-            print 'Exception in edit_descriptor', e
+            log.debug(e)
             result = False
         return result
-
 
     def get_zip_archive(self):
         in_memory = StringIO()
@@ -195,7 +208,7 @@ class Project(models.Model):
 
             zip.close()
         except Exception as e:
-            print e
+            log.debug(e)
 
         in_memory.flush()
         return in_memory

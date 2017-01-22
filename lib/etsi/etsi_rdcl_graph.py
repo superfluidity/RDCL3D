@@ -34,7 +34,7 @@ class EtsiRdclGraph(RdclGraph):
         for link in graph_object['edges']:
             source_node = next((x for x in graph_object['vertices'] if x['id'] == link['source']),None)
             target_node = next((x for x in graph_object['vertices'] if x['id'] == link['target']),None)
-            print source_node, target_node
+            # print "source node, target node :", source_node, target_node
             if vnffgdId in source_node['info']['group'] and vnffgdId in target_node['info']['group']:
                 link['group'].append(vnffgdId)
 
@@ -85,6 +85,7 @@ class EtsiRdclGraph(RdclGraph):
                         for virtualLinkDescId in vnffgd['virtualLinkDescId']:
                             self.add_vnffgd_to_node(graph_object, virtualLinkDescId, vnffgd['vnffgdId'] );
                         self.add_vnffgd_to_links(graph_object, vnffgd['vnffgdId']);
+    
         except Exception as e:
             log.error('Exception in build_graph_from_project')
             raise

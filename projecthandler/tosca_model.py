@@ -14,6 +14,8 @@ from projecthandler.models import Project
 from lib.tosca.tosca_rdcl_graph import ToscaRdclGraph
 from lib.tosca.tosca_parser import ToscaParser
 
+from toscaparser.tosca_template import ToscaTemplate
+from translator.hot.tosca_translator import TOSCATranslator
 
 import os.path
 
@@ -43,12 +45,15 @@ class ToscaProject(Project):
             file_dict [my_key]= request.FILES.getlist(my_key)
 
         data_project = ToscaParser.importprojectfiles(file_dict)
+        print "data project read from files:"
+        print data_project
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-tosca-id', '')
         data_project = ToscaParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/YAML', 'yaml')
+        print "data project read from directory:"
         print data_project
         # data_project = importprojectdir('usecases/TOSCA/' + example_id + '/JSON', 'json')
         return data_project
@@ -152,7 +157,6 @@ class ToscaProject(Project):
 
         return json.dumps(topology)
 
-
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         """Creates a descriptor of a given type from a json or yaml representation
 
@@ -221,5 +225,31 @@ class ToscaProject(Project):
         result = False
 
         return result        
+
+    def get_generatehotemplate(self, request, descriptor_id, descriptor_type):
+        """ Generate hot template for a TOSCA descriptor
+
+        It is based on the reverse engineering of translator/shell.py 
+        """
+
+        result = ''
+        print "get_generatehotemplate"
+        print "descriptor_id: "+ descriptor_id
+        print "descriptor_type: "+ descriptor_type
+
+
+        project = self.get_dataproject()
+
+        print project['toscayaml'][descriptor_id]
+
+        tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=project['toscayaml'][descriptor_id])
+        translator = TOSCATranslator(tosca, {}, False, csar_dir=None)
+
+        #log.debug(_('Translating the tosca template.'))
+        print 'Translating the tosca template.'
+        print translator.translate()
+        result = translator.translate()
+
+        return result
 
 

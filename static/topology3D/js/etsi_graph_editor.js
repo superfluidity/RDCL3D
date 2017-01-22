@@ -20,9 +20,7 @@ dreamer.ManoGraphEditor = (function(global) {
      * Constructor
      */
     function ManoGraphEditor(args) {
-
         log("Constructor");
-
     }
 
 

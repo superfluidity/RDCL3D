@@ -59,6 +59,8 @@ def create_new_project(request):
                 data_project = project_class.data_project_from_example(request)
 
             project = project_class.create_project(name, user, False, info, data_project)
+            #print project.get_dataproject()
+
 
         except Exception as e:
             print 'Error creating ' + type + ' project! Please retry.'
@@ -212,7 +214,7 @@ def download(request, project_id=None):
         return response
 
     elif request.method == 'GET':
-        return render(request, 'download_etsi.html', {  # TODO REFACTOR
+        return render(request, 'download.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
         })
@@ -293,12 +295,15 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         if request.POST.get('type') == "file":
             file = request.FILES['file']
             text = file.read()
+            print file.name.split(".")[0]
             type = file.name.split(".")[-1]
+            desc_name = file.name.split(".")[0]
+            print type
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
             desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
-        print desc_name
+        #print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
         # if prj_token == 'etsi':
@@ -434,7 +439,7 @@ def remove_link(request, project_id=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
-
+##### ETSI specific method #####
 @login_required
 def add_node_to_vnffg(request, project_id=None):
     print "add_node_to_vnffg"  # TODO log
@@ -446,3 +451,36 @@ def add_node_to_vnffg(request, project_id=None):
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+
+@login_required
+def custom_action(request, project_id=None, descriptor_id=None, descriptor_type=None, action_name=None):
+    if request.method == 'GET':
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        print "Custom action: "+action_name
+        return globals()[action_name](request,project_id,projects[0], descriptor_id, descriptor_type)
+
+
+
+##### TOSCA specific method #####
+@login_required
+def generatehottemplate(request, project_id=None, project=None, descriptor_id=None, descriptor_type=None):
+    """It is one of the custom_action methods
+    
+    NB The project is already extracted from project_id in the generic custom_action method
+    """
+
+    if request.method == 'GET':
+        #projects = Project.objects.filter(id=project_id).select_subclasses()
+        project_overview = project.get_overview_data()
+        prj_token = project_overview['type']
+        page = prj_token + '/descriptor/descriptor_hot_template.html'
+        #result = 'a' ##TODO inserire qui la chiamta sull'utility per la generazione dell'hot template
+        result = project.get_generatehotemplate(request, descriptor_id, descriptor_type)
+        # print result.__class__.__name__
+        return render(request, page, {
+            'project_id': project_id,
+            'descriptor_id': descriptor_id,
+            'project_overview_data': project_overview,
+            'descriptor_type': descriptor_type,
+            'descriptor_strings': {'descriptor_string_yaml': str(result)}})
+

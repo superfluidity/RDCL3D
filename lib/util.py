@@ -3,8 +3,6 @@ import yaml
 import pyaml
 import logging
 import jsonschema
-# import copy
-import os.path
 import uuid 
 
 _lib_name = 'Util'
@@ -15,12 +13,46 @@ fh = logging.FileHandler('rdcl.log')
 log = logging.getLogger('UtilLogger')
 log.addHandler(fh)
 
+
 class Util(object):
 
     def __init__(self):
         # logging.basicConfig(level=logging.DEBUG)
         # self.log = logging.getLogger('UtilLogger')
         pass
+
+
+    @classmethod
+    def json_load_byteified(cls, file_handle):
+        return cls._byteify(
+            json.load(file_handle, object_hook=cls._byteify),
+            ignore_dicts=True
+        )
+
+    @classmethod
+    def json_loads_byteified(cls, json_text):
+        return cls._byteify(
+            json.loads(json_text, object_hook=cls._byteify),
+            ignore_dicts=True
+        )
+
+    @classmethod
+    def _byteify(cls, data, ignore_dicts = False):
+        # if this is a unicode string, return its string representation
+        if isinstance(data, unicode):
+            return data.encode('utf-8')
+        # if this is a list of values, return list of byteified values
+        if isinstance(data, list):
+            return [ cls._byteify(item, ignore_dicts=True) for item in data ]
+        # if this is a dictionary, return dictionary of byteified keys and values
+        # but only if we haven't already byteified it
+        if isinstance(data, dict) and not ignore_dicts:
+            return {
+                cls._byteify(key, ignore_dicts=True): cls._byteify(value, ignore_dicts=True)
+                for key, value in data.iteritems()
+            }
+        # if it's anything else, return it in its original form
+        return data
 
     @classmethod
     def yaml2json(cls, object_yaml):
@@ -140,7 +172,7 @@ class Util(object):
 
         try:
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
-            # print 'type_descriptor : '+type_descriptor
+             #print 'type_descriptor : '+type_descriptor
             jsonschema.validate(data, reference_schema)
             return True
         except Exception as e:
@@ -151,50 +183,3 @@ class Util(object):
     @classmethod
     def get_unique_id(cls):
         return uuid.uuid4().hex[:6].upper()
-
-    # @classmethod
-    # def get_descriptor_template(cls, type_descriptor):
-    #     """Returns a descriptor template for a given descriptor type"""
-
-    #     try:
-    #         schema = cls.loadjsonfile("sf_dev/examples/my_example/"+type_descriptor+"NewComplete.json")
-    #         # print 'type_descriptor : '+type_descriptor
-    #         return schema
-    #     except Exception as e:
-    #         log.error('Exception in get descriptor template')
-    #         return False
-
-    # @classmethod
-    # def get_clone_descriptor (cls, descriptor, type_descriptor, new_descriptor_id):
-    #     new_descriptor = copy.deepcopy(descriptor)
-    #     if (type_descriptor == 'vnfd'):
-    #         new_extention = "_"+new_descriptor_id
-    #         new_descriptor['vnfdId'] = new_descriptor_id;
-    #         new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor['vnfProductName'] is not None else new_descriptor['vnfProductName']
-    #         for vnfExtCpd in new_descriptor['vnfExtCpd']:
-    #             vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else vnfExtCpd['cpdId']
-    #     if (type_descriptor == 'nsd'):
-    #         new_extention = "_" + new_descriptor_id
-    #         new_descriptor['nsdIdentifier'] = new_descriptor_id
-    #         new_descriptor['nsdName'] = new_descriptor_id
-    #         new_descriptor['nsdInvariantId'] = new_descriptor_id
-    #         for sapd in new_descriptor['sapd']:
-    #             sapd['cpdId'] = sapd['cpdId'] + new_extention if sapd['cpdId'] is not None else sapd['cpdId']
-    #     return  new_descriptor
-
-
-    # def get_etsi_example_list(self):
-    #     path = 'usecases/ETSI'
-    #     dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-    #     return dirs
-
-    # def get_click_example_list(self):
-    #     path = 'usecases/CLICK'
-    #     dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-    #     return dirs
-
-
-    # def get_graph_model(self):
-    #     file_path = 'lib/TopologyModels/etsi/etsi.yaml'
-    #     return self.loadyamlfile(file_path)
-
