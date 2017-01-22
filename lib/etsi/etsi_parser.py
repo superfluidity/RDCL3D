@@ -12,6 +12,7 @@ import os
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('EtsiParser')
 
+
 class EtsiParser(Parser):
     """Parser methods for etsi project type
 
