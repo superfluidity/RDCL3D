@@ -42,7 +42,8 @@ def create_new_project(request):
         else:
             # FIXME this error is not handled
             error_msgs.append('Project type undefined.')
-            return render(request, 'error.html', {'error_msg': 'Error creating new project, project type undefined. Please retry.'})
+            return render(request, 'error.html',
+                          {'error_msg': 'Error creating new project, project type undefined. Please retry.'})
 
         try:
 
@@ -59,7 +60,7 @@ def create_new_project(request):
                 data_project = project_class.data_project_from_example(request)
 
             project = project_class.create_project(name, user, False, info, data_project)
-            #print project.get_dataproject()
+            # print project.get_dataproject()
 
 
         except Exception as e:
@@ -303,7 +304,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             text = request.POST.get('text')
             type = request.POST.get('type')
             desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
-        #print desc_name
+        # print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
         # if prj_token == 'etsi':
@@ -352,11 +353,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         page = prj_token + '/descriptor/descriptor_view.html'
 
         descriptor = projects[0].get_descriptor(descriptor_id, descriptor_type)
-        # if project_overview['type'] == 'etsi':
-        #     page = 'etsi/descriptor/descriptor_view.html'
-        # elif project_overview['type'] == 'click':
-        #     page = 'click/descriptor/descriptor_view.html'
-        # utility = Util()
+
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = Util.json2yaml(descriptor)
         # print descriptor
@@ -376,18 +373,6 @@ def graph_positions(request, project_id=None):
         result = projects[0].edit_graph_positions(json.loads(request.POST.get('positions')))
         status_code = 200 if result else 500
         response = HttpResponse(json.dumps({}), content_type="application/json", status=status_code)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
-
-
-@login_required
-def unused_vnf(request, project_id=None, nsd_id=None):
-    if request.method == 'GET':
-        print 'in method unused_vnf : ', project_id, nsd_id  # TODO log
-        projects = Project.objects.filter(id=project_id).select_subclasses()
-        result = projects[0].get_unused_vnf(nsd_id)
-        status_code = 500 if result == None else 200
-        response = HttpResponse(json.dumps(result), content_type="application/json", status=status_code)
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
@@ -439,7 +424,8 @@ def remove_link(request, project_id=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
-##### ETSI specific method #####
+
+# ETSI specific method #
 @login_required
 def add_node_to_vnffg(request, project_id=None):
     print "add_node_to_vnffg"  # TODO log
@@ -452,16 +438,22 @@ def add_node_to_vnffg(request, project_id=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
+
 @login_required
-def custom_action(request, project_id=None, descriptor_id=None, descriptor_type=None, action_name=None):
+def unused_vnf(request, project_id=None, nsd_id=None):
     if request.method == 'GET':
+        print 'in method unused_vnf : ', project_id, nsd_id  # TODO log
         projects = Project.objects.filter(id=project_id).select_subclasses()
-        print "Custom action: "+action_name
-        return globals()[action_name](request,project_id,projects[0], descriptor_id, descriptor_type)
+        result = projects[0].get_unused_vnf(nsd_id)
+        status_code = 500 if result == None else 200
+        response = HttpResponse(json.dumps(result), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+# end ETSI specific method #
 
 
-
-##### TOSCA specific method #####
+# TOSCA specific method #
 @login_required
 def generatehottemplate(request, project_id=None, project=None, descriptor_id=None, descriptor_type=None):
     """It is one of the custom_action methods
@@ -470,11 +462,10 @@ def generatehottemplate(request, project_id=None, project=None, descriptor_id=No
     """
 
     if request.method == 'GET':
-        #projects = Project.objects.filter(id=project_id).select_subclasses()
+        # projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = project.get_overview_data()
         prj_token = project_overview['type']
         page = prj_token + '/descriptor/descriptor_hot_template.html'
-        #result = 'a' ##TODO inserire qui la chiamta sull'utility per la generazione dell'hot template
         result = project.get_generatehotemplate(request, descriptor_id, descriptor_type)
         # print result.__class__.__name__
         return render(request, page, {
@@ -484,3 +475,12 @@ def generatehottemplate(request, project_id=None, project=None, descriptor_id=No
             'descriptor_type': descriptor_type,
             'descriptor_strings': {'descriptor_string_yaml': str(result)}})
 
+# end TOSCA specific method #
+
+
+@login_required
+def custom_action(request, project_id=None, descriptor_id=None, descriptor_type=None, action_name=None):
+    if request.method == 'GET':
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        print "Custom action: " + action_name
+        return globals()[action_name](request, project_id, projects[0], descriptor_id, descriptor_type)

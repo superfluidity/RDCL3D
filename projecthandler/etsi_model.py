@@ -3,13 +3,16 @@ from __future__ import unicode_literals
 import copy
 import json
 import os.path
-
 import yaml
-
 from lib.etsi.etsi_parser import EtsiParser
 from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
 from lib.util import Util
 from projecthandler.models import Project
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('EtsiModel.py')
+
 
 # project_types['etsi']= projecthandler.etsi_model.EtsiProject
 # project_types['click']= ClickProject
@@ -41,7 +44,7 @@ class EtsiProject(Project):
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
-        print file_dict
+        log(file_dict)
 
         data_project = EtsiParser.importprojectfiles(file_dict)
         # data_project = {}
@@ -96,14 +99,13 @@ class EtsiProject(Project):
             # print 'type_descriptor : '+type_descriptor
             return schema
         except Exception as e:
-            # log.error('Exception in get descriptor template') #TODO(stefano) add logging
-            print 'Exception in get descriptor template'
+            log.exception(e)
             return False
 
     @classmethod
     def get_clone_descriptor(cls, descriptor, type_descriptor, new_descriptor_id):
         new_descriptor = copy.deepcopy(descriptor)
-        if (type_descriptor == 'vnfd'):
+        if type_descriptor == 'vnfd':
             new_extention = "_" + new_descriptor_id
             new_descriptor['vnfdId'] = new_descriptor_id;
             new_descriptor['vnfProductName'] = new_descriptor['vnfProductName'] + new_extention if new_descriptor[
@@ -112,7 +114,7 @@ class EtsiProject(Project):
             for vnfExtCpd in new_descriptor['vnfExtCpd']:
                 vnfExtCpd['cpdId'] = vnfExtCpd['cpdId'] + new_extention if vnfExtCpd['cpdId'] is not None else \
                     vnfExtCpd['cpdId']
-        if (type_descriptor == 'nsd'):
+        if type_descriptor == 'nsd':
             new_extention = "_" + new_descriptor_id
             new_descriptor['nsdIdentifier'] = new_descriptor_id
             new_descriptor['nsdName'] = new_descriptor_id
@@ -156,7 +158,6 @@ class EtsiProject(Project):
         """
         try:
             # utility = Util()
-            print type_descriptor, data_type
             current_data = json.loads(self.data_project)
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
@@ -165,7 +166,7 @@ class EtsiProject(Project):
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
             else:
-                print 'Unknown data type'
+                log.debug('Create descriptor: Unknown data type')
                 return False
 
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
@@ -182,7 +183,7 @@ class EtsiProject(Project):
             self.update()
             result = new_descriptor_id
         except Exception as e:
-            print 'Exception in create descriptor', e
+            log.exception(e)
             result = False
         return result
 
@@ -215,7 +216,7 @@ class EtsiProject(Project):
             vdu_id = request.POST.get('choice')
             result = self.add_vnf_vducp(group_id, vdu_id, element_id)
         elif element_type == 'vnffg':
-            print group_id, element_id
+            #log.debug("Add ") group_id, element_id
             result = self.add_vnffg(group_id, element_id)
 
         return result
@@ -226,7 +227,7 @@ class EtsiProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
-        print 'in get_remove_element : ', element_id  # TODO log
+        log.debug('in get_remove_element : ' + str(element_id))  # TODO log
         if element_type == 'ns_cp':
             result = self.remove_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
@@ -302,7 +303,6 @@ class EtsiProject(Project):
             ns_id = source['info']['group'][0]
             result = self.unlink_vl_sap(ns_id, vnf_id, sap_id)
         elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            print source, destination
             intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
             vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
             vnf_id = source['info']['group'][0]
@@ -322,7 +322,7 @@ class EtsiProject(Project):
                     if vnf not in current_data['nsd'][nsd_id]['vnfdId']:
                         result.append(vnf)
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = None  # TODO maybe we should use False ?
         return result
 
@@ -330,7 +330,6 @@ class EtsiProject(Project):
     def add_ns_vl(self, ns_id, vl_id):
         try:
             current_data = json.loads(self.data_project)
-            # utility = Util()
             ns = self.get_descriptor_template('nsd')
             vl_descriptor = ns['virtualLinkDesc'][0]
             vl_descriptor['virtualLinkDescId'] = vl_id
@@ -343,7 +342,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -362,7 +361,6 @@ class EtsiProject(Project):
                 for nsDf in current_data['nsd'][ns_id]['nsDf']:
                     for vnfProfile in nsDf["vnfProfile"]:
                         for nsVirtualLinkConnectivity in vnfProfile['nsVirtualLinkConnectivity']:
-                            print nsVirtualLinkConnectivity
                             if nsVirtualLinkConnectivity['virtualLinkProfileId'] == vl_profile_id:
                                 vnfProfile['nsVirtualLinkConnectivity'].remove(nsVirtualLinkConnectivity)
             for sapd in current_data['nsd'][ns_id]['sapd']:
@@ -372,7 +370,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -385,7 +383,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -402,7 +400,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -416,7 +414,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -429,7 +427,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -455,7 +453,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -471,7 +469,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -487,7 +485,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -501,7 +499,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -514,7 +512,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -530,7 +528,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -543,7 +541,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -559,7 +557,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -591,7 +589,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -604,15 +602,14 @@ class EtsiProject(Project):
             virtual_link_profile = next((x for x in current_data['nsd'][ns_id]['nsDf'][0]['virtualLinkProfile'] if
                                          x['virtualLinkDescId'] == vl_id), None)
             virtual_link_profile_id = virtual_link_profile['virtualLinkProfileId']
-            print virtual_link_profile_id
+
             virtual_link_connectivity = next((x for x in vnf_profile['nsVirtualLinkConnectivity'] if
                                               x['virtualLinkProfileId'] == virtual_link_profile_id), None)
-            print virtual_link_connectivity
             if virtual_link_connectivity is not None:
                 for vnfExtCpd in current_data['vnfd'][vnf_id]['vnfExtCpd']:
-                    print  vnfExtCpd['cpdId']
+
                     if vnfExtCpd['cpdId'] in virtual_link_connectivity['cpdId']:
-                        print "removing : ", vnfExtCpd['cpdId']  # TODO log
+                        log.debug("removing: %s", str(vnfExtCpd['cpdId']))
                         virtual_link_connectivity['cpdId'].remove(vnfExtCpd['cpdId'])
                 if not virtual_link_connectivity['cpdId']:
                     vnf_profile['nsVirtualLinkConnectivity'].remove(virtual_link_connectivity)
@@ -620,7 +617,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -637,7 +634,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -651,7 +648,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -664,7 +661,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -681,23 +678,21 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
     def remove_vnf_vducp(self, vnf_id, vdu_id, vducp_id):
         try:
             current_data = json.loads(self.data_project)
-            print vnf_id, vdu_id, vducp_id
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            print vdu_descriptor
             intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             vdu_descriptor['intCpd'].remove(intcp_descriptor)
             self.data_project = current_data
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -713,7 +708,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -729,7 +724,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -745,7 +740,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -772,7 +767,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -788,7 +783,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -802,14 +797,13 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
     # VNF operationd: link/unlink vnfextcpd and IntVL
     def link_vnfextcpd_intvl(self, vnf_id, vnfExtCpd_id, intvl_id):
         try:
-            print vnf_id, vnfExtCpd_id, intvl_id
             current_data = json.loads(self.data_project)
             vnfExtCpd = next((x for x in current_data['vnfd'][vnf_id]['vnfExtCpd'] if x['cpdId'] == vnfExtCpd_id), None)
             vnfExtCpd['intVirtualLinkDesc'] = intvl_id
@@ -817,7 +811,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -830,7 +824,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -845,7 +839,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 
@@ -870,7 +864,7 @@ class EtsiProject(Project):
             self.update()
             result = True
         except Exception as e:
-            print 'exception', e
+            log.exception(e)
             result = False
         return result
 

@@ -5,10 +5,13 @@ from lib.util import Util
 from projecthandler.models import Project
 from lib.clickparser import click_parser
 import os.path
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('ClickModel.py')
 
 
 class ClickProject(Project):
-
     @classmethod
     def data_project_from_files(cls, request):
 
@@ -22,15 +25,15 @@ class ClickProject(Project):
         example_id = request.POST.get('example-click-id', '')
         data_project = {}
         return data_project
-    
+
     @classmethod
     def get_example_list(cls):
         path = 'usecases/CLICK'
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'click' : dirs}
+        return {'click': dirs}
 
     @classmethod
-    def get_new_descriptor(cls,descriptor_type, request_id):
+    def get_new_descriptor(cls, descriptor_type, request_id):
 
         json_template = ''
         return json_template
@@ -60,45 +63,12 @@ class ClickProject(Project):
         topology = click_parser.importprojectjson(project)
         return topology
 
-
-    # def get_descriptors(self, type_descriptor):
-    #     try:
-    #         current_data = json.loads(self.data_project)
-    #         result = current_data[type_descriptor]
-    #         print result
-    #     except Exception:
-    #         result = {}
-    #     return result
-
-    # def get_descriptor(self, descriptor_id, type_descriptor):
-    #     try:
-    #         current_data = json.loads(self.data_project)
-    #         result = current_data[type_descriptor][descriptor_id]
-    #     except Exception:
-    #         result = {}
-
-    #     return result
-
-    # def delete_descriptor(self, type_descriptor, descriptor_id):
-    #     try:
-    #         print descriptor_id, type_descriptor
-    #         current_data = json.loads(self.data_project)
-    #         del (current_data[type_descriptor][descriptor_id])
-    #         self.data_project = current_data
-    #         self.update()
-    #         result = True
-    #     except Exception as e:
-    #         print 'exception', e
-    #         result = False
-    #     return result
-
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         try:
-            utility = Util()
-            print type_descriptor, data_type
+            print type_descriptor, data_type, descriptor_name
             current_data = json.loads(self.data_project)
-            if data_type == 'json':
-                new_descriptor = json.loads(new_data)
+            if data_type == 'click':
+                new_descriptor = new_data
 
             if not type_descriptor in current_data:
                 current_data[type_descriptor] = {}
@@ -108,32 +78,8 @@ class ClickProject(Project):
             self.update()
             result = descriptor_name  ##FIXME
         except Exception as e:
-            print 'exception create descriptor', e
+            log.exception(e)
             result = False
         return result
 
-    # def set_data_project(self, new_data, validated):
-    #     self.data_project = new_data
-    #     self.set_validated(validated)
-    #     self.update()
 
-    # def edit_graph_positions(self, positions):
-    #     print positions
-    #     try:
-    #         current_data = json.loads(self.data_project)
-    #         if 'positions' not in current_data:
-    #             current_data['positions'] = {}
-    #         if 'vertices' not in current_data['positions']:
-    #             current_data['positions']['vertices'] = {}
-    #         if 'vertices' in positions:
-    #             current_data['positions']['vertices'].update(positions['vertices'])
-    #         self.data_project = current_data
-    #         self.update()
-    #         result = True
-    #     except Exception as e:
-    #         print 'exception', e
-    #         result = False
-    #     return result
-
-
-# Project.add_project_type('click', ClickProject)
