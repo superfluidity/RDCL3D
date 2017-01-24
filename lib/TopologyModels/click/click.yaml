@@ -12,7 +12,7 @@ nodes:                                  #List of nodes, with id and label used i
 
 
 layer:                                  #List of Layers
-    click:
+    compact:
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
@@ -22,13 +22,13 @@ layer:                                  #List of Layers
                 #if the expands key is missing it defaults to false
                 #if it is present the value represents the layer in which the node is expanded
                 #by default the representation will be filtered by the group equal to the node name
-                expands : click
+                expands : compact
                 addable: true
                 removable: true
             class_element:
                 addable: true
                 removable: true
-                expands : click
+                expands : compact
         allowed_edges:
             element:
                 destination:
@@ -62,6 +62,19 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable: true
                     class_element:
+                        direct_edge: false
+                        removable: true
+    expanded:
+        nodes:
+            element:
+                #if the addable_key is missing it defaults to false
+                addable: true
+                removable: true
+         allowed_edges:
+            element:
+                destination:
+                    element:
+                        #if the direct_key is missing it defaults to false
                         direct_edge: false
                         removable: true
 
