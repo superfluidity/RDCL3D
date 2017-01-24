@@ -6,13 +6,26 @@
 }
 
 .node_selected {
-  opacity: 2 !important;
+  opacity: 1 !important;
   stroke: #2F3550 !important;
   stroke-width: 3 !important;
 }
 
+
+.hidden_circle {
+  opacity: 0;
+  stroke: #FF0000 !important;
+  stroke-width: 2 !important;
+}
+
+.hidden_circle:hover {
+  opacity: 1;
+  stroke: #FF0000 !important;
+  stroke-width: 2;
+}
+
 .node_path:hover {
-  opacity: 2;
+  opacity: 1;
   stroke: #2F3550;
   stroke-width: 3;
 }

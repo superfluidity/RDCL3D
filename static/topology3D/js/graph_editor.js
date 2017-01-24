@@ -13,7 +13,7 @@ dreamer.GraphEditor = (function(global) {
     var nominal_text_size = 15;
     var nominal_stroke = 1.5;
     var EventHandler = dreamer.Event;
-//    var IMAGE_PATH = "/static/assets/img/";
+    //    var IMAGE_PATH = "/static/assets/img/";
 
 
 
@@ -114,34 +114,34 @@ dreamer.GraphEditor = (function(global) {
 
     }
 
-    GraphEditor.prototype.get_d3_symbol = 
-    function (myString) {
-        switch (myString) {
-            case "circle":
-                return d3.symbolCircle;
-                break;
-            case "square":
-                return d3.symbolSquare;
-                break;
-            case "diamond":
-                return d3.symbolDiamond;
-                break;
-            case "triangle":
-                return d3.symbolTriangle;
-                break;
-            case "star":
-                return d3.symbolStar;
-                break;
-            case "cross":
-                return d3.symbolCross;
-                break;
-            default:
-                // if the string is not recognized
-                return d3.symbolCross;
-                //return d3.symbolCircleUnknown;
-        }
+    GraphEditor.prototype.get_d3_symbol =
+        function(myString) {
+            switch (myString) {
+                case "circle":
+                    return d3.symbolCircle;
+                    break;
+                case "square":
+                    return d3.symbolSquare;
+                    break;
+                case "diamond":
+                    return d3.symbolDiamond;
+                    break;
+                case "triangle":
+                    return d3.symbolTriangle;
+                    break;
+                case "star":
+                    return d3.symbolStar;
+                    break;
+                case "cross":
+                    return d3.symbolCross;
+                    break;
+                default:
+                    // if the string is not recognized
+                    return d3.symbolCross;
+                    //return d3.symbolCircleUnknown;
+            }
 
-    }
+        }
 
     /**
      * Start or Stop force layout
@@ -335,71 +335,105 @@ dreamer.GraphEditor = (function(global) {
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
 
-            .filter(function(d) { 
-                return (d.info.type == undefined) || (self._node_property_by_type(d.info.type, 'image') == undefined)  })
+            .filter(function(d) {
+                return (d.info.type == undefined) || (self._node_property_by_type(d.info.type, 'image') == undefined)
+            })
 
             .append("svg:path")
-                .attr("d", d3.symbol()
-                    .size(function(d) {
-                        return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2)/4;
-                    })
-                    .type(function(d) {
-                        return self._node_property_by_type(d.info.type, 'shape');
-                    })
-                )
-                .style("fill", function(d) {
-                    return self._node_property_by_type(d.info.type, 'color');
+            .attr("d", d3.symbol()
+                .size(function(d) {
+                    return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2) / 4;
                 })
-                .attr("transform", function() {
-                    return "rotate(-45)";
-
+                .type(function(d) {
+                    return self._node_property_by_type(d.info.type, 'shape');
                 })
-                .attr("stroke-width", 2.4)
+            )
+            .style("fill", function(d) {
+                return self._node_property_by_type(d.info.type, 'color');
+            })
+            .attr("transform", function() {
+                return "rotate(-45)";
 
-                .attr("class", "node_path")
-                .attr("id", function(d) {
-                  return "path_" + d.id;
-                })
+            })
+            .attr("stroke-width", 2.4)
 
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended))
-        ;
+            .attr("class", "node_path")
+            .attr("id", function(d) {
+                return "path_" + d.id;
+            })
 
-        this.svg.selectAll('.node')
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        var figure_node = this.svg.selectAll('.node')
             .data(self.d3_graph.nodes
                 .filter(this.node_filter_cb))
 
-            .filter(function(d) { 
-                return self._node_property_by_type(d.info.type, 'image') != undefined  })
+            .filter(function(d) {
+                return self._node_property_by_type(d.info.type, 'image') != undefined
+            });
 
-            .append("svg:image")
+            figure_node.append("svg:image")
+            .attr("xlink:href", function(d) {
+                return self._node_property_by_type(d.info.type, 'image')
+            })
+            .attr("x", function(d) {
+                return -self._node_property_by_type(d.info.type, 'size') / 2
+            })
+            .attr("y", function(d) {
+                return -self._node_property_by_type(d.info.type, 'size') / 2
+            })
+            .attr("width", function(d) {
+                return self._node_property_by_type(d.info.type, 'size')
+            })
+            .attr("height", function(d) {
+                return self._node_property_by_type(d.info.type, 'size')
+            })
+            .style("stroke", "black")
+            .style("stroke-width", "1px")
 
-                // .attr("xlink:href", "/static/assets/img/router.png")
-                .attr("xlink:href", function(d) { 
-                        return self._node_property_by_type(d.info.type, 'image')   })
-                .attr("x", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
-                .attr("y", function(d) { return -self._node_property_by_type(d.info.type, 'size')/2})
-                .attr("width", function(d) { return self._node_property_by_type(d.info.type, 'size')})
-                .attr("height", function(d) { return self._node_property_by_type(d.info.type, 'size')})
-                .style("stroke", "black")
-                .style("stroke-width", "1px")
+            .attr("class", "node_path")
+            .attr("id", function(d) {
+                return "path_" + d.id;
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
-                .attr("class", "node_path")
-                .attr("id", function(d) {
-                  return "path_" + d.id;
+            figure_node.append("svg:path")
+            .attr("d", d3.symbol()
+                .size(function(d) {
+                    return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size') + 7 , 2) / 4;
                 })
+                .type(function(d) {
+                    return d3.symbolCircle;//self._node_property_by_type(d.info.type, 'shape');
+                })
+            )
+            .style("fill", 'transparent')
+            .attr("transform", function() {
+                return "rotate(-45)";
 
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended))
-        ;
+            })
+            .attr("stroke-width", 2.4)
+
+            .attr("class", "hidden_circle")
+            .attr("id", function(d) {
+                return "path_" + d.id;
+            })
+
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+
 
         this.node = this.svg.selectAll('.node')
             .data(self.d3_graph.nodes
-                .filter(this.node_filter_cb)).selectAll("image, path");
+                .filter(this.node_filter_cb)).selectAll("image, path, circle");
 
 
 
@@ -581,9 +615,9 @@ dreamer.GraphEditor = (function(global) {
             var cond_view = true,
                 cond_group = true;
             //log(d.info.type + " " + self.filter_parameters.node.type + " group: " + self.filter_parameters.node.group + "- " + d.info.group)
-                // check filter by node type
+            // check filter by node type
             if (self.filter_parameters.node.type.length > 0) {
-                
+
                 if (self.filter_parameters.node.type.indexOf(d.info.type) < 0)
                     cond_view = false;
             }
