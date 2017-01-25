@@ -168,6 +168,6 @@ def parserAllView(file_click):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    #print json_data
+    print json_data
     return json_data
 
