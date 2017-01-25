@@ -154,7 +154,6 @@ def parserAllView(file_click):
             connection_list.append(e)
 
     ##############################################################################################################################################
-    #print connection_list
     connection_element_class_cleaner (connection_list,ele_class_connections)
     for c2 in ele_class_connections.items():
         for e2 in c2[1]['connection_elem_list']:
