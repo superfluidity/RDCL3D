@@ -12,7 +12,6 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 	words = load_list(line,words)
 	control = False	
 
-
 	for i in range(0,len(words)):
 		control = False	
 
@@ -35,8 +34,10 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 	for i in index:
 			
 		if string.find(words[i+1], '(') !=-1 and string.find(words[i+1], ')') !=-1:
+			#explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
 			explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
 		elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
+			#explicit_element_decl_without_conf(i,words,element, name_subgraph, group)
 			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)	
 
 
@@ -72,6 +73,7 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 	#print elementclassstr
 
 	#FIXME => il config va letto e inserito
+
 	if group == 'click':
 		element[len(element)]=({'element':name_element_class, 'name':name_element, 'config':'','group':'click'})
 	else:
@@ -85,8 +87,6 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 	for c1 in words3:
 		renamed_element_content.append(c1)
 
-	print renamed_element_content
-	print '****'
 
 #Rename element content
 	for i in range(0,len(renamed_element_content)):
@@ -115,8 +115,11 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 				if name == e[1]['origin_name']:
 					renamed_element_content[i] = e[1]['new_name']
 
+
 	print renamed_element_content
 	print 'fine rename'
+
+	
 	return name_element,renamed_element_content
 	
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed,ele_class_dict,ele_class_connections,connection):
@@ -260,8 +263,25 @@ def connection_decl(words, connection, element):
 					name_element_dest=words[i+1][index+1:]
 				else:
 					name_element_dest=words[i+1]
-					
-			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'view':0})
+			
+			view = []
+
+			for el1 in element.items():																	# gestisce l'attributo view delle connessioni. Puo' essere:
+				if el1[1]['name'] == name_element_source:												# 'compact' se i due nodi non sono espandibili
+					for el2 in element.copy().items():													# 'expanded' se i due nodi sono entrambi espandibili
+						if el2[1]['name'] == name_element_dest:											# 'compact''expanded' se uno dei due nodi e' exspandibile e l'altro no	
+							if el1[1]['node_type'] == 'element' and el2[1]['node_type'] == 'element':
+								view.append('compact')
+							elif (el1[1]['node_type'] == 'element' and el2[1]['node_type'] == 'compound_element') or (el2[1]['node_type'] == 'element' and el1[1]['node_type'] == 'compound_element'):
+								view.append('compact')
+								view.append('expanded')
+							elif (el1[1]['node_type'] == 'element' and el2[1]['node_type'] == 'class_element') or (el2[1]['node_type'] == 'element' and el1[1]['node_type'] == 'class_element'):
+								view.append('compact')
+								view.append('expanded')
+							elif (el1[1]['node_type'] == 'class_element' and el2[1]['node_type'] == 'class_element') or (el1[1]['node_type'] == 'compound_element' and el2[1]['node_type'] == 'compound_element'):	
+								view.append('expanded')
+
+			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'dept':0, 'view':view})
 
 	handle_edgeslevel(connection)
 
@@ -347,51 +367,10 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 												c3[1]['connection_elem_list'][p]=connection_list[h-2]
 
 
+
 	print '<<<<<<<<<<>>>>>>>>>>'											
 	print ele_class_connections
 
 
 
 
-
-
-
-
-
-
-		
-	#print connection_list
-
-'''
-def compound_element(line):
-	words=[]
-	words_copy=[]
-	word2=[]
-	control=False
-
-	words = load_list(line, words)
-
-	for w in words:
-		if w=='}':
-			control=True
-			continue
-		if control==True:
-			word2.append(w)
-
-	for i in range(0,len(words)):
-		if words[i]!='output' and words[i]!='{' and words[i]!='}' and words[i]!='input':
-			words_copy.append(words[i])
-		elif words[i]=='input':
-			words_copy.append('Input')
-		elif words[i]=='output':
-			words_copy.append('Output')
-			for w in word2:
-				words_copy.append(w) 
-		elif words[i]=='}':
-			break
-	line=''	
-	for w in words_copy:
-		line=line+' '+w
-
-	return line 
-'''

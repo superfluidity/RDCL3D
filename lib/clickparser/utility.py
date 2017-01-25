@@ -19,12 +19,12 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 		else:
 			config.append(w)
 		
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group})
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': 'element'})
 	
 
 
 def explicit_element_decl_without_conf(i, words, element, name_subgraph, group):
-	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group})
+	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': 'element'})
 	
 
 
@@ -45,7 +45,7 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 			config.append(w)
 
 	name=nameGenerator(element, word[0:index])
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group})
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group, 'node_type':'element'})
 	words2[i] = name_subgraph+name
 	
 
@@ -53,7 +53,7 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, words2):
 
 	name=nameGenerator(element, words[i])
-	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group})
+	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group, 'node_type': 'element'})
 	words2[i] = name_subgraph+name
 
 
@@ -61,7 +61,7 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 def subgraph_element_name(line, compound_element, element):
 
 	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'compound', 'name':name, 'config':[],'group':'click'})
+	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':'click', 'node_type': 'compound_element'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
@@ -195,5 +195,5 @@ def handle_edgeslevel(connection):
 		if c[1]['group'] != 'click':
 			for c1 in connection2.items():
 				if c1[1]['target'] == c[1]['group']:
-					c[1]['view'] = c1[1]['view']+1
+					c[1]['dept'] = c1[1]['dept']+1
 			
