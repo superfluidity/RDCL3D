@@ -24,7 +24,7 @@ class EtsiParser(Parser):
         super(EtsiParser, self).__init__()
     
     @classmethod        
-    def importprojectdir(cls,dir_project, type):
+    def importprojectdir(cls,dir_project, file_type):
         """Imports all files from NSD and VNFDs folders under a given folder
 
         this method is specific for Etsi project type
@@ -35,25 +35,28 @@ class EtsiParser(Parser):
             'vnfd': {},
             'positions': {}
         }
+
         # my_util = Util()
         NSD_PATH = dir_project+'/NSD'
         VNFD_PATH = dir_project+'/VNFD'
 
         #import network service description
         #in root directory file name nsd.json / nsd.yaml
-        for nsd_filename in glob.glob(os.path.join(NSD_PATH, '*.json')):
+        for nsd_filename in glob.glob(os.path.join(NSD_PATH, '*.'+file_type)):
             log.debug(nsd_filename)
             nsd_object = Util.loadjsonfile(nsd_filename)
             project['nsd'][nsd_object['nsdIdentifier']] = nsd_object
 
         # import vnf descriptions
         # each file in root_path/VFND/*.json
-        for vnfd_filename in glob.glob(os.path.join(VNFD_PATH, '*.json')):
+        for vnfd_filename in glob.glob(os.path.join(VNFD_PATH, '*.'+file_type)):
             log.debug(vnfd_filename)
             vnfd_object = Util.loadjsonfile(vnfd_filename)
             project['vnfd'][vnfd_object['vnfdId']] = vnfd_object
+
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
-            project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
+            if os.path.basename(vertices_file) == 'vertices.json':
+                project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 
         return project
 

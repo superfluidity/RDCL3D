@@ -20,7 +20,7 @@ class ExampletokenRdclGraph(RdclGraph):
         graph_object = {
             'vertices': [],
             'edges': [],
-            'graph_parameters': {'vnffgIds': []},
+            'graph_parameters': {},
             'model': model
         }
         try:
@@ -28,11 +28,8 @@ class ExampletokenRdclGraph(RdclGraph):
             log.debug('build graph from project json')
 
 
-
-
-
         except Exception as e:
-            log.error('Exception in build_graph_from_project')
+            log.exception('Exception in build_graph_from_project')
             raise
 
         return graph_object
