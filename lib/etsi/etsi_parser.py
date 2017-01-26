@@ -68,17 +68,12 @@ class EtsiParser(Parser):
             'vnfd': {}
         }
 
-        if 'ns_files' in file_dict:
-            ns_files = file_dict['ns_files']
-            for file in ns_files:
-                nsd = cls.descriptortojson(file.read())
-                project['nsd'][nsd['nsdIdentifier']] = nsd
-        if 'vnf_files' in file_dict:
-            vnf_files = file_dict['vnf_files']
-            for file in vnf_files:
-                vnf =cls.descriptortojson(file.read())
-                project['vnfd'][vnf['vnfdId']] = vnf
-
+        for desc_type in project:
+            key_file = desc_type+'_files'
+            if key_file in file_dict:
+                files_desc_type = file_dict[key_file]
+                for file in files_desc_type:
+                    project[desc_type][os.path.splitext(file.name)[0]] = cls.descriptortojson(file.read())
         return project
 
     @classmethod

@@ -7,18 +7,21 @@ from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
-
 from lib.util import Util
+from sf_user.models import CustomUser
+
+# DO NOT REMOVE THIS COMMENT #
+# Project Models #
 from projecthandler.click_model import ClickProject
 from projecthandler.etsi_model import EtsiProject
 from projecthandler.models import Project
 from projecthandler.tosca_model import ToscaProject
-from sf_user.models import CustomUser
 
+# DO NOT REMOVE THIS COMMENT #
+# Project Model Type declarations #
 Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
 Project.add_project_type('tosca', ToscaProject)
-
 
 @login_required
 def home(request):

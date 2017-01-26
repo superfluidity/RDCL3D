@@ -4,18 +4,14 @@ import json
 import yaml
 import copy
 from lib.util import Util
-# from model_utils.managers import InheritanceManager
+import os.path
 from projecthandler.models import Project
+
 from lib.tosca.tosca_rdcl_graph import ToscaRdclGraph
 from lib.tosca.tosca_parser import ToscaParser
-
 from toscaparser.tosca_template import ToscaTemplate
 from translator.hot.tosca_translator import TOSCATranslator
 
-import os.path
-
-        # project_types['tosca']= projecthandler.tosca_model.ToscaProject
-        # project_types['click']= ClickProject
 
 PATH_TO_SCHEMAS = 'lib/tosca/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'

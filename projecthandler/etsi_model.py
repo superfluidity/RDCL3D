@@ -13,50 +13,42 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('EtsiModel.py')
 
-
 # project_types['etsi']= projecthandler.etsi_model.EtsiProject
 # project_types['click']= ClickProject
 
 PATH_TO_SCHEMAS = 'lib/etsi/schemas/'
-PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
-DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
+PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/etsi/descriptor_template'
+DESCRIPTOR_TEMPLATE_SUFFIX = '.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/etsi/etsi.yaml'
 EXAMPLES_FOLDER = 'usecases/ETSI/'
 
 
 class EtsiProject(Project):
     """Etsi Project class
-
     The data model has the following descriptors:
     'nsd'
     'vnfd'
     'vnffgd'
     'vld'
-
     """
 
     @classmethod
     def data_project_from_files(cls, request):
-        # ns_files = request.FILES.getlist('ns_files')
-        # vnf_files = request.FILES.getlist('vnf_files')
 
         file_dict = {}
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
-        log(file_dict)
+        log.info(file_dict)
 
         data_project = EtsiParser.importprojectfiles(file_dict)
-        # data_project = {}
-        # if ns_files or vnf_files:
-        #     data_project = EtsiParser.importprojectfiles(ns_files, vnf_files)
+
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
         example_id = request.POST.get('example-etsi-id', '')
         data_project = EtsiParser.importprojectdir(EXAMPLES_FOLDER + example_id + '/JSON', 'json')
-        # data_project = importprojectdir('usecases/ETSI/' + example_id + '/JSON', 'json')
         return data_project
 
     @classmethod
@@ -67,11 +59,6 @@ class EtsiProject(Project):
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
         return {'etsi': dirs}
 
-    # @classmethod
-    # def get_graph_model(cls):
-    #     file_path = GRAPH_MODEL_FULL_NAME
-    #     return Util.loadyamlfile(file_path)        
-
     @classmethod
     def get_json_schema_by_type(cls, type_descriptor):
         schema = PATH_TO_SCHEMAS + type_descriptor + ".json"
@@ -79,7 +66,6 @@ class EtsiProject(Project):
 
     @classmethod
     def get_new_descriptor(cls, descriptor_type, request_id):
-        # util = Util()
 
         json_template = cls.get_descriptor_template(descriptor_type)
         if descriptor_type == 'nsd':
@@ -95,7 +81,7 @@ class EtsiProject(Project):
         """Returns a descriptor template for a given descriptor type"""
 
         try:
-            schema = Util.loadjsonfile(PATH_TO_DESCRIPTORS_TEMPLATES + type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX)
+            schema = Util.loadjsonfile(os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
             # print 'type_descriptor : '+type_descriptor
             return schema
         except Exception as e:
@@ -171,7 +157,7 @@ class EtsiProject(Project):
 
             # schema = cls.loadjsonfile("lib/etsi/schemas/"+type_descriptor+".json")
             reference_schema = self.get_json_schema_by_type(type_descriptor)
-            #validate = Util.validate_json_schema(reference_schema, new_descriptor)
+            # validate = Util.validate_json_schema(reference_schema, new_descriptor)
             validate = False
             new_descriptor_id = new_descriptor['vnfdId'] if type_descriptor != "nsd" else new_descriptor[
                 'nsdIdentifier']
@@ -216,7 +202,7 @@ class EtsiProject(Project):
             vdu_id = request.POST.get('choice')
             result = self.add_vnf_vducp(group_id, vdu_id, element_id)
         elif element_type == 'vnffg':
-            #log.debug("Add ") group_id, element_id
+            # log.debug("Add ") group_id, element_id
             result = self.add_vnffg(group_id, element_id)
 
         return result

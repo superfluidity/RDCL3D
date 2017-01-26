@@ -51,7 +51,6 @@ class ToscaParser(Parser):
 
     @classmethod
     def importprojectfiles(cls, file_dict):
-    # def importprojectfiles(cls,ns_files, vnf_files):
         """Imports descriptors (extracted from the new project POST)
 
         The keys in the file dictionary are the file types

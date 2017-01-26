@@ -178,7 +178,7 @@ class Project(models.Model):
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
-            log.debug('editing ' + descriptor_id + ' ' + type_descriptor) #TODO(stefano) mettere logger
+            log.debug('editing ' + descriptor_id + ' ' + type_descriptor)
             current_data = json.loads(self.data_project)
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
