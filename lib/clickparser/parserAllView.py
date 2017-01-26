@@ -105,7 +105,7 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words, ele_class_dict)
+        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,ele_class_connections)
         #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
         #print'###'
@@ -123,15 +123,16 @@ def parserAllView(file_click):
         load_list(line, words)
 
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
-    #print '#############'
-    #print ele_class_connections
-    #print '*************'
+    print '#############'
+    print connection_list
+    print ele_class_connections
+    print '*************'
     #print ele_class_dict
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
     element_renamed={}
-    print 'comp'
-    print compound_element
+    #print 'comp'
+    #print compound_element
     for comp in compound_element.items():
         
         words3 = []
@@ -171,6 +172,6 @@ def parserAllView(file_click):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    print json_data
+    #print json_data
     return json_data
 

@@ -3,7 +3,7 @@ import copy
 from utility import *
 
 			
-def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict):
+def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict,ele_class_connections):
 	config = False
 	words=[]
 	index=[]
@@ -11,6 +11,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 	line_class_element = ''
 	elementclass_renamed = {}
 	words3 = []
+	ele_class_lists=[]
 
 	words = load_list(line,words)
 	control = False	
@@ -40,18 +41,21 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 							else:
 								name_ele = words[i-1]+'.'
 
-							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict)
+							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict,ele_class_connections)
 							implicit_element_decl(line_class_element, element, name_ele, group, words, words1)
 							
 							rename_class_element(words, words1, words3, name_ele, words[i-1])
+							words3.append(words1)
 							
 							line_class_element = ''
 						else:
 							line_class_element = line_class_element + j
-			
-					#connection_elem_name,connection_elem_list=element_class_handler(element,words[i-1],ele_class_dict[c2]['name'],ele_class_dict[c2]['elementclasscontenent'],ele_class_dict[c2]['elementclassstr'],ele_class_dict,ele_class_connections,connection,group)	
-					#ele_class_connections[len(ele_class_connections)]=({'element name':connection_elem_name, 'connection_elem_list':connection_elem_list})
+					
 
+					#'********** Lista di parole pulite*********'
+					ele_class_lists = sum(words3,[])	
+					ele_class_connections[len(ele_class_connections)]=({'element name':name_ele, 'connection_elem_list':ele_class_lists})
+					#'*******************************************'
 
 			if control == False:
 				index.append(i)
