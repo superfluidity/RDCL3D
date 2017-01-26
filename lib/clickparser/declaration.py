@@ -3,12 +3,14 @@ import copy
 from utility import *
 
 			
-def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict,ele_class_connections,connection):
+def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_dict):
 	config = False
 	words=[]
 	index=[]
 	ele_class_name=''
 	line_class_element = ''
+	elementclass_renamed = {}
+	words3 = []
 
 	words = load_list(line,words)
 	control = False	
@@ -29,6 +31,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 					elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
 						explicit_element_decl_without_conf(i,words,element, name_subgraph, group,'class_element')
 					for j in ele_class_dict[c2]['elementclassstr']:
+						
 						if j == ';':
 							words1 = []
 							name_ele = name_subgraph
@@ -37,11 +40,15 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 							else:
 								name_ele = words[i-1]+'.'
 
-							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict, ele_class_connections, connection)
+							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict)
+							implicit_element_decl(line_class_element, element, name_ele, group, words, words1)
+							
+							rename_class_element(words, words1, words3, name_ele, words[i-1])
+							
 							line_class_element = ''
 						else:
 							line_class_element = line_class_element + j
-
+			
 					#connection_elem_name,connection_elem_list=element_class_handler(element,words[i-1],ele_class_dict[c2]['name'],ele_class_dict[c2]['elementclasscontenent'],ele_class_dict[c2]['elementclassstr'],ele_class_dict,ele_class_connections,connection,group)	
 					#ele_class_connections[len(ele_class_connections)]=({'element name':connection_elem_name, 'connection_elem_list':connection_elem_list})
 
@@ -77,7 +84,7 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 		
 				elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
 					implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
-	
+'''
 def element_class_handler(element, name_element,name_element_class,ele_class_cont,elementclassstr,ele_class_dict,ele_class_connections,connection,group):			#riceve il nome del element class e il contenuto
 	words=[]
 	words3=[]
@@ -133,47 +140,7 @@ def element_class_handler(element, name_element,name_element_class,ele_class_con
 
 	return name_element,renamed_element_content
 '''
-def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed,ele_class_dict,ele_class_connections,connection):
-	config = False
-	words=[]
-	index=[]
-	ele_class_name=''
 
-	words = load_list(line,words)
-
-	control = False	
-
-
-	for i in range(0,len(words)):
-		control = False	
-
-		if words[i] =='::':
-			for c1 in range(0,len(words[i+1])):
-				if words[i+1][c1] == '(':
-					break
-				ele_class_name = ele_class_name + words[i+1][c1]
-			for c2 in ele_class_dict.keys(): 
-				if ele_class_name == ele_class_dict[c2]['name']:
-					control = True
-					connection_elem_name,connection_elem_list=element_class_handler(element,words[i-1],ele_class_dict[c2]['name'],ele_class_dict[c2]['elementclasscontenent'],ele_class_dict[c2]['elementclassstr'],ele_class_dict,ele_class_connections,connection,group)	
-					ele_class_connections[len(ele_class_connections)]=({'element name':connection_elem_name, 'connection_elem_list':connection_elem_list})
-				ele_class_name = ''	
-			if control == False:
-				index.append(i)
-	print 'ssss'
-	print index
-	print'ssss'
-	
-	for i in index:
-			
-		if string.find(words[i+1], '(') !=-1 and string.find(words[i+1], ')') !=-1:
-			explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
-			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}
-		elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
-			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)
-			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}	
-
-'''
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
 	config = False
 	words=[]
@@ -188,10 +155,10 @@ def explicit_compound_decl(line, element, name_subgraph, group, words, element_r
 	for i in index:
 			
 		if string.find(words[i+1], '(') !=-1 and string.find(words[i+1], ')') !=-1:
-			explicit_element_decl_with_conf(i, words, element, name_subgraph, group)
+			explicit_element_decl_with_conf(i, words, element, name_subgraph, group, 'element')
 			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}
 		elif string.find(words[i+1], '(') ==-1 and string.find(words[i+1], ')') ==-1:
-			explicit_element_decl_without_conf(i,words,element, name_subgraph, group)
+			explicit_element_decl_without_conf(i,words,element, name_subgraph, group,'element')
 			element_renamed[len(element_renamed)]={'origin_name':words[i-1], 'new_name':name_subgraph+words[i-1]}	
 
 
@@ -317,7 +284,7 @@ def connection_decl(words, connection, element):
 
 	handle_edgeslevel(connection)
 
-
+'''
 def connection_element_class_cleaner (connection_list,ele_class_connections):
 	#  ele_class_connections{'element name':connection_elem_name, 'connection_elem_list':connection_elem_list}
 	
@@ -393,4 +360,4 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 										for p in range(0,len(c3[1]['connection_elem_list'])):
 											if c3[1]['connection_elem_list'][p]=='input'+port:
 												c3[1]['connection_elem_list'][p]=connection_list[h-2]
-
+'''

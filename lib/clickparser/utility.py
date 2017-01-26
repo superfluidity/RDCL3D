@@ -18,7 +18,7 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, typ
 			config.append(w[0:len(w)-1])
 		else:
 			config.append(w)
-	print name_subgraph
+
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
 	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': type_element})
@@ -49,6 +49,9 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 			config.append(w)
 
 	name=nameGenerator(element, word[0:index])
+
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
 	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group, 'node_type':'element'})
 	words2[i] = name_subgraph+name
 	
@@ -57,6 +60,9 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, words2):
 
 	name=nameGenerator(element, words[i])
+
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
 	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group, 'node_type': 'element'})
 	words2[i] = name_subgraph+name
 
@@ -69,6 +75,19 @@ def subgraph_element_name(line, compound_element, element):
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
+
+
+def rename_class_element(words, words1, words3, name_ele, name):
+	print '#########'
+	print words
+	print '\n'
+	print words1
+	print '\n'
+	print words3
+	print '\n'
+	print name_ele
+	print '\n'
+	print name
 
 
 

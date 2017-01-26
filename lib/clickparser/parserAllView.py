@@ -105,7 +105,7 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,ele_class_connections,connection)
+        explicit_element_decl(line, element,'', 'click', words, ele_class_dict)
         #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
         #print'###'
@@ -130,12 +130,16 @@ def parserAllView(file_click):
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
     element_renamed={}
+    print 'comp'
+    print compound_element
     for comp in compound_element.items():
         
         words3 = []
         explicit_compound_decl(comp[1]['compound'], element, comp[1]['name']+'.', comp[1]['name'], words, element_renamed)
         implicit_compound_decl(comp[1]['compound'], element, comp[1]['name']+'.', comp[1]['name'], words, words3)
         rename_compound_element(words3, comp, element_renamed)
+
+
 
     for e in compound_element.items():
         for i in range(0,len(connection_list)):
@@ -153,12 +157,13 @@ def parserAllView(file_click):
             connection_list.append(e)
 
     ##############################################################################################################################################
+    '''
     connection_element_class_cleaner (connection_list,ele_class_connections)
     for c2 in ele_class_connections.items():
         for e2 in c2[1]['connection_elem_list']:
             connection_list.append(e2)
 
-
+    '''
     connection_decl(connection_list, connection, element)
     #print element
     print '\n'
