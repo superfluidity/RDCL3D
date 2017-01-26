@@ -2,7 +2,7 @@ import string
 import copy
 
 
-def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
+def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, type_element):
 	comma=[]
 	config=[]
 	word=words[i+1]
@@ -18,13 +18,17 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 			config.append(w[0:len(w)-1])
 		else:
 			config.append(w)
-		
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': 'element'})
+	print name_subgraph
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': type_element})
 	
 
 
-def explicit_element_decl_without_conf(i, words, element, name_subgraph, group):
-	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': 'element'})
+def explicit_element_decl_without_conf(i, words, element, name_subgraph, group, type_element):
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': type_element})
 	
 
 

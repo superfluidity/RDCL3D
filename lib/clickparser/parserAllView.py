@@ -7,7 +7,6 @@ from utility import *
 
 def remove_tab(line):
     if string.find(line,'\t') != -1:
-        print 'ok'
         line=line[string.find(line,'\t')+1:]
         line = remove_tab(line)
     return line

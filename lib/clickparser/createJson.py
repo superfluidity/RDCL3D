@@ -15,7 +15,6 @@ NODE_TYPE_KEY = 'type'
 
 def nx_2_t3d_json(element, connection, json_out_file):
     nodes_list = []
-    print element
 
     for i in range(0, len(element)):
         nodes_dict = {}
