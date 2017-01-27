@@ -291,10 +291,42 @@ def connection_decl(words, connection, element):
 
 	handle_edgeslevel(connection)
 
-'''
-def connection_element_class_cleaner (connection_list,ele_class_connections):
-	#  ele_class_connections{'element name':connection_elem_name, 'connection_elem_list':connection_elem_list}
+
+def connection_element_class_cleaner (connection_list,ele_class_connections,clean_ele_class_connections):
+
+	print '*********'
+	print connection_list
+	print '\n'
+	print ele_class_connections
+	print '*********'
+
+
+
+	################## Dizionari dei fluttuanti ###########
+	fluxInput=({'Level':'','Input fluttuante':[]})
+	fluxOutput=({'Level':'','Output fluttuante':[]})
+	#######################################################
+
+	for i in range (0, len(connection_list)):
+		for j in range (0, len(ele_class_connections.keys())):
+			if connection_list[i] == ele_class_connections[j]['element name']:
+				for c1 in range (0, len(ele_class_connections[j]['connection_elem_list'])):
+					if ele_class_connections[j]['connection_elem_list'][c1] == '->':
+						if string.find(ele_class_connections[j]['connection_elem_list'][c1-1],'input') != -1:
+							clean_ele_class_connections.append(connection_list[i-2])
+							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1]) 
+						#if string.find(ele_class_connections[j]['connection_elem_list'][c1+1],'output') != -1:
+	#Fixme=>implementare output e ricorsione					
 	
+	print '\n'
+	print ele_class_connections
+	print '\n'					
+	print '################ Connessioni Pulite #############'					
+	print clean_ele_class_connections					
+
+
+'''	
 #Gestione dell'input e output senza porte
 	for c1 in ele_class_connections.items():
 		for i in range(0,len(connection_list)):
@@ -367,4 +399,5 @@ def connection_element_class_cleaner (connection_list,ele_class_connections):
 										for p in range(0,len(c3[1]['connection_elem_list'])):
 											if c3[1]['connection_elem_list'][p]=='input'+port:
 												c3[1]['connection_elem_list'][p]=connection_list[h-2]
+
 '''

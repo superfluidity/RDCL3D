@@ -43,6 +43,7 @@ def parserAllView(file_click):
     
     list_lines = []
     ele_class_dict = {}
+    clean_ele_class_connections=[]
     ele_class_connections={}
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
@@ -123,10 +124,10 @@ def parserAllView(file_click):
         load_list(line, words)
 
     ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
-    print '#############'
-    print connection_list
-    print ele_class_connections
-    print '*************'
+    #print '#############'
+    #print connection_list
+    #print ele_class_connections
+    #print '*************'
     #print ele_class_dict
     ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
 
@@ -158,13 +159,13 @@ def parserAllView(file_click):
             connection_list.append(e)
 
     ##############################################################################################################################################
-    '''
-    connection_element_class_cleaner (connection_list,ele_class_connections)
-    for c2 in ele_class_connections.items():
-        for e2 in c2[1]['connection_elem_list']:
-            connection_list.append(e2)
+    
+    connection_element_class_cleaner (connection_list,ele_class_connections,clean_ele_class_connections)
+    #for c2 in ele_class_connections.items():
+    #    for e2 in c2[1]['connection_elem_list']:
+    #        connection_list.append(e2)
 
-    '''
+    
     connection_decl(connection_list, connection, element)
     #print element
     print '\n'

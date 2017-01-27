@@ -80,15 +80,6 @@ def subgraph_element_name(line, compound_element, element):
 def rename_class_element(words, words1,words3, name_ele, name):
 	
 
-	print '#########'
-	print words
-	print '\n'
-	print words1
-	print '\n'
-	print name_ele
-	print '\n'
-	print name
-
 
 	for i in range (0,len(words1)):						#Rinomina gli elementi espliciti della riga
 		
