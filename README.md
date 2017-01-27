@@ -44,6 +44,8 @@ To setup a local development environment::
 
     $ python manage.py makemigrations
 
+    $ python manage.py makemigrations projecthandler
+
     $ python manage.py migrate
 
 #### you must create a new super user:
