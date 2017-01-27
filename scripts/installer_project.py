@@ -5,12 +5,12 @@ import logging
 from aetypes import end
 from shutil import *
 import fileinput
-
 import shutil
 
 DESCRIPTION = '''This script installs a new Project Type on RDCL.
 This requires that you have Python 2.7.
 '''
+
 
 def init_logger(logger_name):
     logger = logging.getLogger(logger_name)
@@ -25,7 +25,6 @@ def init_logger(logger_name):
 
 
 class ProjectInstaller():
-
     full_path = os.path.realpath(__file__)
     HOME = full_path.split(__file__)[0]
     PHANDLER_PATH = os.path.join(HOME, 'projecthandler')
@@ -53,7 +52,7 @@ class ProjectInstaller():
                 'installation? (This will remove previous folders and files.) '
                 '(yes/no):'.format(MODEL_FILE))
             if action in ('y', 'yes'):
-                lgr.debug('Cleaning previous %s Project files and folders.',self.project_name)
+                lgr.debug('Cleaning previous %s Project files and folders.', self.project_name)
                 self.remove_all()
             else:
                 sys.exit(lgr.info('Installation aborted.'))
@@ -71,8 +70,8 @@ class ProjectInstaller():
             'python manage.py runserver')
 
     def create_model_file(self):
-        MODEL_FILE = os.path.join(self.PHANDLER_PATH, self.project_name+'_model.py')
-        #create a new model file from example template
+        MODEL_FILE = os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')
+        # create a new model file from example template
         copyfile(os.path.join(self.PHANDLER_PATH, 'example_model._py'), MODEL_FILE)
         self.replace(MODEL_FILE)
         self.install_model()
@@ -82,18 +81,19 @@ class ProjectInstaller():
         for line in fileinput.input(file_path, inplace=True):
             if line.find("# descriptor list in comment #") >= 0:
                 for type in self.descriptors_type:
-                    print line.replace("# descriptor list in comment #",type),
-            elif line.find('# replace descriptors counter #')>=0:
+                    print line.replace("# descriptor list in comment #", type),
+            elif line.find('# replace descriptors counter #') >= 0:
                 for type in self.descriptors_type:
-                    print line.replace("# replace descriptors counter #", "'"+type+"': len(current_data['"+type+"'].keys()) if '"+type+"' in current_data else 0,");
+                    print line.replace("# replace descriptors counter #",
+                                       "'" + type + "': len(current_data['" + type + "'].keys()) if '" + type + "' in current_data else 0,");
             else:
                 print line,
 
     def setup_model_parser(self, file_path):
         for line in fileinput.input(file_path, inplace=True):
-            if line.find("# replace descriptor type empty dictionary #")>0:
+            if line.find("# replace descriptor type empty dictionary #") > 0:
                 for type in self.descriptors_type:
-                    print line.replace("# replace descriptor type empty dictionary #", "'"+type +"':{},")
+                    print line.replace("# replace descriptor type empty dictionary #", "'" + type + "':{},")
             else:
                 print line,
 
@@ -101,10 +101,11 @@ class ProjectInstaller():
         MODEL_LIB_PATH = os.path.join(self.LIB_PATH, self.project_name)
         if not os.path.isdir(MODEL_LIB_PATH):
             os.makedirs(MODEL_LIB_PATH)
-
-        copyfile(os.path.join(self.LIB_PATH, 'example', 'example_rdcl_graph._py'), os.path.join(MODEL_LIB_PATH, self.project_name + '_rdcl_graph.py'))
+        copyfile(os.path.join(self.LIB_PATH, 'example', 'example_rdcl_graph._py'),
+                 os.path.join(MODEL_LIB_PATH, self.project_name + '_rdcl_graph.py'))
         self.replace(os.path.join(MODEL_LIB_PATH, self.project_name + '_rdcl_graph.py'))
-        copyfile(os.path.join(self.LIB_PATH, 'example', 'example_parser._py'), os.path.join(MODEL_LIB_PATH, self.project_name + '_parser.py'))
+        copyfile(os.path.join(self.LIB_PATH, 'example', 'example_parser._py'),
+                 os.path.join(MODEL_LIB_PATH, self.project_name + '_parser.py'))
         self.replace(os.path.join(MODEL_LIB_PATH, self.project_name + '_parser.py'))
         copyfile(os.path.join(self.LIB_PATH, 'example', '__init__._py'), os.path.join(MODEL_LIB_PATH, '__init__.py'))
         self.replace(os.path.join(MODEL_LIB_PATH, '__init__.py'))
@@ -121,20 +122,60 @@ class ProjectInstaller():
         if os.path.isdir(PJ_TEMPLATE_PATH):
             shutil.rmtree(PJ_TEMPLATE_PATH)
         self.copydir_and_replace(os.path.join(self.TEMPLATE_PATH, 'example'), PJ_TEMPLATE_PATH)
+        self.setup_templates(PJ_TEMPLATE_PATH)
+
+    def setup_templates(self, template_path):
+        #setup left sidebar
+        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_left_sidebar.html'), inplace=True):
+            if line.find("# left_sidebar descriptors list #") >= 0:
+                for type in self.descriptors_type:
+                    html_to_inject = '<li><a href="/projects/{{project_id}}/descriptors/'+type+'"><i class="fa fa-files-o fa-fw"></i>'+type.capitalize()+'</a></li>'
+                    print line.replace("# left_sidebar descriptors list #", html_to_inject),
+            else:
+                print line,
+        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_details.html'), inplace=True):
+            if line.find("# project details box matrix #") >= 0:
+                index = 1
+                final_html = ''
+                for type in self.descriptors_type:
+                    if index%2 == 1:
+                        final_html += '<div class="row">'
+
+                    box_html = '<div class="col-md-6 ">' \
+                                     '<div class="small-box bg-aqua">' \
+                                     '<div class="inner">' \
+                                     '<h3>0</h3>' \
+                                     '<p>' + type.capitalize() + ' type</p>' \
+                                     '</div>' \
+                                     '<div class="icon">' \
+                                     '<i class="fa fa-file-code-o"></i>' \
+                                     '</div>' \
+                                     '<a href="/projects/{{project_id}}/descriptors/' + type + '" class="small-box-footer">More info ' \
+                                     '<i class="fa fa-arrow-circle-right"></i></a>' \
+                                     '</div>' \
+                                     '</div>';
+
+                    final_html += box_html
+
+                    if (index%2 == 1 and index == len(self.descriptors_type)) or index%2 == 0:
+                        final_html += '</div>'
+                    index += 1
+                print line.replace("# project details box matrix #", final_html),
+            else:
+                print line,
 
     def install_model(self):
         MODEL_FILE = os.path.join(self.PHANDLER_PATH, 'views.py')
         for line in fileinput.input(MODEL_FILE, inplace=True):
-
             print line,
             if line.startswith("# Project Model Type declarations #"):
-                new_line = ('Project.add_project_type(\'{0}\', {1}Project)\n'.format(self.project_name, self.project_name.capitalize()))
+                new_line = ('Project.add_project_type(\'{0}\', {1}Project)\n'.format(self.project_name,
+                                                                                     self.project_name.capitalize()))
                 print new_line,
             elif line.startswith("# Project Models #"):
-                new_line = ('from projecthandler.{0}_model import {1}Project\n'.format(self.project_name, self.project_name.capitalize()))
+                new_line = ('from projecthandler.{0}_model import {1}Project\n'.format(self.project_name,
+                                                                                       self.project_name.capitalize()))
                 print new_line,
-
-
 
     def replace(self, filepath):
         for line in fileinput.input(filepath, inplace=True):
@@ -173,7 +214,7 @@ class ProjectInstaller():
                     linkto = os.readlink(srcname)
                     os.symlink(linkto, dstname)
                 elif os.path.isdir(srcname):
-                    copytree(srcname, dstname, symlinks, ignore)
+                    self.copydir_and_replace(srcname, dstname, symlinks, ignore)
                 else:
                     copy2(srcname, dstname)
                     self.replace(dstname)
@@ -195,7 +236,6 @@ class ProjectInstaller():
 
 
 def parse_args(args=None):
-
     parser = argparse.ArgumentParser(
         description=DESCRIPTION, formatter_class=argparse.RawTextHelpFormatter)
     default_group = parser.add_mutually_exclusive_group()
@@ -205,7 +245,7 @@ def parse_args(args=None):
                                help='Only print errors.')
 
     parser.add_argument(
-        '--project-name',type=str,  required=True,
+        '--project-name', type=str, required=True,
         help='Name of the new project')
     parser.add_argument(
         '--descriptors-type', type=str, required=True, nargs='*',
@@ -216,8 +256,8 @@ def parse_args(args=None):
 
     return parser.parse_args(args)
 
-lgr = init_logger(__file__)
 
+lgr = init_logger(__file__)
 
 if __name__ == '__main__':
     args = parse_args()
