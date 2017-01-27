@@ -12,6 +12,7 @@ from sf_user.models import CustomUser
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
+from projecthandler.oshi_model import OshiProject
 from projecthandler.click_model import ClickProject
 from projecthandler.etsi_model import EtsiProject
 from projecthandler.models import Project
@@ -19,6 +20,7 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
+Project.add_project_type('oshi', OshiProject)
 Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
 Project.add_project_type('tosca', ToscaProject)
@@ -290,6 +292,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         return render(request, page, {
             'project_id': project_id,
             'descriptor_type': descriptor_type,
+            'descriptor_id': request_id,
             'project_overview_data': project_overview,
             'descriptor_strings': {'descriptor_string_yaml': descriptor_string_yaml,
                                    'descriptor_string_json': descriptor_string_json}
@@ -307,7 +310,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             text = request.POST.get('text')
             type = request.POST.get('type')
             desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
-        # print desc_name
+        print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
         # if prj_token == 'etsi':
@@ -352,6 +355,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
         csrf_token_value = get_token(request)
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
+        print project_overview
         prj_token = project_overview['type']
         page = prj_token + '/descriptor/descriptor_view.html'
 

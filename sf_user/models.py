@@ -160,6 +160,7 @@ class CustomUser(AbstractCustomUser):
         elif self.is_guest_user:
             return "Guest user"
 
+
 class CustomSession(AbstractBaseSession):
     account_id = models.IntegerField(null=True, db_index=True)
 
