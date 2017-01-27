@@ -20,7 +20,7 @@ PATH_TO_SCHEMAS = 'lib/exampletoken/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/exampletoken/descriptor_template'
 DESCRIPTOR_TEMPLATE_SUFFIX = '.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/exampletoken/exampletoken.yaml'
-EXAMPLES_FOLDER = 'usecases/ETSI/'
+EXAMPLES_FOLDER = 'usecases/EXAMPLETOKEN/'
 
 
 class ExampletokenProject(Project):
@@ -125,7 +125,7 @@ class ExampletokenProject(Project):
                 return False
 
             # schema = cls.loadjsonfile("lib/exampletoken/schemas/"+type_descriptor+".json")
-            reference_schema = self.get_json_schema_by_type(type_descriptor)
+            #reference_schema = self.get_json_schema_by_type(type_descriptor)
             # validate = Util.validate_json_schema(reference_schema, new_descriptor)
             validate = False
             new_descriptor_id = descriptor_name

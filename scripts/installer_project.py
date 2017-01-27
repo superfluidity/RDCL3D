@@ -254,7 +254,7 @@ class ProjectInstaller():
             raise Error(errors)
 
     def uninstall_model(self):
-        if os.path.isdir(os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')):
+        if os.path.isfile(os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')):
             os.remove(os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py'));
         VIEWS_FILE = os.path.join(self.PHANDLER_PATH, 'views.py')
         for line in fileinput.input(VIEWS_FILE, inplace=True):
