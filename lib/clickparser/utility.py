@@ -78,16 +78,31 @@ def subgraph_element_name(line, compound_element, element):
 
 
 def rename_class_element(words, words1,words3, name_ele, name):
-	#print '#########'
-	#print words
-	#print '\n'
-	#print words1
-	#print '\n'
-	#print name_ele
-	#print '\n'
-	#print name
+	
+
+	print '#########'
+	print words
+	print '\n'
+	print words1
+	print '\n'
+	print name_ele
+	print '\n'
+	print name
+
 
 	for i in range (0,len(words1)):						#Rinomina gli elementi espliciti della riga
+		
+		if words1[i] != '::' and words1[i] != '->' and string.find(words[i],'@') == -1 and string.find(words1[i], 'input') == -1 and string.find(words1[i], 'output') == -1:
+				if string.find(words1[i], '[') != -1:
+					start = string.find(words1[i], '[')
+					stop = string.find(words1[i], ']')
+					if start == 0:
+						name_element = words1[i][stop:]
+					else:
+						name_element = words1[i][0:start]
+					words1[i] = name_ele+'.'+name_element
+				else:
+					words1[i] = name_ele+'.'+words[i]
 
 		try:
 			index = words1.index('::')
@@ -101,6 +116,8 @@ def rename_class_element(words, words1,words3, name_ele, name):
 			del words1[index]
 		except ValueError:
 			break
+
+
 
 	#FIXME => aggiungere controllo elementi impliciti e gestire parentesi quadre		
 

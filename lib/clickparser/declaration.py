@@ -44,6 +44,9 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict,ele_class_connections)
 							implicit_element_decl(line_class_element, element, name_ele, group, words, words1)
 							
+							if name_ele[len(name_ele)-1] == '.':
+								name_ele = name_ele[0:len(name_ele)-1]
+
 							rename_class_element(words, words1, words3, name_ele, words[i-1])
 							words3.append(words1)
 							
