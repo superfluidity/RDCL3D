@@ -44,7 +44,7 @@ class ProjectInstaller():
         MODEL_FILE = os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')
         if self.uninstall:
             lgr.info('Uninstalling Project from RDCL.')
-            sys.exit(self.remove_all())
+            sys.exit(self.remove_all(True))
 
         if os.path.isdir(MODEL_FILE):
             action = raw_input(
@@ -125,39 +125,41 @@ class ProjectInstaller():
         self.setup_templates(PJ_TEMPLATE_PATH)
 
     def setup_templates(self, template_path):
-        #setup left sidebar
-        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_left_sidebar.html'), inplace=True):
+        # setup left sidebar
+        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_left_sidebar.html'),
+                                    inplace=True):
             if line.find("# left_sidebar descriptors list #") >= 0:
                 for type in self.descriptors_type:
-                    html_to_inject = '<li><a href="/projects/{{project_id}}/descriptors/'+type+'"><i class="fa fa-files-o fa-fw"></i>'+type.capitalize()+'</a></li>'
+                    html_to_inject = '<li><a href="/projects/{{project_id}}/descriptors/' + type + '"><i class="fa fa-files-o fa-fw"></i>' + type.capitalize() + '</a></li>'
                     print line.replace("# left_sidebar descriptors list #", html_to_inject),
             else:
                 print line,
-        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_details.html'), inplace=True):
+        for line in fileinput.input(os.path.join(template_path, self.project_name + '_project_details.html'),
+                                    inplace=True):
             if line.find("# project details box matrix #") >= 0:
                 index = 1
                 final_html = ''
                 for type in self.descriptors_type:
-                    if index%2 == 1:
+                    if index % 2 == 1:
                         final_html += '<div class="row">'
 
                     box_html = '<div class="col-md-6 ">' \
-                                     '<div class="small-box bg-aqua">' \
-                                     '<div class="inner">' \
-                                     '<h3>0</h3>' \
-                                     '<p>' + type.capitalize() + ' type</p>' \
-                                     '</div>' \
-                                     '<div class="icon">' \
-                                     '<i class="fa fa-file-code-o"></i>' \
-                                     '</div>' \
-                                     '<a href="/projects/{{project_id}}/descriptors/' + type + '" class="small-box-footer">More info ' \
-                                     '<i class="fa fa-arrow-circle-right"></i></a>' \
-                                     '</div>' \
-                                     '</div>';
+                               '<div class="small-box bg-aqua">' \
+                               '<div class="inner">' \
+                               '<h3>0</h3>' \
+                               '<p>' + type.capitalize() + ' type</p>' \
+                                                           '</div>' \
+                                                           '<div class="icon">' \
+                                                           '<i class="fa fa-file-code-o"></i>' \
+                                                           '</div>' \
+                                                           '<a href="/projects/{{project_id}}/descriptors/' + type + '" class="small-box-footer">More info ' \
+                                                                                                                     '<i class="fa fa-arrow-circle-right"></i></a>' \
+                                                                                                                     '</div>' \
+                                                                                                                     '</div>';
 
                     final_html += box_html
 
-                    if (index%2 == 1 and index == len(self.descriptors_type)) or index%2 == 0:
+                    if (index % 2 == 1 and index == len(self.descriptors_type)) or index % 2 == 0:
                         final_html += '</div>'
                     index += 1
                 print line.replace("# project details box matrix #", final_html),
@@ -165,8 +167,8 @@ class ProjectInstaller():
                 print line,
 
     def install_model(self):
-        MODEL_FILE = os.path.join(self.PHANDLER_PATH, 'views.py')
-        for line in fileinput.input(MODEL_FILE, inplace=True):
+        VIEWS_FILE = os.path.join(self.PHANDLER_PATH, 'views.py')
+        for line in fileinput.input(VIEWS_FILE, inplace=True):
             print line,
             if line.startswith("# Project Model Type declarations #"):
                 new_line = ('Project.add_project_type(\'{0}\', {1}Project)\n'.format(self.project_name,
@@ -186,10 +188,27 @@ class ProjectInstaller():
             line = line.replace("EXAMPLETOKEN", self.project_name.upper())
             print line,
 
-    def remove_all(self):
+    def remove_all(self, skip):
         lgr.info('Uninstalling %s', self.project_name)
-        action = raw_input('Would you like to continue with the uninstallation?')
+        if skip:
+            action = 'y'
+        else:
+            action = raw_input('Would you like to continue with the uninstallation?')
         if action in ('y', 'yes'):
+            # self.create_model_file()
+            self.uninstall_model()
+
+            MODEL_LIB_PATH = os.path.join(self.LIB_PATH, self.project_name)
+            if os.path.isdir(MODEL_LIB_PATH):
+                shutil.rmtree(MODEL_LIB_PATH)
+
+            PJ_UC_PATH = os.path.join(self.UC_PATH, self.project_name.upper())
+            if os.path.isdir(PJ_UC_PATH):
+                shutil.rmtree(PJ_UC_PATH)
+
+            PJ_TEMPLATE_PATH = os.path.join(self.TEMPLATE_PATH, self.project_name)
+            if os.path.isdir(PJ_TEMPLATE_PATH):
+                shutil.rmtree(PJ_TEMPLATE_PATH)
 
             lgr.info('Uninstall Complete!')
         else:
@@ -233,6 +252,18 @@ class ProjectInstaller():
             errors.extend((src, dst, str(why)))
         if errors:
             raise Error(errors)
+
+    def uninstall_model(self):
+        if os.path.isdir(os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')):
+            os.remove(os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py'));
+        VIEWS_FILE = os.path.join(self.PHANDLER_PATH, 'views.py')
+        for line in fileinput.input(VIEWS_FILE, inplace=True):
+            first_string = 'Project.add_project_type(\'{0}\', {1}Project)\n'.format(self.project_name,
+                                                                                    self.project_name.capitalize())
+            second_string = 'from projecthandler.{0}_model import {1}Project\n'.format(self.project_name,
+                                                                                       self.project_name.capitalize())
+            if (line.find(first_string)) < 0 and (line.find(second_string)) < 0:
+                print line,
 
 
 def parse_args(args=None):
