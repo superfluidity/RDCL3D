@@ -9,9 +9,7 @@ _lib_name = 'Util'
 
 
 logging.basicConfig(level=logging.DEBUG)
-fh = logging.FileHandler('rdcl.log')
-log = logging.getLogger('UtilLogger')
-log.addHandler(fh)
+log = logging.getLogger('lib/util.py')
 
 
 class Util(object):
@@ -57,14 +55,14 @@ class Util(object):
     @classmethod
     def yaml2json(cls, object_yaml):
         """Converts a yaml object into a json representation"""
-
         log.debug('yaml2json')
-        return json.dumps(object_yaml, sort_keys=True, indent=2)
+        return json.dumps(object_yaml, sort_keys=True, indent=2) if not object_yaml is None else None
 
     @classmethod
     def json2yaml(cls, object_json):
+        """Converts a json object into a yaml representation"""
         log.debug('json2yaml')
-        return yaml.safe_dump(object_json, default_flow_style=False)
+        return yaml.safe_dump(object_json, default_flow_style=False) if not object_json is None else None
 
     @classmethod
     def openfile(cls, filepath, mode='r', buffering=1):
@@ -82,7 +80,7 @@ class Util(object):
                 return open(filepath, mode, buffering)
 
         except IOError as e:
-            log.error('IOError: '.format(e.errno, e.strerror))
+            log.exception('openfile', e)
             raise
 
     @classmethod
@@ -102,7 +100,7 @@ class Util(object):
 
             return yaml_object
         except Exception as e:
-            log.error('Exception loadYamlFile')
+            log.exception('Exception loadYamlFile', e)
             raise
 
     @classmethod
@@ -124,7 +122,7 @@ class Util(object):
 
             return json_object
         except Exception as e:
-            log.error('Exception loadJsonFile', e)
+            log.exception('Exception loadJsonFile', e)
             raise
 
     @classmethod
@@ -142,7 +140,7 @@ class Util(object):
                 json_file = cls.openfile(name, 'w')
                 json_object = json.dump(json_object, json_file,separators=(',',': '), indent=4)
         except Exception as e:
-            log.error('Exception writejsonfile')
+            log.exception('Exception writejsonfile', e)
             raise
 
     @classmethod
@@ -160,7 +158,7 @@ class Util(object):
                 yaml_file = cls.openfile(name, 'w')
                 yaml_object = pyaml.dump(yaml_object, yaml_file, safe=True)
         except Exception as e:
-            log.error('Exception writeyamlfile')
+            log.exception('Exception writeyamlfile')
             raise
 
     @classmethod
@@ -176,8 +174,7 @@ class Util(object):
             jsonschema.validate(data, reference_schema)
             return True
         except Exception as e:
-            print e
-            log.error('Exception validate json schema')
+            log.exception('Exception validate json schema', e)
             return False
 
     @classmethod

@@ -285,6 +285,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         request_id = request.GET.get('id', '')
 
         json_template = projects[0].get_new_descriptor(descriptor_type, request_id)
+        print 'new descriptor GET', json_template
 
         descriptor_string_yaml = Util.json2yaml(json_template)
         descriptor_string_json = json.dumps(json_template)
@@ -309,14 +310,10 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         else:
             text = request.POST.get('text')
             type = request.POST.get('type')
-            desc_name = request.POST.get('id')  # TODO capire 'it' che significa ???
+            desc_name = request.POST.get('id')
         print desc_name
         result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
 
-        # if prj_token == 'etsi':
-        #     result = projects[0].create_descriptor(descriptor_type, text, type)
-        # elif prj_token == 'click':
-        #     result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
         response_data = {
             'project_id': project_id,
             'descriptor_type': descriptor_type,

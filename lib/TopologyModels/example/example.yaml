@@ -1,0 +1,42 @@
+name: Oshi                              #Model name
+description: oshi                       #Model description
+version: 1.0                            #Model version
+designer: Pierluigi Greto               #Model designer
+nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
+  examplenode1:
+    label: EXN1
+  examplenode2:
+    label: EXN2
+layer:                                  #List of Layers
+    exampleLayer:
+      nodes:                  #List of node to be visualized in the current layer
+        examplenode1:
+          addable: true
+          removable: true
+        examplenode1:
+          addable: true
+          removable: true
+      allowed_edges:                  #List of allowed edges between the layer's nodes
+        examplenode1:                        #Edge's source
+          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
+            examplenode1:
+              direct_edge: false
+              removable: true
+            examplenode2:
+              direct_edge: false
+              removable: true
+action:           #Action to show on rightclick on a node/link
+    rightclick:
+      node:
+        delete:
+          title: Delete
+          callback: deleteNode
+      link:
+        delete:
+          title: Delete
+          callback: deleteLink
+
+callback:                             #List of callbacks used
+  delete:
+      file: example_controller.js
+      class: ExampleController

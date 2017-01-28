@@ -73,7 +73,7 @@ class OshiProject(Project):
             return schema
         except Exception as e:
             log.exception(e)
-            return False
+            return
 
     @classmethod
     def get_clone_descriptor(cls, descriptor, type_descriptor, new_descriptor_id):

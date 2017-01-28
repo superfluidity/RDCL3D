@@ -1,0 +1,94 @@
+{
+  "edges": [
+    {
+      "source": "cro1",
+      "group": [
+      ],
+      "target": "peo1",
+      "view": "Data"
+    },
+    {
+      "source": "cer1",
+      "group": [
+      ],
+      "target": "peo1",
+      "view": "Data"
+    },
+    {
+      "source": "cro1",
+      "group": [
+      ],
+      "target": "ctr1",
+      "view": "Data"
+    },
+    {
+      "source": "vs1",
+      "group": [
+      ],
+      "target": "cer1",
+      "view": "VS"
+    }
+  ],
+  "vertices": [
+    {
+      "info": {
+        "frozen": false,
+        "type": "OSHI-CR",
+        "property": {
+          "custom_label": ""
+        },
+        "group": [
+        ]
+      },
+      "id": "cro1"
+    },
+    {
+      "info": {
+        "frozen": false,
+        "type": "OSHI-PE",
+        "property": {
+          "custom_label": ""
+        },
+        "group": [
+        ]
+      },
+      "id": "peo1"
+    },
+    {
+      "info": {
+        "frozen": false,
+        "type": "CE",
+        "property": {
+          "custom_label": ""
+        },
+        "group": [
+        ]
+      },
+      "id": "cer1"
+    },
+    {
+      "info": {
+        "frozen": false,
+        "type": "VS",
+        "property": {
+          "custom_label": ""
+        },
+        "group": [
+        ]
+      },
+      "id": "vs1"
+    },
+    {
+      "info": {
+        "frozen": false,
+        "type": "OF Controller",
+        "property": {
+          "custom_label": ""
+        },
+        "group": [
+        ]
+      },
+      "id": "ctr1"
+    }
+  ]
+}
