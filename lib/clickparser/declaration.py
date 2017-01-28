@@ -328,15 +328,21 @@ def connection_element_class_cleaner (connection_list,ele_class_connections,flux
 							templist.append(ele_class_connections[j]['connection_elem_list'][c1+1])
 							fluxOutput[len(fluxOutput)]=({'Level': ele_class_connections[j]['element name'] ,'Output fluttuante': templist })
 							templist=[]
+						
 						else:
-
+							contr = False
 							for k in range (0,len(ele_class_connections.keys())):
 								if ele_class_connections[j]['connection_elem_list'][c1+1] == ele_class_connections[k]['element name']:
+									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
+									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
 									connection_element_class_cleaner (ele_class_connections[j]['connection_elem_list'],ele_class_connections,fluxOutput,clean_ele_class_connections)
-						#else:	
-							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
-							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
-							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+									contr = True
+							if contr == False:
+								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
+								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+							
 				ele_class_connections[j]['connection_elem_list']=temp_connections
 				temp_connections=[]			
 	#Fixme=>implementare output e ricorsione					
