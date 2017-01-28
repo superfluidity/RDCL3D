@@ -44,6 +44,7 @@ def parserAllView(file_click):
     list_lines = []
     ele_class_dict = {}
     clean_ele_class_connections=[]
+    fluxOutput={}
     ele_class_connections={}
     compound_element = {}                                                           # lista contenente tutti gli elementi contenuti all'interno nel compound
                                                                                     #con il relativo nome del compound 
@@ -160,7 +161,7 @@ def parserAllView(file_click):
 
     ##############################################################################################################################################
     
-    connection_element_class_cleaner (connection_list,ele_class_connections,clean_ele_class_connections)
+    connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections)
     #for c2 in ele_class_connections.items():
     #    for e2 in c2[1]['connection_elem_list']:
     #        connection_list.append(e2)
