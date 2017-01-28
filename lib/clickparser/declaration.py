@@ -309,42 +309,43 @@ def connection_element_class_cleaner (connection_list,ele_class_connections,flux
 	#######################################################
 
 	for i in range (0, len(connection_list)):
-		for j in range (0, len(ele_class_connections.keys())):
-			if connection_list[i] == ele_class_connections[j]['element name']:
-				for c1 in range (0, len(ele_class_connections[j]['connection_elem_list'])):
-					if ele_class_connections[j]['connection_elem_list'][c1] == '->':
-						if string.find(ele_class_connections[j]['connection_elem_list'][c1-1],'input') != -1:
-							clean_ele_class_connections.append(connection_list[i-2])
-							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
-							clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-							temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
-							temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
-							temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-						
+		if connection_list[i]=='->':
+			for j in range (0, len(ele_class_connections.keys())):
+				if connection_list[i+1] == ele_class_connections[j]['element name']: 
+					for c1 in range (0, len(ele_class_connections[j]['connection_elem_list'])):
+						if ele_class_connections[j]['connection_elem_list'][c1] == '->':
+							if string.find(ele_class_connections[j]['connection_elem_list'][c1-1],'input') != -1:
+								clean_ele_class_connections.append(connection_list[i-1])
+								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+								temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
+								temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+								temp_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+							
 
-						elif string.find(ele_class_connections[j]['connection_elem_list'][c1+1],'output') != -1:
-							templist.append(ele_class_connections[j]['connection_elem_list'][c1-1])
-							templist.append(ele_class_connections[j]['connection_elem_list'][c1])
-							templist.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-							fluxOutput[len(fluxOutput)]=({'Level': ele_class_connections[j]['element name'] ,'Output fluttuante': templist })
-							templist=[]
-						
-						else:
-							contr = False
-							for k in range (0,len(ele_class_connections.keys())):
-								if ele_class_connections[j]['connection_elem_list'][c1+1] == ele_class_connections[k]['element name']:
+							elif string.find(ele_class_connections[j]['connection_elem_list'][c1+1],'output') != -1:
+								templist.append(ele_class_connections[j]['connection_elem_list'][c1-1])
+								templist.append(ele_class_connections[j]['connection_elem_list'][c1])
+								templist.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+								fluxOutput[len(fluxOutput)]=({'Level': ele_class_connections[j]['element name'] ,'Output fluttuante': templist })
+								templist=[]
+							
+							else:
+								contr = False
+								for k in range (0,len(ele_class_connections.keys())):
+									if ele_class_connections[j]['connection_elem_list'][c1+1] == ele_class_connections[k]['element name']:
+										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
+										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
+										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
+										connection_element_class_cleaner (ele_class_connections[j]['connection_elem_list'],ele_class_connections,fluxOutput,clean_ele_class_connections)
+										contr = True
+								if contr == False:
 									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
 									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
 									clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-									connection_element_class_cleaner (ele_class_connections[j]['connection_elem_list'],ele_class_connections,fluxOutput,clean_ele_class_connections)
-									contr = True
-							if contr == False:
-								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
-								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
-								clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-							
-				ele_class_connections[j]['connection_elem_list']=temp_connections
-				temp_connections=[]			
+								
+					ele_class_connections[j]['connection_elem_list']=temp_connections
+					temp_connections=[]			
 	#Fixme=>implementare output e ricorsione					
 	
 	print '\n'
