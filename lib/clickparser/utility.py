@@ -2,7 +2,7 @@ import string
 import copy
 
 
-def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
+def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, type_element):
 	comma=[]
 	config=[]
 	word=words[i+1]
@@ -18,13 +18,17 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group):
 			config.append(w[0:len(w)-1])
 		else:
 			config.append(w)
-		
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group})
+
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': type_element})
 	
 
 
-def explicit_element_decl_without_conf(i, words, element, name_subgraph, group):
-	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group})
+def explicit_element_decl_without_conf(i, words, element, name_subgraph, group, type_element):
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': type_element})
 	
 
 
@@ -45,7 +49,10 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 			config.append(w)
 
 	name=nameGenerator(element, word[0:index])
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group})
+
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group, 'node_type':'element'})
 	words2[i] = name_subgraph+name
 	
 
@@ -53,7 +60,10 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, words2):
 
 	name=nameGenerator(element, words[i])
-	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group})
+
+	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
+		name_subgraph = name_subgraph+'.'
+	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group, 'node_type': 'element'})
 	words2[i] = name_subgraph+name
 
 
@@ -61,10 +71,47 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 def subgraph_element_name(line, compound_element, element):
 
 	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'compound', 'name':name, 'config':[],'group':'click'})
+	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':'click', 'node_type': 'compound_element'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
+
+
+def rename_class_element(words, words1,words3, name_ele, name):
+	
+
+
+	for i in range (0,len(words1)):						#Rinomina gli elementi espliciti della riga
+		
+		if words1[i] != '::' and words1[i] != '->' and string.find(words[i],'@') == -1 and string.find(words1[i], 'input') == -1 and string.find(words1[i], 'output') == -1:
+				if string.find(words1[i], '[') != -1:
+					start = string.find(words1[i], '[')
+					stop = string.find(words1[i], ']')
+					if start == 0:
+						name_element = words1[i][stop:]
+					else:
+						name_element = words1[i][0:start]
+					words1[i] = name_ele+'.'+name_element
+				else:
+					words1[i] = name_ele+'.'+words[i]
+
+		try:
+			index = words1.index('::')
+			del words1[index+1]
+			counter = len(name_ele) 
+			if name_ele[counter-1] == '.':
+				words1[index-1] = name_ele + words1[index-1]
+			else:
+				words1[index-1] = name_ele + '.' + words1[index-1]
+
+			del words1[index]
+		except ValueError:
+			break
+
+
+
+	#FIXME => aggiungere controllo elementi impliciti e gestire parentesi quadre		
+
 
 
 
@@ -195,5 +242,5 @@ def handle_edgeslevel(connection):
 		if c[1]['group'] != 'click':
 			for c1 in connection2.items():
 				if c1[1]['target'] == c[1]['group']:
-					c[1]['view'] = c1[1]['view']+1
+					c[1]['dept'] = c1[1]['dept']+1
 			
