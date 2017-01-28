@@ -293,12 +293,12 @@ def connection_decl(words, connection, element):
 
 
 def connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections):
-	print 'INIZIO'
-	print '*********'
-	print connection_list
-	print '\n'
-	print ele_class_connections
-	print '*********'
+	#print 'INIZIO'
+	#print '*********'
+	#print connection_list
+	#print '\n'
+	#print ele_class_connections
+	#print '*********'
 
 	templist=[]
 	temp_connections=[]
@@ -346,17 +346,45 @@ def connection_element_class_cleaner (connection_list,ele_class_connections,flux
 								
 					ele_class_connections[j]['connection_elem_list']=temp_connections
 					temp_connections=[]			
-	#Fixme=>implementare output e ricorsione					
+	#Fixme=>implementare output 					
 	
-	print '\n'
-	print '################ Eleclassconnection modificato #############'
-	print ele_class_connections
-	print '\n'					
+
+	#print '\n'
+	#print '################ Eleclassconnection modificato #############'
+	#print ele_class_connections
+	#print '\n'					
+	#print '################ Output Fluttuante #############'
+	#print fluxOutput
+	#print '################ Connessioni Pulite #############'					
+	#print clean_ele_class_connections					
+
+
+def connection_element_class_output_closer (connection_list,fluxOutput,clean_ele_class_connections):
+
+	print connection_list
 	print '################ Output Fluttuante #############'
 	print fluxOutput
+	print '\n'
 	print '################ Connessioni Pulite #############'					
 	print clean_ele_class_connections					
+	
+	for i in range (0,len(connection_list)) : 
+		if connection_list[i]== '->' :	
+			for j in range (0, len(fluxOutput.keys())) : 
+				if string.find(connection_list[i-1],fluxOutput[j]['Level']) != -1 :
+					for c1 in range (0,len(fluxOutput[j]['Output fluttuante'])) :
+						if string.find(fluxOutput[j]['Output fluttuante'][c1],'output') != -1 :
+							clean_ele_class_connections.append(fluxOutput[j]['Output fluttuante'][c1-2])
+							clean_ele_class_connections.append(fluxOutput[j]['Output fluttuante'][c1-1])
+							clean_ele_class_connections.append(connection_list[i+1])
+						#FIXME => implementare ricorsione	
+						#for k in range (0,len(fluxOutput.keys())) :
+							#if fluxOutput[j]['Output fluttuante'][c1] == fluxOutput[k]['Level'] :
+								#connection_element_class_output_closer (fluxOutput[j]['Output fluttuante'][c1],fluxOutput,clean_ele_class_connections)	
 
+	
+	print '################ Connessioni Pulite Modificate #############'					
+	print clean_ele_class_connections					
 
 '''	
 #Gestione dell'input e output senza porte

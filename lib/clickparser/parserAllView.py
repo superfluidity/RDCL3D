@@ -162,9 +162,9 @@ def parserAllView(file_click):
     ##############################################################################################################################################
     
     connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections)
-    #for c2 in ele_class_connections.items():
-    #    for e2 in c2[1]['connection_elem_list']:
-    #        connection_list.append(e2)
+    connection_element_class_output_closer (connection_list,fluxOutput,clean_ele_class_connections) #gestisce gli output
+    for c2 in clean_ele_class_connections:
+       connection_list.append(c2)
 
     
     connection_decl(connection_list, connection, element)
