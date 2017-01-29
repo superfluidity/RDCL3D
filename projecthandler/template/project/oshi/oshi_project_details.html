@@ -7,6 +7,6 @@
 
 {% block content_descritors_col %}
 {{ block.super }}
-<div class="row"><div class="col-md-6 "><div class="small-box bg-aqua"><div class="inner"><h3>0</h3><p>Oshi type</p></div><div class="icon"><i class="fa fa-file-code-o"></i></div><a href="/projects/{{project_id}}/descriptors/oshi" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a></div></div></div>
+<div class="row"><div class="col-md-6 "><div class="small-box bg-aqua"><div class="inner"><h3>{{project_overview.oshi}}</h3><p>Oshi type</p></div><div class="icon"><i class="fa fa-file-code-o"></i></div><a href="/projects/{{project_id}}/descriptors/oshi" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a></div></div></div>
 
 {% endblock %}

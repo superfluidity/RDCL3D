@@ -146,7 +146,7 @@ class ProjectInstaller():
                     box_html = '<div class="col-md-6 ">' \
                                '<div class="small-box bg-aqua">' \
                                '<div class="inner">' \
-                               '<h3>0</h3>' \
+                               '<h3>{{project_overview.'+type+'}}</h3>' \
                                '<p>' + type.capitalize() + ' type</p>' \
                                                            '</div>' \
                                                            '<div class="icon">' \
