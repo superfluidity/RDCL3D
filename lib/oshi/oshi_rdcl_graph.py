@@ -15,18 +15,28 @@ class OshiRdclGraph(RdclGraph):
 
     def build_graph_from_project(self, json_project, model={}):
         """Creates a single graph for a whole project"""
-
-        #print "json_project ",json_project
+        # in oshi is not supported
         graph_object = {
             'vertices': [],
             'edges': [],
             'graph_parameters': {},
             'model': model
         }
-        try:
-            positions = json_project['positions'] if 'positions' in json_project else False
-            log.debug('build graph from project json')
+        # try:
+        #
+        #
+        # except Exception as e:
+        #     log.exception('Exception in build_graph_from_project')
+        #     raise
 
+        return graph_object
+
+    def build_graph_from_oshi_descriptor(self, json_data, model={}):
+        """Creates a single graph for a oshi descriptor"""
+
+        try:
+            graph_object = json_data
+            graph_object['model'] = model
 
         except Exception as e:
             log.exception('Exception in build_graph_from_project')

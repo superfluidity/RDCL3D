@@ -133,6 +133,7 @@ class EtsiProject(Project):
     def get_graph_data_json_topology(self, descriptor_id):
         test_t3d = EtsiRdclGraph()
         project = self.get_dataproject()
+        ##FIXME da rivedere, credo sia necessario rivedere questo processo
         topology = test_t3d.build_graph_from_project(project,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)

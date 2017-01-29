@@ -104,8 +104,14 @@ class OshiProject(Project):
 
     def get_graph_data_json_topology(self, descriptor_id):
         rdcl_graph = OshiRdclGraph()
+        descriptor_data = {}
         project = self.get_dataproject()
-        topology = rdcl_graph.build_graph_from_project(project,
+        for desc_type in project:
+            log.debug(descriptor_id)
+            if descriptor_id in project[desc_type]:
+                descriptor_data = project[desc_type][descriptor_id]
+        log.debug(descriptor_data)
+        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 

@@ -69,9 +69,9 @@ class Project(models.Model):
         try:
             graph_model = Util.loadyamlfile(file_path)
         except Exception as e:
+            log.exception(e)
             pass
         return graph_model       
-
 
     def get_type(self):
         return "Base"

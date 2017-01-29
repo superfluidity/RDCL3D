@@ -50,7 +50,8 @@ dreamer.ModelGraphEditor = (function(global) {
 
         }, this);
         var self = this;
-        d3.json("graph_data/", function(error, data) {
+        var data_url = (args.data_url) ? args.data_url : "graph_data/";
+        d3.json(data_url, function(error, data) {
             //console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
