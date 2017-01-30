@@ -81,7 +81,7 @@ dreamer.ModelGraphEditor = (function(global) {
         var node_type = node.info.type;
         if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
             if(self.model.layer[current_layer].nodes[node_type].addable.callback){
-                var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
+                var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
                 controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function(){
                     self.parent.addNode.call(self, node);
@@ -89,6 +89,7 @@ dreamer.ModelGraphEditor = (function(global) {
                         success();
                 }, error);
             }else{
+                log('addNode: callback undefined in mode spec.');
                 self.parent.addNode.call(self, node);
             }
         }

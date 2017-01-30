@@ -1,5 +1,5 @@
-name: Oshi                              #Model name
-description: oshi                       #Model description
+name: Example                              #Model name
+description: example                       #Model description
 version: 1.0                            #Model version
 designer: Pierluigi Greto               #Model designer
 nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
@@ -37,6 +37,15 @@ action:           #Action to show on rightclick on a node/link
           callback: deleteLink
 
 callback:                             #List of callbacks used
-  delete:
+  addNode:
+      file: example_controller.js
+      class: ExampleController
+  removeNode:
+      file: example_controller.js
+      class: ExampleController
+  addLink:
+      file: example_controller.js
+      class: ExampleController
+  removeLink:
       file: example_controller.js
       class: ExampleController

@@ -19,52 +19,68 @@ layer:                                  #List of Layers
     Data:
         nodes:                  #List of node to be visualized in the current layer
             OSHI-CR:
-                addable: true
-                removable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
             OSHI-PE:
-                addable: true
-                removable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
             CE:
-                addable: true
-                removable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
             OF Controller:
-                addable: true
-                removable: true
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
         allowed_edges:                  #List of allowed edges between the layer's nodes
             CE:                        #Edge's source
                 destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
                     OSHI-PE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
                     CE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
             OSHI-CR:
                 destination:
                     OSHI-CR:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
                     OSHI-PE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
                     OF Controller:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
 
             OSHI-PE:
                 destination:
                     OSHI-CR:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
                     OSHI-PE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
 
             OF Controller:
                  destination:
                      OSHI-CR:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
 
     Vll:
         nodes:
@@ -74,7 +90,8 @@ layer:                                  #List of Layers
                 destination:                  #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
     PW:
         nodes:
             CE:
@@ -83,7 +100,8 @@ layer:                                  #List of Layers
                 destination:                #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
                         direct_edge: false
-                        removable: true
+                        removable:
+                            callback: removeLink
     Control:
         nodes:
             OSHI-CR:
@@ -104,3 +122,15 @@ action:           #Action to show on rightclick on a node/link
 
 
 callback:                             #List of callbacks used to controll the link
+  addNode:
+      file: oshi_controller.js
+      class: OshiController
+  removeNode:
+      file: oshi_controller.js
+      class: OshiController
+  addLink:
+      file: oshi_controller.js
+      class: OshiController
+  removeLink:
+      file: oshi_controller.js
+      class: OshiController

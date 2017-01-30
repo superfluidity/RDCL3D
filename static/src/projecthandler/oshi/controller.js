@@ -19,6 +19,7 @@ dreamer.OshiController = (function(global) {
     }
 
     OshiController.prototype.addNode = function(self, node, success, error) {
+        log('addNode');
         new dreamer.GraphRequests().addNode(node, null, function() {
             if (success)
                 success();
@@ -26,7 +27,7 @@ dreamer.OshiController = (function(global) {
     };
 
     OshiController.prototype.addLink = function(self, s, d, success, error) {
-
+        log('addLink');
         new dreamer.GraphRequests().addLink(s, d, null, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
@@ -39,6 +40,7 @@ dreamer.OshiController = (function(global) {
     };
 
     OshiController.prototype.removeNode = function(self, node, success, error) {
+        log('removeNode');
         new dreamer.GraphRequests().removeNode(node, null, function() {
             if (success) {
                 success();
@@ -47,6 +49,7 @@ dreamer.OshiController = (function(global) {
     };
 
     OshiController.prototype.removeLink = function(self, link, success, error) {
+        log('removeLink');
         var s = link.source;
         var d = link.target;
         new dreamer.GraphRequests().removeLink(s, d, function() {
@@ -55,6 +58,14 @@ dreamer.OshiController = (function(global) {
             }
         });
     };
+
+    /**
+     * Log utility
+     */
+    function log(text) {
+        if (DEBUG)
+            console.log("::OshiController::", text);
+    }
 
     return OshiController;
 }(this));
