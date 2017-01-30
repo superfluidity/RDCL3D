@@ -26,11 +26,10 @@ dreamer.ModelGraphEditor = (function(global) {
     }
 
 
-    //TODO this should be moved in graph_editor
     ModelGraphEditor.prototype.init = function(args) {
         this.parent.init.call(this, args);
 
-        if (args.gui_properties[GUI_VERSION]!= undefined) {
+        if (args.gui_properties[GUI_VERSION] != undefined) {
             args.gui_properties = args.gui_properties[GUI_VERSION];
         }
 
@@ -43,10 +42,10 @@ dreamer.ModelGraphEditor = (function(global) {
             //console.log(key);
             this.type_property[key] = args.gui_properties["nodes"][key];
             this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
-            if (this.type_property[key]["image"] != undefined ) {
+            if (this.type_property[key]["image"] != undefined) {
                 this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
             }
-            
+
 
         }, this);
         var self = this;
@@ -79,19 +78,27 @@ dreamer.ModelGraphEditor = (function(global) {
         var self = this;
         var current_layer = self.getCurrentView()
         var node_type = node.info.type;
-        if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].addable ){
-            if(self.model.layer[current_layer].nodes[node_type].addable.callback){
+
+        if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].addable) {
+            if (self.model.layer[current_layer].nodes[node_type].addable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function(){
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function() {
                     self.parent.addNode.call(self, node);
-                    if(success)
+                    if (success)
                         success();
                 }, error);
-            }else{
+
+            } else {
+                //FIXME calling the simple addNode method of GraphEditor
+                //FIXME we have to handle succ or fail
                 log('addNode: callback undefined in mode spec.');
                 self.parent.addNode.call(self, node);
             }
+        }
+        else{
+            //FIXME Error handling????
+
         }
     };
 
@@ -103,6 +110,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.updateDataNode = function(args) {
+        //FIXME updating a node properties need commit to server side!
         this.parent.updateDataNode.call(this, args);
     };
 
@@ -115,21 +123,24 @@ dreamer.ModelGraphEditor = (function(global) {
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
-        if(self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type]  && self.model.layer[current_layer].nodes[node_type].removable ){
-                console.log(self.model.layer[current_layer].nodes[node_type].removable.callback)
-            if(self.model.layer[current_layer].nodes[node_type].removable.callback){
-                var c= self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
+        if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].removable) {
+            console.log(self.model.layer[current_layer].nodes[node_type].removable.callback)
+            if (self.model.layer[current_layer].nodes[node_type].removable.callback) {
+                var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function(){
+                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function() {
                     self.parent.removeNode.call(self, node);
-                    if(success)
+                    if (success)
                         success();
                 }, error);
-            }else{
+            } else {
+                //FIXME calling the simple addNode method of GraphEditor
+                //FIXME we have to handle succ or fail
                 self.parent.removeNode.call(self, node);
             }
         } else {
-            alert("You can't remove a " + node.info.type );
+            //FIXME we need to manage alert in a different way: FAILBACK
+            alert("You can't remove a " + node.info.type);
         }
     };
 
@@ -151,23 +162,26 @@ dreamer.ModelGraphEditor = (function(global) {
             group: this.filter_parameters.link.group,
         };
         var current_layer = self.getCurrentView()
-        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]){
-            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback){
+        if (self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]) {
+            if (self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
                 var c = self.model.callback[callback].class;
                 var controller = new dreamer[c]();
-                controller[callback](self, s, d, function(){
+                controller[callback](self, s, d, function() {
                     self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
-                    if(success)
+                    if (success)
                         success();
                 }, error);
-            }else{
+            } else {
+                //FIXME calling the simple addNode method of GraphEditor
+                //FIXME we have to handle succ or fail
                 self._deselectAllNodes();
                 self.parent.addLink.call(self, link);
             }
 
         } else {
+            //FIXME we need to manage alert in a different way: FAILBACK
             alert("You can't link a " + source_type + " with a " + destination_type);
         }
     };
@@ -184,30 +198,33 @@ dreamer.ModelGraphEditor = (function(global) {
         var source_type = s.info.type;
         var destination_type = d.info.type;
         var current_layer = self.getCurrentView()
-        if(self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]
-            && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable
-        ){
-            if(self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback){
+        if (self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type] &&
+            self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable
+        ) {
+            if (self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback;
                 var c = self.model.callback[callback].class;
                 var controller = new dreamer[c]();
-                controller[callback](self, link, function(){
+                controller[callback](self, link, function() {
                     self._deselectAllNodes();
                     self._deselectAllLinks();
                     self.parent.removeLink.call(self, link.index);
-                    if(success)
+                    if (success)
                         success();
                 }, error);
-            }else{
+            } else {
+                //FIXME calling the simple addNode method of GraphEditor
+                //FIXME we have to handle succ or fail
                 self._deselectAllNodes();
                 self._deselectAllLinks();
                 self.parent.removeLink.call(self, link.index);
-                if(success)
+                if (success)
                     success();
             }
 
         } else {
-            alert("You can't delete the link" );
+            //FIXME we need to manage alert in a different way: FAILBACK
+            alert("You can't delete the link");
         }
 
 
@@ -238,85 +255,89 @@ dreamer.ModelGraphEditor = (function(global) {
     ModelGraphEditor.prototype._setupBehaviorsOnEvents = function() {
         log("_setupBehaviorsOnEvents");
         var self = this;
-        var contextmenuNodesAction= [{
-                    title: 'Show graph',
-                    action: function(elm, c_node, i) {
-                       if (c_node.info.type != undefined) {
-                        var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
-                        if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
-                            if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
-                                var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
-                                self.handleFiltersParams({
+        var contextmenuNodesAction = [{
+            title: 'Show graph',
+            action: function(elm, c_node, i) {
+                if (c_node.info.type != undefined) {
+                    var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
+                    if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                        if (self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands) {
+                            var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
+                            self.handleFiltersParams({
                                 node: {
                                     type: Object.keys(self.model.layer[new_layer].nodes),
                                     group: [c_node.id]
                                 },
                                 link: {
                                     group: [c_node.id],
-                                    view: [c_node.info.type ]
+                                    view: [c_node.info.type]
                                 }
                             });
 
-                            }
                         }
                     }
-                    }
-                }, {
-                    title: 'Edit',
-                    action: function(elm, d, i) {
-                        if (d.info.type != undefined) {
-                            window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
-                        }
-                    }
+                }
+            }
+        }, {
+            title: 'Edit',
+            action: function(elm, d, i) {
+                if (d.info.type != undefined) {
+                    window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
+                }
+            }
 
-                }, {
-                    title: 'Delete',
-                    action: function(elm, d, i) {
-                        self.removeNode(d);
-                    }
+        }, {
+            title: 'Delete',
+            action: function(elm, d, i) {
+                self.removeNode(d);
+            }
 
-                }];
-        if(self.model && self.model.action && self.model.action.node ){
+        }];
+        if (self.model && self.model.action && self.model.action.node) {
             console.log(this.model)
-            for (var i in self.model.action.node){
+            for (var i in self.model.action.node) {
                 var action = self.model.action.node[i]
                 contextmenuNodesAction.push({
-                title: action.title,
-                action: function(elm, d, i) {
+                    title: action.title,
+                    action: function(elm, d, i) {
                         var callback = action.callback;
                         var c = self.model.callback[callback].class;
                         var controller = new dreamer[c]();
-                        var args = {elm: elm,
-                                    d: d,
-                                    i: i}
+                        var args = {
+                            elm: elm,
+                            d: d,
+                            i: i
+                        }
 
                         controller[callback](self, args);
-                 }
+                    }
                 });
             }
         }
         var contextmenuLinksAction = [{
-                    title: 'Delete Link',
-                    action: function(elm, link, i) {
-                        self.removeLink(link);
-                    }
+            title: 'Delete Link',
+            action: function(elm, link, i) {
+                self.removeLink(link);
+            }
 
-                }];
-        if(self.model && self.model.action && self.model.action.link ){
-            for (var i in self.model.action.link){
+        }];
+        if (self.model && self.model.action && self.model.action.link) {
+            for (var i in self.model.action.link) {
                 var action = self.model.action.link[i]
                 contextmenuLinksAction.push({
-                title: action.title,
-                action: function(elm, link, i) {
+                    title: action.title,
+                    action: function(elm, link, i) {
                         var callback = action.callback;
                         var c = self.model.callback[callback].class;
                         var controller = new dreamer[c]();
-                        var args = {elm: elm,
-                                    link: link,
-                                    i: i}
+                        var args = {
+                            elm: elm,
+                            link: link,
+                            i: i
+                        }
 
                         controller[callback](self, args);
-                 }
+                    }
                 });
             }
         }
@@ -346,23 +367,23 @@ dreamer.ModelGraphEditor = (function(global) {
                     self.link.style('stroke-width', 2);
                 },
                 'dblclick': function(c_node) {
-                     d3.event.preventDefault();
+                    d3.event.preventDefault();
                     log('dblclick ');
                     if (c_node.info.type != undefined) {
                         var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
-                        if(current_layer_nodes.indexOf(c_node.info.type) >= 0 ){
-                            if(self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands){
+                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                            if (self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands) {
                                 var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
                                 self.handleFiltersParams({
-                                node: {
-                                    type: Object.keys(self.model.layer[new_layer].nodes),
-                                    group: [c_node.id]
-                                },
-                                link: {
-                                    group: [c_node.id],
-                                    view: [c_node.info.type ]
-                                }
-                            });
+                                    node: {
+                                        type: Object.keys(self.model.layer[new_layer].nodes),
+                                        group: [c_node.id]
+                                    },
+                                    link: {
+                                        group: [c_node.id],
+                                        view: [c_node.info.type]
+                                    }
+                                });
 
                             }
                         }
@@ -391,23 +412,24 @@ dreamer.ModelGraphEditor = (function(global) {
         };
     };
 
-     ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
+    ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
         this.refreshGui();
     };
 
-     ModelGraphEditor.prototype.refreshGui = function(args) {
+    ModelGraphEditor.prototype.refreshGui = function(args) {
         var self = this;
         console.log(self)
-        if(!self.model){
+        if (!self.model) {
             return;
         }
-
+        //FIXME NO HTML HERE!!!
+        // this action should be done with js script embedded in html page
         var type_property = self.getTypeProperty();
         $("#draggable-container").empty()
         for (var i in this.model.layer[self.getCurrentView()].nodes) {
             var node = this.model.layer[self.getCurrentView()].nodes[i]
-            if(node.addable){
+            if (node.addable) {
                 var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
                 $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
             }
