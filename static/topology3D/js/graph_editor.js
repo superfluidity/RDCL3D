@@ -116,6 +116,7 @@ dreamer.GraphEditor = (function(global) {
 
     GraphEditor.prototype.get_d3_symbol =
         function(myString) {
+            log(myString)
             switch (myString) {
                 case "circle":
                     return d3.symbolCircle;
@@ -345,7 +346,7 @@ dreamer.GraphEditor = (function(global) {
                     return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size'), 2) / 4;
                 })
                 .type(function(d) {
-                    return self._node_property_by_type(d.info.type, 'shape');
+                    return (self._node_property_by_type(d.info.type, 'shape'));
                 })
             )
             .style("fill", function(d) {
@@ -409,7 +410,7 @@ dreamer.GraphEditor = (function(global) {
                     return Math.PI * Math.pow(self._node_property_by_type(d.info.type, 'size') + 7 , 2) / 4;
                 })
                 .type(function(d) {
-                    return d3.symbolCircle;//self._node_property_by_type(d.info.type, 'shape');
+                    return (self.get_d3_symbol('circle'));
                 })
             )
             .style("fill", 'transparent')
@@ -567,7 +568,7 @@ dreamer.GraphEditor = (function(global) {
 
 
     GraphEditor.prototype.setNodeClass = function(class_name, filter_cb) {
-        console.log("setNodeClass");
+        log("setNodeClass");
         var self = this;
         this.svg.selectAll('.node').classed(class_name, false);
         this.svg.selectAll('.node')
@@ -575,7 +576,7 @@ dreamer.GraphEditor = (function(global) {
     }
 
     GraphEditor.prototype.setLinkClass = function(class_name, filter_cb) {
-        console.log("setLinkClass");
+        log("setLinkClass");
         var self = this;
         this.svg.selectAll('.link').classed(class_name, false);
         this.svg.selectAll('.link')
@@ -595,10 +596,16 @@ dreamer.GraphEditor = (function(global) {
      */
 
     GraphEditor.prototype._node_property_by_type = function(type, property) {
-        if (this.type_property[type] != undefined && this.type_property[type][property] != undefined)
+        //log(type + "-" + property)
+        if (this.type_property[type] != undefined && this.type_property[type][property] != undefined){
+            if(property == "shape")
+                log("dentro" + this.type_property[type][property])
             return this.type_property[type][property];
-        else
+            }
+        else{
             return this.type_property['unrecognized'][property];
+        }
+
     }
 
     /**

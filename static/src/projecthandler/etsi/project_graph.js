@@ -29,18 +29,13 @@ $(document).ready(function() {
     graph_editor.init({
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
-        //***STEFANO
-        gui_properties: example_gui_properties
+        gui_properties: example_gui_properties,
+        filter_base: params
     });
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
 
 });
-
-var filters = function(e, params) {
-    graph_editor.handleFiltersParams(params);
-    $('#' + e).nextAll('li').remove();
-}
 
 
 function initDropOnGraph() {
@@ -167,6 +162,22 @@ function changeFilter(e, c) {
         $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled", true);
     }
+
+    updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+}
+
+function updateNodeDraggable(args){
+
+        var type_property = args.type_property;
+        $("#draggable-container").empty()
+        for (var i in args.nodes_layer) {
+            var node = args.nodes_layer[i]
+            if (node.addable) {
+                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+            }
+        }
+
 }
 
 function openEditor(project_id) {
@@ -263,25 +274,6 @@ function clickVnffg() {
 }
 
 function handleVnffgParameter(vnffgId, class_name) {
-    /*
-    if(this.old_vnffg != null){
-        var index = this.filter_parameters.node.group.indexOf(this.old_vnffg);
-        if(index >= 0)
-            this.filter_parameters.node.group.splice(index, 1);
-        index = this.filter_parameters.link.group.indexOf(this.old_vnffg);
-        if(index >= 0)
-            this.filter_parameters.link.group.splice(index, 1);
-    }
-    if(vnffgId != "Global"){
-        this.old_vnffg = vnffgId;
-        this.filter_parameters.node.group.push(vnffgId);
-        this.filter_parameters.link.group.push(vnffgId);
-
-    }else{
-        this.old_vnffg = null;
-    }
-    this.handleFiltersParams(this.filter_parameters, true);
-    */
 
     if (vnffgId != "Global") {
         selected_vnffgId = vnffgId;

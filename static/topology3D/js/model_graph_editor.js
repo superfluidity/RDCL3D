@@ -39,7 +39,6 @@ dreamer.ModelGraphEditor = (function(global) {
         //this.type_property["unrecognized"]["shape"] = d3.symbolCross;
 
         Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
-            //console.log(key);
             this.type_property[key] = args.gui_properties["nodes"][key];
             this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
             if (this.type_property[key]["image"] != undefined) {
@@ -51,19 +50,21 @@ dreamer.ModelGraphEditor = (function(global) {
         var self = this;
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         d3.json(data_url, function(error, data) {
-            //console.log(data)
+            log('data from remote')
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
-            //console.log(data.graph_parameters)
             self.model = data.model;
-            self.refreshGui();
+
             self._setupBehaviorsOnEvents();
             self.refreshGraphParameters(self.d3_graph.graph_parameters);
             self.refresh();
             self.startForce();
+             //if(args.filter_base != undefined)
+
             setTimeout(function() {
-                self.handleForce(self.forceSimulationActive);
+                //self.handleForce(self.forceSimulationActive);
+                self.handleFiltersParams(args.filter_base);
             }, 500);
 
         });
@@ -125,7 +126,6 @@ dreamer.ModelGraphEditor = (function(global) {
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
         if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].removable) {
-            console.log(self.model.layer[current_layer].nodes[node_type].removable.callback)
             if (self.model.layer[current_layer].nodes[node_type].removable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
                 var controller = new dreamer[c]();
@@ -299,7 +299,6 @@ dreamer.ModelGraphEditor = (function(global) {
 
         }];
         if (self.model && self.model.action && self.model.action.node) {
-            console.log(this.model)
             for (var i in self.model.action.node) {
                 var action = self.model.action.node[i]
                 contextmenuNodesAction.push({
@@ -419,28 +418,16 @@ dreamer.ModelGraphEditor = (function(global) {
 
     ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
-        this.refreshGui();
     };
 
-    ModelGraphEditor.prototype.refreshGui = function(args) {
-        var self = this;
-        if (!self.model) {
-            return;
-        }
-        //FIXME NO HTML HERE!!!
-        // this action should be done with js script embedded in html page
-        var type_property = self.getTypeProperty();
-        $("#draggable-container").empty()
-        for (var i in this.model.layer[self.getCurrentView()].nodes) {
-            var node = this.model.layer[self.getCurrentView()].nodes[i]
-            if (node.addable) {
-                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
-                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
-            }
-        }
-        var newLi = $("<li id=" + JSON.stringify(self.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(self.getCurrentGroup()) + "," + JSON.stringify(this.filter_parameters) + ")'>" + self.getCurrentGroup() + "</a></li>");
-        $('#breadcrumb').append(newLi);
-    };
+    ModelGraphEditor.prototype.getAvailableNodes = function (){
+        log('getAvailableNodes');
+        log(this.model)
+        if(this.model && this.model.layer[this.getCurrentView()] != undefined)
+            return this.model.layer[this.getCurrentView()].nodes;
+        return [];
+    }
+
 
     ModelGraphEditor.prototype.exploreLayer = function(args) {
 

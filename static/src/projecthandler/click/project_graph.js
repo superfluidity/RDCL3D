@@ -1,6 +1,6 @@
 
 //GraphEditor instance
-var graph_editor = new dreamer.ClickGraphEditor();
+var graph_editor = new dreamer.ModelGraphEditor();
 var selected_vnffgId = null;
 var show_all = null;
 
@@ -14,11 +14,11 @@ $(document).ready(function() {
     var type = descriptor_type == 'click'  ? ['click'] : ['click'];
     var params = {
         node: {
-            type: type,
+            type: [],
             group: []
         },
         link: {
-            group: [type],
+            group: [],
             view: []
         }
     }
@@ -30,12 +30,13 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParamater('id')
+        descriptor_id: getUrlParamater('id'),
+        data_url: "graph_data/"+getUrlParamater('id'),
+        filter_base: params
     });
    // graph_editor.handleFiltersParams(params);
 
-    $('#draggable-container').hide();
-    $('#vnffg_options').hide();
+
 });
 
 var filters = function(e, params) {
