@@ -109,12 +109,6 @@ def rename_class_element(words, words1,words3, name_ele, name):
 			break
 
 
-
-	#FIXME => aggiungere controllo elementi impliciti e gestire parentesi quadre		
-
-
-
-
 def rename_compound_element(words3, compound, element_renamed):
 	for i in range(0,len(words3)):														# rinomina gli elementi del compound contenuti in word3
             try:
@@ -139,9 +133,6 @@ def rename_compound_element(words3, compound, element_renamed):
 					name = words3[i][0:start]	
 				if name == e[1]['origin_name']:
 					words3[i] = e[1]['new_name']
-	#print words3
-
-
 
 
 def nameGenerator(element, type_element):      		#nome di default class@num
@@ -158,13 +149,6 @@ def nameGenerator(element, type_element):      		#nome di default class@num
 	else:
 		name = type_element+'@0'
 
-	'''
-	for i in range(0,len(element)):
-		for j in range(0,len(element)):
-			pos=string.find(element[i]['name'], str(j))
-			if pos != -1:
-				num = j
-	'''
 	return name
 
 
@@ -213,19 +197,7 @@ def load_list(line, words):
 		words.append(word)
 
 	words_new=[]	
-	'''
-	for i in range(0,len(words)):																#usato per gestire il tipo di dichiarazione di porta d'uscita
-		words_new.append(words[i])																#es.:  port[num] o port [num]
-		try:
-			if string.find(words[i],'[') == 0 and string.find(words[i],']')!=-1 and words[i+1] == '->' and words[i-1] != '->':
-				words_new[i-1]=words_new[i-1]+''+words[i]
-				del words_new[len(words_new)-1]
-		except IndexError:
-			continue
-	#print'words_new'
-	#print words_new
-	#print '########'
-	'''
+
 	return words
 
 

@@ -28,7 +28,6 @@ def generateJsont3d(element, connection):
 
 
 def parserAllView(file_click):
-    # with open('/home/user/Progetto_Superfluidity/test-rdcl/lib/clickparser/'+file_click,'r') as f:
     l = 0
     words = []
     
@@ -108,9 +107,8 @@ def parserAllView(file_click):
         words2 = []
         
         explicit_element_decl(line, element,'', 'click', words, ele_class_dict,ele_class_connections)
-        #print'implicit'
         implicit_element_decl(line, element,'', 'click', words, words2)
-        #print'###'
+
         for i in range(0,len(words2)):                                                          # ad ogni riga sostituisce il da dichiarazione dell'elemento 
             try:                                                                                # con il nome dell'elemento. Per semplificare la dichiarazione 
                 index = words2.index('::')                                                      # delle connessioni
@@ -124,17 +122,8 @@ def parserAllView(file_click):
 
         load_list(line, words)
 
-    ################################################# PRINTA LA STRINGA DELL'ELEMENT CLASS    
-    #print '#############'
-    #print connection_list
-    #print ele_class_connections
-    #print '*************'
-    #print ele_class_dict
-    ############################################# TEST PER LE DICHIARAZIONI DEGLI ELEMENTI E LE CONNESSIONI DEI COMPOUND ELEMENT###################
-
     element_renamed={}
-    #print 'comp'
-    #print compound_element
+
     for comp in compound_element.items():
         
         words3 = []
@@ -160,9 +149,8 @@ def parserAllView(file_click):
             connection_list.append(e)
 
     ##############################################################################################################################################
-    assoOut={}
-    connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections, assoOut)
-    print assoOut
+    
+    connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections)
     connection_element_class_output_closer (connection_list,fluxOutput,clean_ele_class_connections) #gestisce gli output
     for c2 in clean_ele_class_connections:
        connection_list.append(c2)

@@ -91,62 +91,7 @@ def implicit_element_decl(line, element, name_subgraph, group, words, words2):
 		
 				elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
 					implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
-'''
-def element_class_handler(element, name_element,name_element_class,ele_class_cont,elementclassstr,ele_class_dict,ele_class_connections,connection,group):			#riceve il nome del element class e il contenuto
-	words=[]
-	words3=[]
-	element_renamed={}
-	renamed_element_content=[]
 
-	#print name_element
-	#print name_element_class
-	
-	#print ele_class_cont	
-	#print elementclassstr
-
-	#FIXME => il config va letto e inserito
-
-	if group == 'click':
-		element[len(element)]=({'element':name_element_class, 'name':name_element, 'config':'','group':'click', 'node_type': 'class_element'})
-	else:
-		name_element = group+'.'+name_element
-		element[len(element)]=({'element':name_element_class, 'name':name_element, 'config':'','group':group, 'node_type': 'element'})
-
-
-	#explicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, element_renamed,ele_class_dict,ele_class_connections,connection)
-	explicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, element_renamed)
-	implicit_compound_decl(elementclassstr, element, name_element+'.', name_element, words, words3)
-
-	for c1 in words3:
-		renamed_element_content.append(c1)
-
-
-#Rename element content
-	for i in range(0,len(renamed_element_content)):
-			try:
-				index = renamed_element_content.index('::')
-				del renamed_element_content[index+1]
-				renamed_element_content[index-1] = name_element+'.'+ renamed_element_content[index-1]
-				del renamed_element_content[index]
-			except ValueError:
-				break
-	
-	for i in range(0,len(renamed_element_content)):										# rinomina gli elementi precedentementi dichiarati e che hanno ancora
-		for e in element_renamed.items():												# ancora il loro nome originale
-			if renamed_element_content[i] == e[1]['origin_name']:
-				renamed_element_content[i] = e[1]['new_name']
-			elif string.find(renamed_element_content[i], '[')!=-1:
-				start = string.find(renamed_element_content[i], '[')
-				stop = string.find(renamed_element_content[i], ']')
-				if start == 0:
-					name = renamed_element_content[i][stop+1:]
-				elif stop == len(renamed_element_content[i])-1:
-					name = renamed_element_content[i][0:start]	
-				if name == e[1]['origin_name']:
-					renamed_element_content[i] = e[1]['new_name']
-
-	return name_element,renamed_element_content
-'''
 
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
 	config = False
@@ -227,9 +172,7 @@ def subgraph_ele_class(line2,ele_class_element):
 
 
 def connection_decl(words, connection, element):
-	#print 'words'
-	#print words
-	#print '\n'
+
 	for i in range(0,len(words)):
 		if words[i] == '->':
 			port_input=0
@@ -249,7 +192,7 @@ def connection_decl(words, connection, element):
 					name_element_source=words[i-1][0:index]
 				else:
 					name_element_source=words[i-1]
-					#print name_element_source
+
 			else:
 				name_element_source=words[i-1]	
 					
@@ -292,21 +235,10 @@ def connection_decl(words, connection, element):
 	handle_edgeslevel(connection)
 
 
-def connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections,assoOut):
-	#print 'INIZIO'
-	#print '*********'
-	#print connection_list
-	#print '\n'
-	#print ele_class_connections
-	#print '*********'
+def connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections):
 
 	templist=[]
 	temp_connections=[]
-
-
-	################## Dizionari dei fluttuanti ###########
-	fluxInput=({'Level':'','Input fluttuante':[]})
-	#######################################################
 
 	for i in range (0, len(connection_list)):
 		if connection_list[i]=='->':
@@ -337,7 +269,7 @@ def connection_element_class_cleaner (connection_list,ele_class_connections,flux
 										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1-1])
 										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1])
 										clean_ele_class_connections.append(ele_class_connections[j]['connection_elem_list'][c1+1])
-										connection_element_class_cleaner (ele_class_connections[j]['connection_elem_list'],ele_class_connections,fluxOutput,clean_ele_class_connections,assoOut)
+										connection_element_class_cleaner (ele_class_connections[j]['connection_elem_list'],ele_class_connections,fluxOutput,clean_ele_class_connections)
 										contr = True
 										
 								if contr == False:
@@ -347,42 +279,23 @@ def connection_element_class_cleaner (connection_list,ele_class_connections,flux
 								
 					ele_class_connections[j]['connection_elem_list']=temp_connections
 					temp_connections=[]	
-				
-					
-	#Fixme=>implementare output 					
-	
-
-	#print '\n'
-	#print '################ Eleclassconnection modificato #############'
-	#print ele_class_connections
-	#print '\n'					
-	#print '################ Output Fluttuante #############'
-	#print fluxOutput
-	#print '################ Connessioni Pulite #############'					
-	#print clean_ele_class_connections					
 
 
 def connection_element_class_output_closer (connection_list,fluxOutput,clean_ele_class_connections):
 
-	print connection_list
-	print '################ Output Fluttuante #############'
-	print fluxOutput
-	print '\n'
-	print '################ Connessioni Pulite #############'					
-	print clean_ele_class_connections					
-	
+	fluxOutput_new = {}
 
 	for i in range(0, len(fluxOutput)):
 		for j in range(0,len(fluxOutput[i]['Output fluttuante'])):
 			if string.find(fluxOutput[i]['Output fluttuante'][j], 'output')!=-1:
 				control = False
 				for k in range(0,len(clean_ele_class_connections)):
-					if string.find(clean_ele_class_connections[k-1],fluxOutput[i]['Level'])!=-1  and clean_ele_class_connections[k] == '->' and string.find(clean_ele_class_connections[k-1],'.')==-1:
+					if string.find(clean_ele_class_connections[k-1],fluxOutput[i]['Level'])!=-1  and clean_ele_class_connections[k] == '->':
 						length_word = len(fluxOutput[i]['Level'])
 						if len(clean_ele_class_connections[k-1]) == length_word or clean_ele_class_connections[k-1][length_word] == '[':
 							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
 							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
-							clean_ele_class_connections.append(connection_list[i+1])
+							clean_ele_class_connections.append(clean_ele_class_connections[k+1])
 							control = True
 
 				for z in range(0,len(connection_list)):
@@ -393,114 +306,12 @@ def connection_element_class_output_closer (connection_list,fluxOutput,clean_ele
 							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
 							clean_ele_class_connections.append(connection_list[z+1])
 							control = True
-
+				
 				if control == False:
-					index = string.find(fluxOutput[i]['Level'],'.')
-					level = fluxOutput[i]['Level'][0:index]
-					for z in range(0,len(connection_list)):
-						if connection_list[z] == '->' and string.find(connection_list[z-1],level)!=-1:
-							print 'ok'
-							length_word = len(fluxOutput[i]['Level'])
-							if len(connection_list[z-1]) == length_word or connection_list[z-1][length_word] == '[':
-								clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
-								clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
-								clean_ele_class_connections.append(connection_list[z+1])
-								control = True
-							
+					fluxOutput_new[len(fluxOutput_new)]=({'Level': fluxOutput[i]['Level'] ,'Output fluttuante': fluxOutput[i]['Output fluttuante'] })
 
-	print '################ Connessioni Pulite Pulite #############'					
-	print clean_ele_class_connections
-	'''
-	for i in range (0,len(connection_list)) : 
-		if connection_list[i]== '->' :	
-			for j in range (0, len(fluxOutput.keys())) : 
-				if string.find(connection_list[i-1],fluxOutput[j]['Level']) != -1 :
-					for c1 in range (0,len(fluxOutput[j]['Output fluttuante'])) :
-						if string.find(fluxOutput[j]['Output fluttuante'][c1],'output') != -1 :
-							clean_ele_class_connections.append(fluxOutput[j]['Output fluttuante'][c1-2])
-							clean_ele_class_connections.append(fluxOutput[j]['Output fluttuante'][c1-1])
-							clean_ele_class_connections.append(connection_list[i+1])
-						#FIXME => implementare ricorsione	
-						#for k in range (0,len(fluxOutput.keys())) :
-							#if fluxOutput[j]['Output fluttuante'][c1] == fluxOutput[k]['Level'] :
-								#connection_element_class_output_closer (fluxOutput[j]['Output fluttuante'][c1],fluxOutput,clean_ele_class_connections)	
+	fluxOutput = fluxOutput_new
+	if len(fluxOutput) > 0:
+		connection_element_class_output_closer(connection_list,fluxOutput,clean_ele_class_connections)
 
 	
-	print '################ Connessioni Pulite Modificate #############'					
-	print clean_ele_class_connections					
-	'''
-'''	
-#Gestione dell'input e output senza porte
-	for c1 in ele_class_connections.items():
-		for i in range(0,len(connection_list)):
-			if connection_list[i]==c1[1]['element name']:
-				try:
-					if connection_list[i-1]=='->':
-						for j in range(0,len(c1[1]['connection_elem_list'])):
-							if c1[1]['connection_elem_list'][j]=='input':
-								c1[1]['connection_elem_list'][j]=connection_list[i-2]
-					if connection_list[i+1]=='->':
-						for k in range(0,len(c1[1]['connection_elem_list'])):
-							if c1[1]['connection_elem_list'][k]=='output':
-								c1[1]['connection_elem_list'][k]=connection_list[i+2]
-				except IndexError:
-					break
-	
-	#print '********'
-
-
-#Gestione dell'output con porte
-	for c2 in ele_class_connections.items():
-		for h in range(0,len(connection_list)):
-				if connection_list[h].find(c2[1]['element name']) != -1:				
-					if connection_list[h].find('[')!=-1:
-						if connection_list[h+1]=='->':
-							for j in range(0,len(c2[1]['connection_elem_list'])):
-								if c2[1]['connection_elem_list'][j].find('output') != -1:
-									port=''
-									port_control=False
-									for letter in c2[1]['connection_elem_list'][j]:
-										if letter == '[':
-											port=port+letter
-											port_control = True
-											continue
-										if port_control == True:	
-											if letter == ']':
-												port=port+letter
-												port_control = False
-												break
-											port=port+letter
-										continue
-									if connection_list[h].find(port) != -1:
-										for s in range(0,len(c2[1]['connection_elem_list'])):
-											if c2[1]['connection_elem_list'][s]==port+'output':
-												c2[1]['connection_elem_list'][s]=connection_list[h+2]
-
-#Gestione dell'input con porte
-	for c3 in ele_class_connections.items():
-		for l in range(0,len(connection_list)):
-				if connection_list[l].find(c3[1]['element name']) != -1:				
-					if connection_list[l].find('[')!=-1:
-						if connection_list[l-1]=='->':
-							for j in range(0,len(c3[1]['connection_elem_list'])):
-								if c3[1]['connection_elem_list'][j].find('input') != -1:
-									port=''
-									port_control=False
-									for letter in c3[1]['connection_elem_list'][j]:
-										if letter == '[':
-											port=port+letter
-											port_control = True
-											continue
-										if port_control == True:	
-											if letter == ']':
-												port=port+letter
-												port_control = False
-												break
-											port=port+letter
-										continue
-									if connection_list[l].find(port) != -1:
-										for p in range(0,len(c3[1]['connection_elem_list'])):
-											if c3[1]['connection_elem_list'][p]=='input'+port:
-												c3[1]['connection_elem_list'][p]=connection_list[h-2]
-
-'''
