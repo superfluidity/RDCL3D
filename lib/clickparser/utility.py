@@ -23,7 +23,7 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, typ
 		name_subgraph = name_subgraph+'.'
 	if group[len(group)-1] == '.':
 		group = group[0:len(group)-1]
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': type_element})
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':[group], 'node_type': type_element})
 	
 
 
@@ -32,7 +32,7 @@ def explicit_element_decl_without_conf(i, words, element, name_subgraph, group, 
 		name_subgraph = name_subgraph+'.'
 	if group[len(group)-1] == '.':
 		group = group[0:len(group)-1]
-	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': type_element})
+	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':[group], 'node_type': type_element})
 	
 
 
@@ -56,7 +56,7 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
-	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':group, 'node_type':'element'})
+	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+name, 'config':config,'group':[group], 'node_type':'element'})
 	words2[i] = name_subgraph+name
 	
 
@@ -67,7 +67,7 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
-	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':group, 'node_type': 'element'})
+	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':[group], 'node_type': 'element'})
 	words2[i] = name_subgraph+name
 
 
@@ -75,7 +75,7 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 def subgraph_element_name(line, compound_element, element):
 
 	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':'click', 'node_type': 'compound_element'})
+	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':['click'], 'node_type': 'compound_element'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
@@ -207,14 +207,27 @@ def load_list(line, words):
 
 def handle_edgeslevel(connection):
 	index = 0
-	for c in connection.items():														#gestisce l'attributo group dei compound element
+
+	for c in connection.items():	
+		target_level = '0'
+		source_level = '0'						
 		for w in range(0,len(c[1]['target'])):
 			if c[1]['target'][w] == '.':
 				index = w
-		if string.find(c[1]['target'],'.')!=-1:
-			c[1]['group'] = c[1]['target'][0:index]
-		elif string.find(c[1]['source'],'.')!=-1:
-			c[1]['group'] = c[1]['source'][0:index]
+				target_level = c[1]['target'][0:index]
+		
+		for w in range(0,len(c[1]['source'])):
+			if c[1]['source'][w] == '.':
+				index = w
+				source_level = c[1]['source'][0:index]
+		
+		if source_level == target_level and source_level != '0' and target_level != '0':
+			c[1]['group'].append(source_level)
+		elif source_level == '0' and target_level == '0':
+			c[1]['group'].append('click')
+		else:
+			c[1]['group'].append('Null')
+
 
 	connection2 = connection.copy() 
 
@@ -223,4 +236,5 @@ def handle_edgeslevel(connection):
 			for c1 in connection2.items():
 				if c1[1]['target'] == c[1]['group']:
 					c[1]['depth'] = c1[1]['depth']+1
-			
+	
+	

@@ -223,14 +223,14 @@ def connection_decl(words, connection, element):
 								view.append('compact')
 							elif (el1[1]['node_type'] == 'element' and el2[1]['node_type'] == 'compound_element') or (el2[1]['node_type'] == 'element' and el1[1]['node_type'] == 'compound_element'):
 								view.append('compact')
-								view.append('expanded')
+								view.append('expandable')
 							elif (el1[1]['node_type'] == 'element' and el2[1]['node_type'] == 'class_element') or (el2[1]['node_type'] == 'element' and el1[1]['node_type'] == 'class_element'):
 								view.append('compact')
-								view.append('expanded')
+								view.append('expandable')
 							elif (el1[1]['node_type'] == 'class_element' and el2[1]['node_type'] == 'class_element') or (el1[1]['node_type'] == 'compound_element' and el2[1]['node_type'] == 'compound_element'):	
-								view.append('expanded')
+								view.append('expandable')
 
-			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'depth':0, 'view':view})
+			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':[], 'depth':0, 'view':view})
 
 	handle_edgeslevel(connection)
 
