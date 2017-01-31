@@ -398,7 +398,8 @@ def connection_element_class_output_closer (connection_list,fluxOutput,clean_ele
 					index = string.find(fluxOutput[i]['Level'],'.')
 					level = fluxOutput[i]['Level'][0:index]
 					for z in range(0,len(connection_list)):
-						if connection_list[z] == '->' and string.find(connection_list[z-1],fluxOutput[i]['Level'])!=-1:
+						if connection_list[z] == '->' and string.find(connection_list[z-1],level)!=-1:
+							print 'ok'
 							length_word = len(fluxOutput[i]['Level'])
 							if len(connection_list[z-1]) == length_word or connection_list[z-1][length_word] == '[':
 								clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
