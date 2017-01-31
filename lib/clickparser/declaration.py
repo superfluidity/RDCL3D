@@ -40,9 +40,9 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 								name_ele = name_ele+words[i-1]
 							else:
 								name_ele = words[i-1]+'.'
-
-							explicit_element_decl(line_class_element, element, name_ele, words[i-1], words, ele_class_dict,ele_class_connections)
-							implicit_element_decl(line_class_element, element, name_ele, group, words, words1)
+							
+							explicit_element_decl(line_class_element, element, name_ele, name_ele, words, ele_class_dict,ele_class_connections)
+							implicit_element_decl(line_class_element, element, name_ele, name_ele, words, words1)
 							
 							if name_ele[len(name_ele)-1] == '.':
 								name_ele = name_ele[0:len(name_ele)-1]
@@ -230,7 +230,7 @@ def connection_decl(words, connection, element):
 							elif (el1[1]['node_type'] == 'class_element' and el2[1]['node_type'] == 'class_element') or (el1[1]['node_type'] == 'compound_element' and el2[1]['node_type'] == 'compound_element'):	
 								view.append('expanded')
 
-			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'dept':0, 'view':view})
+			connection[len(connection)]=({'source':name_element_source, 'target':name_element_dest, 'port-input':port_input, 'port-output':port_output, 'group':'click', 'depth':0, 'view':view})
 
 	handle_edgeslevel(connection)
 
@@ -288,24 +288,43 @@ def connection_element_class_output_closer (connection_list,fluxOutput,clean_ele
 	for i in range(0, len(fluxOutput)):
 		for j in range(0,len(fluxOutput[i]['Output fluttuante'])):
 			if string.find(fluxOutput[i]['Output fluttuante'][j], 'output')!=-1:
+				if fluxOutput[i]['Output fluttuante'][j] == 'output':
+					port_output = '0'
+				else:
+					start = string.find(fluxOutput[i]['Output fluttuante'][j], '[')
+					stop = string.find(fluxOutput[i]['Output fluttuante'][j], ']')
+					port_output = fluxOutput[i]['Output fluttuante'][j][start+1:stop]
 				control = False
 				for k in range(0,len(clean_ele_class_connections)):
-					if string.find(clean_ele_class_connections[k-1],fluxOutput[i]['Level'])!=-1  and clean_ele_class_connections[k] == '->':
+					if clean_ele_class_connections[k] == '->' and string.find(clean_ele_class_connections[k-1],fluxOutput[i]['Level'])!=-1  :
 						length_word = len(fluxOutput[i]['Level'])
 						if len(clean_ele_class_connections[k-1]) == length_word or clean_ele_class_connections[k-1][length_word] == '[':
-							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
-							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
-							clean_ele_class_connections.append(clean_ele_class_connections[k+1])
-							control = True
+							if string.find(clean_ele_class_connections[k-1],'[') == -1:
+								port_input = '0'
+							elif string.find(clean_ele_class_connections[k-1], '[') != -1:
+								start = string.find(clean_ele_class_connections[k-1], '[')
+								stop = string.find(clean_ele_class_connections[k-1], ']')		
+								port_output = clean_ele_class_connections[k-1][start+1:stop]
+							if port_input == port_output:	
+								clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
+								clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
+								clean_ele_class_connections.append(clean_ele_class_connections[k+1])
+								control = True
 
 				for z in range(0,len(connection_list)):
 					if connection_list[z] == '->' and string.find(connection_list[z-1],fluxOutput[i]['Level'])!=-1:
-						length_word = len(fluxOutput[i]['Level'])
-						if len(connection_list[z-1]) == length_word or connection_list[z-1][length_word] == '[':
-							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
-							clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
-							clean_ele_class_connections.append(connection_list[z+1])
-							control = True
+						if connection_list[z-1] == fluxOutput[i]['Level']:
+							port_input = '0'
+						elif string.find(connection_list[z-1],'[') != -1:
+							start = string.find(connection_list[z-1],'[')
+							stop = string.find(connection_list[z-1],']')
+							if connection_list[z-1][:start] == fluxOutput[i]['Level']:
+								port_input = connection_list[z-1][start+1:stop]
+								if port_output == port_input: 
+									clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-2])
+									clean_ele_class_connections.append(fluxOutput[i]['Output fluttuante'][j-1])
+									clean_ele_class_connections.append(connection_list[z+1])
+									control = True
 				
 				if control == False:
 					fluxOutput_new[len(fluxOutput_new)]=({'Level': fluxOutput[i]['Level'] ,'Output fluttuante': fluxOutput[i]['Output fluttuante'] })

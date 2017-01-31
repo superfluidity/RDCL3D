@@ -21,6 +21,8 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, typ
 
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
+	if group[len(group)-1] == '.':
+		group = group[0:len(group)-1]
 	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':group, 'node_type': type_element})
 	
 
@@ -28,6 +30,8 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, typ
 def explicit_element_decl_without_conf(i, words, element, name_subgraph, group, type_element):
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
+	if group[len(group)-1] == '.':
+		group = group[0:len(group)-1]
 	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':group, 'node_type': type_element})
 	
 
@@ -202,11 +206,15 @@ def load_list(line, words):
 
 
 def handle_edgeslevel(connection):
+	index = 0
 	for c in connection.items():														#gestisce l'attributo group dei compound element
+		for w in range(0,len(c[1]['target'])):
+			if c[1]['target'][w] == '.':
+				index = w
 		if string.find(c[1]['target'],'.')!=-1:
-			c[1]['group'] = c[1]['target'][0:string.find(c[1]['target'],'.')]
+			c[1]['group'] = c[1]['target'][0:index]
 		elif string.find(c[1]['source'],'.')!=-1:
-			c[1]['group'] = c[1]['source'][0:string.find(c[1]['source'],'.')]
+			c[1]['group'] = c[1]['source'][0:index]
 
 	connection2 = connection.copy() 
 
@@ -214,5 +222,5 @@ def handle_edgeslevel(connection):
 		if c[1]['group'] != 'click':
 			for c1 in connection2.items():
 				if c1[1]['target'] == c[1]['group']:
-					c[1]['dept'] = c1[1]['dept']+1
+					c[1]['depth'] = c1[1]['depth']+1
 			
