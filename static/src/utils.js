@@ -37,3 +37,12 @@ function createNewDescriptor(project_id, descriptor_type){
     $('#modal_new_descriptor_name').modal('show');
 
 }
+
+function getUrlParamater(par_name){
+    var results = new RegExp('[\?&]' + par_name + '=([^&#]*)').exec(window.location.href);
+    if (results == null) {
+        return null;
+    } else {
+        return results[1] || 0;
+    }
+}

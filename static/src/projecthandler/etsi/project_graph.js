@@ -6,28 +6,18 @@ var show_all = null;
 // Enable Drop Action on the Graph
 initDropOnGraph();
 
-// get Url parameters
-$.urlParam = function(name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results == null) {
-        return null;
-    } else {
-        return results[1] || 0;
-    }
-}
-
 
 
 $(document).ready(function() {
-    var descriptor_type = $.urlParam('type') == 'ns' || $.urlParam('type') == 'nsd' ? 'ns' : 'vnf'
+    var descriptor_type = getUrlParamater('type') == 'ns' || getUrlParamater('type') == 'nsd' ? 'ns' : 'vnf'
     var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
     var params = {
         node: {
             type: allowed_types,
-            group: [$.urlParam('id')]
+            group: [getUrlParamater('id')]
         },
         link: {
-            group: [$.urlParam('id')],
+            group: [getUrlParamater('id')],
             view: [descriptor_type]
         }
     }

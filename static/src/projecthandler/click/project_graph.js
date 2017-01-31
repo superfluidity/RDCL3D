@@ -7,19 +7,10 @@ var show_all = null;
 // Enable Drop Action on the Graph
 initDropOnGraph();
 
-// get Url parameters
-$.urlParam = function(name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results == null) {
-        return null;
-    } else {
-        return results[1] || 0;
-    }
-}
 
 
 $(document).ready(function() {
-    var descriptor_type = $.urlParam('type');
+    var descriptor_type = getUrlParamater('type');
     var type = descriptor_type == 'click'  ? ['click'] : ['click'];
     var params = {
         node: {
@@ -39,7 +30,7 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: $.urlParam('id')
+        descriptor_id: getUrlParamater('id')
     });
    // graph_editor.handleFiltersParams(params);
 
@@ -101,6 +92,6 @@ function changeFilter(e, c) {
 }
 
 function openEditor(project_id){
-    window.location.href='/projects/'+project_id+'/descriptors/'+$.urlParam('type')+'/'+$.urlParam('id');
+    window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParamater('type')+'/'+getUrlParamater('id');
 }
 

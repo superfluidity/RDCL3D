@@ -85,20 +85,21 @@ dreamer.ModelGraphEditor = (function(global) {
                 var controller = new dreamer[c]();
                 controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function() {
                     self.parent.addNode.call(self, node);
-                    if (success)
-                        success();
+                    success && success();
                 }, error);
 
             } else {
-                //FIXME calling the simple addNode method of GraphEditor
-                //FIXME we have to handle succ or fail
+                //FIXME this just call the simple addNode method of GraphEditor
+                // we should notify to the user
                 log('addNode: callback undefined in mode spec.');
                 self.parent.addNode.call(self, node);
+                success && success();
             }
         }
         else{
             //FIXME Error handling????
-
+            log("You can't add a " + node.info.type + " in a current layer " + current_layer);
+            error && error("You can't add a " + node.info.type + " in a current layer " + current_layer);
         }
     };
 
@@ -130,17 +131,18 @@ dreamer.ModelGraphEditor = (function(global) {
                 var controller = new dreamer[c]();
                 controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function() {
                     self.parent.removeNode.call(self, node);
-                    if (success)
-                        success();
+                    success && success();
                 }, error);
             } else {
-                //FIXME calling the simple addNode method of GraphEditor
-                //FIXME we have to handle succ or fail
+                //FIXME this just call the simple addNode method of GraphEditor
+                // we should notify to the user
                 self.parent.removeNode.call(self, node);
+                success && success();
             }
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK
-            alert("You can't remove a " + node.info.type);
+            log("You can't remove a " + node.info.type);
+            error && error("You can't remove a " + node.info.type);
         }
     };
 
@@ -178,11 +180,13 @@ dreamer.ModelGraphEditor = (function(global) {
                 //FIXME we have to handle succ or fail
                 self._deselectAllNodes();
                 self.parent.addLink.call(self, link);
+                success && success();
             }
 
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK
-            alert("You can't link a " + source_type + " with a " + destination_type);
+            log("You can't link a " + source_type + " with a " + destination_type);
+            error && error("You can't link a " + source_type + " with a " + destination_type);
         }
     };
 
@@ -209,8 +213,7 @@ dreamer.ModelGraphEditor = (function(global) {
                     self._deselectAllNodes();
                     self._deselectAllLinks();
                     self.parent.removeLink.call(self, link.index);
-                    if (success)
-                        success();
+                    success && success();
                 }, error);
             } else {
                 //FIXME calling the simple addNode method of GraphEditor
@@ -218,13 +221,13 @@ dreamer.ModelGraphEditor = (function(global) {
                 self._deselectAllNodes();
                 self._deselectAllLinks();
                 self.parent.removeLink.call(self, link.index);
-                if (success)
-                    success();
+                success && success();
             }
 
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK
-            alert("You can't delete the link");
+            log("You can't delete the link");
+            error && error("You can't delete the link");
         }
 
 
@@ -282,6 +285,8 @@ dreamer.ModelGraphEditor = (function(global) {
             title: 'Edit',
             action: function(elm, d, i) {
                 if (d.info.type != undefined) {
+
+                    //FIXME non va bene :)
                     window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
                 }
             }
@@ -368,7 +373,7 @@ dreamer.ModelGraphEditor = (function(global) {
                 },
                 'dblclick': function(c_node) {
                     d3.event.preventDefault();
-                    log('dblclick ');
+                    log('dblclick');
                     if (c_node.info.type != undefined) {
                         var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
                         if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
@@ -419,7 +424,6 @@ dreamer.ModelGraphEditor = (function(global) {
 
     ModelGraphEditor.prototype.refreshGui = function(args) {
         var self = this;
-        console.log(self)
         if (!self.model) {
             return;
         }
@@ -450,6 +454,7 @@ dreamer.ModelGraphEditor = (function(global) {
         return this.filter_parameters.node.group[0];
 
     }
+
     ModelGraphEditor.prototype.getCurrentView = function() {
         return this.filter_parameters.link.view[0];
 
