@@ -160,8 +160,9 @@ def parserAllView(file_click):
             connection_list.append(e)
 
     ##############################################################################################################################################
-    
-    connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections)
+    assoOut={}
+    connection_element_class_cleaner (connection_list,ele_class_connections,fluxOutput,clean_ele_class_connections, assoOut)
+    print assoOut
     connection_element_class_output_closer (connection_list,fluxOutput,clean_ele_class_connections) #gestisce gli output
     for c2 in clean_ele_class_connections:
        connection_list.append(c2)
@@ -174,6 +175,6 @@ def parserAllView(file_click):
     words[:] = []
 
     json_data = generateJsont3d(element, connection)
-    #print json_data
+    print json_data
     return json_data
 
