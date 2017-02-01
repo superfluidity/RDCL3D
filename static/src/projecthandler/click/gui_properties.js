@@ -12,19 +12,19 @@ var example_gui_properties = {
         "shape": "square",
         "color": "#196B90",
         "size": 20,
-        "name": "element"
+        "name": "Click"
       },
       "class_element": {
         "shape": "circle",
         "color": "#F27220",
         "size": 20,
-        "name": "class_element"
+        "name": "Class"
       },
       "compound_element": {
         "shape": "triangle",
         "color": "#42f44e",
         "size": 20,
-        "name": "compound_element"
+        "name": "Compound"
       },
 
     },

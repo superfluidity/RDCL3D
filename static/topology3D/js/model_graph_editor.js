@@ -51,6 +51,7 @@ dreamer.ModelGraphEditor = (function(global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         d3.json(data_url, function(error, data) {
             log('data from remote')
+            console.log(data);
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
@@ -273,7 +274,7 @@ dreamer.ModelGraphEditor = (function(global) {
                                 },
                                 link: {
                                     group: [c_node.id],
-                                    view: [c_node.info.type]
+                                    view: [new_layer]
                                 }
                             });
 
@@ -385,7 +386,7 @@ dreamer.ModelGraphEditor = (function(global) {
                                     },
                                     link: {
                                         group: [c_node.id],
-                                        view: [c_node.info.type]
+                                        view: [new_layer]
                                     }
                                 });
 

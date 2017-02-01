@@ -11,6 +11,8 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ClickModel.py')
 
 
+GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/click/click.yaml'
+
 class ClickProject(Project):
     @classmethod
     def data_project_from_files(cls, request):
@@ -60,8 +62,8 @@ class ClickProject(Project):
 
     def get_graph_data_json_topology(self, descriptor_id):
         project = self.get_descriptor(descriptor_id, self.get_type())
-        topology = click_parser.importprojectjson(project)
-        return topology
+        topology = click_parser.importprojectjson(project, model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
         try:

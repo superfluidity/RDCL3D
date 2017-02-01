@@ -21,7 +21,7 @@ $(document).ready(function() {
             view: [descriptor_type]
         }
     }
-    graph_editor.addListener("filters_changed", changeFilter);
+
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
 
@@ -32,8 +32,10 @@ $(document).ready(function() {
         gui_properties: example_gui_properties,
         filter_base: params
     });
+
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
+    graph_editor.addListener("filters_changed", changeFilter);
 
 });
 
@@ -164,6 +166,17 @@ function changeFilter(e, c) {
     }
 
     updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+    updateBredCrumb(c);
+}
+
+var filters = function(e, params) {
+    graph_editor.handleFiltersParams(params);
+    $('#' + e).nextAll('li').remove();
+}
+
+function updateBredCrumb(filter_parameters){
+     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
+     $('#breadcrumb').append(newLi);
 }
 
 function updateNodeDraggable(args){

@@ -64,13 +64,13 @@ layer:                                  #List of Layers
                     class_element:
                         direct_edge: false
                         removable: true
-    expanded:
+    expandable:
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
                 addable: true
                 removable: true
-         allowed_edges:
+        allowed_edges:
             element:
                 destination:
                     element:

@@ -648,8 +648,10 @@ dreamer.GraphEditor = (function(global) {
                 cond_group = true;
             // check filter by view
             if (self.filter_parameters.link.view.length > 0) {
-                if (self.filter_parameters.link.view.indexOf(d.view) < 0)
-                    cond_view = false;
+                self.filter_parameters.link.view.forEach(function(view) {
+                    if (d.view.indexOf(view) < 0)
+                        cond_view = false;
+                });
             }
 
             // check filter by group
@@ -659,7 +661,6 @@ dreamer.GraphEditor = (function(global) {
                         cond_group = false;
                 });
             }
-
             return cond_view && cond_group;
         };
 

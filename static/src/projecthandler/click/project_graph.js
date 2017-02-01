@@ -14,15 +14,15 @@ $(document).ready(function() {
     var type = descriptor_type == 'click'  ? ['click'] : ['click'];
     var params = {
         node: {
-            type: [],
-            group: []
+            type: ['element', 'compound_element', 'class_element'],
+            group: ['click']
         },
         link: {
-            group: [],
-            view: []
+            group: ['click'],
+            view: ['compact']
         }
     }
-    graph_editor.addListener("filters_changed", changeFilter);
+
 
 
     // graph_editor initialization
@@ -34,7 +34,9 @@ $(document).ready(function() {
         data_url: "graph_data/"+getUrlParamater('id'),
         filter_base: params
     });
-   // graph_editor.handleFiltersParams(params);
+    //console.log(graph_editor.getCurrentView())
+    graph_editor.handleFiltersParams(params);
+    graph_editor.addListener("filters_changed", changeFilter);
 
 
 });
@@ -89,6 +91,35 @@ function savePositions(el) {
 
 function changeFilter(e, c) {
     console.log("changeFilter");
+    var type_property = graph_editor.getTypeProperty();
+    $("#title_header").text("Click Graph Editor");
+    updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+    updateBredCrumb(c);
+
+}
+
+
+var filters = function(e, params) {
+    graph_editor.handleFiltersParams(params);
+    $('#' + e).nextAll('li').remove();
+}
+
+function updateBredCrumb(filter_parameters){
+     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
+        $('#breadcrumb').append(newLi);
+}
+
+function updateNodeDraggable(args){
+
+        var type_property = args.type_property;
+        $("#draggable-container").empty()
+        for (var i in args.nodes_layer) {
+            var node = args.nodes_layer[i]
+            if (node.addable) {
+                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+            }
+        }
 
 }
 

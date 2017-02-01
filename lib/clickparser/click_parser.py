@@ -38,7 +38,7 @@ def parse_cmd_line():
     return args
 '''
 
-def importprojectjson(cfg_files):
+def importprojectjson(cfg_files, model = {}):
     #nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
     type_view = 'AllView'
@@ -49,6 +49,9 @@ def importprojectjson(cfg_files):
         #nx.draw(nx_topology)
         #plt.show()
     '''
+    json_click = json.loads(json_click)
+    json_click['model'] = model
+    #print model
     # print json_click
     return json_click
 
