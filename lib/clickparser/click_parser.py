@@ -2,7 +2,8 @@ import argparse
 from parserView import *
 from parserAllView import *
 import os
-
+import glob
+from lib.util import Util
 
 def run_command(type_view, cfg_files):
     if type_view == 'View':
@@ -66,3 +67,10 @@ def importprojectfile(cfg_files):
         project['click'][ os.path.splitext(os.path.basename(str(file)))[0]] = file.read()
 
     return project
+
+def importprojectdir(dir_project, file_type):
+    files = []
+    for file_name in glob.glob(os.path.join(dir_project, '*.'+file_type)):
+        files.append(Util().openfile(file_name))
+
+    return importprojectfile(files)

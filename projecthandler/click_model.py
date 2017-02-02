@@ -10,7 +10,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ClickModel.py')
 
-
+EXAMPLES_FOLDER = 'usecases/CLICK/'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/click/click.yaml'
 
 class ClickProject(Project):
@@ -25,13 +25,12 @@ class ClickProject(Project):
     def data_project_from_example(cls, request):
         ##FIXME
         example_id = request.POST.get('example-click-id', '')
-        data_project = {}
+        data_project = click_parser.importprojectdir(EXAMPLES_FOLDER + example_id , 'click')
         return data_project
 
     @classmethod
     def get_example_list(cls):
-        path = 'usecases/CLICK'
-        dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        dirs = [d for d in os.listdir(EXAMPLES_FOLDER) if os.path.isdir(os.path.join(EXAMPLES_FOLDER, d))]
         return {'click': dirs}
 
     @classmethod
