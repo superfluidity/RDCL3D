@@ -39,7 +39,7 @@ def parse_cmd_line():
     return args
 '''
 
-def importprojectjson(cfg_files, model = {}):
+def importprojectjson(cfg_files, model = {}, positions = {}):
     #nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
     type_view = 'AllView'
@@ -52,6 +52,12 @@ def importprojectjson(cfg_files, model = {}):
     '''
     json_click = json.loads(json_click)
     json_click['model'] = model
+    for vertice in json_click['vertices']:
+        key = vertice['id']
+        if 'vertices' in positions:
+            if key in positions['vertices'].keys():
+                vertice['fx'] = positions['vertices'][key]['x']
+                vertice['fy'] = positions['vertices'][key]['y']
     #print model
     # print json_click
     return json_click
@@ -63,14 +69,20 @@ def importprojectfile(cfg_files):
     }
 
     for file in cfg_files:
-        print  os.path.splitext(os.path.basename(str(file)))[0]
-        project['click'][ os.path.splitext(os.path.basename(str(file)))[0]] = file.read()
+        if os.path.basename(str(file.name))== 'vertices.json':
+            print 'dentrpp ', str(file)
+            project['positions'] = {}
+            project['positions']['vertices'] = Util.loadjsonfile(file)
+        else:
+            project['click'][ os.path.splitext(os.path.basename(str(file)))[0]] = file.read()
 
     return project
 
 def importprojectdir(dir_project, file_type):
     files = []
     for file_name in glob.glob(os.path.join(dir_project, '*.'+file_type)):
+        files.append(Util().openfile(file_name))
+    for file_name in glob.glob(os.path.join(dir_project, '*.'+'json')):
         files.append(Util().openfile(file_name))
 
     return importprojectfile(files)

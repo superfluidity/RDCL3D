@@ -213,4 +213,16 @@ class Project(models.Model):
         in_memory.flush()
         return in_memory
 
+    def get_positions(self):
+        try:
+            current_data = json.loads(self.data_project)
+            positions = {}
+            if 'positions' in current_data:
+                positions = current_data['positions']
+        except Exception as e:
+            log.debug(e)
+
+        return positions
+
+
 
