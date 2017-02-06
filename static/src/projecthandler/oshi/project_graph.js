@@ -25,7 +25,7 @@ $(document).ready(function() {
     graph_editor.init({
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
-        data_url: "graph_data/"+getUrlParamater('id'),
+        data_url: "graph_data/"+getUrlParameter('id'),
         gui_properties: example_gui_properties
     });
     // this will filter in the different views, excluding the node types that are not listed in params
@@ -112,7 +112,7 @@ function changeFilter(e, c) {
 }
 
 function openEditor(project_id) {
-    window.location.href = '/projects/' + project_id + '/descriptors/'+getUrlParamater('type')+'/' + getUrlParamater('id');
+    window.location.href = '/projects/' + project_id + '/descriptors/'+getUrlParameter('type')+'/' + getUrlParameter('id');
 }
 
 

@@ -9,15 +9,15 @@ initDropOnGraph();
 
 
 $(document).ready(function() {
-    var descriptor_type = getUrlParamater('type') == 'ns' || getUrlParamater('type') == 'nsd' ? 'ns' : 'vnf'
+    var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf'
     var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
     var params = {
         node: {
             type: allowed_types,
-            group: [getUrlParamater('id')]
+            group: [getUrlParameter('id')]
         },
         link: {
-            group: [getUrlParamater('id')],
+            group: [getUrlParameter('id')],
             view: [descriptor_type]
         }
     }

@@ -10,7 +10,7 @@ initDropOnGraph();
 
 
 $(document).ready(function() {
-    var descriptor_type = getUrlParamater('type');
+    var descriptor_type = getUrlParameter('type');
     var type = descriptor_type == 'click'  ? ['click'] : ['click'];
     var params = {
         node: {
@@ -30,8 +30,8 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParamater('id'),
-        data_url: "graph_data/"+getUrlParamater('id'),
+        descriptor_id: getUrlParameter('id'),
+        data_url: "graph_data/"+getUrlParameter('id'),
         filter_base: params
     });
     //console.log(graph_editor.getCurrentView())
@@ -124,6 +124,6 @@ function updateNodeDraggable(args){
 }
 
 function openEditor(project_id){
-    window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParamater('type')+'/'+getUrlParamater('id');
+    window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParameter('type')+'/'+getUrlParameter('id');
 }
 

@@ -38,7 +38,7 @@ function createNewDescriptor(project_id, descriptor_type){
 
 }
 
-function getUrlParamater(par_name){
+function getUrlParameter(par_name){
     var results = new RegExp('[\?&]' + par_name + '=([^&#]*)').exec(window.location.href);
     if (results == null) {
         return null;

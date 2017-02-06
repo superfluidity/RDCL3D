@@ -9,18 +9,18 @@ initDropOnGraph();
 
 
 $(document).ready(function() {
-    var descriptor_type = getUrlParamater('type');
+    var descriptor_type = getUrlParameter('type');
     var type = descriptor_type == 'toscayaml'  ? ['*'] : ['*'];
     // console.log('DESCRIPTOR TYPE : '+descriptor_type);
     var params = {
         node: {
             type: [],
             // group: []
-            group: [getUrlParamater('id')]
+            group: [getUrlParameter('id')]
         },
         link: {
             // group: [],
-            group: [getUrlParamater('id')],
+            group: [getUrlParameter('id')],
             view: []
         }
     }
@@ -32,7 +32,7 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParamater('id')
+        descriptor_id: getUrlParameter('id')
     });
     graph_editor.handleFiltersParams(params);
 
@@ -97,6 +97,6 @@ function changeFilter(e, c) {
 }
 
 function openEditor(project_id){
-    window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParamater('type')+'/'+getUrlParamater('id');
+    window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParameter('type')+'/'+getUrlParameter('id');
 }
 
