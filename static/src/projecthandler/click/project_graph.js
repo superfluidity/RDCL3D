@@ -57,7 +57,28 @@ dropZone.ondrop = function(e) {
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
+        $('#div_chose_id').show();
+                $('#div_chose_vnf').hide();
+                $('#input_choose_node_id').val(nodetype + "_" + generateUID());
+                $('#modal_chooser_title_add_node').text('Add ' + type_name);
+                $('#save_choose_node_id').off('click').on('click', function() {
+                    var name = $('#input_choose_node_id').val();
+                    var node_information = {
+                        'id': name,
+                        'info': {
+                            'type': nodetype,
+                            'group': [group]
+                        },
+                        'x': e.layerX,
+                        'y': e.layerY
+                    }
+                    graph_editor.addNode(node_information, function() {
+                        $('#modal_choose_node_id').modal('hide');
+                    });
+                });
+                $('#modal_choose_node_id').modal('show');
     }
+
 
 }
 
