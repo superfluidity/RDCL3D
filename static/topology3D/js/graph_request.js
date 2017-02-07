@@ -18,14 +18,15 @@ dreamer.GraphRequests = (function(global) {
 
     }
 
-   GraphRequests.prototype.addNode= function(args, choice,  success, error){
+    GraphRequests.prototype.addNode = function(args, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
-        data.append('existing_vnf', args.existing_vnf ? args.existing_vnf :false)
-        if(choice)
+        //FIXME questo metodo dovrebbere essere generico
+        data.append('existing_vnf', args.existing_vnf ? args.existing_vnf : false)
+        if (choice)
             data.append('choice', choice);
         $.ajax({
             url: "addelement",
@@ -35,20 +36,120 @@ dreamer.GraphRequests = (function(global) {
             contentType: false,
             processData: false,
             success: function(result) {
-                if(success)
+                if (success)
                     success();
             },
             error: function(result) {
-                if(error)
+                if (error)
                     error();
                 alert("some error");
             }
         });
     };
 
+    GraphRequests.prototype.removeNode = function(args, choice, success, error) {
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('group_id', args.info.group[0]);
+        data.append('element_id', args.id);
+        data.append('element_type', args.info.type);
+        if (choice)
+            data.append('choice', choice);
+        $.ajax({
+            url: "removeelement",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if (success)
+                    success();
+            },
+            error: function(result) {
+                if (error)
+                    error();
+            }
+        });
+    };
 
 
-   GraphRequests.prototype.addVnffg= function(args, success, error){
+
+    GraphRequests.prototype.addLink = function(source, destination, choice, success, error) {
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('source', JSON.stringify(source));
+        data.append('destination', JSON.stringify(destination));
+        if (choice)
+            data.append('choice', choice);
+        $.ajax({
+            url: "addlink",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if (success)
+                    success();
+            },
+            error: function(result) {
+                if (error)
+                    error();
+                alert("some error");
+            }
+        });
+    };
+
+    GraphRequests.prototype.removeLink = function(source, destination, success, error) {
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('source', JSON.stringify(source));
+        data.append('destination', JSON.stringify(destination));
+        $.ajax({
+            url: "removelink",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if (success)
+                    success();
+            },
+            error: function(result) {
+                if (error)
+                    error();
+                alert("some error");
+            }
+        });
+    };
+
+    GraphRequests.prototype.savePositions = function(positions, success, error) {
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        data.append('positions', JSON.stringify(positions));
+        $.ajax({
+            url: "positions",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                if (success)
+                    success();
+            },
+            error: function(result) {
+                if (error)
+                    error();
+                alert("some error");
+            }
+        });
+    };
+
+    /*  START ETSI methods  */
+    GraphRequests.prototype.addVnffg = function(args, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('group_id', args.info.group[0]);
@@ -62,18 +163,18 @@ dreamer.GraphRequests = (function(global) {
             contentType: false,
             processData: false,
             success: function(result) {
-                if(success)
+                if (success)
                     success(result);
             },
             error: function(result) {
-                if(error)
+                if (error)
                     error();
                 alert("some error");
             }
         });
     };
 
-    GraphRequests.prototype.addNodeToVnffg= function(args, success, error){
+    GraphRequests.prototype.addNodeToVnffg = function(args, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('group_id', args.info.group[0]);
@@ -88,136 +189,38 @@ dreamer.GraphRequests = (function(global) {
             contentType: false,
             processData: false,
             success: function(result) {
-                if(success)
+                if (success)
                     success(result);
             },
             error: function(result) {
-                if(error)
+                if (error)
                     error();
                 alert("some error");
             }
         });
     };
 
-   GraphRequests.prototype.removeNode= function(args, choice, success, error){
-        var data = new FormData();
-        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group[0]);
-        data.append('element_id', args.id);
-        data.append('element_type', args.info.type);
-        if(choice)
-            data.append('choice', choice);
-        $.ajax({
-            url: "removeelement",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-                if(success)
-                    success();
-            },
-            error: function(result) {
-                if(error)
-                    error();
-            }
-        });
-    };
-
-   GraphRequests.prototype.addLink= function(source, destination, choice, success, error){
-        var data = new FormData();
-        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('source', JSON.stringify(source));
-        data.append('destination', JSON.stringify(destination));
-        if(choice)
-            data.append('choice', choice);
-        $.ajax({
-            url: "addlink",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-                if(success)
-                    success();
-            },
-            error: function(result) {
-                if(error)
-                    error();
-                alert("some error");
-            }
-        });
-    };
-
-      GraphRequests.prototype.removeLink= function(source, destination, success, error){
-        var data = new FormData();
-        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('source', JSON.stringify(source));
-        data.append('destination', JSON.stringify(destination));
-        $.ajax({
-            url: "removelink",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-                if(success)
-                    success();
-            },
-            error: function(result) {
-                if(error)
-                    error();
-                alert("some error");
-            }
-        });
-    };
-
-   GraphRequests.prototype.savePositions = function(positions, success, error){
-        var data = new FormData();
-        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('positions', JSON.stringify(positions) );
-        $.ajax({
-            url: "positions",
-            type: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(result) {
-                if(success)
-                    success();
-            },
-            error: function(result) {
-                if(error)
-                    error();
-                alert("some error");
-            }
-        });
-    };
-
-    GraphRequests.prototype.getUnusedVnf = function(nsd_id, success, error){
+    GraphRequests.prototype.getUnusedVnf = function(nsd_id, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         $.ajax({
-            url: "unusedvnf/"+nsd_id,
+            url: "unusedvnf/" + nsd_id,
             type: 'GET',
             success: function(result) {
-                console.log(result)
-                if(success)
+                if (success)
                     success(result);
             },
             error: function(result) {
-                if(error)
+                if (error)
                     error();
                 alert("some error");
             }
         });
 
     };
-    GraphRequests.prototype.getCookie =  function (name) {
+    /*  END ETSI methods  */
+
+    GraphRequests.prototype.getCookie = function(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             var cookies = document.cookie.split(';');
@@ -234,6 +237,13 @@ dreamer.GraphRequests = (function(global) {
     };
 
 
+    /**
+     * Log utility
+     */
+    function log(text) {
+        if (DEBUG)
+            console.log("::GraphEditor::", text);
+    }
 
     return GraphRequests;
 

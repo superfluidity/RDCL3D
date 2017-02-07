@@ -83,3 +83,15 @@ action:           #Action to show on rightclick on a node/link
     link:
 
 callback:                             #List of callbacks used to controll the link
+  addNode:
+      file: controller.js
+      class: ClickController
+  removeNode:
+      file: controller.js
+      class: ClickController
+  addLink:
+      file: controller.js
+      class: ClickController
+  removeLink:
+      file: controller.js
+      class: ClickController
