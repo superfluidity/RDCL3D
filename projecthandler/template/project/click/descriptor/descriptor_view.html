@@ -110,22 +110,8 @@ $(document).ready(function () {
 
 function update(e){
             console.log(e);
-            var id = $('.nav-tabs .active').attr('id');
             var type, text ;
-            switch(id) {
-                case 'yaml_li':
-                    type = 'yaml';
-                    text = editorYaml.getValue();
-                    break;
-                case 'json_li':
-                    type = 'json';
-                    text = editorJSON.getValue();
-                    break;
-                case 'form_li':
-                    type = 'file'
-                    return;
-                    break;
-            }
+            text = editorClick.getValue();
             $.ajax({
                     url: "/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/",
                     type: 'POST',

@@ -180,14 +180,15 @@ class Project(models.Model):
         try:
             log.debug('editing ' + descriptor_id + ' ' + type_descriptor)
             current_data = json.loads(self.data_project)
+            new_descriptor = new_data
             if data_type == 'json':
                 new_descriptor = json.loads(new_data)
-            else:
+            elif data_type == 'yaml':
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
-
-            reference_schema = self.get_json_schema_by_type(type_descriptor)
-            Util.validate_json_schema(reference_schema, new_descriptor)
+            if type_descriptor != 'click':
+                reference_schema = self.get_json_schema_by_type(type_descriptor)
+                Util.validate_json_schema(reference_schema, new_descriptor)
             current_data[type_descriptor][descriptor_id] = new_descriptor
             self.data_project = current_data
             self.update()
