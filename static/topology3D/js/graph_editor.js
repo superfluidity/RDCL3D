@@ -598,8 +598,8 @@ dreamer.GraphEditor = (function(global) {
     GraphEditor.prototype._node_property_by_type = function(type, property) {
         //log(type + "-" + property)
         if (this.type_property[type] != undefined && this.type_property[type][property] != undefined){
-            if(property == "shape")
-                log("dentro" + this.type_property[type][property])
+            //if(property == "shape")
+            //    log("dentro" + this.type_property[type][property])
             return this.type_property[type][property];
             }
         else{

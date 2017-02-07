@@ -74,6 +74,8 @@ dropZone.ondrop = function(e) {
                     }
                     graph_editor.addNode(node_information, function() {
                         $('#modal_choose_node_id').modal('hide');
+                    }, function(error){
+                        console.log("error: "+ error)
                     });
                 });
                 $('#modal_choose_node_id').modal('show');

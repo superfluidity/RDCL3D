@@ -91,11 +91,9 @@ dreamer.ModelGraphEditor = (function(global) {
                 }, error);
 
             } else {
-                //FIXME this just call the simple addNode method of GraphEditor
-                // we should notify to the user
-                log('addNode: callback undefined in mode spec.');
-                self.parent.addNode.call(self, node);
-                success && success();
+
+                log('addNode: callback undefined in model spec.');
+                error && error("You can't add a " + node.info.type + " callback undefined ");
             }
         }
         else{
@@ -135,10 +133,9 @@ dreamer.ModelGraphEditor = (function(global) {
                     success && success();
                 }, error);
             } else {
-                //FIXME this just call the simple addNode method of GraphEditor
-                // we should notify to the user
-                self.parent.removeNode.call(self, node);
-                success && success();
+
+                log('removeNode: callback undefined in model spec.');
+                error && error("You can't remove a " + node.info.type + " callback undefined ");
             }
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK
@@ -177,11 +174,8 @@ dreamer.ModelGraphEditor = (function(global) {
                         success();
                 }, error);
             } else {
-                //FIXME calling the simple addNode method of GraphEditor
-                //FIXME we have to handle succ or fail
-                self._deselectAllNodes();
-                self.parent.addLink.call(self, link);
-                success && success();
+                log('addLink: callback undefined in model spec.');
+                error && error("You can't add a link, callback undefined.");
             }
 
         } else {
@@ -217,12 +211,8 @@ dreamer.ModelGraphEditor = (function(global) {
                     success && success();
                 }, error);
             } else {
-                //FIXME calling the simple addNode method of GraphEditor
-                //FIXME we have to handle succ or fail
-                self._deselectAllNodes();
-                self._deselectAllLinks();
-                self.parent.removeLink.call(self, link.index);
-                success && success();
+                log('removeLink: callback undefined in model spec.');
+                error && error("You can't remove a link, callback undefined.");
             }
 
         } else {
