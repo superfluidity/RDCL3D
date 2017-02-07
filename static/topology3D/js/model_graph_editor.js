@@ -93,7 +93,7 @@ dreamer.ModelGraphEditor = (function(global) {
             } else {
 
                 log('addNode: callback undefined in model spec.');
-                error && error("You can't add a " + node.info.type + " callback undefined ");
+                error && error("You can't add a " + node.info.type + ", callback undefined.");
             }
         }
         else{
@@ -135,7 +135,7 @@ dreamer.ModelGraphEditor = (function(global) {
             } else {
 
                 log('removeNode: callback undefined in model spec.');
-                error && error("You can't remove a " + node.info.type + " callback undefined ");
+                error && error("You can't remove a " + node.info.type + ", callback undefined.");
             }
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK

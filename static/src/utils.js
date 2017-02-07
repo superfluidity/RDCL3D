@@ -38,6 +38,12 @@ function createNewDescriptor(project_id, descriptor_type){
 
 }
 
+function showAlert(msg){
+    // modal_alert_text
+    $('#modal_alert_text').text(msg);
+    $('#modal_alert').modal('show');
+}
+
 function getUrlParameter(par_name){
     var results = new RegExp('[\?&]' + par_name + '=([^&#]*)').exec(window.location.href);
     if (results == null) {

@@ -75,7 +75,9 @@ function initDropOnGraph() {
                             }
                             graph_editor.addNode(node_information, function() {
                                 $('#modal_choose_node_id').modal('hide');
-                            });
+                            }, function(error){
+                        showAlert(error)
+                    });
                         } else {
                             var node_information = {
                                 'existing_vnf': true,
@@ -89,7 +91,9 @@ function initDropOnGraph() {
                             }
                             graph_editor.addNode(node_information, function() {
                                 $('#modal_choose_node_id').modal('hide');
-                            });
+                            }, function(error){
+                        showAlert(error)
+                    });
                         }
 
                     });
@@ -115,6 +119,8 @@ function initDropOnGraph() {
                     }
                     graph_editor.addNode(node_information, function() {
                         $('#modal_choose_node_id').modal('hide');
+                    }, function(error){
+                        showAlert(error)
                     });
                 });
                 $('#modal_choose_node_id').modal('show');
