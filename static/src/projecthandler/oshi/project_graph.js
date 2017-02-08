@@ -105,9 +105,12 @@ function savePositions(el) {
 }
 
 function changeFilter(e, c) {
-    var type_property = graph_editor.getTypeProperty();
 
-        $("#title_header").text("OSHI Graph Editor");
+    console.log("changeFilter");
+    var type_property = graph_editor.getTypeProperty();
+    $("#title_header").text("OSHI Graph Editor");
+    updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+
         $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled", true);
 
@@ -115,6 +118,20 @@ function changeFilter(e, c) {
 
 function openEditor(project_id) {
     window.location.href = '/projects/' + project_id + '/descriptors/'+getUrlParameter('type')+'/' + getUrlParameter('id');
+}
+
+function updateNodeDraggable(args){
+
+        var type_property = args.type_property;
+        $("#draggable-container").empty()
+        for (var i in args.nodes_layer) {
+            var node = args.nodes_layer[i]
+            if (node.addable) {
+                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+            }
+        }
+
 }
 
 

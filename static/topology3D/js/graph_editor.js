@@ -170,8 +170,9 @@ dreamer.GraphEditor = (function(global) {
      *
      */
     GraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
-        this.filter_parameters = filtersParams;
-        this.current_view_id = (this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : this.current_view_id
+
+        this.filter_parameters = (filtersParams) ? filtersParams : this.filter_parameters;
+        this.current_view_id = (this.filter_parameters != undefined && this.filter_parameters.link.view[0] != undefined) ? this.filter_parameters.link.view[0] : this.current_view_id
         this.cleanAll();
         this.refresh();
         this.startForce();
