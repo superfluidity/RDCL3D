@@ -58,6 +58,8 @@ def importprojectjson(cfg_files, model = {}, positions = {}):
             if key in positions['vertices'].keys():
                 vertice['fx'] = positions['vertices'][key]['x']
                 vertice['fy'] = positions['vertices'][key]['y']
+    for edge in json_click['edges']:
+        edge['directed_edge'] = True;
     #print model
     # print json_click
     return json_click
