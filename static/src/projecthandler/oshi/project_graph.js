@@ -127,13 +127,15 @@ function updateNodeDraggable(args){
         for (var i in args.nodes_layer) {
             var node = args.nodes_layer[i]
             if (node.addable) {
-                var event = 'event.dataTransfer.setData("text/plain","' + i + '")'
-                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart=' + event + ' style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
+                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart="nodeDragStart(event)" style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
             }
         }
 
 }
 
+function nodeDragStart(event){
+    event.dataTransfer.setData("Text", event.target.id);
+}
 
 function showChooserModal(title, chooses, callback) {
     console.log('showchooser')
