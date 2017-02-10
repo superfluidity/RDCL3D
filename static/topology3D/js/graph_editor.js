@@ -99,11 +99,11 @@ dreamer.GraphEditor = (function(global) {
             .enter().append("svg:marker")    // This section adds in the arrows
             .attr("id", String)
             .attr("viewBox", "-5 -5 10 10")
-            .attr("refX", 10) /*must be smarter way to calculate shift*/
+            .attr("refX", 13) /*must be smarter way to calculate shift*/
             .attr("refY", 0)
             .attr("markerUnits", "userSpaceOnUse")
-            .attr("markerWidth", 17)
-            .attr("markerHeight", 17)
+            .attr("markerWidth", 12)
+            .attr("markerHeight", 12)
             .attr("orient", "auto")
             .append("path")
             .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
