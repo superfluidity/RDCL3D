@@ -98,14 +98,16 @@ dreamer.GraphEditor = (function(global) {
             .data(["end"])      // Different link/path types can be defined here
             .enter().append("svg:marker")    // This section adds in the arrows
             .attr("id", String)
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 15)
-            .attr("refY", -1.5)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
+            .attr("viewBox", "-5 -5 10 10")
+            .attr("refX", 10) /*must be smarter way to calculate shift*/
+            .attr("refY", 0)
+            .attr("markerUnits", "userSpaceOnUse")
+            .attr("markerWidth", 17)
+            .attr("markerHeight", 17)
             .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5");
+            .append("path")
+            .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
+            .attr('fill', default_link_color);
 
         d3.select(window)
             .on('keydown', function() {
