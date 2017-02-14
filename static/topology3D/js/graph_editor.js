@@ -93,6 +93,22 @@ dreamer.GraphEditor = (function(global) {
             .attr("width", this.width)
             .attr("height", this.height);
 
+        //End Arrow style
+        this.svg.append("svg:defs").selectAll("marker")
+            .data(["end"])      // Different link/path types can be defined here
+            .enter().append("svg:marker")    // This section adds in the arrows
+            .attr("id", String)
+            .attr("viewBox", "-5 -5 10 10")
+            .attr("refX", 13) /*must be smarter way to calculate shift*/
+            .attr("refY", 0)
+            .attr("markerUnits", "userSpaceOnUse")
+            .attr("markerWidth", 12)
+            .attr("markerHeight", 12)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
+            .attr('fill', default_link_color);
+
         d3.select(window)
             .on('keydown', function() {
                 log('keydown ' + d3.event.keyCode);
@@ -322,7 +338,8 @@ dreamer.GraphEditor = (function(global) {
             .style("stroke-width", nominal_stroke)
             .style("stroke", function(d) {
                 return default_link_color;
-            });
+            })
+            .attr("marker-end",function(d) {return (d.directed_edge ? "url(#end)" : ''); });
 
         this.nodeContainer = this.svg
             .selectAll()
