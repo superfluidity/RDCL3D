@@ -13,7 +13,7 @@ import logging
 #import projecthandler.etsi_model
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('model.py')
+log = logging.getLogger('models.py')
 
 project_types = {}
 
@@ -178,7 +178,8 @@ class Project(models.Model):
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
-            log.debug('editing ' + descriptor_id + ' ' + type_descriptor)
+            ##FIXME questa parte va completamente rivista cosi' ha varie lacune
+            log.debug('editing ' + descriptor_id + ' ' + type_descriptor + ' ' + data_type)
             current_data = json.loads(self.data_project)
             new_descriptor = new_data
             if data_type == 'json':
@@ -186,7 +187,7 @@ class Project(models.Model):
             elif data_type == 'yaml':
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
-            if type_descriptor != 'click':
+            if type_descriptor != 'click' and type_descriptor != 'oshi':
                 reference_schema = self.get_json_schema_by_type(type_descriptor)
                 Util.validate_json_schema(reference_schema, new_descriptor)
             current_data[type_descriptor][descriptor_id] = new_descriptor

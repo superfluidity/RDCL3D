@@ -58,11 +58,13 @@ function initDropOnGraph() {
                         'id': name,
                         'info': {
                             'type': nodetype,
-                            'group': [group]
+                            'group': [group],
+                            'desc_id': getUrlParameter('id'),
                         },
                         'x': e.layerX,
                         'y': e.layerY
                     }
+                    console.log(JSON.stringify(node_information))
                     graph_editor.addNode(node_information, function() {
                         $('#modal_choose_node_id').modal('hide');
                     }, function(error){

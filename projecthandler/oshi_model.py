@@ -153,12 +153,36 @@ class OshiProject(Project):
 
     def get_add_element(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
+            new_node = {
+                "info": {
+                    "group": [],
+                    "property": {
+                        "custom_label": ""
+                    },
+                    "type": parameters['element_type']
+                },
+                "id": parameters['element_id']
+            }
 
+            current_data = json.loads(self.data_project)
+            if(current_data['oshi'][parameters['element_desc_id']]):
+                current_descriptor = current_data['oshi'][parameters['element_desc_id']]
+                if 'vertices'  not in current_descriptor:
+                    current_descriptor['vertices'] = []
+                current_descriptor['vertices'].append(new_node)
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_element(self, request):
         result = False
-        
+
         return result
 
     def get_add_link(self, request):

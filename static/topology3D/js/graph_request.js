@@ -24,8 +24,11 @@ dreamer.GraphRequests = (function(global) {
         data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
+        if(args.info.desc_id)
+            data.append('element_desc_id', args.info.desc_id || '');
         //FIXME questo metodo dovrebbere essere generico
-        data.append('existing_vnf', args.existing_vnf ? args.existing_vnf : false)
+        if(args.existing_vnf)
+            data.append('existing_vnf', args.existing_vnf ? args.existing_vnf : false)
         if (choice)
             data.append('choice', choice);
         $.ajax({
