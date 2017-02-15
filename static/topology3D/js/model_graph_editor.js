@@ -161,8 +161,10 @@ dreamer.ModelGraphEditor = (function(global) {
             view: this.filter_parameters.link.view[0],
             group: this.filter_parameters.link.group,
         };
+        log("addLink: " + JSON.stringify(link))
         var current_layer = self.getCurrentView()
         if (self.model.layer[current_layer].allowed_edges && self.model.layer[current_layer].allowed_edges[source_type] && self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]) {
+
             if (self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
                 var c = self.model.callback[callback].class;

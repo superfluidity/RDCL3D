@@ -182,13 +182,51 @@ class OshiProject(Project):
 
     def get_remove_element(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
+            current_data = json.loads(self.data_project)
+            if (current_data['oshi'][parameters['element_desc_id']]):
+                current_descriptor = current_data['oshi'][parameters['element_desc_id']]
+                index = 0
+                for node in current_descriptor['vertices']:
+                    if node.id == parameters['element_id']:
+                        del current_descriptor['vertices'][index]
+                    index =+ 1
 
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_add_link(self, request):
-
         result = False
+        try:
+            parameters = request.POST.dict()
+            print '###' , parameters
+            source = json.loads(parameters['source'])
+            destination = json.loads(parameters['destination'])
+            new_link = {
+                "source": source['id'],
+                "group": parameters['group'] if 'group' in parameters else [],
+                "target": destination['id'],
+                "view": parameters['view'] if 'view' in parameters else []
+            }
 
+            current_data = json.loads(self.data_project)
+            if (current_data['oshi'][parameters['element_desc_id']]):
+                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
+                 if 'edges' not in current_descriptor:
+                     current_descriptor['edges'] = []
+                 current_descriptor['edges'].append(new_link)
+                 self.data_project = current_data
+                 self.update()
+                 result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_link(self, request):

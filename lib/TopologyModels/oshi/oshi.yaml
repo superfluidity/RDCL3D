@@ -42,24 +42,29 @@ layer:                                  #List of Layers
             CE:                         #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
                     OSHI-PE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
                     CE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
             OSHI-CR:
                 destination:
                     OSHI-CR:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
                     OSHI-PE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
                     OF Controller:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
@@ -67,10 +72,12 @@ layer:                                  #List of Layers
             OSHI-PE:
                 destination:
                     OSHI-CR:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
                     OSHI-PE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
@@ -78,6 +85,7 @@ layer:                                  #List of Layers
             OF Controller:
                  destination:
                      OSHI-CR:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
@@ -89,6 +97,7 @@ layer:                                  #List of Layers
             CE:
                 destination:                  #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
@@ -99,6 +108,7 @@ layer:                                  #List of Layers
             CE:
                 destination:                #List of edge's destination with the list of controls callback id to call when there is a connections
                     CE:
+                        callback: addLink
                         direct_edge: false
                         removable:
                             callback: removeLink
