@@ -1,0 +1,19 @@
+{% extends "project_base_left_sidebar.html" %}
+
+{% block li_list %}
+{{ block.super }}
+<li class="treeview">
+    <a href="#">
+        <i class="fa fa-archive fa-fw"></i> <span>Project descriptors</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu" style="display: none;">
+        <li><a href="/projects/{{project_id}}/descriptors/nsd"><i class="fa fa-files-o fa-fw"></i>Nsd</a></li>
+        <li><a href="/projects/{{project_id}}/descriptors/vnfd"><i class="fa fa-files-o fa-fw"></i>Vnfd</a></li>
+        <li><a href="/projects/{{project_id}}/descriptors/click"><i class="fa fa-files-o fa-fw"></i>Click</a></li>
+
+    </ul>
+</li>
+{% endblock %}
