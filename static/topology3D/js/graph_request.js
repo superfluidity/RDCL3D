@@ -78,11 +78,12 @@ dreamer.GraphRequests = (function(global) {
 
 
 
-    GraphRequests.prototype.addLink = function(source, destination, choice, success, error) {
+    GraphRequests.prototype.addLink = function(link, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('source', JSON.stringify(source));
-        data.append('destination', JSON.stringify(destination));
+        data.append('link', JSON.stringify(link));
+
+        //data.append('destination', JSON.stringify(destination));
         if (choice)
             data.append('choice', choice);
         $.ajax({
@@ -104,11 +105,10 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
-    GraphRequests.prototype.removeLink = function(source, destination, success, error) {
+    GraphRequests.prototype.removeLink = function(link, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('source', JSON.stringify(source));
-        data.append('destination', JSON.stringify(destination));
+        data.append('link', JSON.stringify(link));
         $.ajax({
             url: "removelink",
             type: 'POST',

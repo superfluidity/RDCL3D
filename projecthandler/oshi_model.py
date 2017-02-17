@@ -205,25 +205,27 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print '###' , parameters
-            source = json.loads(parameters['source'])
-            destination = json.loads(parameters['destination'])
+            print '###', parameters
+            link = json.loads(parameters['link'])
+            source = link['source']
+            target = link['target']
             new_link = {
                 "source": source['id'],
-                "group": parameters['group'] if 'group' in parameters else [],
-                "target": destination['id'],
-                "view": parameters['view'] if 'view' in parameters else []
+                "group": link['group'] if 'group' in link else [],
+                "target": target['id'],
+                "view": link['view'] if 'view' in link else []
             }
-
+            print new_link
             current_data = json.loads(self.data_project)
-            if (current_data['oshi'][parameters['element_desc_id']]):
-                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                 if 'edges' not in current_descriptor:
-                     current_descriptor['edges'] = []
-                 current_descriptor['edges'].append(new_link)
-                 self.data_project = current_data
-                 self.update()
-                 result = True
+            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
+
+                current_descriptor = current_data['oshi'][link['desc_id']]
+                if 'edges' not in current_descriptor:
+                    current_descriptor['edges'] = []
+                current_descriptor['edges'].append(new_link)
+                self.data_project = current_data
+                self.update()
+                result = True
         except Exception as e:
             log.exception(e)
             result = False

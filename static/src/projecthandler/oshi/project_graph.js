@@ -26,6 +26,7 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         data_url: "graph_data/"+getUrlParameter('id'),
+        desc_id: getUrlParameter('id'),
         gui_properties: example_gui_properties
     });
     // this will filter in the different views, excluding the node types that are not listed in params

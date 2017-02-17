@@ -41,11 +41,7 @@ dreamer.ClickController = (function(global) {
     ClickController.prototype.removeLink = function(self, link, success, error) {
         var s = link.source;
         var d = link.target;
-        new dreamer.GraphRequests().removeLink(s, d, function() {
-            if (success) {
-                success();
-            }
-        });
+        new dreamer.GraphRequests().removeLink(link, success,error);
     };
 
 

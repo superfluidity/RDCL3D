@@ -236,8 +236,12 @@ class EtsiProject(Project):
     def get_add_link(self, request):
 
         result = False
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        #source = json.loads(request.POST.get('source'))
+        #destination = json.loads(request.POST.get('destination'))
         source_type = source['info']['type']
         destination_type = destination['info']['type']
         if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
@@ -271,8 +275,12 @@ class EtsiProject(Project):
     def get_remove_link(self, request):
 
         result = False
-        source = json.loads(request.POST.get('source'))
-        destination = json.loads(request.POST.get('destination'))
+        parameters = request.POST.dict()
+        #print "param remove_link", parameters
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+
         source_type = source['info']['type']
         destination_type = destination['info']['type']
         if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:

@@ -33,6 +33,8 @@ dreamer.ModelGraphEditor = (function(global) {
             args.gui_properties = args.gui_properties[GUI_VERSION];
         }
 
+        this.desc_id = args.desc_id || undefined;
+        console.log("desc_id",this.desc_id)
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
@@ -156,10 +158,11 @@ dreamer.ModelGraphEditor = (function(global) {
         var source_type = s.info.type;
         var destination_type = d.info.type;
         var link = {
-            source: source_id,
-            target: target_id,
+            source: s,
+            target: d,
             view: this.filter_parameters.link.view[0],
             group: this.filter_parameters.link.group,
+            desc_id: this.desc_id
         };
         log("addLink: " + JSON.stringify(link))
         var current_layer = self.getCurrentView()
@@ -169,7 +172,7 @@ dreamer.ModelGraphEditor = (function(global) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
                 var c = self.model.callback[callback].class;
                 var controller = new dreamer[c]();
-                controller[callback](self, s, d, function() {
+                controller[callback](self, link, function() {
                     self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
                     if (success)

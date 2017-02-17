@@ -26,9 +26,10 @@ dreamer.OshiController = (function(global) {
         });
     };
 
-    OshiController.prototype.addLink = function(self, s, d, success, error) {
+    OshiController.prototype.addLink = function(self, link, success, error) {
         log('addLink');
-        new dreamer.GraphRequests().addLink(s, d, null, function() {
+
+        new dreamer.GraphRequests().addLink(link, null, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 self.parent.removeLink.call(self, old_link[0].index);
@@ -52,7 +53,7 @@ dreamer.OshiController = (function(global) {
         log('removeLink');
         var s = link.source;
         var d = link.target;
-        new dreamer.GraphRequests().removeLink(s, d, function() {
+        new dreamer.GraphRequests().removeLink(link, function() {
             if (success) {
                 success();
             }

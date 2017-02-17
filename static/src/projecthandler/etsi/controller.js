@@ -112,7 +112,9 @@ dreamer.EtsiController = (function(global) {
         }
     };
 
-    EtsiController.prototype.nsCpExclusiveConnection = function(self, s, d, success, error) {
+    EtsiController.prototype.nsCpExclusiveConnection = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
         var source_id = s.id;
         var target_id = d.id;
         var source_type = s.info.type;
@@ -121,7 +123,7 @@ dreamer.EtsiController = (function(global) {
         var old_link = $.grep(self.d3_graph.links, function(e) {
             return (e.source.id == cp_id || e.target.id == cp_id);
         });
-        new dreamer.GraphRequests().addLink(s, d, null, function() {
+        new dreamer.GraphRequests().addLink(link,  null, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 self.parent.removeLink.call(self, old_link[0].index);
@@ -134,7 +136,9 @@ dreamer.EtsiController = (function(global) {
     };
 
 
-    EtsiController.prototype.linkVnftoNsVl = function(self, s, d, success, error) {
+    EtsiController.prototype.linkVnftoNsVl = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
         var source_id = s.id;
         var target_id = d.id;
         var source_type = s.info.type;
@@ -144,7 +148,7 @@ dreamer.EtsiController = (function(global) {
             return (e.info.group == vnf_id && e.info.type == 'vnf_ext_cp');
         });
         showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-            new dreamer.GraphRequests().addLink(s, d, choice, function() {
+            new dreamer.GraphRequests().addLink(link,  choice, function() {
                 if (success) {
                     success()
                 }
@@ -153,7 +157,9 @@ dreamer.EtsiController = (function(global) {
         });
     };
 
-    EtsiController.prototype.linkVnftoNsCp = function(self, s, d, success, error) {
+    EtsiController.prototype.linkVnftoNsCp = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
         var source_id = s.id;
         var target_id = d.id;
         var source_type = s.info.type;
@@ -167,7 +173,7 @@ dreamer.EtsiController = (function(global) {
             return (e.source.id == ns_cp_id || e.target.id == ns_cp_id);
         });
         showChooserModal('Select the VNF EXT CP of the VNF', vnf_ext_cps, function(choice) {
-            new dreamer.GraphRequests().addLink(s, d, choice, function() {
+            new dreamer.GraphRequests().addLink(link,  choice, function() {
                 if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                     self.parent.removeLink.call(self, old_link[0].index);
                 }
@@ -181,7 +187,9 @@ dreamer.EtsiController = (function(global) {
 
 
 
-    EtsiController.prototype.linkVltoVduCp = function(self, s, d, success, error) {
+    EtsiController.prototype.linkVltoVduCp = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
         var source_id = s.id;
         var target_id = d.id;
         var source_type = s.info.type;
@@ -194,7 +202,7 @@ dreamer.EtsiController = (function(global) {
         var old_link = $.grep(self.d3_graph.links, function(e) {
             return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')
         });
-        new dreamer.GraphRequests().addLink(s, d, vdu_id, function() {
+        new dreamer.GraphRequests().addLink(link,  vdu_id, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 self.parent.removeLink.call(self, old_link[0].index);
@@ -206,7 +214,9 @@ dreamer.EtsiController = (function(global) {
     };
 
 
-    EtsiController.prototype.linkVnfVltoExpCp = function(self, s, d, success, error) {
+    EtsiController.prototype.linkVnfVltoExpCp = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
         var source_id = s.id;
         var target_id = d.id;
         var source_type = s.info.type;
@@ -215,7 +225,7 @@ dreamer.EtsiController = (function(global) {
         var old_link = $.grep(self.d3_graph.links, function(e) {
             return (e.source.id == vnf_ext_cp_id || e.target.id == vnf_ext_cp_id);
         });
-        new dreamer.GraphRequests().addLink(s, d, null, function() {
+        new dreamer.GraphRequests().addLink(link,  null, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 self.parent.removeLink.call(self, old_link[0].index);
@@ -264,13 +274,9 @@ dreamer.EtsiController = (function(global) {
     };
 
     EtsiController.prototype.removeLink = function(self, link, success, error) {
-        var s = link.source;
-        var d = link.target;
-        new dreamer.GraphRequests().removeLink(s, d, function() {
-            if (success) {
-                success();
-            }
-        });
+        log("removeLink " + JSON.stringify(link))
+
+        new dreamer.GraphRequests().removeLink(link, success, error);
     };
 
     EtsiController.prototype.addToCurrentVNFFG = function(self, args, error) {
@@ -292,6 +298,14 @@ dreamer.EtsiController = (function(global) {
             });
         }
     };
+
+    /**
+     * Log utility
+     */
+    function log(text) {
+        if (DEBUG)
+            console.log("::EtsiController::", text);
+    }
 
     return EtsiController;
 
