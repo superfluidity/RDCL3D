@@ -1,13 +1,34 @@
 <div id="div-file-upload-superfluidity" class="start-selector"  style="display: none;">
     <h4>Select Descriptors File from your computer</h4>
+    <div class="tab-pane col-md-6" id="ns-upload">
 
+        <!-- Standar Form -->
+        <h3>Network Service</h3>
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" accept=".json, .yaml" name="nsd_files" id="ns-js-upload-files" multiple>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane col-md-6" id="vnf-upload">
+
+        <!-- Standar Form -->
+        <h3>Virtual Network Function</h3>
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" accept=".json, .yaml" name="vnfd_files" id="vnf-js-upload-files" multiple>
+            </div>
+        </div>
+
+    </div>
     <div class="tab-pane col-md-6" >
 
         <!-- Standar Form -->
-        <h3>Descriptor</h3>
+        <h3>Click Configuration files</h3>
         <div class="form-inline">
             <div class="form-group">
-                <input type="file"  name="ns_files" id="ns-js-upload-files" multiple>
+                <input type="file" accept=".click"  name="cfg_files" id="click-js-upload-files" multiple>
             </div>
         </div>
 
