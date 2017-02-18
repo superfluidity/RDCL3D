@@ -8,38 +8,32 @@
 			"type":"array",
 			"id": "http://jsonschema.net/connection_point",
 			"required":true,
-			"items":
-				{
-					"type":"string",
-					"id": "http://jsonschema.net/connection_point/0",
-					"required":true
-				}
-
-
+			"items": {
+				"type":"string",
+				"id": "http://jsonschema.net/connection_point/0",
+				"required": true
+			}
 		},
 		"constituent_vnfs": {
 			"type":"array",
 			"id": "http://jsonschema.net/constituent_vnfs",
 			"required":true,
-			"items":
-				{
-					"type":"string",
-					"id": "http://jsonschema.net/constituent_vnfs/0",
-					"required":true
-				}
-
+			"items": {
+				"type":"string",
+				"id": "http://jsonschema.net/constituent_vnfs/0",
+				"required":true
+			}
 
 		},
 		"dependent_virtual_link": {
 			"type":"array",
 			"id": "http://jsonschema.net/dependent_virtual_link",
 			"required":true,
-			"items":
-				{
-					"type":"string",
+			"items": {
+					"type": "string",
 					"id": "http://jsonschema.net/dependent_virtual_link/0",
 					"required":true
-				}
+			}
 
 
 		},

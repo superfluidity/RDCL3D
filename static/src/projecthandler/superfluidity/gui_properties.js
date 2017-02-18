@@ -57,7 +57,6 @@ var example_gui_properties = {
         "size": 18,
         "name": "VDU"
       },
-      {
       "element": {
         "shape": "square",
         "color": "#196B90",
