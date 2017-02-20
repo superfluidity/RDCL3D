@@ -23,7 +23,7 @@ dreamer.OshiController = (function(global) {
         new dreamer.GraphRequests().addNode(node, null, function() {
             if (success)
                 success();
-        });
+        },error);
     };
 
     OshiController.prototype.addLink = function(self, link, success, error) {
@@ -37,7 +37,7 @@ dreamer.OshiController = (function(global) {
             if (success) {
                 success();
             }
-        });
+        },error);
     };
 
     OshiController.prototype.removeNode = function(self, node, success, error) {
@@ -46,7 +46,7 @@ dreamer.OshiController = (function(global) {
             if (success) {
                 success();
             }
-        });
+        },error);
     };
 
     OshiController.prototype.removeLink = function(self, link, success, error) {
@@ -57,7 +57,7 @@ dreamer.OshiController = (function(global) {
             if (success) {
                 success();
             }
-        });
+        },error);
     };
 
     /**

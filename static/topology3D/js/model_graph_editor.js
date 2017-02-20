@@ -34,7 +34,6 @@ dreamer.ModelGraphEditor = (function(global) {
         }
 
         this.desc_id = args.desc_id || undefined;
-        console.log("desc_id",this.desc_id)
         this.type_property = {};
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
@@ -53,7 +52,6 @@ dreamer.ModelGraphEditor = (function(global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         d3.json(data_url, function(error, data) {
             log('data from remote')
-            console.log(data);
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
@@ -186,6 +184,7 @@ dreamer.ModelGraphEditor = (function(global) {
         } else {
             //FIXME we need to manage alert in a different way: FAILBACK
             log("You can't link a " + source_type + " with a " + destination_type);
+
             error && error("You can't link a " + source_type + " with a " + destination_type);
         }
     };
@@ -349,7 +348,7 @@ dreamer.ModelGraphEditor = (function(global) {
                     d3.event.preventDefault();
 
                     if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
-                        self.addLink(self._selected_node, d);
+                        self.addLink(self._selected_node, d, null,showAlert);
                     } else {
                         self._selectNodeExclusive(this, d);
                     }
