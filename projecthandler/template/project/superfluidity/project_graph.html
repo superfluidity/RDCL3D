@@ -9,6 +9,10 @@
     {% include 'superfluidity/superfluidity_project_left_sidebar.html' %}
 {% endblock %}
 
+{% block topology_toolbar %}
+    {{ block.super }}
+        {% include 'superfluidity/topology_toolbar.html' %}
+{% endblock %}
 
 {% block content_body %}
   	{{ block.super }}

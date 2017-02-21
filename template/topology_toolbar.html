@@ -1,4 +1,4 @@
-<div class="btn-group-vertical left-tool-bar">
+<div id ="ciaone" class="btn-group-vertical left-tool-bar">
 
     <!-- <button id="topology_zoom_plus" type="button" class="btn btn-default"><i class="fa fa-plus"></i></button> -->
     <!-- <button id="topology_zoom_minus" type="button" class="btn btn-default"><i class="fa fa-minus"></i></button> -->
@@ -7,7 +7,9 @@
             class="fa fa-play"></i></button>
     <button id="topology_pause" type="button" class="btn btn btn-default active" onclick="handleForce(this)"><i
             class="fa fa-pause"></i></button>
-    <button id="vnffg_options" type="button" class="btn btn btn-default" onclick="clickVnffg()">VNFFG</button>
+    {% block topology_toolbar_buttons %}
+
+    {% endblock %}
 
     <!-- <button id="topology_settings" type="button" class="btn btn-default"><i class="fa fa-gear"></i></button> -->
 
@@ -16,6 +18,7 @@
 
     <button id="topology_save" type="button" class="btn btn-default" onclick="savePositions(this)"><i
             class="fa fa-save"></i></button>
+
     <button id="topology_info_button" type="button" class="btn btn-default" data-toggle="modal"
             data-target="#modalTopologyInfoButton"><i class="fa fa-keyboard-o"></i></button>
 </div>

@@ -289,7 +289,7 @@ dreamer.ModelGraphEditor = (function(global) {
         }, {
             title: 'Delete',
             action: function(elm, d, i) {
-                self.removeNode(d);
+                self.removeNode(d, null, showAlert);
             }
 
         }];

@@ -5,8 +5,14 @@
 {% block title_header_big %}
     {{ block.super }}
 {% endblock %}
+
 {% block left_sidebar %}
     {% include 'click/click_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block topology_toolbar %}
+    {{ block.super }}
+        {% include 'click/topology_toolbar.html' %}
 {% endblock %}
 
 {% block content_body %}

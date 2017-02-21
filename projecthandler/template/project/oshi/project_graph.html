@@ -9,10 +9,15 @@
     {% include 'oshi/oshi_project_left_sidebar.html' %}
 {% endblock %}
 
+{% block topology_toolbar %}
+    {{ block.super }}
+        {% include 'oshi/topology_toolbar.html' %}
+{% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
  {% csrf_token %}
+
 
 
 {% include 'oshi/descriptor/modal/create_link_chooser.html' %}

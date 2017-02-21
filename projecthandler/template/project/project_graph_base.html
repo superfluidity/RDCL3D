@@ -14,6 +14,7 @@
 
 {% endblock %}
 
+
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
@@ -24,7 +25,10 @@
  {% csrf_token %}
 <div class="row" >
     <div class="col-md-12">
-        {% include 'topology_toolbar.html' %}
+        {% block topology_toolbar %}
+
+
+        {% endblock %}
         <div id="graph_ed_container" style="width: 100%; height:100%; background-color: white; border: 2px #3c8dbc solid;">
 
         </div>

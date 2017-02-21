@@ -10,10 +10,15 @@
 {% endblock %}
 
 
+{% block topology_toolbar %}
+    {{ block.super }}
+        {% include 'etsi/topology_toolbar.html' %}
+{% endblock %}
+
 {% block content_body %}
   	{{ block.super }}
- {% csrf_token %}
 
+ {% csrf_token %}
 
 {% include 'etsi/descriptor/modal/create_link_chooser.html' %}
 {% include 'etsi/descriptor/modal/choose_node_id.html' %}
