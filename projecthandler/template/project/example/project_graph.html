@@ -5,10 +5,15 @@
 {% block title_header_big %}
     {{ block.super }}
 {% endblock %}
+
 {% block left_sidebar %}
     {% include 'exampletoken/exampletoken_project_left_sidebar.html' %}
 {% endblock %}
 
+{% block topology_toolbar %}
+    {{ block.super }}
+        {% include 'exampletoken/topology_toolbar.html' %}
+{% endblock %}
 
 {% block content_body %}
   	{{ block.super }}
