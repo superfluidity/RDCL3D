@@ -27,7 +27,7 @@ def generateJsont3d(element, connection):
 
 
 
-def parserAllView(file_click):
+def parserAllView(file_click, id):
     l = 0
     words = []
     
@@ -106,8 +106,8 @@ def parserAllView(file_click):
 
         words2 = []
         
-        explicit_element_decl(line, element,'', 'click', words, ele_class_dict,ele_class_connections)
-        implicit_element_decl(line, element,'', 'click', words, words2)
+        explicit_element_decl(line, element,'', id, words, ele_class_dict,ele_class_connections)
+        implicit_element_decl(line, element,'', id, words, words2)
 
         for i in range(0,len(words2)):                                                          # ad ogni riga sostituisce il da dichiarazione dell'elemento 
             try:                                                                                # con il nome dell'elemento. Per semplificare la dichiarazione 

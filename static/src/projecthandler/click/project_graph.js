@@ -15,10 +15,10 @@ $(document).ready(function() {
     var params = {
         node: {
             type: ['element', 'compound_element', 'class_element'],
-            group: ['click']
+            group: [getUrlParameter('id')]
         },
         link: {
-            group: ['click'],
+            group: [getUrlParameter('id')],
             view: ['compact']
         }
     }

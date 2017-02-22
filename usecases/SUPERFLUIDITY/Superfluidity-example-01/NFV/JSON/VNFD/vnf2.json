@@ -8,8 +8,6 @@
     {
       "vduId":"vdu21",
       "name": "vdu21",
-      "vduInternalDescriptor" : "delay",
-      "vduInternalDescriptorType" : "click",
         "intCpd":[
         {
           "cpdId": "VduCp21",

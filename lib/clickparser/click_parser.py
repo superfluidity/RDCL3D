@@ -5,12 +5,12 @@ import os
 import glob
 from lib.util import Util
 
-def run_command(type_view, cfg_files):
+def run_command(type_view, cfg_files, id):
     if type_view == 'View':
         json_click = parserView(cfg_files)
 
     elif type_view == 'AllView':
-        json_click = parserAllView(cfg_files)
+        json_click = parserAllView(cfg_files, id)
     elif type_view == 'DetailView':
         json_click = parserDetailView(cfg_files)
 
@@ -39,19 +39,29 @@ def parse_cmd_line():
     return args
 '''
 
-def importprojectjson(cfg_files, model = {}, positions = {}):
+def importprojectjson(project, model = {}, positions = {}):
     #nx_topology = nx.MultiDiGraph()
     # args = parse_cmd_line()
-    type_view = 'AllView'
-    json_click = run_command(type_view, cfg_files)
-    '''
-    if len(nx_topology)!=0:
-        xml2py(nx_topology)
-        #nx.draw(nx_topology)
-        #plt.show()
-    '''
-    json_click = json.loads(json_click)
+    all_edges = []
+    all_vertices = []
+    for click in project['click']:
+        type_view = 'AllView'
+        json_click = run_command(type_view, project['click'][click], click)
+        '''
+        if len(nx_topology)!=0:
+            xml2py(nx_topology)
+            #nx.draw(nx_topology)
+            #plt.show()
+        '''
+        json_click = json.loads(json_click)
+        all_vertices = all_vertices + json_click['vertices']
+        for edge in json_click['edges']:
+            if 'click' in edge['group']:
+                edge['group'][edge['group'].index("click")] = click
+        all_edges = all_edges + json_click['edges']
     json_click['model'] = model
+    json_click['vertices'] = all_vertices
+    json_click['edges'] = all_edges
     for vertice in json_click['vertices']:
         key = vertice['id']
         if 'vertices' in positions:

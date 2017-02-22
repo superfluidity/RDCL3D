@@ -9,18 +9,38 @@ initDropOnGraph();
 
 
 $(document).ready(function() {
-    var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf'
-    var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
-    var params = {
-        node: {
-            type: allowed_types,
-            group: [getUrlParameter('id')]
-        },
-        link: {
-            group: [getUrlParameter('id')],
-            view: [descriptor_type]
+    var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf';
+    descriptor_type = getUrlParameter('type') == 'click'  ? ['click'] : descriptor_type;
+
+    if(descriptor_type == 'click'){
+        allowed_types = ['element', 'compound_element', 'class_element']
+        var params = {
+            node: {
+                type: ['element', 'compound_element', 'class_element'],
+                group: [getUrlParameter('id')]
+            },
+            link: {
+                group: [getUrlParameter('id')],
+                view: ['compact']
+            }
         }
+    }else{
+        var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
+        var params = {
+            node: {
+                type: allowed_types,
+                group: [getUrlParameter('id')]
+            },
+            link: {
+                group: [getUrlParameter('id')],
+                view: [descriptor_type]
+            }
+        }
+
     }
+
+
+
 
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 

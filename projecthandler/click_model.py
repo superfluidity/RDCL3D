@@ -60,9 +60,8 @@ class ClickProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-
-        project = self.get_descriptor(descriptor_id, self.get_type())
-        topology = click_parser.importprojectjson(project, model=self.get_graph_model(GRAPH_MODEL_FULL_NAME), positions= self.get_positions() )
+        current_data = json.loads(self.data_project)
+        topology = click_parser.importprojectjson(current_data, model=self.get_graph_model(GRAPH_MODEL_FULL_NAME), positions= self.get_positions() )
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
