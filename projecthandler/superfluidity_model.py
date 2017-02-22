@@ -45,8 +45,8 @@ class SuperfluidityProject(Project):
 
     @classmethod
     def data_project_from_example(cls, request):
-        superfluidity_id = request.POST.get('superfluidity-superfluidity-id', '')
-        data_project = SuperfluidityParser.importprojectdir(EXAMPLES_FOLDER + superfluidity_id + '/JSON', 'yaml')
+        superfluidity_id = request.POST.get('example-superfluidity-id', '')
+        data_project = SuperfluidityParser.importprojectdir(EXAMPLES_FOLDER + superfluidity_id, 'json')
         return data_project
 
     @classmethod

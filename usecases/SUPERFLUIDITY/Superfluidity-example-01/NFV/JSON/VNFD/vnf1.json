@@ -1,0 +1,200 @@
+{
+  "vnfdId": "vnf1",
+  "vnfProvider": "netgroup",
+  "vnfProductName": "vnf1",
+  "vnfSoftwareVersion": "0.1",
+  "vnfdVersion": "0.1",
+  "vdu":[
+    {
+      "vduId":"vdu11",
+      "name": "vdu11",
+      "vduInternalDescriptor" : "sampler4",
+      "vduInternalDescriptorType" : "click",
+        "intCpd":[
+        {
+          "cpdId": "VduCp11",
+          "layerProtocol": "E-LAN",
+          "cpRole": "leaf",
+          "intVirtualLinkDesc": "intVirtualLink11"
+        }
+      ]
+      }
+  ],
+  "intVirtualLinkDesc":[
+    {
+      "virtualLinkDescId": "intVirtualLink11",
+      "virtualLinkDescFlavour": [
+        {
+              "flavourId": "flavourId",
+              "bitrateRequirements": {
+                "root": 7,
+                "leaf": 13
+              },
+              "qos": {
+                "latency": 500,
+                "packetDelayVariation": 50,
+                "packetLossRatio": 5,
+                "priority": 1
+            },
+            "connectivityType": {
+              "layerProtocol": "Enum",
+              "flowPattern": ""
+
+            },
+            "testAccess":"",
+            "description": "",
+            "monitoringParameter":  {
+              "id": "id",
+              "name": "name",
+              "performanceMetric": "performanceMetric"
+            }
+
+          }
+      ],
+      "connectivityType": {
+        "layerProtocol": "Enum",
+        "flowPattern": ""
+      }
+    }
+
+  ],
+  "vnfExtCpd":[
+    {
+      "cpdId": "VnfExtCp11",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp12",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    },
+    {
+      "cpdId": "VnfExtCp13",
+      "layerProtocol": "E-LAN",
+      "cpRole": "leaf",
+      "description": "description",
+      "intVirtualLinkDesc": "intVirtualLink11"
+    }
+  ],
+  "deploymentFlavour":[
+    {
+      "flavourId": "vnfdf1",
+      "description": "description",
+      "vduProfile":[
+        {
+          "vduId": "vdu11",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 5,
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "type": "Enum",
+              "scope": "enum"
+            }
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+            "affinityOrAntiAffinityGroupId"
+          ]
+        }
+      ],
+      "virtualLinkProfile":[
+        {
+          "vnfVirtualLinkDescId": "intVirtualLink11",
+          "flavourId": "flavourId",
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "type": "Enum",
+              "scope": "enum"
+            }
+          ],
+          "affinityOrAntiAffinityGroupId":"affinityOrAntiAffinityGroupId"
+
+        }
+      ],
+      "instantiationLevel":[
+        {
+          "levelId": "",
+          "description": "",
+          "vduLevel":[
+            {
+              "vduId": "vduId",
+              "numberOfInstances": 5
+            }
+          ],
+          "scaleInfo": {
+            "aspectId": "aspectId",
+            "scaleLevel": 1
+          }
+        }
+      ],
+      "defaultInstantiationLevelId":"defaultInstantiationLevelId",
+      "supportedOperation":[
+        "eum"
+      ],
+      "vnfLcmOperationsConfiguration": {
+        "instantiateVnfOpConfig": {
+          "parameter":[
+            ""
+          ]
+        },
+        "scaleVnfOpConfig": {
+          "parameter":[
+            ""
+          ],
+          "scalingByMoreThanOneStepSupported": true
+        },
+        "scaleVnfToLevelOpConfig": {
+          "parameter": [
+            ""
+          ],
+          "arbitraryTargetLevelsSupported": true
+        },
+        "healVnfOpConfig": {
+          "parameter":[
+            ""
+          ],
+          "cause":[
+            ""
+          ]
+        },
+        "terminateVnfOpConfig": {
+          "minGracefulTerminationTimeout": 1,
+          "maxRecommendedGracefulTerminationtimeout": 5
+        },
+        "operateVnfOpConfig": {
+          "minGracefulStopTimeout": 1,
+          "maxRecommendedGracefulStopTimeout" : 5
+        }
+      },
+      "affinityOrAntiAffinityGroup":[
+        {
+          "groupId": "groupId",
+          "type": "Enum",
+          "scope": "Enum"
+        }
+
+      ],
+      "monitoringParameter":[
+         {
+          "id": "id",
+          "name": "name",
+          "performanceMetric": "performanceMetric"
+        }
+      ],
+      "scalingAspect":[
+        {
+          "id": "id",
+          "name": "name",
+          "description": "description",
+          "associatedGroup": "reference to VnfdElementGroup",
+          "maxScaleLevel": 10
+        }
+      ]
+    }
+  ]
+}

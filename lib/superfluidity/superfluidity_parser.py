@@ -1,6 +1,9 @@
 import json
 import pyaml
 import yaml
+
+from lib.clickparser import click_parser
+from lib.etsi.etsi_parser import EtsiParser
 from lib.util import Util
 from lib.parser import Parser
 import logging
@@ -18,8 +21,8 @@ class SuperfluidityParser(Parser):
 
     def __init__(self):
         super(SuperfluidityParser, self).__init__()
-    
-    @classmethod        
+
+    @classmethod
     def importprojectdir(cls,dir_project, file_type):
         """Imports all descriptor files under a given folder
 
@@ -35,22 +38,19 @@ class SuperfluidityParser(Parser):
 
             'positions': {}
         }
-
-
-        for desc_type in project:
-            cur_type_path = os.path.join(dir_project, desc_type.upper())
-            log.debug(cur_type_path)
-            if os.path.isdir(cur_type_path):
-                for file in glob.glob(os.path.join(cur_type_path, '*.'+file_type)):
-                    if file_type == 'json':
-                        project[desc_type][os.path.basename(file).split('.')[0]] = Util.loadjsonfile(file)
-                    elif file_type == 'yaml':
-                        project[desc_type][os.path.basename(file).split('.')[0]] = Util.loadyamlfile(file)
+        nfv_path = dir_project+"/NFV/"
+        etsi_project = EtsiParser.importprojectdir( nfv_path + '/JSON', 'json')
+        print etsi_project
+        project['nsd'] = etsi_project['nsd']
+        project['vnfd'] = etsi_project['vnfd']
+        project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/' , 'click')['click']
 
 
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':
                 project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
+
+        print project
 
         return project
 
