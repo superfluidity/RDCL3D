@@ -7,7 +7,7 @@
     {
       "vduId":"vdu31",
       "name": "vdu31",
-      "vduInternalDescriptor" : "sampler4",
+      "vduInternalDescriptor" : "demo",
       "vduInternalDescriptorType" : "click",
         "intCpd":[
         {

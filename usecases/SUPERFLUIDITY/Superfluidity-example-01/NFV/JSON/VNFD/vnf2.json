@@ -8,7 +8,7 @@
     {
       "vduId":"vdu21",
       "name": "vdu21",
-      "vduInternalDescriptor" : "sampler4",
+      "vduInternalDescriptor" : "delay",
       "vduInternalDescriptorType" : "click",
         "intCpd":[
         {

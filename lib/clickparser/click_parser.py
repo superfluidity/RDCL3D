@@ -77,7 +77,6 @@ def importprojectfile(cfg_files):
             project['positions']['vertices'] = Util.loadjsonfile(file)
         else:
             project['click'][ os.path.splitext(os.path.basename(str(file)))[0]] = file.read()
-    print project
     return project
 
 def importprojectdir(dir_project, file_type):
