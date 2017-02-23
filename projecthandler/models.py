@@ -216,6 +216,7 @@ class Project(models.Model):
         return in_memory
 
     def get_positions(self):
+        """Returns the positions of nodes"""
         try:
             current_data = json.loads(self.data_project)
             positions = {}

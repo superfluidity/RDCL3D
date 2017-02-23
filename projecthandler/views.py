@@ -430,6 +430,19 @@ def remove_link(request, project_id=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
+@login_required
+def get_available_nodes(request, project_id=None):
+    if request.method == 'GET':
+        csrf_token_value = get_token(request)
+        projects = Project.objects.filter(id=project_id).select_subclasses()
+        print "get_available_nodes", request.GET.dict()
+        result = projects[0].get_available_nodes(request.GET.dict())
+        status_code = 500 if result == None else 200
+        print json.dumps(result)
+        response = HttpResponse(json.dumps(result), content_type="application/json", status=status_code)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
 
 # ETSI specific method #
 @login_required

@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^(?P<project_id>\d+)/graph/removeelement$', views.remove_element, name='removeelement'),
     url(r'^(?P<project_id>\d+)/graph/addlink$', views.add_link, name='addlink'),
     url(r'^(?P<project_id>\d+)/graph/removelink$', views.remove_link, name='removelink'),
+    url(r'^(?P<project_id>\d+)/graph/availablenodes', views.get_available_nodes, name='get_available_nodes'),
     url(r'^(?P<project_id>\d+)/download(/$)', views.download, name='download_page'),
     url(r'^(?P<project_id>\d+)/descriptors/(?P<descriptor_type>\w+)(/$)', views.show_descriptors,
         name='show_descriptors'),

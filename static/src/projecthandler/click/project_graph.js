@@ -116,7 +116,8 @@ function changeFilter(e, c) {
     console.log("changeFilter");
     var type_property = graph_editor.getTypeProperty();
     $("#title_header").text("Click Graph Editor");
-    updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+    new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
+    //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
     updateBredCrumb(c);
 
 }
@@ -130,19 +131,6 @@ var filters = function(e, params) {
 function updateBredCrumb(filter_parameters){
      var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
         $('#breadcrumb').append(newLi);
-}
-
-function updateNodeDraggable(args){
-
-        var type_property = args.type_property;
-        $("#draggable-container").empty()
-        for (var i in args.nodes_layer) {
-            var node = args.nodes_layer[i]
-            if (node.addable) {
-                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart="nodeDragStart(event)" style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
-            }
-        }
-
 }
 
 function nodeDragStart(event){

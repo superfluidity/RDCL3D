@@ -196,4 +196,106 @@ textarea {
     box-shadow: #999 1px 1px 1px;
 }
 
+#palette {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    right: 22px;
+    background: #f3f3f3;
+    width: 160px;
+    text-align: center;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid #bbb;
+    box-sizing: border-box;
+    padding: 0 40px 0 0;
+}
 
+.palette-container{
+    #display: none;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    bottom: 25px;
+    left: 0;
+    padding: 0;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.palette-category{
+    border-bottom: 1px solid #ccc;
+}
+
+.palette-hide{
+    display: none;
+}
+
+.palette-header {
+    position: relative;
+    background: #f3f3f3;
+    cursor: pointer;
+    text-align: left;
+    padding: 9px;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.palette-content {
+    background: #fff;
+    padding: 3px;
+}
+
+
+.palette-open >.palette-content {
+    background: #fff;
+    padding: 3px;
+    display: none;
+}
+
+.palette-node {
+    cursor: move;
+    background: #ddd;
+    margin: 10px auto;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #999;
+    background-position: 5% 50%;
+    background-repeat: no-repeat;
+    width: 120px;
+    background-size: contain;
+    position: relative;
+}
+
+.palette-node-label{
+    font-size: 13px;
+    margin: 4px 0 4px 28px;
+    line-height: 20px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.palette-node-icon-container{
+    position: absolute;
+    text-align: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.05);
+}
+
+.palette-node-icon {
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+}

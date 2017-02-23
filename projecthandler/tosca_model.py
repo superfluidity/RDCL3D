@@ -5,13 +5,16 @@ import yaml
 import copy
 from lib.util import Util
 import os.path
-from projecthandler.models import Project
+import logging
 
+from projecthandler.models import Project
 from lib.tosca.tosca_rdcl_graph import ToscaRdclGraph
 from lib.tosca.tosca_parser import ToscaParser
 from toscaparser.tosca_template import ToscaTemplate
 from translator.hot.tosca_translator import TOSCATranslator
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('ToscaModel.py')
 
 PATH_TO_SCHEMAS = 'lib/tosca/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
@@ -215,7 +218,34 @@ class ToscaProject(Project):
 
         result = False
 
-        return result        
+        return result
+
+    def get_available_nodes(self, args):
+        """Returns all available node """
+        log.debug('get_available_nodes')
+        try:
+            result = []
+            #current_data = json.loads(self.data_project)
+            model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
+            for node in model_graph['layer'][args['layer']]['nodes']:
+
+                current_data = {
+                    "id": node,
+                    "category_name": model_graph['nodes'][node]['label'],
+                    "types": [
+                        {
+                            "name": "generic",
+                            "id": node
+                        }
+                    ]
+                }
+                result.append(current_data)
+
+            #result = current_data[type_descriptor][descriptor_id]
+        except Exception as e:
+            log.debug(e)
+            result = []
+        return result
 
     def get_generatehotemplate(self, request, descriptor_id, descriptor_type):
         """ Generate hot template for a TOSCA descriptor

@@ -136,6 +136,7 @@ class EtsiProject(Project):
         ##FIXME da rivedere, credo sia necessario rivedere questo processo
         topology = test_t3d.build_graph_from_project(project,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -319,6 +320,33 @@ class EtsiProject(Project):
         except Exception as e:
             log.exception(e)
             result = None  # TODO maybe we should use False ?
+        return result
+
+    def get_available_nodes(self, args):
+        """Returns all available node """
+        log.debug('get_available_nodes')
+        try:
+            result = []
+            #current_data = json.loads(self.data_project)
+            model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
+            for node in model_graph['layer'][args['layer']]['nodes']:
+
+                current_data = {
+                    "id": node,
+                    "category_name": model_graph['nodes'][node]['label'],
+                    "types": [
+                        {
+                            "name": "generic",
+                            "id": node
+                        }
+                    ]
+                }
+                result.append(current_data)
+
+            #result = current_data[type_descriptor][descriptor_id]
+        except Exception as e:
+            log.debug(e)
+            result = []
         return result
 
     # NS operations: add/remove VL

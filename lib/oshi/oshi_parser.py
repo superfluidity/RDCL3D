@@ -57,8 +57,7 @@ class OshiParser(Parser):
         The keys in the dictionary are the file types
         """
         project = {
-            'oshi':{},
-
+            'oshi': {},
         }
         for desc_type in project:
             if desc_type in file_dict:

@@ -38,6 +38,44 @@ function createNewDescriptor(project_id, descriptor_type){
 
 }
 
+function buildPalette(args){
+    var type_property = graph_editor.getTypeProperty();
+
+    $("#paletteContainer").empty()
+    args.forEach(function(category){
+        var category_id = "category_"+category.category_name.replace(/\s/g, '');
+        var content_id = "palette-content-"+ category.category_name.replace(/\s/g, '');
+        $("#paletteContainer").append('<div id="'+ category_id +'" class="palette-category" ><div class="palette-header" onClick="handlePaletteCat(this);" category_id="'+ category_id +'"> '+
+                '<i class="fa fa-chevron-right fa-rotate-90"></i>'+
+                '<span>  ' + category.category_name + '</span>'+
+            '</div>'+
+            '<div id="'+ content_id +'" class="palette-content">'+
+
+            '</div>'+
+        '</div>');
+        category.types.forEach(function(type){
+            var palette_node_icon = (type_property[category.id].image) ? '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image ||  "")+ ')"></div>' :
+            '<div class="palette-node-icon" style="background-color:' + type_property[category.id].color + '"></div>'
+            var html_to_append = '<div class="palette-node ui-draggable" draggable="true" id="' + type.id + '" ondragstart="nodeDragStart(event)">'+
+                        '<div class="palette-node-label">' + type.name + '</div>'+
+                        '<div class="palette-node-icon-container">'+
+                        palette_node_icon +
+                        '</div>'+
+                    '</div>'
+            $("#"+content_id).append(html_to_append);
+        });
+
+    });
+
+}
+
+function handlePaletteCat(item){
+    console.log("handlePaletteContainer")
+    var category_id = $(item).attr("category_id")
+    $('#'+category_id).toggleClass("palette-open");
+
+}
+
 function showAlert(msg){
     // modal_alert_text
     $('#modal_alert_text').text(msg);

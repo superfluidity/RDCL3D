@@ -45,7 +45,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
@@ -100,7 +100,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
@@ -123,10 +123,30 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
+
+    //
+    GraphRequests.prototype.getAvailableNodes = function(args, success, error){
+        var data = new FormData();
+        data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        $.ajax({
+            url: "availablenodes?layer="+args.layer,
+            type: 'GET',
+            success: function(result) {
+
+                if (success)
+                    success(result);
+            },
+            error: function(result) {
+                if (error)
+                    error();
+                log("some error: " + result);
+            }
+        });
+    }
 
     GraphRequests.prototype.savePositions = function(positions, success, error) {
         var data = new FormData();
@@ -146,7 +166,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
@@ -172,7 +192,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
@@ -198,7 +218,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
     };
@@ -216,7 +236,7 @@ dreamer.GraphRequests = (function(global) {
             error: function(result) {
                 if (error)
                     error();
-                alert("some error");
+                log("some error: " + result);
             }
         });
 
@@ -245,7 +265,7 @@ dreamer.GraphRequests = (function(global) {
      */
     function log(text) {
         if (DEBUG)
-            console.log("::GraphEditor::", text);
+            console.log("::GraphRequests::", text);
     }
 
     return GraphRequests;

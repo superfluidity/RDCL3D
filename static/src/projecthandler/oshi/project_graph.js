@@ -109,13 +109,11 @@ function savePositions(el) {
 
 function changeFilter(e, c) {
 
-    console.log("changeFilter");
-    var type_property = graph_editor.getTypeProperty();
-    $("#title_header").text("OSHI Graph Editor");
-    updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
-
-        $("#vnffg_box").hide();
-        $("#vnffg_options").prop("disabled", true);
+    console.log("changeFilter", JSON.stringify(c));
+    //$("#title_header").text("OSHI Graph Editor");
+    //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+    if(c)
+        new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
 
 }
 
