@@ -35,6 +35,24 @@ class SuperfluidityRdclGraph(RdclGraph):
             click_topology = click_parser.importprojectjson(json_project, positions=positions)
             click_vertices = click_vertices  + click_topology['vertices']
             click_edges = click_edges + click_topology['edges']
+            for vnf_id in json_project['vnfd']:
+                vnfd = json_project['vnfd'][vnf_id]
+                for vdu in vnfd['vdu']:
+                    if 'vduInternalDescriptorType' in vdu and vdu['vduInternalDescriptorType'] == 'click' and vdu['vduInternalDescriptor'] and vdu['vduInternalDescriptor'] in json_project['click']:
+                        vertice =  next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
+                        if vertice is not None:
+                            vertice['id'] = vdu['vduInternalDescriptor']
+                            vertice['info']['type'] = 'vnf_click_vdu'
+                            vertice['group'] = [vdu['vduInternalDescriptor']]
+                            if positions and vertice['id']  in positions['vertices']:
+                                vertice['fx'] = positions['vertices'][vertice['id']]['x']
+                                vertice['fy'] = positions['vertices'][vertice['id']]['y']
+                        for edge in etsi_topology['edges']:
+                            if edge['source'] == vdu['vduId']:
+                                edge['source'] = vdu['vduInternalDescriptor']
+                            if edge['target'] == vdu['vduId']:
+                                edge['target'] = vdu['vduInternalDescriptor']
+
             graph_object['vertices'] = etsi_topology['vertices'] + click_vertices
             graph_object['edges'] = etsi_topology['edges'] + click_edges
             log.debug('build graph from project json')

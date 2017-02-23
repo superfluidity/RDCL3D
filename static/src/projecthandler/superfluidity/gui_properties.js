@@ -57,6 +57,13 @@ var example_gui_properties = {
         "size": 18,
         "name": "VDU"
       },
+      "vnf_click_vdu": {
+        "shape": "star",
+        //"color": "#50A7CC",
+        "color": "#f44250",
+        "size": 18,
+        "name": "ClickVDU"
+      },
       "element": {
         "shape": "square",
         "color": "#196B90",

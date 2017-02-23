@@ -17,6 +17,8 @@ nodes:                                  #List of nodes, with id and label used i
         label: ExtCP
     vnf_vdu_cp:
         label: VDU
+    vnf_click_vdu:
+        label: CLickVDU
     element:
         label: ClickElement
     compound_element:
@@ -93,6 +95,12 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
+            vnf_click_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
+                expands : compact
             vnf_ext_cp:
                 addable:
                     callback: addNode
@@ -130,6 +138,23 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable:
                             callback: removeLink
+    compact:
+        nodes:
+            element:
+                #if the addable_key is missing it defaults to false
+                addable: true
+                removable: true
+            compound_element:
+                #if the expands key is missing it defaults to false
+                #if it is present the value represents the layer in which the node is expanded
+                #by default the representation will be filtered by the group equal to the node name
+                expands : compact
+                addable: true
+                removable: true
+            class_element:
+                addable: true
+                removable: true
+                expands : compact
 
 
 action:           #Action to show on rightclick on a node/link
