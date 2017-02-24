@@ -1,9 +1,11 @@
 # Description model
 The description model includes the types of nodes and links that are supported, their relationships, the constraints in their composition, describes what are the different views of the projects and which nodes and links belongs to which view.
 
+
+
 ## Details
 ### List of nodes
-The description model you can define the list of nodes and for each of them you can define the label wich will be displayed on the gui, for example in the etsi model:
+In the description model you can define the list of nodes and for each of them you can define the label wich will be displayed on the gui, for example in the etsi model:
 ```
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     vnf:
@@ -22,7 +24,7 @@ nodes:                                  #List of nodes, with id and label used i
         label: VDU
 ```
 ### List of layer
-Inside the object layers you can define the list of layer and for each of them witch type of nodes you want to be display in that layer, and if they can be added or can be removed:
+Inside the ```layers``` object you can define the list of layers and for each of them which type of nodes you want to be displayed in that layer, and if they can be added/removed:
 *   For each node the value of the attribute ```addable``` is the callback that will be called when the that node will be added.
 *   For each node the value of the attribute ```removable``` is the callback that will be called when the that node will be removed.
 ```
@@ -45,10 +47,12 @@ Inside the object layers you can define the list of layer and for each of them w
                     removable:
                         callback: removeNode
 ```
-In each layer you can specify what edge are allowed, and for each of them you can specify:
+In each layer you can specify what edges are allowed, and for each of them you can specify:
+
 * The callback that will call when that link will be made.
 * The callback that will call when that link will be removed.
 * If the link is directed or else.
+
 ```
             allowed_edges:                  #List of allowed edges between the layer's nodes
                         vnf:                        #Edge's source
