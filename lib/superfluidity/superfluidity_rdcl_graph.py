@@ -44,14 +44,17 @@ class SuperfluidityRdclGraph(RdclGraph):
                             vertice['id'] = vdu['vduNestedDesc']
                             vertice['info']['type'] = 'vnf_click_vdu'
                             vertice['group'] = [vdu['vduNestedDesc']]
+                            vertice['vduId'] = vdu['vduId']
                             if positions and vertice['id']  in positions['vertices']:
                                 vertice['fx'] = positions['vertices'][vertice['id']]['x']
                                 vertice['fy'] = positions['vertices'][vertice['id']]['y']
                         for edge in etsi_topology['edges']:
                             if edge['source'] == vdu['vduId']:
                                 edge['source'] = vdu['vduNestedDesc']
+                                edge['vduId'] = vdu['vduId']
                             if edge['target'] == vdu['vduId']:
                                 edge['target'] = vdu['vduNestedDesc']
+                                edge['vduId'] = vdu['vduId']
 
             graph_object['vertices'] = etsi_topology['vertices'] + click_vertices
             graph_object['edges'] = etsi_topology['edges'] + click_edges

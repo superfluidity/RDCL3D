@@ -203,6 +203,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type == 'vnf_vdu_cp':
             vdu_id = request.POST.get('choice')
             result = self.remove_vnf_vducp(group_id, vdu_id, element_id)
+        elif element_type == 'vnf_click_vdu':
+            result = self.remove_vnf_vdu(group_id, request.POST.get('vduId'))
 
         return result
 

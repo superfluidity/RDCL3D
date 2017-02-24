@@ -90,13 +90,14 @@ dreamer.EtsiController = (function(global) {
         var vnf_vdus = $.grep(self.d3_graph.nodes, function(e) {
             return (e.info.group.indexOf(vnf_id) >= 0 && e.info.type == 'vnf_vdu');
         });
-        if (success)
-            success();
+
         if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <= 0) {
             alert('You should add a VDU')
         } else {
             showChooserModal('Select the VDU to link', vnf_vdus, function(choice) {
                 new dreamer.GraphRequests().addNode(node, choice, function() {
+                    if (success)
+                        success();
                     var link = {
                         source: node.id,
                         target: choice,
