@@ -18,6 +18,34 @@ dreamer.SuperfluidityController = (function(global) {
 
     }
 
+    SuperfluidityController.prototype.addVnf = function(self, node, success, error) {
+        if (node.existing_vnf) {
+            new dreamer.GraphRequests().addNode(node, null, function() {
+                if (success)
+                    success();
+            });
+
+        } else {
+            new dreamer.GraphRequests().addNode(node, null, function() {
+                var vnf_ext_cp = {
+                    'id': 'vnf_ext_cp' + "_" + node.id,
+                    'info': {
+                        'type': 'vnf_ext_cp',
+                        'group': [node.id]
+                    },
+                    'x': node.x,
+                    'y': node.y
+                }
+                new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function() {
+                    self.parent.addNode.call(self, vnf_ext_cp);
+                    if (success)
+                        success();
+                });
+            });
+        }
+
+    };
+
 
     SuperfluidityController.prototype.addNode = function(self, node, success, error) {
 

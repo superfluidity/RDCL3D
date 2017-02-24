@@ -6,6 +6,9 @@ import os.path
 import yaml
 from lib.util import Util
 import logging
+from django.db import models
+from projecthandler.click_model import ClickProject
+from projecthandler.etsi_model import EtsiProject
 from projecthandler.models import Project
 
 from lib.superfluidity.superfluidity_parser import SuperfluidityParser
@@ -23,7 +26,7 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/superfluidity/superfluidity.yaml'
 EXAMPLES_FOLDER = 'usecases/SUPERFLUIDITY/'
 
 
-class SuperfluidityProject(Project):
+class SuperfluidityProject(EtsiProject, ClickProject):
     """Superfluidity Project class
     The data model has the following descriptors:
         # descrtiptor list in comment #
@@ -151,7 +154,31 @@ class SuperfluidityProject(Project):
 
     def get_add_element(self, request):
         result = False
-
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        existing_vnf = request.POST.get('existing_vnf')
+        if element_type == 'ns_cp':
+            result = self.add_ns_sap(group_id, element_id)
+        elif element_type == 'ns_vl':
+            result = self.add_ns_vl(group_id, element_id)
+        elif element_type == 'vnf':
+            if existing_vnf == 'true':
+                result = self.add_ns_existing_vnf(group_id, element_id)
+            else:
+                result = self.add_ns_vnf(group_id, element_id)
+        elif element_type == 'vnf_vl':
+            result = self.add_vnf_intvl(group_id, element_id)
+        elif element_type == 'vnf_ext_cp':
+            result = self.add_vnf_vnfextcpd(group_id, element_id)
+        elif element_type == 'vnf_vdu':
+            result = self.add_vnf_vdu(group_id, element_id)
+        elif element_type == 'vnf_vdu_cp':
+            vdu_id = request.POST.get('choice')
+            result = self.add_vnf_vducp(group_id, vdu_id, element_id)
+        elif element_type == 'vnffg':
+            # log.debug("Add ") group_id, element_id
+            result = self.add_vnffg(group_id, element_id)
         return result
 
     def get_remove_element(self, request):

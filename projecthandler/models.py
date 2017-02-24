@@ -26,7 +26,7 @@ class Project(models.Model):
 
     """
     owner = models.ForeignKey('sf_user.CustomUser', db_column='owner')
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, default='')
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     info = models.TextField(default='No info')
