@@ -1,1 +1,3 @@
-Main readme
+RDCL 3D - Documentation 
+========================================
+
