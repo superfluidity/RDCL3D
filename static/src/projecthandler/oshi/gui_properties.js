@@ -5,37 +5,42 @@ var example_gui_properties = {
       "shape": "cross",
       "color": "#42f44e",
       "label_color": "black",
-      "size": 20
+      "size": 30,
     },
     "nodes": {
       "OSHI-CR": {
-        "shape": "circle",
+        "image" : "oshi-cr.png",
+        //"shape": "circle",
         "color": "#196B90",
-        "size": 20,
+        "size": 30,
         "name": "CR"
       },
       "OSHI-PE": {
-        "shape": "circle",
+        "image" : "oshi-pe.png",
+        //"shape": "circle",
         "color": "#F27220",
-        "size": 20,
+        "size": 30,
         "name": "PE"
       },
       "CE": {
-        "shape": "circle",
+        "image" : "ce.png",
+        //"shape": "circle",
         "color": "#54A698",
-        "size": 20,
+        "size": 30,
         "name": "CE"
       },
       "VS": {
-        "shape": "circle",
+        "image" : "vs.png",
+        //"shape": "circle",
         "color": "#196B90",
-        "size": 20,
+        "size": 30,
         "name": "VC"
       },
       "OF Controller": {
-        "shape": "circle",
+        "image" : "ofcontroller.png",
+        //"shape": "circle",
         "color": "#F27220",
-        "size": 20,
+        "size": 30,
         "name": "CTRL"
       }
     },
