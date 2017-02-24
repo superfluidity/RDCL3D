@@ -13,7 +13,7 @@ nodes:                                  #List of nodes, with id and label used i
         label: intVL
     vnf_vdu:
         label: VduCP
-    vnf_exp_cp:
+    vnf_ext_cp:
         label: ExtCP
     vnf_vdu_cp:
         label: VDU

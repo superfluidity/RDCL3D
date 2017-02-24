@@ -10,64 +10,81 @@ dreamer.SuperfluidityController = (function(global) {
 
     SuperfluidityController.prototype.constructor = SuperfluidityController;
 
+
     /**
      * Constructor
      */
     function SuperfluidityController() {
-
+         SuperfluidityController.etsiController = new dreamer.EtsiController();
 
     }
 
     SuperfluidityController.prototype.addVnf = function(self, node, success, error) {
-        if (node.existing_vnf) {
-            new dreamer.GraphRequests().addNode(node, null, function() {
-                if (success)
-                    success();
-            });
-
-        } else {
-            new dreamer.GraphRequests().addNode(node, null, function() {
-                var vnf_ext_cp = {
-                    'id': 'vnf_ext_cp' + "_" + node.id,
-                    'info': {
-                        'type': 'vnf_ext_cp',
-                        'group': [node.id]
-                    },
-                    'x': node.x,
-                    'y': node.y
-                }
-                new dreamer.GraphRequests().addNode(vnf_ext_cp, null, function() {
-                    self.parent.addNode.call(self, vnf_ext_cp);
-                    if (success)
-                        success();
-                });
-            });
-        }
-
+        SuperfluidityController.etsiController.addVnf(self, node, success, error);
     };
 
+    SuperfluidityController.prototype.addVnfVdu = function(self, node, success, error) {
+        SuperfluidityController.etsiController.addVnfVdu(self, node, success, error);
+    }
+
+    SuperfluidityController.prototype.addVnfVduCp = function(self, node, success, error) {
+         SuperfluidityController.etsiController.addVnfVduCp(self, node, success, error);
+    }
+
+    SuperfluidityController.prototype.nsCpExclusiveConnection = function(self, link, success, error) {
+        SuperfluidityController.etsiController.nsCpExclusiveConnection(self, link, success, error);
+    }
+
+    SuperfluidityController.prototype.linkVnftoNsVl = function(self, link, success, error) {
+        SuperfluidityController.etsiController.linkVnftoNsVl(self, link, success, error);
+    }
+
+    SuperfluidityController.prototype.linkVnftoNsCp = function(self, link, success, error) {
+        SuperfluidityController.etsiController.linkVnftoNsCp(self, link, success, error);
+    }
+
+    SuperfluidityController.prototype.linkVltoVduCp = function(self, link, success, error) {
+        SuperfluidityController.etsiController.linkVltoVduCp(self, link, success, error);
+    }
+
+   SuperfluidityController.prototype.linkVnfVltoExpCp = function(self, link, success, error) {
+        SuperfluidityController.etsiController.linkVnfVltoExpCp(self, link, success, error);
+   }
+
+   SuperfluidityController.prototype.removeVnfVdu = function(self, node, success, error) {
+        SuperfluidityController.etsiController.removeVnfVdu(self, node, success, error);
+   }
+
+    SuperfluidityController.prototype.removeVnfVduCp = function(self, node, success, error) {
+        SuperfluidityController.etsiController.removeVnfVduCp(self, node, success, error);
+    }
 
     SuperfluidityController.prototype.addNode = function(self, node, success, error) {
-
-        new dreamer.GraphRequests().addNode(node, null, function() {
-            if (success)
-                success();
-        });
+        if(self.getCurrentView()!= 'click'){
+            SuperfluidityController.etsiController.addNode(self, node, success, error);
+        }
     };
 
-
+    SuperfluidityController.prototype.addToCurrentVNFFG = function(self, args, error) {
+        if(self.getCurrentView()!= 'click'){
+            SuperfluidityController.etsiController.addToCurrentVNFFG(self, args, error);
+        }
+    }
 
     SuperfluidityController.prototype.removeNode = function(self, node, success, error) {
-        new dreamer.GraphRequests().removeNode(node, null, function() {
-            if (success) {
-                success();
-            }
-        });
+        if(self.getCurrentView()!= 'click'){
+            new dreamer.GraphRequests().removeNode(node, null, function() {
+                if (success) {
+                    success();
+                }
+            });
+         }
     };
 
     SuperfluidityController.prototype.removeLink = function(self, link, success, error) {
-
-        new dreamer.GraphRequests().removeLink(link, success,error);
+        if(self.getCurrentView()!= 'click'){
+            new dreamer.GraphRequests().removeLink(link, success,error);
+        }
     };
 
 

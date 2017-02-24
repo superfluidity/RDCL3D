@@ -136,7 +136,6 @@ dreamer.GraphRequests = (function(global) {
             url: "availablenodes?layer="+args.layer,
             type: 'GET',
             success: function(result) {
-
                 if (success)
                     success(result);
             },

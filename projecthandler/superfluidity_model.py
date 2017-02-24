@@ -182,31 +182,126 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def get_remove_element(self, request):
+
         result = False
-        
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        log.debug('in get_remove_element : ' + str(element_id))  # TODO log
+        if element_type == 'ns_cp':
+            result = self.remove_ns_sap(group_id, element_id)
+        elif element_type == 'ns_vl':
+            result = self.remove_ns_vl(group_id, element_id)
+        elif element_type == 'vnf':
+            result = self.remove_ns_vnf(group_id, element_id)
+        elif element_type == 'vnf_vl':
+            result = self.remove_vnf_intvl(group_id, element_id)
+        elif element_type == 'vnf_ext_cp':
+            result = self.remove_vnf_vnfextcpd(group_id, element_id)
+        elif element_type == 'vnf_vdu':
+            result = self.remove_vnf_vdu(group_id, element_id)
+        elif element_type == 'vnf_vdu_cp':
+            vdu_id = request.POST.get('choice')
+            result = self.remove_vnf_vducp(group_id, vdu_id, element_id)
+
         return result
 
     def get_add_link(self, request):
 
         result = False
-
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        # source = json.loads(request.POST.get('source'))
+        # destination = json.loads(request.POST.get('destination'))
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            result = self.link_vl_sap(source['info']['group'][0], vl_id, sap_id)
+        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            ns_id = source['info']['group'][0]
+            vnf_ext_cp = request.POST.get('choice')
+            result = self.link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
+        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            ns_id = source['info']['group'][0]
+            vnf_ext_cp = request.POST.get('choice')
+            result = self.link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
+        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+            vdu_id = request.POST.get('choice')
+            vnf_id = source['info']['group'][0]
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+            result = self.link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
+        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            result = self.link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
         return result
 
     def get_remove_link(self, request):
-        result = False
 
+        result = False
+        parameters = request.POST.dict()
+        # print "param remove_link", parameters
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            result = self.unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
+        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
+            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            ns_id = source['info']['group'][0]
+            result = self.unlink_vl_vnf(ns_id, vl_id, vnf_id)
+        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
+            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
+            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
+            ns_id = source['info']['group'][0]
+            result = self.unlink_vl_sap(ns_id, vnf_id, sap_id)
+        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+            vnf_id = source['info']['group'][0]
+            result = self.unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
+        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
+            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
+            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
+            result = self.unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
         return result
 
+    def get_unused_vnf(self, nsd_id):
+        try:
+            current_data = json.loads(self.data_project)
+            result = []
+            if 'vnfd' in current_data:
+                for vnf in current_data['vnfd']:
+                    if vnf not in current_data['nsd'][nsd_id]['vnfdId']:
+                        result.append(vnf)
+        except Exception as e:
+            log.exception(e)
+            result = None  # TODO maybe we should use False ?
+        return result
 
     def get_available_nodes(self, args):
         """Returns all available node """
         log.debug('get_available_nodes')
         try:
             result = []
-            #current_data = json.loads(self.data_project)
+            # current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-
                 current_data = {
                     "id": node,
                     "category_name": model_graph['nodes'][node]['label'],
@@ -219,7 +314,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 }
                 result.append(current_data)
 
-            #result = current_data[type_descriptor][descriptor_id]
+                # result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []
