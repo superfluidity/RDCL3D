@@ -1,0 +1,219 @@
+name: Superfluidity                            #Model name
+description: Superfluidity description model        #Model description
+version: 1.0                            #Model version
+designer: Francesco Lombardo               #Model designer
+nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
+    vnf:
+        label: VNF
+    ns_vl:
+        label: VL
+    ns_cp:
+        label: SAP
+    vnf_vl:
+        label: intVL
+    vnf_vdu:
+        label: Vdu
+    vnf_ext_cp:
+        label: ExtCP
+    vnf_vdu_cp:
+        label: VduCp
+    vnf_click_vdu:
+        label: CLickVDU
+    element:
+        label: ClickElement
+    compound_element:
+        label:  CompoundElement
+    class_element:
+        label: ClassElement
+layer:                                  #List of Layers
+    ns:
+        nodes:                  #List of node to be visualized in the current layer
+            vnf:
+                addable:
+                    callback: addVnf
+                removable:
+                    callback: removeNode
+                expands : vnf
+            ns_vl:
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
+            ns_cp:
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
+        allowed_edges:                  #List of allowed edges between the layer's nodes
+            vnf:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+                    ns_vl:
+                        callback: linkVnftoNsVl
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+                    ns_cp:
+                        callback: linkVnftoNsCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            ns_vl:
+                destination:
+                    vnf:
+                        callback: linkVnftoNsVl
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+                    ns_cp:
+                        callback: nsCpExclusiveConnection
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+
+            ns_cp:
+                destination:
+                    vnf:
+                        callback: linkVnftoNsCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+                    ns_vl:
+                        callback: nsCpExclusiveConnection
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+
+    vnf:
+        nodes:                  #List of node to be visualized in the current layer
+            vnf_vl:
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
+            vnf_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
+            vnf_click_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
+                expands : compact
+            vnf_ext_cp:
+                addable:
+                    callback: addNode
+                removable:
+                    callback: removeNode
+            vnf_vdu_cp:
+                addable:
+                    callback: addVnfVduCp
+                removable:
+                    callback: removeVnfVduCp
+        allowed_edges:                  #List of allowed edges between the layer's nodes
+            vnf_vl:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+                    vnf_vdu_cp:
+                        callback: linkVltoVduCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+                    vnf_ext_cp:
+                        callback: linkVnfVltoExpCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            vnf_ext_cp:
+                destination:
+                    vnf_vl:
+                        callback: linkVnfVltoExpCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            vnf_vdu_cp:
+                destination:
+                    vnf_vl:
+                        callback: linkVltoVduCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+    compact:
+        nodes:
+            element:
+                #if the addable_key is missing it defaults to false
+                addable: true
+                removable: true
+            compound_element:
+                #if the expands key is missing it defaults to false
+                #if it is present the value represents the layer in which the node is expanded
+                #by default the representation will be filtered by the group equal to the node name
+                expands : compact
+                addable: true
+                removable: true
+            class_element:
+                addable: true
+                removable: true
+                expands : compact
+
+
+action:           #Action to show on rightclick on a node/link
+    node:
+        addToCurrentVNFFG:
+            title: Add to current VNFFG
+            callback: addToCurrentVNFFG
+    link:
+
+
+callback:                             #List of callbacks used
+  chooseVnfExp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  nsCpExclusiveConnection:
+      file: sf_controller.js
+      class: SuperfluidityController
+  getVduConnectedToVduCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addVnf:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addNode:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addVnfVdu:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addVnfVduCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addLink:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkVnftoNsCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkVnftoNsVl:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkVltoVduCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkVnfVltoExpCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  removeNode:
+      file: sf_controller.js
+      class: SuperfluidityController
+  removeVnfVdu:
+      file: sf_controller.js
+      class: SuperfluidityController
+  removeVnfVduCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  removeLink:
+      file: sf_controller.js
+      class: SuperfluidityController
+  addToCurrentVNFFG:
+      file: sf_controller.js
+      class: SuperfluidityController
