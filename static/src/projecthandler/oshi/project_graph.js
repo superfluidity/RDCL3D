@@ -31,7 +31,7 @@ $(document).ready(function() {
     });
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
-
+    buildViewSelector();
 });
 
 var filters = function(e, params) {
@@ -149,4 +149,38 @@ function refreshGraphParameters(e, graphParameters) {
     var self = $(this);
     if (graphParameters == null) return;
 
+
+}
+
+function buildViewSelector(){
+    var views = ['Data', 'Control', 'Vll', 'PW', 'VS']
+    $("#selection_view").empty();
+    for (var i in views) {
+        var view = views[i]
+        var child = $('<option value="' + view + '">' + view + '</option>');
+        $("#selection_view").append(child)
+    }
+}
+
+function clickView(){
+    if ($("#view_box").is(':visible'))
+        $("#view_box").hide();
+    else
+        $("#view_box").show();
+}
+
+function changeView(e){
+    var viewId = e.value;
+    console.log("viewId", viewId)
+    var params = {
+        node: {
+            type: [],
+            group: []
+        },
+        link: {
+            group: [],
+            view: [viewId]
+        }
+    }
+    graph_editor.handleFiltersParams(params);
 }

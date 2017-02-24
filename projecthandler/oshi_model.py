@@ -45,8 +45,9 @@ class OshiProject(Project):
 
     @classmethod
     def data_project_from_example(cls, request):
-        oshi_id = request.POST.get('oshi-oshi-id', '')
-        data_project = OshiParser.importprojectdir(EXAMPLES_FOLDER + oshi_id + '/JSON', 'yaml')
+        print request.POST.dict()
+        oshi_id = request.POST.get('example-oshi-id', '')
+        data_project = OshiParser.importprojectdir(EXAMPLES_FOLDER + oshi_id , 'json')
         return data_project
 
     @classmethod
