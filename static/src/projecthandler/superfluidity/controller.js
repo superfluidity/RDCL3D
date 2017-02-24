@@ -73,7 +73,45 @@ dreamer.SuperfluidityController = (function(global) {
     }
 
     SuperfluidityController.prototype.linkVltoVduCp = function(self, link, success, error) {
-        SuperfluidityController.etsiController.linkVltoVduCp(self, link, success, error);
+        var s = link.source;
+        var d = link.target;
+        var source_id = s.id;
+        var target_id = d.id;
+        var source_type = s.info.type;
+        var destination_type = d.info.type;
+        var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
+        var vdu_links = $.grep(self.d3_graph.links, function(e) {
+            return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu'
+            || e.source.info.type == 'vnf_click_vdu' || e.target.info.type == 'vnf_click_vdu')
+        });
+        var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
+        if(vdu_links[0].source.info.type == 'vnf_vdu'){
+            vdu_id = vdu_links[0].source.id;
+        }else if (vdu_links[0].target.info.type == 'vnf_vdu'){
+            vdu_id = vdu_links[0].target.id;
+        } else if(vdu_links[0].source.info.type == 'vnf_click_vdu'){
+          var vnf_vdus = $.grep(self.d3_graph.nodes, function(e) {
+            return (e.id == vdu_links[0].source.id) && (e.info.type == 'vnf_click_vdu')
+          });
+          vdu_id = vnf_vdus[0].vduId;
+        }else{
+            var vnf_vdus = $.grep(self.d3_graph.nodes, function(e) {
+            return (e.id == vdu_links[0].target.id) && (e.info.type == 'vnf_click_vdu')
+          });
+          vdu_id = vnf_vdus[0].vduId;
+        }
+        var old_link = $.grep(self.d3_graph.links, function(e) {
+            return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')
+        });
+        new dreamer.GraphRequests().addLink(link,  vdu_id, function() {
+            self._deselectAllNodes();
+            if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
+                self.parent.removeLink.call(self, old_link[0].index);
+            }
+            if (success) {
+                success();
+            }
+        });
     }
 
    SuperfluidityController.prototype.linkVnfVltoExpCp = function(self, link, success, error) {
