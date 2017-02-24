@@ -8,8 +8,8 @@
     {
       "vduId":"vdu11",
       "name": "vdu11",
-      "vduInternalDescriptor" : "sampler4",
-      "vduInternalDescriptorType" : "click",
+      "vduNestedDesc" : "sampler4",
+      "vduNestedDescType" : "click",
         "intCpd":[
         {
           "cpdId": "VduCp11",

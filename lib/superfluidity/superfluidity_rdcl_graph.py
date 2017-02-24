@@ -38,20 +38,20 @@ class SuperfluidityRdclGraph(RdclGraph):
             for vnf_id in json_project['vnfd']:
                 vnfd = json_project['vnfd'][vnf_id]
                 for vdu in vnfd['vdu']:
-                    if 'vduInternalDescriptorType' in vdu and vdu['vduInternalDescriptorType'] == 'click' and vdu['vduInternalDescriptor'] and vdu['vduInternalDescriptor'] in json_project['click']:
+                    if 'vduNestedDescType' in vdu and vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
                         vertice =  next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
                         if vertice is not None:
-                            vertice['id'] = vdu['vduInternalDescriptor']
+                            vertice['id'] = vdu['vduNestedDesc']
                             vertice['info']['type'] = 'vnf_click_vdu'
-                            vertice['group'] = [vdu['vduInternalDescriptor']]
+                            vertice['group'] = [vdu['vduNestedDesc']]
                             if positions and vertice['id']  in positions['vertices']:
                                 vertice['fx'] = positions['vertices'][vertice['id']]['x']
                                 vertice['fy'] = positions['vertices'][vertice['id']]['y']
                         for edge in etsi_topology['edges']:
                             if edge['source'] == vdu['vduId']:
-                                edge['source'] = vdu['vduInternalDescriptor']
+                                edge['source'] = vdu['vduNestedDesc']
                             if edge['target'] == vdu['vduId']:
-                                edge['target'] = vdu['vduInternalDescriptor']
+                                edge['target'] = vdu['vduNestedDesc']
 
             graph_object['vertices'] = etsi_topology['vertices'] + click_vertices
             graph_object['edges'] = etsi_topology['edges'] + click_edges

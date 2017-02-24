@@ -7,8 +7,8 @@
     {
       "vduId":"vdu31",
       "name": "vdu31",
-      "vduInternalDescriptor" : "demo",
-      "vduInternalDescriptorType" : "click",
+      "vduNestedDesc" : "demo",
+      "vduNestedDescType" : "click",
         "intCpd":[
         {
           "cpdId": "VduCp31",
