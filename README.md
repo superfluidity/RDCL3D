@@ -1,10 +1,12 @@
-RDCLs Playground - RFB Description and Composition Languages Playground 
+RDCL 3D - RFB Description and Composition Languages Design, Deploy and Direct 
+========================================
 ========================================
 
-About
------
+RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing, validating, visualizing the descriptors of services and components both textually and graphically.
 
-Private repository for developing RDCL 3D (RDCL Design, Deploy & Direct)
+Mailing list
+-------------
+
 
 Prerequisites
 -------------
@@ -18,12 +20,11 @@ Installation
 
 Clone the project from repository with ssh:
     
-    $ git clone git@bitbucket.org:ssalsano/test-rdcl.git
-
+    $ git clone git@github.com:superfluidity/RDCL3D.git
     
 or https:
 
-    $ git clone https://[username]@bitbucket.org/ssalsano/test-rdcl.git
+    $ git clone https://github.com/superfluidity/RDCL3D.git
     
 Install a recent Django version as shown in in the [install guide](https://docs.djangoproject.com/en/1.9/intro/install/).
 
@@ -53,7 +54,6 @@ To setup a local development environment::
     $ python manage.py createsuperuser
 
 
-
 #### To run the server:
 
     $ python manage.py runserver
@@ -63,7 +63,7 @@ or:
 
 
 
-Development (TODO)
+Development
 -------
 
 In order to keep your environment consistent, it's a good idea to "freeze" the current state of the environment packages. 
