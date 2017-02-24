@@ -1,6 +1,14 @@
 # Description model
 The description model includes the types of nodes and links that are supported, their relationships, the constraints in their composition, describes what are the different views of the projects and which nodes and links belongs to which view.
 
+The model is composed of four sections: 
+
+```
+nodes:            #List of nodes, with id and label used in the gui (We can add more fields)
+layer:            #List of Layers
+action:           #Actions to show on rightclick on a node/link
+callback:         #List of callbacks used
+```
 
 
 ## Details
