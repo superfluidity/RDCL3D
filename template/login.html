@@ -2,44 +2,46 @@
 
 {% block content_body %}
 <div class="login-box">
-  <div class="login-logo">
-    <a href='{% url "home" %}'><b>{{ SITE_NAME }} </b>Login</a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
-
-    <form action="../auth/" method="post">
-      {% csrf_token %}
-      <div class="form-group has-feedback">
-        <input type="username" name="username" class="form-control" placeholder="Username">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" name="password" class="form-control" placeholder="Password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="row">
-        <div class="col-xs-8">
-
-        </div>
-        <!-- /.col -->
-        <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
-    <div class="row center">
-    <p class="login-box-msg">- OR -</p>
+    <div class="login-logo">
+        <a href='{% url "home" %}'><b>{{ SITE_NAME }} </b>Login</a>
     </div>
-     <a href='{% url "auth_user_guest" %}' class="btn btn-primary btn-block btn-flat">Guest Sign In</a>
-    <br>
-    <a href="#">I forgot my password</a><br>
-    <a href='{% url "register_user" %}' class="text-center">Register a new membership</a>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">Sign in to start your session</p>
 
-  </div>
-  <!-- /.login-box-body -->
+        <form action="../auth/" method="post">
+            {% csrf_token %}
+            <div class="form-group has-feedback">
+                <input type="username" name="username" class="form-control" placeholder="Username">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+        <div class="row center">
+            <p class="login-box-msg">- OR -</p>
+        </div>
+        <a href='{% url "auth_user_guest" %}' class="btn btn-primary btn-block btn-flat">Guest Sign In</a>
+        <br>
+
+        <a href="https://goo.gl/forms/g8Qwp8Kgy6B7CBR82">I forgot my password</a><br>
+         <!--<a href='{% url "register_user" %}' class="text-center">Register a new membership</a>-->
+        <a href="https://goo.gl/forms/rbRtrgH23T2rZKIB2" class="text-center">Register an account to save and retrieve your projects</a>
+
+    </div>
+    <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
 {% endblock %}
@@ -53,7 +55,8 @@
       increaseArea: '20%' // optional
     });
   });
+
 </script>
-    {% endblock %}
+{% endblock %}
 
 

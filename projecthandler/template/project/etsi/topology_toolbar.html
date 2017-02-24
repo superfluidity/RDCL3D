@@ -4,3 +4,29 @@
     {{ block.super }}
     <button id="vnffg_options" type="button" class="btn btn btn-default" onclick="clickVnffg()">VNFFG</button>
 {% endblock %}
+
+{% block boxes_toolbar %}
+{{ block.super }}
+<div id="vnffg_box" class="box box-default box-solid vnffg-box" style="display: none;">
+    <div class="box-header with-border">
+        <h3 class="box-title">VNFFG</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <select class="form-control" id="selection_vnffg" onchange="changeVnffg(this)"></select>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="show_all_checkbox" onchange="show_all_change(this)">
+                Show all
+            </label>
+        </div>
+        <button class="btn btn-default" onclick="newVnffg()">New VNFFG</button>
+    </div>
+    <!-- /.box-body -->
+</div>
+{% endblock %}

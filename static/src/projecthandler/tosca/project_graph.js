@@ -36,8 +36,7 @@ $(document).ready(function() {
     });
     graph_editor.handleFiltersParams(params);
 
-    $('#draggable-container').hide();
-    $('#vnffg_options').hide();
+
 });
 
 var filters = function(e, params) {
@@ -71,18 +70,7 @@ dropZone.ondragleave = function() {
 }
 }
 
-function updateNodeDraggable(args){
 
-        var type_property = args.type_property;
-        $("#draggable-container").empty()
-        for (var i in args.nodes_layer) {
-            var node = args.nodes_layer[i]
-            if (node.addable) {
-                $("#draggable-container").append('<span type="button" class="btn btn-flat btn-default drag_button" draggable="true" id="' + i + '"  ondragstart="nodeDragStart(event)" style="background-color: ' + type_property[i].color + ' !important;"><p>' + type_property[i].name + '</p></span>');
-            }
-        }
-
-}
 
 function nodeDragStart(event){
     event.dataTransfer.setData("Text", event.target.id);
@@ -108,8 +96,7 @@ function savePositions(el) {
 function changeFilter(e, c) {
     console.log("changeFilter");
     $("#title_header").text("TOSCA YAML Graph Viewer");
-    // $("#vnffg_box").hide();
-    // $("#vnffg_options").prop("disabled",true);
+
 
 }
 

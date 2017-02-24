@@ -22,34 +22,11 @@
     <button id="topology_info_button" type="button" class="btn btn-default" data-toggle="modal"
             data-target="#modalTopologyInfoButton"><i class="fa fa-keyboard-o"></i></button>
 </div>
-<div id="vnffg_box" class="box box-default box-solid vnffg-box" style="display: none;">
-    <div class="box-header with-border">
-        <h3 class="box-title">VNFFG</h3>
+{% block boxes_toolbar %}
 
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-        </div>
-        <!-- /.box-tools -->
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <select class="form-control" id="selection_vnffg" onchange="changeVnffg(this)"></select>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" id="show_all_checkbox" onchange="show_all_change(this)">
-                Show all
-            </label>
-        </div>
-        <button class="btn btn-default" onclick="newVnffg()">New VNFFG</button>
-    </div>
-    <!-- /.box-body -->
-</div>
+{% endblock %}
 
 
-<!-- the draggable nodes -->
-<div id="draggable-container" class="btn-group drag_box">
-
-</div>
 
 <div id="palette">
     <div id="paletteContainer" class="palette-container">
