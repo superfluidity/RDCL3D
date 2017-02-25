@@ -8,16 +8,18 @@ Later in this README you will find the instructions on how to install and run RD
 Documentation is available in the docs folder of this repository.
 
 
-Community
--------------
+## Community
 
 The mailing list [rdcl3d@googlegroups.com](mailto:rdcl3d@googlegroups.com) is available for architecture and design discussions,
 requests for help, features request, bug reports...
 
-To join the list, just send an email to rdcl3d+subscribe@googlegroups.com or [join with a gmail account](https://groups.google.com/forum/#!forum/rdcl3d)
+To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mailto:rdcl3d+subscribe@googlegroups.com) or [join with a gmail account](https://groups.google.com/forum/#!forum/rdcl3d)
 
-Prerequisites
--------------
+## Aknowledgements
+
+This work was performed in the context of the project Superfluidity, which received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 671566
+
+## Prerequisites
 
 - Python >= 2.7
 - pip
@@ -36,7 +38,7 @@ or https:
     
 Install a recent Django version as shown in in the [install guide](https://docs.djangoproject.com/en/1.9/intro/install/).
 
-Install pip as shown in the [install guide] (https://pip.readthedocs.org/en/stable/installing/)
+Install pip as shown in the [install guide](https://pip.readthedocs.org/en/stable/installing/)
 
 then move in Django project directory
 
