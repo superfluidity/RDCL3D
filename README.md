@@ -3,10 +3,19 @@
 RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing,
 validating, visualizing the descriptors of services and components both textually and graphically.
 
-Later in this README you will find the instructions on how to install and run RDCL 3D.
+The platform is designed with a modular approach, allowing developers to “plug in” the support for new models (project types).
+Currently supported project types are:
+
+* ETSI Release 2 NS and VNF descriptors
+* TOSCA Simple Profile for NFV
+* Click modular router configurations
+* Superfluidity-ETSI (ETSI R2 + Click)
+
+Hereafter in this README you will find the instructions on how to install and run RDCL 3D.
+
+A demo version of RDCL 3D is online [here](http://rdcl-demo.netgroup.uniroma2.it/).
 
 Documentation is available in the docs folder of this repository.
-
 
 ## Community
 
@@ -17,7 +26,7 @@ To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mail
 
 ## Aknowledgements
 
-This work was performed in the context of the project Superfluidity, which received funding from the European Unionâ€™s Horizon 2020 research and innovation programme under grant agreement No. 671566
+This work was performed in the context of the project Superfluidity, which received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 671566
 
 ## Prerequisites
 
@@ -27,6 +36,9 @@ This work was performed in the context of the project Superfluidity, which recei
 
 Installation
 ------------
+
+Caveat: the code is released as an alpha version. Development is in progress, so you may expect bugs and frequent
+code refactorings. Use it at your own risk. 
 
 Clone the project from repository with ssh:
     
@@ -73,7 +85,7 @@ or:
 
 
 
-Development
+Development hints
 -------
 
 In order to keep your environment consistent, it's a good idea to "freeze" the current state of the environment packages. 
