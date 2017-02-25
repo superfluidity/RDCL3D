@@ -1,8 +1,15 @@
-RDCL 3D - RFB Description and Composition Languages Design, Deploy and Direct 
-========================================
+# RDCL 3D - RFB Description and Composition Languages Design, Deploy and Direct 
 ========================================
 
-RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing, validating, visualizing the descriptors of services and components both textually and graphically.
+RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing,
+validating, visualizing the descriptors of services and components both textually and graphically.
+
+Later in this README you will find the instructions on how to install and run RDCL 3D.
+
+Documentation is available in the docs folder of this repository.
+
+
+
 
 Mailing list
 -------------
