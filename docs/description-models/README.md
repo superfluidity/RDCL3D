@@ -13,7 +13,7 @@ callback:         #List of callbacks used
 
 ## Details
 ### List of nodes
-In the description model you can define the list of nodes and for each of them you can define the label which will be displayed on the gui, for example in the etsi model:
+In the description model you can define the list of nodes and for each of them you can define the label which will be displayed on the gui, for example in the ETSI model:
 ```
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     vnf:
@@ -32,7 +32,7 @@ nodes:                                  #List of nodes, with id and label used i
         label: VDU
 ```
 ### List of layer
-Inside the ```layer``` object you can define the list of layers and for each of them which type of nodes you want to be displayed in that layer, and if they can be added/removed:
+Inside the ```layer``` object you can define the list of layers and for each of them which types of nodes you want to be displayed in that layer, and if they can be added/removed:
 
 *   For each node the value of the attribute ```addable``` is the callback that will be called when the that node will be added.
 *   For each node the value of the attribute ```removable``` is the callback that will be called when the that node will be removed.
@@ -82,7 +82,7 @@ layer:            #List of Layers
                                     callback: removeLink
 ```
 ### Customized action
-In the attribute ```action``` you can specify customized action and the related callback to show when the user triggers a righ click on the link/node.
+In the ```action``` object you can specify customized action and the related callback to be executed when the user triggers a right click on the link/node.
 ```
 action:           #Action to show on rightclick on a node/link
     node:
@@ -91,7 +91,7 @@ action:           #Action to show on rightclick on a node/link
             callback: addToCurrentVNFFG
     link:
 ```
-### List of callback
+### List of callbacks
 In this object you have to specify each callback used in all the previous attributes and the related JavaScript class and the file which contains that class.
 
 ```
