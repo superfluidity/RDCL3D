@@ -46,15 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sf_user',
-    'sf_dev',
     'projecthandler',
-    'topology_mpv',
 ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'sf_user.CustomSession',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -79,10 +76,6 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'projecthandler', 'template'),
             os.path.join(BASE_DIR, 'projecthandler', 'template', 'download'),
             os.path.join(BASE_DIR, 'projecthandler', 'template', 'project'),
-            #os.path.join(BASE_DIR, 'projecthandler', 'template', 'project', 'etsi'),
-            #os.path.join(BASE_DIR, 'projecthandler', 'template', 'project', 'etsi', 'descriptor'),
-            os.path.join(BASE_DIR, 'sf_dev', 'template'),
-
         ],
         'APP_DIRS': True,
         'OPTIONS': {
