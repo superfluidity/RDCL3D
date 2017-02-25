@@ -11,7 +11,7 @@ Documentation is available in the docs folder of this repository.
 Community
 -------------
 
-The mailing list rdcl3d@googlegroups.com is available for architecture and design discussions,
+The mailing list [rdcl3d@googlegroups.com](mailto:rdcl3d@googlegroups.com) is available for architecture and design discussions,
 requests for help, features request, bug reports...
 
 To join the list, just send an email to rdcl3d+subscribe@googlegroups.com or [join with a gmail account](https://groups.google.com/forum/#!forum/rdcl3d)
