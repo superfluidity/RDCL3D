@@ -17,8 +17,8 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ToscaModel.py')
 
 PATH_TO_SCHEMAS = 'lib/tosca/schemas/'
-PATH_TO_DESCRIPTORS_TEMPLATES = 'sf_dev/examples/my_example/'
-DESCRIPTOR_TEMPLATE_SUFFIX = 'NewComplete.json'
+PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/tosca/descriptor_template/'
+DESCRIPTOR_TEMPLATE_SUFFIX = '.yaml'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/tosca/tosca.yaml'
 EXAMPLES_FOLDER = 'usecases/TOSCA/'
 
