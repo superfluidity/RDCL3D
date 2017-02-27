@@ -13,7 +13,7 @@ Currently supported project types are:
 
 A demo version of RDCL 3D is online [here](http://rdcl-demo.netgroup.uniroma2.it/).
 
-Please find [below](#Installation) the instructions on how to install and run your version of RDCL 3D.
+Please find [below](#installation) the instructions on how to install and run your version of RDCL 3D.
 
 ## Documentation & publications
 
