@@ -11,17 +11,15 @@ Currently supported project types are:
 * Click modular router configurations
 * Superfluidity-ETSI (ETSI R2 + Click)
 
-Hereafter in this README you will find the instructions on how to install and run RDCL 3D.
-
 A demo version of RDCL 3D is online [here](http://rdcl-demo.netgroup.uniroma2.it/).
 
+Please find [below](#Installation) the instructions on how to install and run your version of RDCL 3D.
 
 ## Documentation & publications
 
 Documentation is available in the docs folder of this repository. 
 
-
-RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components
+S.Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari Melazzi, "RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components", Submitted paper, February 2017 ([pdf](https://drive.google.com/file/d/0B4BsbVGCfMrwUDU1QkQ3UlNwdUk/view?usp=sharing))
 
 ## Community
 
@@ -41,7 +39,7 @@ code refactorings. Use it at your own risk.
 
 ### Docker installation
 
-#### To build:
+#### To build RDCL 3D:
 1) Clone the project from repository with ssh:
 
 
@@ -57,7 +55,7 @@ or https:
 
     $ docker build -t rdcl3d -f code/docker/Dockerfile .
 
-#### To launch:
+#### To launch RDCL 3D:
 
 
     $ docker run -p8000:8000 --name rdcl3d0 rdcl3d
