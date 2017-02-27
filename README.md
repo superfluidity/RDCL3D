@@ -11,11 +11,15 @@ Currently supported project types are:
 * Click modular router configurations
 * Superfluidity-ETSI (ETSI R2 + Click)
 
-Hereafter in this README you will find the instructions on how to install and run RDCL 3D.
-
 A demo version of RDCL 3D is online [here](http://rdcl-demo.netgroup.uniroma2.it/).
 
-Documentation is available in the docs folder of this repository.
+Please find [below](#Installation) the instructions on how to install and run your version of RDCL 3D.
+
+## Documentation & publications
+
+Documentation is available in the docs folder of this repository. 
+
+S.Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari Melazzi, "RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components", Submitted paper, February 2017 ([pdf](https://drive.google.com/file/d/0B4BsbVGCfMrwUDU1QkQ3UlNwdUk/view?usp=sharing))
 
 ## Community
 
@@ -28,75 +32,41 @@ To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mail
 
 This work has been performed in the context of the project Superfluidity, which received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No. 671566
 
-## Prerequisites
-
-- Python >= 2.7
-- pip
-- virtualenv (virtualenvwrapper is recommended)
-
-Installation
-------------
+## Installation
 
 Caveat: the code is released as an alpha version. Development is in progress, so you may expect bugs and frequent
 code refactorings. Use it at your own risk. 
 
-Clone the project from repository with ssh:
-    
+### Docker installation
+
+#### To build RDCL 3D:
+1) Clone the project from repository with ssh:
+
+
     $ git clone git@github.com:superfluidity/RDCL3D.git
     
 or https:
 
     $ git clone https://github.com/superfluidity/RDCL3D.git
-    
-Install a recent Django version as shown in in the [install guide](https://docs.djangoproject.com/en/1.9/intro/install/).
-
-Install pip as shown in the [install guide](https://pip.readthedocs.org/en/stable/installing/)
-
-then move in Django project directory
-
-If you want to use a python virtual environment as shown in in the [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
-call the directory simply "env" otherwise remember to add the new directory in .gitignore file.
-
-To setup a local development environment::
-
-    source env/bin/activate
-
-    pip install -r requirements.txt
-
-#### For the first time:
-
-    $ python manage.py makemigrations sf_user projecthandler
-
-    $ python manage.py migrate
-
-#### you must create a new super user:
-
-    $ python manage.py createsuperuser
 
 
-#### To run the server:
-
-    $ python manage.py runserver
-or:
-    
-    $ python manage.py runserver [host]:[port] 
+2) Build the image from the project's root directory:
 
 
+    $ docker build -t rdcl3d -f code/docker/Dockerfile .
 
-Development hints
--------
+#### To launch RDCL 3D:
 
-In order to keep your environment consistent, it's a good idea to "freeze" the current state of the environment packages. 
-To do this, run
 
-    $ pip freeze > requirements.txt
+    $ docker run -p8000:8000 --name rdcl3d0 rdcl3d
 
-To add a new site to your existing Django project, use the startapp task of manage.py utility.
 
-    $ django-admin.py startapp [name_django_app]
+### Manual Installation
 
-License
--------
+See documentation for manual installation [here](code/manual_install.md)
+
+
+## License
 
    Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 
