@@ -15,7 +15,13 @@ Hereafter in this README you will find the instructions on how to install and ru
 
 A demo version of RDCL 3D is online [here](http://rdcl-demo.netgroup.uniroma2.it/).
 
-Documentation is available in the docs folder of this repository.
+
+## Documentation & publications
+
+Documentation is available in the docs folder of this repository. 
+
+
+RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components
 
 ## Community
 
@@ -28,17 +34,20 @@ To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mail
 
 This work has been performed in the context of the project Superfluidity, which received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No. 671566
 
-## Prerequisites
-
-- Python >= 2.7
-- pip
-- virtualenv (virtualenvwrapper is recommended)
-
-Installation
-------------
+## Installation
 
 Caveat: the code is released as an alpha version. Development is in progress, so you may expect bugs and frequent
 code refactorings. Use it at your own risk. 
+
+### Docker installation
+
+
+### Manual Installation
+
+See documentation for manual installation in [here](code/manual_install.md)
+
+------------
+
 
 Clone the project from repository with ssh:
     
@@ -47,7 +56,15 @@ Clone the project from repository with ssh:
 or https:
 
     $ git clone https://github.com/superfluidity/RDCL3D.git
-    
+
+### Prerequisites
+
+- Python >= 2.7
+- pip
+- virtualenv (virtualenvwrapper is recommended)
+
+### Installation
+
 Install a recent Django version as shown in in the [install guide](https://docs.djangoproject.com/en/1.9/intro/install/).
 
 Install pip as shown in the [install guide](https://pip.readthedocs.org/en/stable/installing/)
