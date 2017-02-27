@@ -3,7 +3,7 @@
 RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing,
 validating, visualizing the descriptors of services and components both textually and graphically.
 
-The platform is designed with a modular approach, allowing developers to �plug in� the support for new models (project types).
+The platform is designed with a modular approach, allowing developers to "plug in" the support for new models (project types).
 Currently supported project types are:
 
 * ETSI Release 2 NS and VNF descriptors
@@ -26,7 +26,7 @@ To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mail
 
 ## Aknowledgements
 
-This work has been performed in the context of the project Superfluidity, which received funding from the European Union�s Horizon 2020 research and innovation programme under grant agreement No. 671566
+This work has been performed in the context of the project Superfluidity, which received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No. 671566
 
 ## Prerequisites
 
