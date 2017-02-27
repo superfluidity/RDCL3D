@@ -41,10 +41,28 @@ code refactorings. Use it at your own risk.
 
 ### Docker installation
 
+#### To build:
+1) Clone the project from repository with ssh:
+    
+    $ git clone git@github.com:superfluidity/RDCL3D.git
+    
+or https:
+
+    $ git clone https://github.com/superfluidity/RDCL3D.git
+
+
+2) Build the image from the project's root directory:
+
+   docker build -t rdcl3d -f code/docker/Dockerfile .
+
+#### To launch:
+   docker run -p8000:8000 --name rdcl3d0 rdcl3d
+
+
 
 ### Manual Installation
 
-See documentation for manual installation in [here](code/manual_install.md)
+See documentation for manual installation [here](code/manual_install.md)
 
 ------------
 
