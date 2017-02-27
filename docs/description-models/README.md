@@ -36,6 +36,7 @@ Inside the ```layer``` object you can define the list of layers and for each of 
 
 *   For each node the value of the attribute ```addable``` is the callback that will be called when the that node will be added.
 *   For each node the value of the attribute ```removable``` is the callback that will be called when the that node will be removed.
+*   For each node the value of the attribute ```expands``` is the layer in which the node will expands the a double click on it.
 
 ```
 layer:            #List of Layers
@@ -46,7 +47,7 @@ layer:            #List of Layers
                     callback: addVnf
                 removable:
                     callback: removeNode
-                expands : vnf
+                expands : vnf           # With the double click the node will expands in the specified layer
             ns_vl:
                 addable:
                     callback: addNode
@@ -81,15 +82,18 @@ layer:            #List of Layers
                                 removable:
                                     callback: removeLink
 ```
-### Customized action
-In the ```action``` object you can specify customized action and the related callback to be executed when the user triggers a right click on the link/node.
+For each layer, in the ```action``` object, you can specify customized action and the related callback to be executed when the user triggers a right click on the link/node in that layer.
+
+
 ```
-action:           #Action to show on rightclick on a node/link
-    node:
-        addToCurrentVNFFG:
-            title: Add to current VNFFG
-            callback: addToCurrentVNFFG
-    link:
+layer:            #List of Layers
+    ns:
+        action:           #Action to show on rightclick all types of node/link
+            node:
+                addToCurrentVNFFG:
+                    title: Add to current VNFFG
+                    callback: addToCurrentVNFFG
+            link:
 ```
 ### List of callbacks
 In this object you have to specify each callback used in all the previous attributes and the related JavaScript class and the file which contains that class.

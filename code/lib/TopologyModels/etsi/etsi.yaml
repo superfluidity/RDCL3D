@@ -74,6 +74,12 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable:
                             callback: removeLink
+        action:           #Action to show on rightclick all types of node/link
+            node:
+                addToCurrentVNFFG:
+                    title: Add to current VNFFG
+                    callback: addToCurrentVNFFG
+            link:
 
     vnf:
         nodes:                  #List of node to be visualized in the current layer
@@ -125,13 +131,6 @@ layer:                                  #List of Layers
                         removable:
                             callback: removeLink
 
-
-action:           #Action to show on rightclick on a node/link
-    node:
-        addToCurrentVNFFG:
-            title: Add to current VNFFG
-            callback: addToCurrentVNFFG
-    link:
 
 
 callback:                             #List of callbacks used

@@ -476,7 +476,7 @@ dreamer.GraphEditor = (function(global) {
             .append("svg:text")
             .attr("class", "nodetext")
             .attr("class", "cleanable")
-            .attr("dy", ".35em")
+            .attr("dy", "-5")
             .attr("pointer-events", "none")
             .style("font-size", nominal_text_size + "px")
             .style("font-family", "Lucida Console")
