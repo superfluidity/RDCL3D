@@ -1,8 +1,4 @@
-### Manual Installation
-
-See documentation for manual installation in [here](code/manual_install.md)
-
-------------
+## Manual Installation
 
 
 Clone the project from repository with ssh:
@@ -56,8 +52,7 @@ or:
 
 
 
-Development hints
--------
+### Development hints
 
 In order to keep your environment consistent, it's a good idea to "freeze" the current state of the environment packages. 
 To do this, run
