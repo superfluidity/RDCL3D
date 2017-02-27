@@ -664,6 +664,7 @@ dreamer.GraphEditor = (function(global) {
         this.link_filter_cb = args.link_filter_cb || function(d) {
             var cond_view = true,
                 cond_group = true;
+
             // check filter by view
             if (self.filter_parameters.link.view.length > 0) {
                 self.filter_parameters.link.view.forEach(function(view) {
