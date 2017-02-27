@@ -7,10 +7,10 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-/.idea
-/db.sqlite3
 .idea
-/wheelhouse
+db.sqlite3
+.idea
+wheelhouse/
 
 .installed.cfg
 
@@ -39,5 +39,5 @@ target/
 .DS_Store
 
 #migrations
-/projecthandler/migrations/
-/sf_user/migrations/
+projecthandler/migrations/
+sf_user/migrations/
