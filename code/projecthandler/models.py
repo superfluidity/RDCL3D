@@ -26,7 +26,6 @@ import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 import logging
-#import projecthandler.etsi_model
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')

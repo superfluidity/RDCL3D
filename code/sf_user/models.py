@@ -138,7 +138,7 @@ class CustomUser(AbstractCustomUser):
         elif self.is_basic_user:
             return "assets/img/employer.jpg"
         elif self.is_guest_user:
-            return "assets/img/punto.png"
+            return "assets/img/account_circle.png"
 
     def get_user_role(self):
         if self.is_admin:
