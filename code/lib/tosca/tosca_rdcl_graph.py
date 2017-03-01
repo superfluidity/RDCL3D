@@ -60,8 +60,8 @@ class ToscaRdclGraph(RdclGraph):
             for toscayaml_name in json_project['toscayaml'].keys():
                 print ("\ntoscayaml_name: "+toscayaml_name)
 
-                # tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][json_project['toscayaml'].keys()[0]])
-                tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
+                tosca = ToscaTemplate(yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
+                #tosca = TOSCATranslator(yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
 
                 version = tosca.version
                 if tosca.version:
@@ -94,7 +94,7 @@ class ToscaRdclGraph(RdclGraph):
                             print("\t" + output.name)
 
                 if hasattr(tosca, 'graph'):
-                    # For the moment, we consider a single view called 'graph' 
+                    # For the moment, we consider a single view called 'graph'
                     for node in tosca.graph.nodetemplates:
                         if node.name in tosca.graph.vertices:
                             print 'node '+node.name+' is related to:'
