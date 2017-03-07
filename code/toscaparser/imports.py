@@ -34,7 +34,8 @@ class ImportsLoader(object):
                        'namespace_prefix')
 
     def __init__(self, importslist, path, type_definition_list=None,
-                 tpl=None):
+                 tpl=None, project=None):
+        self.project = project
         self.importslist = importslist
         self.custom_defs = {}
         self.nested_tosca_tpls = []
@@ -233,9 +234,15 @@ class ImportsLoader(object):
                                             ExceptionCollector.appendException
                                             (ValueError(msg))
             else:  # template is pre-parsed
-                if os.path.isabs(file_name) and os.path.isfile(file_name):
+                id_name, file_extension = os.path.splitext(file_name)
+                if self.project is not None and id_name in self.project:
+                    a_file = False
+                    yaml_template = self.project[id_name]
+                    import_template = file_name
+                elif os.path.isabs(file_name) and os.path.isfile(file_name):
                     a_file = True
                     import_template = file_name
+
                 else:
                     msg = (_('Relative file name "%(name)s" cannot be used '
                              'in a pre-parsed input template.')
@@ -251,7 +258,11 @@ class ImportsLoader(object):
                     ImportError(_('Import "%s" is not valid.') %
                                 import_uri_def))
                 return None, None
-            return import_template, YAML_LOADER(import_template, a_file)
+            if yaml_template is not None:
+                print yaml_template
+                return None, yaml_template
+            else:
+                return import_template, YAML_LOADER(import_template, a_file)
 
         if short_import_notation:
             log.error(_('Import "%(name)s" is not valid.') % import_uri_def)

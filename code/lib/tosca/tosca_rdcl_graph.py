@@ -60,8 +60,9 @@ class ToscaRdclGraph(RdclGraph):
             for toscayaml_name in json_project['toscayaml'].keys():
                 print ("\ntoscayaml_name: "+toscayaml_name)
 
-                tosca = ToscaTemplate(yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
-                #tosca = TOSCATranslator(yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
+                #tosca = ToscaTemplate('/home/kaarot_kalel_90/PycharmProjects/test-rdcl/code/usecases/TOSCA/Sample-tosca-nfv/YAML/ns.yaml')
+                tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][toscayaml_name], project = json_project['toscayaml'])
+                #tosca = TOSCATranslator('/home/kaarot_kalel_90/PycharmProjects/test-rdcl/code/usecases/TOSCA/Sample-tosca-nfv/YAML/ns.yaml',{})
 
                 version = tosca.version
                 if tosca.version:
@@ -93,9 +94,14 @@ class ToscaRdclGraph(RdclGraph):
                         for output in outputs:
                             print("\t" + output.name)
 
+
                 if hasattr(tosca, 'graph'):
                     # For the moment, we consider a single view called 'graph'
+                    #print tosca.nested_tosca_tpls_with_topology
                     for node in tosca.graph.nodetemplates:
+                        #print dir(node)
+                        #print node.type
+                        #print node.name+" is derived from0 "+ node.parent_type.type
                         if node.name in tosca.graph.vertices:
                             print 'node '+node.name+' is related to:'
                             # self.add_node(node.name, node.type, 'vnf', positions, graph_object)
@@ -104,10 +110,10 @@ class ToscaRdclGraph(RdclGraph):
                             related = tosca.graph.vertex(node.name).related_nodes
                             for related_node in related:
                                 print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
-                                
+
                                 #def add_link(source,    target,            view,    group,       graph_object )
                                 self.add_link(node.name, related_node.name, 'graph', toscayaml_name, graph_object)
-                else :    
+                else :
                     log.debug('tosca template has no graph')
 
                 # #THIS IS FOR THE TRANSLATION INTO HOT TEMPLATES

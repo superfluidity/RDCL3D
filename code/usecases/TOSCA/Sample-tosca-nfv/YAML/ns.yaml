@@ -1,0 +1,34 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0_0
+
+imports:
+  - vnf1.yaml
+  - vnf2.yaml
+
+topology_template:
+  description: Template of online transaction processing service.
+
+  inputs:
+
+  node_templates:
+
+
+
+    VNF1:
+      type: tosca.nodes.nfv.VNF.VNF1
+      properties:
+        id: vnf1
+        vendor: acmetelco
+        version: 1.0
+
+    VNF2:
+      type: tosca.nodes.nfv.VNF.VNF2
+      properties:
+        id: vnf2
+        vendor: acmetelco
+        version: 1.0
+
+      # properties:
+        # to be updated when substitution_mapping is validated later
+      # capabilities:
+        # database_endpoint:
+          # to be updated when substitution_mapping is validated later
