@@ -186,7 +186,7 @@ class ImportsLoader(object):
             log.error(msg)
             ExceptionCollector.appendException(ValidationError(message=msg))
             return None, None
-
+        yaml_template = None
         if toscaparser.utils.urlutils.UrlUtils.validate_url(file_name):
             return file_name, YAML_LOADER(file_name, False)
         elif not repository:
