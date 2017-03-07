@@ -19,7 +19,7 @@ Please find [below](#installation) the instructions on how to install and run yo
 
 Documentation is available in the docs folder of this repository. 
 
-S.Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari Melazzi, "RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components", Submitted paper, February 2017 ([pdf](https://drive.google.com/file/d/0B4BsbVGCfMrwUDU1QkQ3UlNwdUk/view?usp=sharing))
+S.Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari Melazzi, "RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components", Submitted paper, February 2017 ([pdf on Arxiv](https://arxiv.org/pdf/1702.08242))
 
 ## Community
 
@@ -30,7 +30,7 @@ To join the list, just send an email to [rdcl3d+subscribe@googlegroups.com](mail
 
 ## Aknowledgements
 
-This work has been performed in the context of the project Superfluidity, which received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No. 671566
+This work has been performed in the context of the project Superfluidity, which received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No. 671566.
 
 ## Installation
 
