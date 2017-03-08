@@ -13,14 +13,14 @@ topology_template:
 
 
 
-    VNF1:
+    vnf1:
       type: tosca.nodes.nfv.VNF.VNF1
       properties:
         id: vnf1
         vendor: acmetelco
         version: 1.0
 
-    VNF2:
+    vnf2:
       type: tosca.nodes.nfv.VNF.VNF2
       properties:
         id: vnf2

@@ -1,0 +1,173 @@
+name: TOSCA                            #Model name
+description: TOSCA model               #Model description
+version: 1.0                            #Model version
+designer: Pierluigi Greto               #Model designer
+nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
+  tosca.nodes.Root:
+    label: tosca.nodes.Root
+  tosca.nodes.Compute:
+    label: tosca.nodes.Compute
+  tosca.nodes.SoftwareComponent:
+    label: tosca.nodes.SoftwareComponent
+  tosca.nodes.DBMS:
+    label: tosca.nodes.DBMS
+  tosca.nodes.Database:
+    label: tosca.nodes.Database
+  tosca.nodes.WebServer:
+    label: tosca.nodes.WebServer
+  tosca.nodes.WebApplication:
+    label: tosca.nodes.WebApplication
+  tosca.nodes.BlockStorage:
+    label: tosca.nodes.BlockStorage
+  tosca.nodes.network.Network:
+    label: tosca.nodes.network.Network
+  tosca.nodes.network.Port:
+    label: tosca.nodes.network.Port
+  tosca.nodes.ObjectStorage:
+    label: tosca.nodes.ObjectStorage
+  tosca.nodes.LoadBalancer:
+    label: tosca.nodes.LoadBalancer
+  tosca.nodes.Container.Application:
+    label: tosca.nodes.Container.Application
+  tosca.nodes.Container.Runtime:
+    label: tosca.nodes.Container.Runtime
+  tosca.nodes.Container.Application.Docker:
+    label: tosca.nodes.Container.Application.Docker
+  tosca.nodes.nfv.VNF:
+    label: tosca.nodes.nfv.VNF
+  tosca.nodes.nfv.VDU:
+    label: tosca.nodes.nfv.VDU
+  tosca.nodes.nfv.CP:
+    label: tosca.nodes.nfv.CP
+  tosca.nodes.nfv.VL:
+    label: tosca.nodes.nfv.VL
+  tosca.nodes.nfv.VL.ELine:
+    label: tosca.nodes.nfv.VL.ELine
+  tosca.nodes.nfv.VL.ELAN:
+    label: tosca.nodes.nfv.VL.ELAN
+  tosca.nodes.nfv.VL.ETree:
+    label: tosca.nodes.nfv.VL.ETree
+  tosca.nodes.nfv.FP:
+    label: tosca.nodes.nfv.FP
+
+layer:
+  toscayaml:
+    nodes:
+        tosca.nodes.Root:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.Compute:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.SoftwareComponent:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.DBMS:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.Database:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.WebServer:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.WebApplication:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.BlockStorage:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.network.Network:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.network.Port:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.ObjectStorage:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.LoadBalancer:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.Container.Application:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.Container.Runtime:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.Container.Application.Docker:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.VNF:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+          expands : toscayaml
+        tosca.nodes.nfv.VDU:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.CP:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.VL:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.VL.ELine:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.VL.ELAN:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.VL.ETree:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+        tosca.nodes.nfv.FP:
+          addable:
+              callback: addNode
+          removable:
+              callback: removeNode
+
+callback:

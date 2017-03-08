@@ -259,7 +259,7 @@ class ImportsLoader(object):
                                 import_uri_def))
                 return None, None
             if yaml_template is not None:
-                print yaml_template
+                #print yaml_template
                 return None, yaml_template
             else:
                 return import_template, YAML_LOADER(import_template, a_file)
