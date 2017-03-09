@@ -261,8 +261,22 @@ class ToscaProject(Project):
         return result        
 
     def get_remove_element(self, request):
-
-        result = False
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        current_data = json.loads(self.data_project)
+        if element_id in current_data['toscayaml'][group_id]['topology_template']['node_templates']: del current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id]
+        for key in current_data['toscayaml'][group_id]['topology_template']['node_templates']:
+            node = current_data['toscayaml'][group_id]['topology_template']['node_templates'][key]
+            if 'requirements' in node:
+                for r in node ['requirements']:
+                    for key in r.keys():
+                        if r[key] == element_id:
+                            node['requirements'].remove(r)
+        self.data_project = current_data
+        # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+        self.update()
+        result = True
 
         return result        
 
