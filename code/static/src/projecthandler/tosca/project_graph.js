@@ -48,13 +48,13 @@ var filters = function(e, params) {
 
 
 function initDropOnGraph(){
-
 var dropZone = document.getElementById('graph_ed_container');
 dropZone.ondrop = function(e) {
     var group = graph_editor.getCurrentGroup()
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
+        nodetype = nodetype.replace(/_/g, ".")
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
         $('#div_chose_id').show();
                 $('#div_chose_vnf').hide();

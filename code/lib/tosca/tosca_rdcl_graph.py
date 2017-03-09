@@ -109,7 +109,9 @@ class ToscaRdclGraph(RdclGraph):
                                 type = parent_node.parent_type.type
                                 parent_node = parent_node.parent_type
                             self.add_node(node.name, type, toscayaml_name, positions, graph_object)
+                            print 'primaaaaaaaaaaa'
                             related = tosca.graph.vertex(node.name).related_nodes
+                            print 'doppooooo'
                             for related_node in related:
                                 print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
 

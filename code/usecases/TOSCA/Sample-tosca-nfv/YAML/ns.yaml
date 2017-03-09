@@ -27,6 +27,9 @@ topology_template:
         vendor: acmetelco
         version: 1.0
 
+    cp1:
+      type: tosca.nodes.nfv.CP
+
       # properties:
         # to be updated when substitution_mapping is validated later
       # capabilities:

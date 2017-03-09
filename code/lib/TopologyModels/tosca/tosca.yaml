@@ -170,4 +170,16 @@ layer:
           removable:
               callback: removeNode
 
-callback:
+callback:                             #List of callbacks used to controll the link
+  addNode:
+      file: tosca_controller.js
+      class: ToscaController
+  removeNode:
+      file: tosca_controller.js
+      class: ToscaController
+  addLink:
+      file: tosca_controller.js
+      class: ToscaController
+  removeLink:
+      file: tosca_controller.js
+      class: ToscaController
