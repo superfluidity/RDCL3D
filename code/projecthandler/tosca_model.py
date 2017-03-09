@@ -244,6 +244,8 @@ class ToscaProject(Project):
                             new_element['properties'][propriety] = 'prova'
             element_type = type_definition['derived_from'] if 'derived_from' in type_definition else None
         if new_element['type'] == 'tosca.nodes.nfv.VNF':
+            if 'imports' not in current_data['toscayaml'][group_id] or current_data['toscayaml'][group_id]['imports'] is None:
+                current_data['toscayaml'][group_id]['imports'] = []
             current_data['toscayaml'][group_id]['imports'].append(element_id+'.yaml')
             vnf_template = Util().loadyamlfile(PATH_TO_DESCRIPTORS_TEMPLATES+'vnf.yaml')
             vnf_template['topology_template']['subsititution_mappings'] = 'tosca.nodes.nfv.VNF.'+element_id
@@ -287,8 +289,15 @@ class ToscaProject(Project):
         return result        
 
     def get_remove_link(self, request):
-
         result = False
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        print source, destination
+
 
         return result
 
