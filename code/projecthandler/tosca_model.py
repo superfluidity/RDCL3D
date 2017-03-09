@@ -231,15 +231,27 @@ class ToscaProject(Project):
         new_element = {}
         new_element['type'] = element_type
         type_definition =  node_types[element_type]
-        if 'properties' in type_definition:
-            for propriety in type_definition['properties']:
-                print type_definition['properties'][propriety]
-                if 'required' not in type_definition['properties'][propriety] or type_definition['properties'][propriety]['required']:
-                    if 'properties' not in new_element:
-                        new_element['properties'] = {}
-                    new_element['properties'][propriety] = 'prova'
-
-
+        while element_type in node_types:
+            type_definition = node_types[element_type]
+            if 'properties' in type_definition:
+                for propriety in type_definition['properties']:
+                    if 'required' not in type_definition['properties'][propriety] or type_definition['properties'][propriety]['required']:
+                        if 'properties' not in new_element:
+                            new_element['properties'] = {}
+                        if propriety == 'version':
+                            new_element['properties'][propriety] = 1.0
+                        else:
+                            new_element['properties'][propriety] = 'prova'
+            element_type = type_definition['derived_from'] if 'derived_from' in type_definition else None
+        if new_element['type'] == 'tosca.nodes.nfv.VNF':
+            current_data['toscayaml'][group_id]['imports'].append(element_id+'.yaml')
+            vnf_template = Util().loadyamlfile(PATH_TO_DESCRIPTORS_TEMPLATES+'vnf.yaml')
+            vnf_template['topology_template']['subsititution_mappings'] = 'tosca.nodes.nfv.VNF.'+element_id
+            vnf_template['topology_template']['node_templates'] = {}
+            vnf_template['imports'] = []
+            vnf_template['node_types']['tosca.nodes.nfv.VNF.'+element_id] = {}
+            vnf_template['node_types']['tosca.nodes.nfv.VNF.' + element_id]['derived_from'] = 'tosca.nodes.nfv.VNF'
+            current_data['toscayaml'][element_id] = vnf_template
         current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id] = new_element
 
         self.data_project = current_data

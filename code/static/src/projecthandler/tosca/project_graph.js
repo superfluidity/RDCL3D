@@ -58,7 +58,7 @@ dropZone.ondrop = function(e) {
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
         $('#div_chose_id').show();
                 $('#div_chose_vnf').hide();
-                $('#input_choose_node_id').val(nodetype + "_" + generateUID());
+                $('#input_choose_node_id').val(nodetype.substring(nodetype.lastIndexOf(".")+1) + "_" + generateUID());
                 $('#modal_chooser_title_add_node').text('Add ' + type_name);
                 $('#save_choose_node_id').off('click').on('click', function() {
                     var name = $('#input_choose_node_id').val();

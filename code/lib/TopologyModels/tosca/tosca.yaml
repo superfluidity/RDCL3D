@@ -31,8 +31,6 @@ nodes:                                  #List of nodes, with id and label used i
     label: tosca.nodes.Container.Application
   tosca.nodes.Container.Runtime:
     label: tosca.nodes.Container.Runtime
-  tosca.nodes.Container.Application.Docker:
-    label: tosca.nodes.Container.Application.Docker
   tosca.nodes.nfv.VNF:
     label: tosca.nodes.nfv.VNF
   tosca.nodes.nfv.VDU:
@@ -108,22 +106,12 @@ layer:
               callback: addNode
           removable:
               callback: removeNode
-        tosca.nodes.LoadBalancer:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
         tosca.nodes.Container.Application:
           addable:
               callback: addNode
           removable:
               callback: removeNode
         tosca.nodes.Container.Runtime:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.Container.Application.Docker:
           addable:
               callback: addNode
           removable:
