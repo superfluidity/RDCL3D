@@ -289,11 +289,36 @@ class ToscaProject(Project):
         link = json.loads(parameters['link'])
         source = link['source']
         destination = link['target']
-        # source = json.loads(request.POST.get('source'))
-        # destination = json.loads(request.POST.get('destination'))
         source_type = source['info']['type']
         destination_type = destination['info']['type']
-        print source, destination
+        group = source['info']['group'][0]
+        current_data = json.loads(self.data_project)
+        print source_type, destination_type
+        if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL'), ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELine'), ('tosca.nodes.nfv.VL.ELine', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELAN'), ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ETree'), ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.CP')]:
+            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
+            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] is None:
+                current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] = []
+            requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements']
+            element = next((x for x in requirements if 'virtualLink' in x.keys()), None)
+            if element is not None:
+                element['virtualLink'] = vl_id
+            else:
+                element = {}
+                element['virtualLink'] = vl_id
+                requirements.append(element)
+
+
+        self.data_project = current_data
+        # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+        self.update()
+        result = True
+
+
+
         return result        
 
     def get_remove_link(self, request):
