@@ -293,7 +293,6 @@ class ToscaProject(Project):
         destination_type = destination['info']['type']
         group = source['info']['group'][0]
         current_data = json.loads(self.data_project)
-        print source_type, destination_type
         if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL'), ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.CP'),
                                                ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELine'), ('tosca.nodes.nfv.VL.ELine', 'tosca.nodes.nfv.CP'),
                                                ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELAN'), ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.CP'),
@@ -359,7 +358,64 @@ class ToscaProject(Project):
         destination = link['target']
         source_type = source['info']['type']
         destination_type = destination['info']['type']
-        print source, destination
+        group = source['info']['group'][0]
+        current_data = json.loads(self.data_project)
+        if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL'),
+                                               ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELine'),
+                                               ('tosca.nodes.nfv.VL.ELine', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ELAN'),
+                                               ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.CP'),
+                                               ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ETree'),
+                                               ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.CP')]:
+            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
+            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] is None:
+                current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] = []
+            requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements']
+            element = next((x for x in requirements if 'virtualLink' in x.keys()), None)
+            if element is not None:
+                requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                    'requirements'].remove(element)
+        if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VDU'),
+                                               ('tosca.nodes.nfv.VDU', 'tosca.nodes.nfv.CP')]:
+            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
+            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                                'requirements'] is None:
+                current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] = []
+            requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                'requirements']
+            element = next((x for x in requirements if 'virtualBinding' in x.keys()), None)
+            if element is not None:
+                requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                    'requirements'].remove(element)
+        if (source_type, destination_type) in [('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL'),
+                                               ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.VNF'),
+                                               ('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL.ELine'),
+                                               ('tosca.nodes.nfv.VL.ELine', 'tosca.nodes.nfv.VNF'),
+                                               ('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL.ELAN'),
+                                               ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.VNF'),
+                                               ('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL.ETree'),
+                                               ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.VNF')]:
+            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.VNF' else destination['id']
+            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.VNF' else destination['id']
+            if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                                'requirements'] is None:
+                current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id]['requirements'] = []
+            requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                'requirements']
+            element = next((x for x in requirements if 'virtualLink' in x.keys()), None)
+            if element is not None:
+                requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
+                    'requirements'].remove(element)
+
+        self.data_project = current_data
+        # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
+        self.update()
+        result = True
 
 
         return result
