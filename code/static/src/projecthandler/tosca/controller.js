@@ -41,7 +41,7 @@ dreamer.ToscaController = (function(global) {
         },error);
     };
 
-    ToscaController.prototype.linkCpToVL = function(self, link, success, error) {
+    ToscaController.prototype.linkCpToVLorVDU = function(self, link, success, error) {
         var s = link.source;
         var d = link.target;
         var source_id = s.id;

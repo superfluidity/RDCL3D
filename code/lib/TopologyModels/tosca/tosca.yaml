@@ -276,27 +276,27 @@ layer:
         tosca.nodes.nfv.CP:
           destination:
             tosca.nodes.nfv.VL:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ELine:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ELAN:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ETree:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VDU:
-              callback: addLink
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
@@ -308,7 +308,7 @@ layer:
               removable:
                 callback: removeLink
             tosca.nodes.nfv.CP:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
@@ -320,7 +320,7 @@ layer:
               removable:
                 callback: removeLink
             tosca.nodes.nfv.CP:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
@@ -332,7 +332,7 @@ layer:
               removable:
                 callback: removeLink
             tosca.nodes.nfv.CP:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
@@ -344,14 +344,14 @@ layer:
               removable:
                 callback: removeLink
             tosca.nodes.nfv.CP:
-              callback: linkCpToVL
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
         tosca.nodes.nfv.VDU:
           destination:
             tosca.nodes.nfv.CP:
-              callback: addLink
+              callback: linkCpToVLorVDU
               direct_edge: false
               removable:
                 callback: removeLink
@@ -375,6 +375,6 @@ callback:                             #List of callbacks used to controll the li
   removeLink:
       file: tosca_controller.js
       class: ToscaController
-  linkCpToVL:
+  linkCpToVLorVDU:
     file: tosca_controller.js
     class: ToscaController
