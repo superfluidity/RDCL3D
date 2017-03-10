@@ -123,11 +123,6 @@ layer:
               callback: addNode
           removable:
               callback: removeNode
-        tosca.nodes.Container.Application.Docker:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
         tosca.nodes.nfv.VNF:
           addable:
               callback: addNode
@@ -169,6 +164,203 @@ layer:
               callback: addNode
           removable:
               callback: removeNode
+
+    allowed_edges:                  #List of allowed edges between the layer's nodes
+        tosca.nodes.Compute:                        #Edge's source
+          destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+            tosca.nodes.BlockStorage:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.SoftwareComponent:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.network.Port:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.SoftwareComponent:
+          destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+            tosca.nodes.Compute:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.DBMS:
+          destination:
+            tosca.nodes.Database:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.Database:
+          destination:
+            tosca.nodes.DBMS:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.WebServer:
+          destination:
+            tosca.nodes.WebApplication:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.WebApplication:
+          destination:
+            tosca.nodes.WebServer:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.network.Port:
+          destination:
+            tosca.nodes.Compute:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.network.Network:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.Container.Application:
+          destination:
+            tosca.nodes.Container.Runtime:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.Container.Runtime:
+          destination:
+            tosca.nodes.Container.Application:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.network.Network:
+          destination:
+            tosca.nodes.network.Port:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.nfv.VNF:
+          destination:
+            tosca.nodes.nfv.VL:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ELine:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ELAN:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ETree:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+        tosca.nodes.nfv.CP:
+          destination:
+            tosca.nodes.nfv.VL:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ELine:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ELAN:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VL.ETree:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+            tosca.nodes.nfv.VDU:
+              callback: addLink
+              direct_edge: false
+              removable:
+                callback: removeLink
+          tosca.nodes.nfv.VL:
+            destination:
+              tosca.nodes.nfv.VNF:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+              tosca.nodes.nfv.CP:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+          tosca.nodes.nfv.VL.ELine:
+            destination:
+              tosca.nodes.nfv.VNF:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+              tosca.nodes.nfv.CP:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+          tosca.nodes.nfv.VL.ELAN:
+            destination:
+              tosca.nodes.nfv.VNF:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+              tosca.nodes.nfv.CP:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+          tosca.nodes.nfv.VL.ETree:
+            destination:
+              tosca.nodes.nfv.VNF:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+              tosca.nodes.nfv.CP:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+          tosca.nodes.nfv.VDU:
+            destination:
+              tosca.nodes.nfv.CP:
+                callback: addLink
+                direct_edge: false
+                removable:
+                  callback: removeLink
+
+
+
+
+
+
 
 callback:                             #List of callbacks used to controll the link
   addNode:

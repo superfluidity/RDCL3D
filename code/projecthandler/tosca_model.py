@@ -285,7 +285,15 @@ class ToscaProject(Project):
     def get_add_link(self, request):
 
         result = False
-
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        # source = json.loads(request.POST.get('source'))
+        # destination = json.loads(request.POST.get('destination'))
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        print source, destination
         return result        
 
     def get_remove_link(self, request):
