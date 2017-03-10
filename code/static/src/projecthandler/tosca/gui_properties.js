@@ -97,46 +97,53 @@ var example_gui_properties = {
         "size": 35,
         "name": "tosca.nodes.Container.Application.Docker"
       },
-      "tosca.nodes.nfv.VNF": {
-        "shape": "square",
+      "tosca.nodes.nfv.VNF":{
+        "image": "vnf-100.png",
+        // "shape": "square",
         "color": "#54A698",
         "size": 35,
         "name": "tosca.nodes.nfv.VNF"
       },
       "tosca.nodes.nfv.VDU": {
         "shape": "square",
+        //"color": "#50A7CC",
         "color": "#54A698",
-        "size": 35,
+        "size": 18,
         "name": "tosca.nodes.nfv.VDU"
       },
       "tosca.nodes.nfv.CP": {
-        "shape": "square",
-        "color": "#54A698",
-        "size": 35,
+        "image" : "cp-80.png",
+        // "shape": "circle",
+        "color": "#F27220",
+        "size": 20,
         "name": "tosca.nodes.nfv.CP"
       },
       "tosca.nodes.nfv.VL": {
-        "shape": "square",
-        "color": "#54A698",
-        "size": 35,
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
         "name": "tosca.nodes.nfv.VL"
       },
       "tosca.nodes.nfv.VL.ELine": {
-        "shape": "square",
-        "color": "#54A698",
-        "size": 35,
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
         "name": "tosca.nodes.nfv.VL.ELine"
       },
       "tosca.nodes.nfv.VL.ELAN": {
-        "shape": "square",
-        "color": "#54A698",
-        "size": 35,
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
         "name": "tosca.nodes.nfv.VL.ELAN"
       },
       "tosca.nodes.nfv.VL.ETree": {
-        "shape": "square",
-        "color": "#54A698",
-        "size": 35,
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
         "name": "tosca.nodes.nfv.VL.ETree"
       },
       "tosca.nodes.nfv.FP": {
