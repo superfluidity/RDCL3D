@@ -254,22 +254,22 @@ layer:
         tosca.nodes.nfv.VNF:
           destination:
             tosca.nodes.nfv.VL:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ELine:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ELAN:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
             tosca.nodes.nfv.VL.ETree:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
@@ -303,7 +303,7 @@ layer:
         tosca.nodes.nfv.VL:
           destination:
             tosca.nodes.nfv.VNF:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
@@ -315,7 +315,7 @@ layer:
         tosca.nodes.nfv.VL.ELine:
           destination:
             tosca.nodes.nfv.VNF:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
@@ -327,7 +327,7 @@ layer:
         tosca.nodes.nfv.VL.ELAN:
           destination:
             tosca.nodes.nfv.VNF:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
@@ -339,7 +339,7 @@ layer:
         tosca.nodes.nfv.VL.ETree:
           destination:
             tosca.nodes.nfv.VNF:
-              callback: addLink
+              callback: linkVNFtoVL
               direct_edge: false
               removable:
                 callback: removeLink
@@ -376,5 +376,8 @@ callback:                             #List of callbacks used to controll the li
       file: tosca_controller.js
       class: ToscaController
   linkCpToVLorVDU:
+    file: tosca_controller.js
+    class: ToscaController
+  linkVNFtoVL:
     file: tosca_controller.js
     class: ToscaController
