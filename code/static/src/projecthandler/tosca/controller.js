@@ -29,7 +29,16 @@ dreamer.ToscaController = (function(global) {
 
     ToscaController.prototype.addLink = function(self, link, success, error) {
         log('addLink');
-
+        var s = link.source;
+        var d = link.target;
+        var source_id = s.id;
+        var target_id = d.id;
+        var source_type = s.info.type;
+        var destination_type = d.info.type;
+        var old_link = $.grep(self.d3_graph.links, function(e) {
+            return ((e.source.id == source_id || e.target.id == source_id) ||(e.source.id == target_id || e.target.id == target_id)) &&
+            ((e.source.info.type == source_type && e.target.info.type == destination_type) || (e.source.info.type == destination_type && e.target.info.type == source_type));
+        });
         new dreamer.GraphRequests().addLink(link, null, function() {
             self._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {

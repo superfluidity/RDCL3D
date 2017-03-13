@@ -306,7 +306,6 @@ class ToscaProject(Project):
                             requirements.append(element)
         if not added and 'requirements' in tosca_definition['node_types'][destination_type]:
             for req in tosca_definition['node_types'][destination_type]['requirements']:
-                print req
                 for key in req:
                     if req[key]['node'] == source_type:
                         added = True
@@ -343,12 +342,59 @@ class ToscaProject(Project):
         destination = link['target']
         source_type = source['info']['type']
         destination_type = destination['info']['type']
+        source_id = source['id']
+        destination_id = destination['id']
         group = source['info']['group'][0]
         current_data = json.loads(self.data_project)
+        tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
+        removed = False
+        if 'requirements' in tosca_definition['node_types'][source_type]:
+            for req in tosca_definition['node_types'][source_type]['requirements']:
+                for key in req:
+                    if req[key]['node'] == destination_type:
+                        if 'requirements' not in \
+                                current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                    source_id] or \
+                                        current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                            source_id][
+                                            'requirements'] is None:
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                                'requirements'] = []
+                        requirements = \
+                        current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                            'requirements']
+                        element = next((x for x in requirements if key in x.keys()), None)
+                        if element is not None:
+                            removed = True
+                            requirements = \
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                                'requirements'].remove(element)
+        if not removed and 'requirements' in tosca_definition['node_types'][destination_type]:
+            for req in tosca_definition['node_types'][destination_type]['requirements']:
+                for key in req:
+                    if req[key]['node'] == source_type:
+                        if 'requirements' not in \
+                                current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                    destination_id] or \
+                                        current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                            destination_id][
+                                            'requirements'] is None:
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][destination_id][
+                                'requirements'] = []
+                        requirements = \
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][destination_id][
+                                'requirements']
+                        element = next((x for x in requirements if key in x.keys()), None)
+                        if element is not None:
+                            removed = True
+                            requirements = \
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][destination_id][
+                                'requirements'].remove(element)
 
         self.data_project = current_data
         # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
         self.update()
+        result = True
         result = True
 
 
