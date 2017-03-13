@@ -33,23 +33,6 @@ nodes:                                  #List of nodes, with id and label used i
     label: tosca.nodes.Container.Runtime
   tosca.nodes.Container.Application.Docker:
     label: tosca.nodes.Container.Application.Docker
-  tosca.nodes.nfv.VNF:
-    label: tosca.nodes.nfv.VNF
-  tosca.nodes.nfv.VDU:
-    label: tosca.nodes.nfv.VDU
-  tosca.nodes.nfv.CP:
-    label: tosca.nodes.nfv.CP
-  tosca.nodes.nfv.VL:
-    label: tosca.nodes.nfv.VL
-  tosca.nodes.nfv.VL.ELine:
-    label: tosca.nodes.nfv.VL.ELine
-  tosca.nodes.nfv.VL.ELAN:
-    label: tosca.nodes.nfv.VL.ELAN
-  tosca.nodes.nfv.VL.ETree:
-    label: tosca.nodes.nfv.VL.ETree
-  tosca.nodes.nfv.FP:
-    label: tosca.nodes.nfv.FP
-
 layer:
   toscayaml:
     nodes:
@@ -123,47 +106,7 @@ layer:
               callback: addNode
           removable:
               callback: removeNode
-        tosca.nodes.nfv.VNF:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-          expands : toscayaml
-        tosca.nodes.nfv.VDU:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.CP:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.VL:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.VL.ELine:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.VL.ELAN:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.VL.ETree:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
-        tosca.nodes.nfv.FP:
-          addable:
-              callback: addNode
-          removable:
-              callback: removeNode
+
 
     allowed_edges:                  #List of allowed edges between the layer's nodes
         tosca.nodes.Compute:                        #Edge's source
@@ -251,117 +194,6 @@ layer:
               direct_edge: false
               removable:
                 callback: removeLink
-        tosca.nodes.nfv.VNF:
-          destination:
-            tosca.nodes.nfv.VL:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ELine:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ELAN:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ETree:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.CP:
-          destination:
-            tosca.nodes.nfv.VL:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ELine:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ELAN:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VL.ETree:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.VDU:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.VL:
-          destination:
-            tosca.nodes.nfv.VNF:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.CP:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.VL.ELine:
-          destination:
-            tosca.nodes.nfv.VNF:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.CP:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.VL.ELAN:
-          destination:
-            tosca.nodes.nfv.VNF:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.CP:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.VL.ETree:
-          destination:
-            tosca.nodes.nfv.VNF:
-              callback: linkVNFtoVL
-              direct_edge: false
-              removable:
-                callback: removeLink
-            tosca.nodes.nfv.CP:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-        tosca.nodes.nfv.VDU:
-          destination:
-            tosca.nodes.nfv.CP:
-              callback: linkCpToVLorVDU
-              direct_edge: false
-              removable:
-                callback: removeLink
-
-
-
-
-
-
-
 callback:                             #List of callbacks used to controll the link
   addNode:
       file: tosca_controller.js
@@ -375,9 +207,3 @@ callback:                             #List of callbacks used to controll the li
   removeLink:
       file: tosca_controller.js
       class: ToscaController
-  linkCpToVLorVDU:
-    file: tosca_controller.js
-    class: ToscaController
-  linkVNFtoVL:
-    file: tosca_controller.js
-    class: ToscaController
