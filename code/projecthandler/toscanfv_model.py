@@ -253,6 +253,8 @@ class ToscanfvProject(Project):
             vnf_template['node_types']['tosca.nodes.nfv.VNF.' + element_id] = {}
             vnf_template['node_types']['tosca.nodes.nfv.VNF.' + element_id]['derived_from'] = 'tosca.nodes.nfv.VNF'
             current_data['toscayaml'][element_id] = vnf_template
+        if 'node_template' not in current_data['toscayaml'][group_id]['topology_template'] or current_data['toscayaml'][group_id]['topology_template']['node_templates'] is None:
+            current_data['toscayaml'][group_id]['topology_template']['node_templates'] = {}
         current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id] = new_element
 
         self.data_project = current_data
