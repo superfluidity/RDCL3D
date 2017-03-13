@@ -33,7 +33,8 @@ layer:                                  #List of Layers
                     callback: addVnf
                 removable:
                     callback: removeNode
-                expands : vnf
+                expands : vnf		# With the double click the node will expands in the specified layer
+
             ns_vl:
                 addable:
                     callback: addNode
@@ -82,6 +83,13 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable:
                             callback: removeLink
+        action:           #Action to show on rightclick all types of node/link
+            node:
+                addToCurrentVNFFG:
+                    title: Add to current VNFFG
+                    callback: addToCurrentVNFFG
+            link:
+
 
     vnf:
         nodes:                  #List of node to be visualized in the current layer
@@ -138,6 +146,9 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable:
                             callback: removeLink
+        action:           #Action to show on rightclick all types of node/link
+            node:
+            link:
     compact:
         nodes:
             element:
@@ -155,14 +166,9 @@ layer:                                  #List of Layers
                 addable: true
                 removable: true
                 expands : compact
-
-
-action:           #Action to show on rightclick on a node/link
-    node:
-        addToCurrentVNFFG:
-            title: Add to current VNFFG
-            callback: addToCurrentVNFFG
-    link:
+        action:           #Action to show on rightclick all types of node/link
+            node:
+            link:
 
 
 callback:                             #List of callbacks used

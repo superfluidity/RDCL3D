@@ -78,9 +78,6 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable: true
 
-action:           #Action to show on rightclick on a node/link
-    node:
-    link:
 
 callback:                             #List of callbacks used to controll the link
   addNode:

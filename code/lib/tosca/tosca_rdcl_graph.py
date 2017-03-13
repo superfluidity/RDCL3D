@@ -1,3 +1,19 @@
+#
+#   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
+#
+#   Licensed under the Apache License, Version 2.0 (the );
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an  BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+#
+
 import json
 import logging
 import copy
@@ -42,10 +58,11 @@ class ToscaRdclGraph(RdclGraph):
             # tosca = ToscaTemplate(path, parsed_params, a_file)
 
             for toscayaml_name in json_project['toscayaml'].keys():
-                print ("\ntoscayaml_name: "+toscayaml_name)
+                print ("\ntoscayaml_nameeeeeeeeeeeeeeeeeeeeeeeeee: "+toscayaml_name)
 
-                # tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][json_project['toscayaml'].keys()[0]])
-                tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][toscayaml_name])
+                #tosca = ToscaTemplate('/home/kaarot_kalel_90/PycharmProjects/test-rdcl/code/usecases/TOSCA/Sample-tosca-nfv/YAML/ns.yaml')
+                tosca = ToscaTemplate(None, {}, False, yaml_dict_tpl=json_project['toscayaml'][toscayaml_name], project = json_project['toscayaml'])
+                #tosca = TOSCATranslator('/home/kaarot_kalel_90/PycharmProjects/test-rdcl/code/usecases/TOSCA/Sample-tosca-nfv/YAML/ns.yaml',{})
 
                 version = tosca.version
                 if tosca.version:
@@ -77,21 +94,30 @@ class ToscaRdclGraph(RdclGraph):
                         for output in outputs:
                             print("\t" + output.name)
 
+
                 if hasattr(tosca, 'graph'):
-                    # For the moment, we consider a single view called 'graph' 
+                    # For the moment, we consider a single view called 'graph'
+                    #print tosca.nested_tosca_tpls_with_topology
                     for node in tosca.graph.nodetemplates:
                         if node.name in tosca.graph.vertices:
                             print 'node '+node.name+' is related to:'
                             # self.add_node(node.name, node.type, 'vnf', positions, graph_object)
                             #def add_node(id,        type,      group,          positions, graph_object):
-                            self.add_node(node.name, node.type, toscayaml_name, positions, graph_object)
+                            type = node.type
+                            parent_node = node
+                            while type not in model['nodes'].keys():
+                                type = parent_node.parent_type.type
+                                parent_node = parent_node.parent_type
+                            self.add_node(node.name, type, toscayaml_name, positions, graph_object)
+                            print 'primaaaaaaaaaaa'
                             related = tosca.graph.vertex(node.name).related_nodes
+                            print 'doppooooo'
                             for related_node in related:
                                 print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
-                                
+
                                 #def add_link(source,    target,            view,    group,       graph_object )
-                                self.add_link(node.name, related_node.name, 'graph', toscayaml_name, graph_object)
-                else :    
+                                self.add_link(node.name, related_node.name, 'toscayaml', toscayaml_name, graph_object)
+                else :
                     log.debug('tosca template has no graph')
 
                 # #THIS IS FOR THE TRANSLATION INTO HOT TEMPLATES

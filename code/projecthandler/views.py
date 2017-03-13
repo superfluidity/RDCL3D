@@ -1,3 +1,19 @@
+#
+#   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
+#
+#   Licensed under the Apache License, Version 2.0 (the );
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an  BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+#
+
 import json
 
 from django.contrib.auth.decorators import login_required
@@ -12,6 +28,7 @@ from sf_user.models import CustomUser
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
+from projecthandler.toscanfv_model import ToscanfvProject
 from projecthandler.superfluidity_model import SuperfluidityProject
 from projecthandler.oshi_model import OshiProject
 from projecthandler.click_model import ClickProject
@@ -21,6 +38,7 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
+Project.add_project_type('toscanfv', ToscanfvProject)
 Project.add_project_type('superfluidity', SuperfluidityProject)
 Project.add_project_type('oshi', OshiProject)
 Project.add_project_type('etsi', EtsiProject)

@@ -1,6 +1,6 @@
 
 //GraphEditor instance
-var graph_editor = new dreamer.ToscaGraphEditor();
+var graph_editor = new dreamer.ModelGraphEditor();
 var selected_vnffgId = null;
 var show_all = null;
 
@@ -8,23 +8,21 @@ var show_all = null;
 initDropOnGraph();
 
 
+
 $(document).ready(function() {
     var descriptor_type = getUrlParameter('type');
-    var type = descriptor_type == 'toscayaml'  ? ['*'] : ['*'];
-    // console.log('DESCRIPTOR TYPE : '+descriptor_type);
+    var type = descriptor_type == 'toscayaml'  ? [] : [];
     var params = {
         node: {
-            type: [],
-            // group: []
+            type: type,
             group: [getUrlParameter('id')]
         },
         link: {
-            // group: [],
             group: [getUrlParameter('id')],
-            view: []
+            view: ['toscayaml']
         }
     }
-    graph_editor.addListener("filters_changed", changeFilter);
+
 
 
     // graph_editor initialization
@@ -32,10 +30,13 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParameter('id')
+        descriptor_id: getUrlParameter('id'),
+        data_url: "graph_data/"+getUrlParameter('id'),
+        filter_base: params
     });
+    //console.log(graph_editor.getCurrentView())
     graph_editor.handleFiltersParams(params);
-
+    graph_editor.addListener("filters_changed", changeFilter);
 
 });
 
@@ -47,15 +48,38 @@ var filters = function(e, params) {
 
 
 function initDropOnGraph(){
-
 var dropZone = document.getElementById('graph_ed_container');
 dropZone.ondrop = function(e) {
     var group = graph_editor.getCurrentGroup()
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
+        nodetype = nodetype.replace(/_/g, ".")
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
+        $('#div_chose_id').show();
+                $('#div_chose_vnf').hide();
+                $('#input_choose_node_id').val(nodetype.substring(nodetype.lastIndexOf(".")+1) + "_" + generateUID());
+                $('#modal_chooser_title_add_node').text('Add ' + type_name);
+                $('#save_choose_node_id').off('click').on('click', function() {
+                    var name = $('#input_choose_node_id').val();
+                    var node_information = {
+                        'id': name,
+                        'info': {
+                            'type': nodetype,
+                            'group': [group]
+                        },
+                        'x': e.layerX,
+                        'y': e.layerY
+                    }
+                    graph_editor.addNode(node_information, function() {
+                        $('#modal_choose_node_id').modal('hide');
+                    }, function(error){
+                        showAlert(error)
+                    });
+                });
+                $('#modal_choose_node_id').modal('show');
     }
+
 
 }
 
@@ -68,12 +92,6 @@ dropZone.ondragleave = function() {
     console.log("ondragleave");
     return false;
 }
-}
-
-
-
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
 }
 
 function handleForce(el) {
@@ -95,9 +113,27 @@ function savePositions(el) {
 
 function changeFilter(e, c) {
     console.log("changeFilter");
-    $("#title_header").text("TOSCA YAML Graph Viewer");
+    var type_property = graph_editor.getTypeProperty();
+    $("#title_header").text("TOSCA Graph Editor");
+    new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
+    //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
+    updateBredCrumb(c);
+
+}
 
 
+var filters = function(e, params) {
+    graph_editor.handleFiltersParams(params);
+    $('#' + e).nextAll('li').remove();
+}
+
+function updateBredCrumb(filter_parameters){
+     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
+        $('#breadcrumb').append(newLi);
+}
+
+function nodeDragStart(event){
+    event.dataTransfer.setData("Text", event.target.id);
 }
 
 function openEditor(project_id){
