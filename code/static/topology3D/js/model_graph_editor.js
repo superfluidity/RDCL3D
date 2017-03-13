@@ -1,3 +1,19 @@
+/*
+   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
+
+   Licensed under the Apache License, Version 2.0 (the );
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an  BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 if (typeof dreamer === 'undefined') {
     var dreamer = {};
 }
@@ -52,12 +68,12 @@ dreamer.ModelGraphEditor = (function(global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         d3.json(data_url, function(error, data) {
             log('data from remote')
+            console.log(data)
             self.d3_graph.nodes = data.vertices;
             self.d3_graph.links = data.edges;
             self.d3_graph.graph_parameters = data.graph_parameters;
             self.model = data.model;
 
-            self._setupBehaviorsOnEvents();
             self.refreshGraphParameters(self.d3_graph.graph_parameters);
             self.refresh();
             self.startForce();
@@ -250,7 +266,7 @@ dreamer.ModelGraphEditor = (function(global) {
      *
      *
      */
-    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function() {
+    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function(layer) {
         log("_setupBehaviorsOnEvents");
         var self = this;
         var contextmenuNodesAction = [{
@@ -293,9 +309,9 @@ dreamer.ModelGraphEditor = (function(global) {
             }
 
         }];
-        if (self.model && self.model.action && self.model.action.node) {
-            for (var i in self.model.action.node) {
-                var action = self.model.action.node[i]
+        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
+            for (var i in self.model.layer[layer].action.node) {
+                var action = self.model.layer[layer].action.node[i]
                 contextmenuNodesAction.push({
                     title: action.title,
                     action: function(elm, d, i) {
@@ -320,9 +336,9 @@ dreamer.ModelGraphEditor = (function(global) {
             }
 
         }];
-        if (self.model && self.model.action && self.model.action.link) {
-            for (var i in self.model.action.link) {
-                var action = self.model.action.link[i]
+        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.link) {
+            for (var i in self.model.layer[layer].action.link) {
+                var action = self.model.layer[layer].action.link[i];
                 contextmenuLinksAction.push({
                     title: action.title,
                     action: function(elm, link, i) {
@@ -409,9 +425,11 @@ dreamer.ModelGraphEditor = (function(global) {
                 'contextmenu': d3.contextMenu(contextmenuLinksAction)
             }
         };
+
     };
 
     ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
+        this._setupBehaviorsOnEvents(filtersParams.link.view[0]);
         this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
     };
 
