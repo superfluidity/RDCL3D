@@ -12,11 +12,11 @@ nodes:                                  #List of nodes, with id and label used i
     vnf_vl:
         label: intVL
     vnf_vdu:
-        label: VduCP
+        label: VDU
     vnf_ext_cp:
         label: ExtCP
     vnf_vdu_cp:
-        label: VDU
+        label: VduCP
 layer:                                  #List of Layers
     ns:
         nodes:                  #List of node to be visualized in the current layer

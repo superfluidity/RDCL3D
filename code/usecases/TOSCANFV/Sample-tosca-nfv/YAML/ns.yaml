@@ -1,0 +1,37 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0_0
+
+imports:
+- vnf1.yaml
+- vnf2.yaml
+topology_template:
+  description: Template of online transaction processing service.
+  inputs: null
+  node_templates:
+    VL_29hi:
+      properties:
+        vendor: prova
+      type: tosca.nodes.nfv.VL
+    cp1:
+      requirements:
+      - virtualLink: VL_29hi
+      type: tosca.nodes.nfv.CP
+    cp2:
+      requirements:
+      - virtualLink: VL_29hi
+      type: tosca.nodes.nfv.CP
+    vnf1:
+      properties:
+        id: vnf1
+        vendor: acmetelco
+        version: 1.0
+      requirements:
+      - virtualLink: VL_29hi
+      type: tosca.nodes.nfv.VNF.VNF1
+    vnf2:
+      properties:
+        id: vnf2
+        vendor: acmetelco
+        version: 1.0
+      requirements:
+      - virtualLink: VL_29hi
+      type: tosca.nodes.nfv.VNF.VNF2

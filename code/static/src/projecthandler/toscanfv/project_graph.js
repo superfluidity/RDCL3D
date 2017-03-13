@@ -114,7 +114,7 @@ function savePositions(el) {
 function changeFilter(e, c) {
     console.log("changeFilter");
     var type_property = graph_editor.getTypeProperty();
-    $("#title_header").text("TOSCA Graph Editor");
+    $("#title_header").text("TOSCA NFV Graph Editor");
     new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
     //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
     updateBredCrumb(c);
