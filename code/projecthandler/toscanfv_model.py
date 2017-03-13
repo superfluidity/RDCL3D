@@ -25,6 +25,9 @@ import logging
 
 from projecthandler.models import Project
 from lib.toscanfv.toscanfv_rdcl_graph import ToscanfvRdclGraph
+from lib.tosca.tosca_parser import ToscaParser
+from toscaparser.tosca_template import ToscaTemplate
+from translator.hot.tosca_translator import TOSCATranslator
 
 
 logging.basicConfig(level=logging.DEBUG)
