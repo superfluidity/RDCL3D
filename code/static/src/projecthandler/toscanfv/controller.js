@@ -52,7 +52,12 @@ dreamer.ToscanfvController = (function(global) {
         var vl_type = source_type != 'tosca.nodes.nfv.CP' ? source_type : destination_type;
         var cp_id = source_type == 'tosca.nodes.nfv.CP' ? source_id : target_id;
         var old_link = $.grep(self.d3_graph.links, function(e) {
-            return (e.source.id == cp_id || e.target.id == cp_id) && (vl_types.indexOf(e.source.info.type)>=0 || vl_types.indexOf(e.target.info.type)>=0);
+            if (vl_type == 'tosca.nodes.nfv.VDU'){
+                return (e.source.id == cp_id || e.target.id == cp_id) && (e.source.info.type=='tosca.nodes.nfv.VDU' || e.target.info.type == 'tosca.nodes.nfv.VDU');
+
+            }else{
+                return (e.source.id == cp_id || e.target.id == cp_id) && (vl_types.indexOf(e.source.info.type)>=0 || vl_types.indexOf(e.target.info.type)>=0);
+            }
         });
         console.log(vl_type , cp_id)
         new dreamer.GraphRequests().addLink(link, null, function() {
