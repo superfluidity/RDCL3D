@@ -211,7 +211,20 @@ textarea {
     user-select: none;
     border: 1px solid #bbb;
     box-sizing: border-box;
-    padding: 0 40px 0 0;
+    padding: 0 0 0 0;
+}
+
+.palette-status-indicator {
+    top: 50%;
+    position: relative;
+    justify-content: center;
+}
+
+.palette-status-hidden >.palette-status-indicator {
+    top: 50%;
+    position: relative;
+    justify-content: center;
+    display: none;
 }
 
 .palette-container{

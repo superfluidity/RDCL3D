@@ -37,13 +37,13 @@ SECTIONS = (DEFINITION_VERSION, DEFAULT_NAMESPACE, TEMPLATE_NAME,
             DESCRIPTION, IMPORTS, DSL_DEFINITIONS, NODE_TYPES,
             RELATIONSHIP_TYPES, RELATIONSHIP_TEMPLATES,
             CAPABILITY_TYPES, ARTIFACT_TYPES, DATA_TYPES, INTERFACE_TYPES,
-            POLICY_TYPES, GROUP_TYPES, REPOSITORIES) = \
+            POLICY_TYPES, GROUP_TYPES, REPOSITORIES, SUBSITITUTION_MAPPINGS ) = \
            ('tosca_definitions_version', 'tosca_default_namespace',
             'template_name', 'topology_template', 'template_author',
             'template_version', 'description', 'imports', 'dsl_definitions',
             'node_types', 'relationship_types', 'relationship_templates',
             'capability_types', 'artifact_types', 'data_types',
-            'interface_types', 'policy_types', 'group_types', 'repositories')
+            'interface_types', 'policy_types', 'group_types', 'repositories', 'subsititution_mappings')
 # Sections that are specific to individual template definitions
 SPECIAL_SECTIONS = (METADATA) = ('metadata')
 
@@ -65,10 +65,11 @@ class ToscaTemplate(object):
 
     '''Load the template data.'''
     def __init__(self, path=None, parsed_params=None, a_file=True,
-                 yaml_dict_tpl=None):
+                 yaml_dict_tpl=None, project = None):
 
         ExceptionCollector.start()
         self.a_file = a_file
+        self.project = project
         self.input_path = None
         self.path = None
         self.tpl = None
@@ -200,7 +201,7 @@ class ToscaTemplate(object):
         if imports:
             custom_service = toscaparser.imports.\
                 ImportsLoader(imports, self.path,
-                              type_defs, self.tpl)
+                              type_defs, self.tpl, project = self.project)
 
             nested_tosca_tpls = custom_service.get_nested_tosca_tpls()
             self._update_nested_tosca_tpls_with_topology(nested_tosca_tpls)
