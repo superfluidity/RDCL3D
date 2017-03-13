@@ -38,7 +38,6 @@ PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/toscanfv/descriptor_template/'
 DESCRIPTOR_TEMPLATE_SUFFIX = '.yaml'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/toscanfv/toscanfv.yaml'
 EXAMPLES_FOLDER = 'usecases/TOSCANFV/'
-PATH_TO_TOSCA_DEFINITION = 'toscaparser/elements/TOSCA_definition_1_0.yaml'
 PATH_TO_TOSCA_NFV_DEFINITION = 'toscaparser/extensions/nfv/TOSCA_nfv_definition_1_0_0.yaml'
 
 
@@ -220,10 +219,8 @@ class ToscanfvProject(Project):
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
         current_data = json.loads(self.data_project)
-        tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
         tosca_nfv_definition = Util().loadyamlfile(PATH_TO_TOSCA_NFV_DEFINITION)
         node_types = {}
-        node_types.update(tosca_definition['node_types'])
         node_types.update(tosca_nfv_definition['node_types'])
         new_element = {}
         new_element['type'] = element_type

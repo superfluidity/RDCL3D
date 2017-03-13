@@ -38,7 +38,6 @@ DESCRIPTOR_TEMPLATE_SUFFIX = '.yaml'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/tosca/tosca.yaml'
 EXAMPLES_FOLDER = 'usecases/TOSCA/'
 PATH_TO_TOSCA_DEFINITION = 'toscaparser/elements/TOSCA_definition_1_0.yaml'
-PATH_TO_TOSCA_NFV_DEFINITION = 'toscaparser/extensions/nfv/TOSCA_nfv_definition_1_0_0.yaml'
 
 
 class ToscaProject(Project):
@@ -224,10 +223,8 @@ class ToscaProject(Project):
         element_type = request.POST.get('element_type')
         current_data = json.loads(self.data_project)
         tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
-        tosca_nfv_definition = Util().loadyamlfile(PATH_TO_TOSCA_NFV_DEFINITION)
         node_types = {}
         node_types.update(tosca_definition['node_types'])
-        node_types.update(tosca_nfv_definition['node_types'])
         new_element = {}
         new_element['type'] = element_type
         type_definition =  node_types[element_type]
@@ -243,17 +240,6 @@ class ToscaProject(Project):
                         else:
                             new_element['properties'][propriety] = 'prova'
             element_type = type_definition['derived_from'] if 'derived_from' in type_definition else None
-        if new_element['type'] == 'tosca.nodes.nfv.VNF':
-            if 'imports' not in current_data['toscayaml'][group_id] or current_data['toscayaml'][group_id]['imports'] is None:
-                current_data['toscayaml'][group_id]['imports'] = []
-            current_data['toscayaml'][group_id]['imports'].append(element_id+'.yaml')
-            vnf_template = Util().loadyamlfile(PATH_TO_DESCRIPTORS_TEMPLATES+'vnf.yaml')
-            vnf_template['topology_template']['subsititution_mappings'] = 'tosca.nodes.nfv.VNF.'+element_id
-            vnf_template['topology_template']['node_templates'] = {}
-            vnf_template['imports'] = []
-            vnf_template['node_types']['tosca.nodes.nfv.VNF.'+element_id] = {}
-            vnf_template['node_types']['tosca.nodes.nfv.VNF.' + element_id]['derived_from'] = 'tosca.nodes.nfv.VNF'
-            current_data['toscayaml'][element_id] = vnf_template
         if 'node_templates' not in current_data['toscayaml'][group_id]['topology_template'] or current_data['toscayaml'][group_id]['topology_template']['node_templates'] is None:
             current_data['toscayaml'][group_id]['topology_template']['node_templates'] = {}
         current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id] = new_element
@@ -285,7 +271,6 @@ class ToscaProject(Project):
         return result        
 
     def get_add_link(self, request):
-
         result = False
         parameters = request.POST.dict()
         link = json.loads(parameters['link'])
@@ -293,20 +278,62 @@ class ToscaProject(Project):
         destination = link['target']
         source_type = source['info']['type']
         destination_type = destination['info']['type']
+        source_id = source['id']
+        destination_id = destination['id']
         group = source['info']['group'][0]
         current_data = json.loads(self.data_project)
-
-
-
+        tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
+        added = False
+        if 'requirements' in tosca_definition['node_types'][source_type]:
+            for req in tosca_definition['node_types'][source_type]['requirements']:
+                for key in req:
+                    if req[key]['node'] == destination_type:
+                        added = True
+                        if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][
+                            source_id] or \
+                                        current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                                            'requirements'] is None:
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                                'requirements'] = []
+                        requirements = current_data['toscayaml'][group]['topology_template']['node_templates'][source_id][
+                            'requirements']
+                        element = next((x for x in requirements if key in x.keys()), None)
+                        if element is not None:
+                            element[key] = destination_id
+                        else:
+                            element = {}
+                            element[key] = destination_id
+                            requirements.append(element)
+        if not added and 'requirements' in tosca_definition['node_types'][destination_type]:
+            for req in tosca_definition['node_types'][destination_type]['requirements']:
+                print req
+                for key in req:
+                    if req[key]['node'] == source_type:
+                        added = True
+                        if 'requirements' not in \
+                                current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                    destination_id] or \
+                                        current_data['toscayaml'][group]['topology_template']['node_templates'][
+                                            destination_id][
+                                            'requirements'] is None:
+                            current_data['toscayaml'][group]['topology_template']['node_templates'][destination_id][
+                                'requirements'] = []
+                        requirements = \
+                        current_data['toscayaml'][group]['topology_template']['node_templates'][destination_id][
+                            'requirements']
+                        element = next((x for x in requirements if key in x.keys()), None)
+                        if element is not None:
+                            element[key] = source_id
+                        else:
+                            element = {}
+                            element[key] = source_id
+                            requirements.append(element)
 
         self.data_project = current_data
         # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
         self.update()
         result = True
-
-
-
-        return result        
+        return result
 
     def get_remove_link(self, request):
         result = False
