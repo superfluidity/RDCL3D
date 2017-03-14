@@ -20,6 +20,8 @@ class CapabilityTypeDef(StatefulEntityType):
 
     def __init__(self, name, ctype, ntype, custom_def=None):
         self.name = name
+        if ctype is None:
+            return
         super(CapabilityTypeDef, self).__init__(ctype, self.CAPABILITY_PREFIX,
                                                 custom_def)
         self.nodetype = ntype

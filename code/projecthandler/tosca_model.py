@@ -238,7 +238,10 @@ class ToscaProject(Project):
                         if propriety == 'version':
                             new_element['properties'][propriety] = 1.0
                         else:
-                            new_element['properties'][propriety] = 'prova'
+                            if type_definition['properties'][propriety]['type'] == 'scalar-unit.size':
+                                new_element['properties'][propriety] = '1 MB'
+                            else:
+                               new_element['properties'][propriety] = 'prova'
             element_type = type_definition['derived_from'] if 'derived_from' in type_definition else None
         if 'node_templates' not in current_data['toscayaml'][group_id]['topology_template'] or current_data['toscayaml'][group_id]['topology_template']['node_templates'] is None:
             current_data['toscayaml'][group_id]['topology_template']['node_templates'] = {}
