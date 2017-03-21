@@ -64,27 +64,60 @@ dreamer.ModelGraphEditor = (function(global) {
 
 
         }, this);
+
+        this.customBehavioursOnEvents = args.behaviorsOnEvents || undefined;
+
         var self = this;
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
-        d3.json(data_url, function(error, data) {
-            log('data from remote')
-            console.log(data)
-            self.d3_graph.nodes = data.vertices;
-            self.d3_graph.links = data.edges;
-            self.d3_graph.graph_parameters = data.graph_parameters;
-            self.model = data.model;
+        if(!args.graph_data){
+            d3.json(data_url, function(error, data) {
+                log('data from remote')
+                console.log(data)
+                self.d3_graph.nodes = data.vertices;
+                self.d3_graph.links = data.edges;
+                self.d3_graph.graph_parameters = data.graph_parameters;
+                self.model = data.model;
 
-            self.refreshGraphParameters(self.d3_graph.graph_parameters);
-            self.refresh();
-            self.startForce();
-             //if(args.filter_base != undefined)
+                self.refreshGraphParameters(self.d3_graph.graph_parameters);
+                self.refresh();
+                self.startForce();
+                 //if(args.filter_base != undefined)
 
-            setTimeout(function() {
-                //self.handleForce(self.forceSimulationActive);
+                setTimeout(function() {
+                    //self.handleForce(self.forceSimulationActive);
+                    self.handleFiltersParams(args.filter_base);
+                }, 500);
+
+            });
+        }
+        else{
+            this.updateData(args)
+        }
+    }
+
+    /**
+     * Update data of the graph.
+     * @param {Object} Required. An object that specifies tha data of the new node.
+     * @returns {boolean}
+     */
+    ModelGraphEditor.prototype.updateData = function(args){
+         log(JSON.stringify(args))
+         this.d3_graph.nodes = args.graph_data.vertices;
+         this.d3_graph.links = args.graph_data.edges;
+         this.d3_graph.graph_parameters = args.graph_parameters;
+         this.model = args.model;
+         this.refreshGraphParameters(this.d3_graph.graph_parameters);
+         this.refresh();
+         this.startForce();
+                 //if(args.filter_base != undefined)
+
+         //if(args.filter_base){
+            var self = this;
+             setTimeout(function() {
+                self.handleForce(true);
                 self.handleFiltersParams(args.filter_base);
-            }, 500);
-
-        });
+             }, 500);
+         //}
     }
 
     /**
@@ -266,10 +299,13 @@ dreamer.ModelGraphEditor = (function(global) {
      *
      *
      */
-    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function(layer) {
+
+     ModelGraphEditor.prototype._setupBehaviorsOnEvents = function(layer) {
         log("_setupBehaviorsOnEvents");
         var self = this;
-        var contextmenuNodesAction = [{
+        var customContextmenuNodesAction = (this.customBehavioursOnEvents && this.customBehavioursOnEvents.behaviors
+        && this.customBehavioursOnEvents.behaviors.nodes && this.customBehavioursOnEvents.behaviors.nodes.contextmenu) ? this.customBehavioursOnEvents.behaviors.nodes.contextmenu : undefined;
+        var contextmenuNodesAction = (customContextmenuNodesAction) ? customContextmenuNodesAction :  [{
             title: 'Show graph',
             action: function(elm, c_node, i) {
                 if (c_node.info.type != undefined) {
@@ -309,7 +345,7 @@ dreamer.ModelGraphEditor = (function(global) {
             }
 
         }];
-        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
+        if ((this.customBehavioursOnEvents == undefined || this.customBehavioursOnEvents.viewBased == true) && self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
             for (var i in self.model.layer[layer].action.node) {
                 var action = self.model.layer[layer].action.node[i]
                 contextmenuNodesAction.push({
@@ -427,6 +463,9 @@ dreamer.ModelGraphEditor = (function(global) {
         };
 
     };
+
+
+
 
     ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
         this._setupBehaviorsOnEvents(filtersParams.link.view[0]);

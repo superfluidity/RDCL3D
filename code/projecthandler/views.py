@@ -129,12 +129,16 @@ def user_projects(request):
     projects = Project.objects.filter(owner=user).select_subclasses()
 
     # print list(projects)
-    html = render_to_string('projectlist.html', {
+    #html = render_to_string('projectlist.html', {
+    #    'projects': list(projects),
+    #    'csrf_token': csrf_token_value
+    #})
+    # if request.is_ajax():
+    return render(request, 'projectlist.html', {
         'projects': list(projects),
         'csrf_token': csrf_token_value
     })
-    # if request.is_ajax():
-    return JsonResponse({'html': html});
+    #return JsonResponse({'html': html});
 
 
 @login_required

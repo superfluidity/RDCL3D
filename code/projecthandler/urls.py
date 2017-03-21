@@ -19,7 +19,7 @@ from django.contrib import admin
 from projecthandler import views
 
 urlpatterns = [
-    url(r'^table/', views.user_projects, name='projects_list'),
+    url(r'^list/', views.user_projects, name='projects_list'),
     url(r'^new/', views.create_new_project, name='new_project'),
     url(r'^(?P<project_id>\d+)/$', views.open_project, name='open_project'),
     url(r'^(?P<project_id>\d+)/delete$', views.delete_project, name='delete_project'),

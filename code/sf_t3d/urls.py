@@ -25,7 +25,8 @@ urlpatterns = [
     url(r'^auth/$', user_views.login_view, name='auth_user'),
     url(r'^auth_guest/$', user_views.guest_login, name='auth_user_guest'),
     url(r'^register', user_views.register_view, name='register_user'),
-    url(r'^projects/', include('projecthandler.urls',namespace='projects'), name='projects_base'),
+    url(r'^projects/', include('projecthandler.urls', namespace='projects'), name='projects_base'),
+    url(r'^deployments/', include('deploymenthandler.urls', namespace='deployment'), name='deployments_base'),
     url(r'^$', views.home, name='home'),
     url(r'^home', views.home, name='home'),
 

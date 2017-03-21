@@ -2,6 +2,14 @@ function generateUID() {
     return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
 }
 
+function openProject(pId){
+    window.location.href='/projects/' + pId;
+}
+
+function openDeployment(expId){
+    window.location.href='/deployments/' + expId;
+}
+
 function cloneDescriptor(project_id, descriptor_type, descriptor_id) {
     $("#input_choose_new_descriptor_name").val(descriptor_id + "_" + generateUID());
     $('#save_new_descriptor_name').off('click').on('click', function () {

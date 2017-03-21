@@ -16,7 +16,8 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text fa-fw"></i><span>New Project</span></a></li>
+            <!-- <li><a href='{% url "projects:projects_list" %}'><i class="fa fa-file-text fa-fw"></i><span>My Projects</span></a></li>
+            <li><a href='{% url "projects:new_project" %}'><i class="fa fa-file-text fa-fw"></i><span>New Project</span></a></li> -->
         </ul>
     </section>
     <!-- /.sidebar -->
@@ -31,9 +32,40 @@
 {% block content_body %}
   	{{ block.super }}
 
-    <div id="table_container">
+    <div class="row">
+    <div class="col-md-6 ">
 
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>Projects</h3>
+
+                <p>#</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-code"></i>
+            </div>
+            <a href="/projects/list" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+            </a>
+        </div>
     </div>
+    <div class="col-md-6 ">
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>Deployments</h3>
+
+                <p>#</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-terminal"></i>
+            </div>
+            <a href="/deployments/list" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}
 
@@ -41,33 +73,5 @@
   	{{ block.super }}
 
 
-    <script src="{% static "AdminLTE/plugins/datatables/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "AdminLTE/plugins/datatables/dataTables.bootstrap.min.js" %}"></script>
 
-
-    <script>
-    function openProject(pId){
-        window.location.href='projects/' + pId;
-    }
-
-    function update() {
-    	$.ajax({
-			url: 'projects/table',
-			type: 'GET',
-			dataType: 'json',
-			data: { },
-			error: function() {
-				console.log("Error on server!");
-			},
-			success: function(data) {
-				$('#table_container').html(data.html);
-				//dispatch(data.state);
-			}
-		});
-    }
-    update();
-
-
-
-    </script>
 {% endblock %}
