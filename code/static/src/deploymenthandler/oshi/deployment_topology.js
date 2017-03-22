@@ -27,6 +27,7 @@ $(document).ready(function() {
         //data_url: "graph_data/"+getUrlParameter('id'),
         desc_id: getUrlParameter('id'),
         gui_properties: example_gui_properties,
+        edit_mode: false,
         behaviorsOnEvents:{
             viewBased: false,
             behaviors: buildBehaviorsOnEvents()

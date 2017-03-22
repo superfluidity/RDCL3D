@@ -42,13 +42,12 @@ function buildBehaviorsOnEvents(){
             title: 'Open Console',
             action: function(elm, d, i) {
                 console.log('Open Console from menu');
-            }
+            },
+            edit_mode: false
 
         }];
     var behavioursOnEvents = {
-            'nodes': {
-                'contextmenu': d3.contextMenu(contextmenuNodesAction)
-            },
+            'nodes': contextmenuNodesAction,
 
         };
 
