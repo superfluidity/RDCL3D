@@ -39,6 +39,6 @@ target/
 .DS_Store
 
 #migrations
-#deploymenthandler/migrations/
+deploymenthandler/migrations/
 projecthandler/migrations/
 sf_user/migrations/
