@@ -21,7 +21,6 @@
 }(this,
     function (d3) {
         return function (menu, opts) {
-            console.log(menu, opts)
             var openCallback,
                 closeCallback;
 
@@ -50,7 +49,6 @@
             // this gets executed when a contextmenu event occurs
             return function (data, index) {
                 var elm = this;
-                console.log("C_MENU", data, index)
                 d3.selectAll('.d3-context-menu').html('');
                 var list = d3.selectAll('.d3-context-menu')
                     .on('contextmenu', function (d) {
@@ -78,7 +76,6 @@
                     })
                     .append('li')
                     .attr('class', function (d) {
-                        console.log(d)
                         var ret = '';
                         if (d.divider) {
                             ret += ' is-divider';

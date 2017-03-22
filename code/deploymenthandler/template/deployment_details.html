@@ -62,9 +62,7 @@
         <li>
             <a href="#list" data-toggle="tab"><i class="fa fa-table"></i> List View</a>
         </li>
-        <li>
-            <a href="#tab_pane_console1" data-toggle="tab"><i class="fa fa-terminal"></i> Node 1 <span><i class="fa fa-times closeTab" style="cursor: pointer; padding-left: 10px;"></i></span></a>
-        </li>
+
         {% block tab_pane_button_list %}
 
         {% endblock %}
@@ -87,9 +85,7 @@
         <div class="tab-pane" id="list">
             {% include 'oshi/oshi_deployment_details_table_nodes.html' %}
         </div>
-        <div class="tab-pane" id="tab_pane_console1">
-            <iframe src="http://192.168.100.191:8081/" class="shellIframe"></iframe>
-        </div>
+
         {% block tab_pane_list %}
 
         {% endblock %}

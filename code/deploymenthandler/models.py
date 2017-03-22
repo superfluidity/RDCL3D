@@ -27,6 +27,15 @@ log = logging.getLogger('models.py')
 
 project_types = {}
 
+
+class DeployAgent(models.Model):
+    """ DeployAgent
+    """
+    name = models.CharField(max_length=20, default='')
+    base_url = models.TextField(default='')
+    type = models.CharField(max_length=20, default='')
+
+
 class Deployment(models.Model):
     """ Base class for Deployment types
 
@@ -40,3 +49,7 @@ class Deployment(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     last_access_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
+    agent = DeployAgent
+
+
+
