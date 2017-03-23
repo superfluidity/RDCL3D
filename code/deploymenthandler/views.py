@@ -54,7 +54,7 @@ def open_deployment(request, deployment_id=None):
             'creator_name': "admin",
             'creator_id': 1,
             'created_date': "2017-03-14 16:18",
-            'last_access_date': "2017-03-14 16:18",
+            'last_update': "2017-03-14 16:18",
             'status': "ready",
         }
 
@@ -112,7 +112,14 @@ def delete_deployment(request, deployment_id=None):
 @login_required
 def agents_list(request, agent_type=None):
     try:
-        agents = DeployAgent.objects.filter()
+        #agents = DeployAgent.objects.filter()
+        agents = [{
+            'id': 1,
+            'name': 'Oshi Deployer VM',
+            'base_url': 'http://192.168.1.105:8081',
+            'last_update': '2017-03-14 16:18',
+            'type': 'OSHI'
+        }]
 
         return render(request, 'agents/agents_list.html',
                       {'agents': agents, 'agent_type': agent_type})

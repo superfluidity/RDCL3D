@@ -3,16 +3,16 @@
 {% load staticfiles %}
 
 {% block head_block %}
-  	{{ block.super }}
+{{ block.super }}
 
 {% endblock %}
 
 {% block title_header_big %}
-    {{ block.super }}
+{{ block.super }}
 {% endblock %}
 
 {% block left_sidebar %}
-	<!-- Left side column. contains the sidebar -->
+<!-- Left side column. contains the sidebar -->
 <aside class="main-sidebar" id="globalmenu">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -20,10 +20,12 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-			<li class="header">Deployments</li>
-            <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-list-alt fa-fw"></i><span>Deployments</span></a></li>
-			<li class="header">Deployment Agents</li>
-            <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-dot-circle-o fa-fw"></i><span>Registered</span></a></li>
+            <li class="header">Deployments</li>
+            <li><a href='{% url "deployment:deployments_list" %}'><i
+                    class="fa fa-list-alt fa-fw"></i><span>Deployments</span></a></li>
+            <li class="header">Deployment Agents</li>
+            <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-dot-circle-o fa-fw"></i><span>Registered</span></a>
+            </li>
 
         </ul>
     </section>
@@ -33,54 +35,68 @@
 
 
 {% block breadcrumb_body %}
-  	{{ block.super }}
+{{ block.super }}
 
 {% endblock %}
 
 {% block content_body %}
-  	{{ block.super }}
- {% csrf_token %}
+{{ block.super }}
+{% csrf_token %}
 
 <div class="col-md-12">
 
     <div class="box">
         <div class="box-header with-border">
-                  <h3 class="box-title">Agents registered</h3>
+            <h3 class="box-title">Agents registered</h3>
             <div class="box-tools">
-                <a href="#" class="btn btn-block btn-primary btn-sm" data-toggle="modal" data-target="#modal_new_deploy_agent"><i class="fa fa-plus"></i><span> New Agent</span></a>
+                <a href="#" class="btn btn-block btn-primary btn-sm" data-toggle="modal"
+                   data-target="#modal_new_deploy_agent"><i class="fa fa-plus"></i><span> New Agent</span></a>
             </div>
         </div>
         <div class="box-body">
-			<table id="deployments_table" class="table table-bordered table-striped">
-				<thead>
-					<tr>
+            <table id="deployments_table" class="table table-bordered table-striped">
+                <thead>
+                <tr>
 
-						<th>Name</th>
-						<th>Url</th>
-						<th>Project Type</th>
-						<th>Last Update</th>
-						<th><i class="fa fa-trash-o"></i></th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for agt in agents %}
-					<tr>
+                    <th>Name</th>
+                    <th>Url</th>
+                    <th>Project Type</th>
+                    <th>Last Update</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for agt in agents %}
+                <tr>
 
-						<td>
-							{{ agt.name }}
-						</td>
-						<td>
-                            {{ agt.base_url }}
-                        </td>
-						<td>{{ agt.type }}</td>
-						<td>{{ exp.last_update }}</td>
-						<td></td>
+                    <td>
+                        {{ agt.name }}
+                    </td>
+                    <td>
+                        {{ agt.base_url }}
+                    </td>
+                    <td>{{ agt.type }}</td>
+                    <td>{{ agt.last_update }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default"><i class="fa fa-cog" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#"><i class="fa fa-trash fa-fw"></i>Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
 
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -90,8 +106,7 @@
 {% endblock %}
 
 {% block resource_block %}
-  	{{ block.super }}
-
+{{ block.super }}
 
 
 {% endblock %}
