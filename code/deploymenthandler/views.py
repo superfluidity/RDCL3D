@@ -21,6 +21,8 @@ from django.http import HttpResponse
 from lib.oshi.oshi_parser import OshiParser
 import json
 
+from deploymenthandler.models import DeployAgent
+
 @login_required
 def user_deployments(request):
     #user = CustomUser.objects.get(id=request.user.id)
@@ -103,3 +105,33 @@ def delete_deployment(request, deployment_id=None):
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Deployment not found.'})
+
+
+# Agent Section #####
+
+@login_required
+def agents_list(request, agent_type=None):
+    try:
+        agents = DeployAgent.objects.filter()
+
+        return render(request, 'agents/agents_list.html',
+                      {'agents': agents, 'agent_type': agent_type})
+
+    except Exception as e:
+        print e
+        return render(request, 'error.html', {'error_msg': 'Agents not found.'})
+
+
+@login_required
+def delete_agent(request, agent_id=None):
+    if request.method == 'POST':
+
+        try:
+            result = {}
+        except Exception as e:
+            print e
+            result = {'error_msg': 'Error deleting Agent.'}
+
+        response = HttpResponse(result, content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+        return response

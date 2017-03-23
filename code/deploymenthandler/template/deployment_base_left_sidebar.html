@@ -7,7 +7,7 @@
             <li class="header">MAIN NAVIGATION</li>
             <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
             <li class="header">Deployment</li>
-            <li><a href='/deployments/{{deployment_id}}/'><i class="fa fa-file-text fa-fw"></i><span>Details</span></a>
+            <li><a href='/deployments/{{deployment.id}}/'><i class="fa fa-file-text fa-fw"></i><span>Details</span></a>
             </li>
             {% block li_list %}
 

@@ -3,44 +3,50 @@
 {% load staticfiles %}
 
 {% block head_block %}
-  	{{ block.super }}
+{{ block.super }}
 
 
 {% endblock %}
 
 {% block title_header_big %}
-    {{ block.super }}
+{{ block.super }}
 {% endblock %}
 
 {% block left_sidebar %}
-    {% include 'oshi/oshi_deployment_left_sidebar.html' %}
+{% include 'oshi/oshi_deployment_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
-  	{{ block.super }}
+{{ block.super }}
 
 {% endblock %}
 
 
 
 
-        {% block tab_pane_button_list %}
-            {{ block.super }}
-        {% endblock %}
+{% block tab_pane_button_list %}
+{{ block.super }}
+{% endblock %}
 
-        {% block nav_buttons_list %}
-            {{ block.super }}
-        {% endblock %}
+{% block nav_buttons_list %}
+{{ block.super }}
+{% endblock %}
 
-        {% block tab_pane_list %}
-            {{ block.super }}
-        {% endblock %}
+{% block tab_pane_list %}
+{{ block.super }}
+{% endblock %}
+
+{% block details_table_nodes %}
+{{ block.super }}
+{% include 'oshi/oshi_deployment_details_table_nodes.html' %}
+{% endblock %}
 
 
 {% block resource_block %}
-  	{{ block.super }}
+{{ block.super }}
 
-
+<script src="{% static "src/deploymenthandler/oshi/gui_properties.js" %}"></script>
+<script src="{% static "src/deploymenthandler/oshi/deployment_topology.js" %}"></script>
 
 {% endblock %}
 

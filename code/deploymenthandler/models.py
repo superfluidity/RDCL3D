@@ -34,6 +34,7 @@ class DeployAgent(models.Model):
     name = models.CharField(max_length=20, default='')
     base_url = models.TextField(default='')
     type = models.CharField(max_length=20, default='')
+    last_update = models.DateTimeField(default=timezone.now)
 
 
 class Deployment(models.Model):
@@ -47,7 +48,7 @@ class Deployment(models.Model):
     creator_name = models.CharField(max_length=20, default='')
     creator_id = models.CharField(max_length=20, default='')
     created_date = models.DateTimeField(default=timezone.now)
-    last_access_date = models.DateTimeField(default=timezone.now)
+    last_update = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
     agent = DeployAgent
 

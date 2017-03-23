@@ -23,7 +23,7 @@
 			<li class="header">Deployments</li>
             <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-list-alt fa-fw"></i><span>Deployments</span></a></li>
 			<li class="header">Deployment Agents</li>
-            <li><a href='{% url "agent:agents_list" %}'><i class="fa fa-dot-circle-o fa-fw"></i><span>Registered</span></a></li>
+            <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-dot-circle-o fa-fw"></i><span>Registered</span></a></li>
 
         </ul>
     </section>
@@ -45,10 +45,10 @@
 
     <div class="box">
         <div class="box-header with-border">
-                  <h3 class="box-title">Deployments in my Projects</h3>
-            <!--<div class="box-tools">
-                <a href="deployments/new/" class="btn btn-block btn-primary btn-sm"><i class="fa fa-plus"></i><span> New Deployment</span></a>
-            </div>-->
+                  <h3 class="box-title">Agents registered</h3>
+            <div class="box-tools">
+                <a href="#" class="btn btn-block btn-primary btn-sm" data-toggle="modal" data-target="#modal_new_deploy_agent"><i class="fa fa-plus"></i><span> New Agent</span></a>
+            </div>
         </div>
         <div class="box-body">
 			<table id="deployments_table" class="table table-bordered table-striped">
@@ -56,26 +56,24 @@
 					<tr>
 
 						<th>Name</th>
-						<th>Project</th>
-						<th>Creator</th>
-						<th>Status</th>
-						<th>Created</th>
+						<th>Url</th>
+						<th>Project Type</th>
+						<th>Last Update</th>
 						<th><i class="fa fa-trash-o"></i></th>
 					</tr>
 				</thead>
 				<tbody>
-				{% for exp in deployments %}
+				{% for agt in agents %}
 					<tr>
 
 						<td>
-							<a href="javascript:openDeployment('{{ exp.id }}')" >{{ exp.name }}</a>
+							{{ agt.name }}
 						</td>
 						<td>
-                            <a href="javascript:openProject('{{ exp.project_id }}')" >{{ exp.project_name }}</a>
+                            {{ agt.base_url }}
                         </td>
-						<td>{{ exp.creator_name }}</td>
-						<td>{{ exp.status }}</td>
-						<td>{{ exp.created_date }}</td>
+						<td>{{ agt.type }}</td>
+						<td>{{ exp.last_update }}</td>
 						<td></td>
 
 					</tr>
@@ -86,6 +84,8 @@
     </div>
 </div>
 
+
+{% include 'agents/agent_create_modal.html' %}
 
 {% endblock %}
 
