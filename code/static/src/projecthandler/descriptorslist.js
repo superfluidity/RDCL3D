@@ -11,6 +11,9 @@ function startFromAgent(start) {
         $('#div_new_agent').show();
     }
 
+    $('.required').prop('required', function(){
+        return  $(this).is(':visible');
+    });
 
 }
 

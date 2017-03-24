@@ -19,6 +19,7 @@ from deploymenthandler import views
 
 urlpatterns = [
     url(r'^list/', views.user_deployments, name='deployments_list'),
+    url(r'^new/', views.new_deployment, name='new_deployment'),
     url(r'^(?P<deployment_id>\d+)/$', views.open_deployment, name='open_deployment'),
     url(r'^(?P<deployment_id>\d+)/delete$', views.delete_deployment, name='delete_deployment'),
 

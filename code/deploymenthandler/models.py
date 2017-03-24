@@ -50,7 +50,7 @@ class Deployment(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
-    agent = DeployAgent
+    deployment_agent = DeployAgent
 
 
 

@@ -19,7 +19,7 @@ from deploymenthandler import views
 
 urlpatterns = [
     url(r'^list/', views.agents_list, name='agents_list'),
-    #url(r'^(?P<agent_id>\d+)/$', views.open_agent, name='open_agent'),
+    url(r'^new/', views.new_agent, name='new_agent'),
     url(r'^(?P<agent_id>\d+)/delete$', views.delete_agent, name='delete_agent'),
 
 ]

@@ -193,6 +193,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
+        'project_type': prj_token,
         'project_overview_data': project_overview,
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type

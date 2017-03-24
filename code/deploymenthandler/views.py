@@ -15,17 +15,20 @@
 #
 
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
-from lib.oshi.oshi_parser import OshiParser
 import json
 
-from deploymenthandler.models import DeployAgent
+from sf_user.models import CustomUser
+from projecthandler.models import Project
+from deploymenthandler.models import DeployAgent, Deployment
+from lib.oshi.oshi_parser import OshiParser
+
 
 @login_required
 def user_deployments(request):
-    #user = CustomUser.objects.get(id=request.user.id)
+    # user = CustomUser.objects.get(id=request.user.id)
     deployments = [{
         'id': 1,
         'name': "OshiExp",
@@ -36,10 +39,12 @@ def user_deployments(request):
         'creator_id': 1,
         'created_date': "2017-03-14 16:18",
         'status': "ready",
-    }] #Deployment.objects.filter(owner=user).select_subclasses()
+    }]
+    deployments = Deployment.objects.filter()
     result = {}
     result.update({'deployments': list(deployments)})
     return render(request, 'deployments_list.html', result)
+
 
 @login_required
 def open_deployment(request, deployment_id=None):
@@ -63,15 +68,49 @@ def open_deployment(request, deployment_id=None):
         topology = topology_data['oshi']['example1']
         print type(deployment), type(topology)
         return render(request, 'oshi/oshi_deployment_details.html',
-                      {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'], 'collapsed_sidebar': True})
+                      {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'],
+                       'collapsed_sidebar': True})
 
     except Exception as e:
         print e
         return render(request, 'error.html', {'error_msg': 'Error open project! Please retry.'})
 
 @login_required
-def topology_data(request, deployment_id=None):
+def new_deployment(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name', '')
+            start_from = request.POST.get('startfrom')
+            if start_from == 'new':
+                name_agent = request.POST.get('name_agent', '')
+                base_url_agent = request.POST.get('base_url_agent', ' ')
+                type_agent = request.POST.get('type_agent', '')
+                #print "ciao",request.POST.dict() ,name_agent, base_url_agent, type_agent
+                agent = DeployAgent.objects.create(name=name_agent, base_url=base_url_agent, type=type_agent)
+                #print "ciao1", agent.id
+            else:
+                agent_id = request.POST.get('agent_id', '')
+                agent = DeployAgent.objects.filter(id=agent_id)
+            print name, name_agent, base_url_agent, type_agent
+            user = CustomUser.objects.get(id=request.user.id)
+            profile = {}
+            project_name = ''#request.POST.get('project_name')
+            project_id = request.POST.get('project_id')
+            creator_name = user.get_full_name()
+            creator_id = user.id
+            status = 'Boot'
 
+            new_deployment = Deployment.objects.create(name=name, project_name=project_name, project_id=project_id, profile=profile,
+                                      creator_name=creator_name, creator_id=creator_id, status=status)
+            new_deployment.deployment_agent = agent
+            new_deployment.save()
+        except Exception as e:
+            print e
+            return render(request, 'error.html', {'error_msg': 'Error deleting Deployment.'})
+        return redirect('deployment:deployments_list')
+
+@login_required
+def topology_data(request, deployment_id=None):
     topology = {}
     topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
 
@@ -82,12 +121,13 @@ def topology_data(request, deployment_id=None):
 
     return response
 
+
 @login_required
 def delete_deployment(request, deployment_id=None):
     if request.method == 'POST':
 
         try:
-            #Deployment.objects.filter(id=deployment_id).delete()
+            # Deployment.objects.filter(id=deployment_id).delete()
             return render(request, 'deployment_delete.html', {})
         except Exception as e:
             print e
@@ -95,10 +135,10 @@ def delete_deployment(request, deployment_id=None):
 
     elif request.method == 'GET':
         try:
-            deployments = [] #Deployment.objects.filter(id=deployment_id).select_subclasses()
+            deployments = []  # Deployment.objects.filter(id=deployment_id).select_subclasses()
             deployment_overview = deployments[0].get_overview_data()
             #                 example: 'etsi/etsi_deployment_delete.html'
-            #print  prj_token + '/' + prj_token + '_deployment_delete.html', deployment_overview['name']
+            # print  prj_token + '/' + prj_token + '_deployment_delete.html', deployment_overview['name']
             return render(request, 'deployment_delete.html',
                           {'deployment_id': deployment_id, 'deployment_name': deployment_overview['name']})
 
@@ -112,17 +152,13 @@ def delete_deployment(request, deployment_id=None):
 @login_required
 def agents_list(request, agent_type=None):
     try:
-        #agents = DeployAgent.objects.filter()
-        agents = [{
-            'id': 1,
-            'name': 'Oshi Deployer VM',
-            'base_url': 'http://192.168.1.105:8081',
-            'last_update': '2017-03-14 16:18',
-            'type': 'OSHI'
-        }]
+        agents = DeployAgent.objects.filter()
+        print 'agents', agents
+
+        project_types = Project.get_project_types()
 
         return render(request, 'agents/agents_list.html',
-                      {'agents': agents, 'agent_type': agent_type})
+                      {'agents': agents, 'agent_type': agent_type, 'data_type_selector': project_types})
 
     except Exception as e:
         print e
@@ -130,15 +166,26 @@ def agents_list(request, agent_type=None):
 
 
 @login_required
-def delete_agent(request, agent_id=None):
+def new_agent(request):
     if request.method == 'POST':
-
         try:
-            result = {}
+            name = request.POST.get('name', '')
+            base_url = request.POST.get('base_url', ' ')
+            type = request.POST.get('type', '')
+            DeployAgent.objects.create(name=name, base_url=base_url, type=type)
         except Exception as e:
             print e
-            result = {'error_msg': 'Error deleting Agent.'}
+            return render(request, 'error.html', {'error_msg': 'Error creating ' + type + ' Agent! Please retry.'})
+        return redirect('agent:agents_list')
 
-        response = HttpResponse(result, content_type="application/json")
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+
+@login_required
+def delete_agent(request, agent_id=None):
+    try:
+
+        DeployAgent.objects.filter(id=agent_id).delete()
+    except Exception as e:
+        print e
+        return render(request, 'error.html', {'error_msg': 'Error deleting ' + agent_id + ' Agent! Please retry.'})
+
+    return redirect('agent:agents_list')
