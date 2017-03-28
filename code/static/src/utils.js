@@ -79,7 +79,7 @@ function buildPalette(args) {
 
         });
     }
-    togglePaletteSpinner();
+    togglePaletteSpinner(args.length > 0);
 
 
 }
@@ -91,8 +91,8 @@ function handlePaletteCat(item) {
 
 }
 
-function togglePaletteSpinner() {
-    $('#palette').toggleClass("palette-status-hidden");
+function togglePaletteSpinner(addOrRemove) {
+    $('#palette').toggleClass("palette-status-hidden", addOrRemove);
 }
 
 function showAlert(msg) {
