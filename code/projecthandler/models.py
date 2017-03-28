@@ -193,8 +193,9 @@ class Project(models.Model):
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
+
             ##FIXME questa parte va completamente rivista cosi' ha varie lacune
-            log.debug('editing ' + descriptor_id + ' ' + type_descriptor + ' ' + data_type)
+            #log.info('editing ',+ descriptor_id + ' ' + type_descriptor + ' ' + data_type)
             current_data = json.loads(self.data_project)
             new_descriptor = new_data
             if data_type == 'json':
