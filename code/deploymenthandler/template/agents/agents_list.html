@@ -4,9 +4,8 @@
 
 {% block head_block %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static "AdminLTE/plugins/select2/select2.css" %}">
 
-    <style type="text/css">
+<style type="text/css">
 
   input:required:invalid, input:focus:invalid {
 
@@ -22,6 +21,7 @@
 .form-control.select2-hidden-accessible {
     top: 30px;
 }
+
 
 </style>
 {% endblock %}
@@ -107,7 +107,8 @@
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href='#'><i class="fa fa-edit fa-fw"></i>Edit</a></li>
-                                <li><a href='{% url "agent:delete_agent" agent_id=agt.id %}'><i class="fa fa-trash fa-fw"></i>Delete</a></li>
+                                <li><a href='{% url "agent:delete_agent" agent_id=agt.id %}'><i
+                                        class="fa fa-trash fa-fw"></i>Delete</a></li>
                             </ul>
                         </div>
                     </td>
@@ -127,8 +128,7 @@
 
 {% block resource_block %}
 {{ block.super }}
-<!-- Select2 -->
-<script src="{% static "AdminLTE/plugins/select2/select2.full.min.js" %}"></script>
+
 
 <script src="{% static "src/deploymenthandler/agents/agents_list.js" %}"></script>
 

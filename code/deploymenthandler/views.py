@@ -90,6 +90,7 @@ def new_deployment(request):
                 #print "ciao1", agent.id
             else:
                 agent_id = request.POST.get('agent_id', '')
+                #
                 agent = DeployAgent.objects.filter(id=agent_id)
             print name, name_agent, base_url_agent, type_agent
             user = CustomUser.objects.get(id=request.user.id)
@@ -106,8 +107,8 @@ def new_deployment(request):
             new_deployment.save()
         except Exception as e:
             print e
-            return render(request, 'error.html', {'error_msg': 'Error deleting Deployment.'})
-        return redirect('deployment:deployments_list')
+            return render(request, 'error.html', {'error_msg': 'Error Creating Deployment.'})
+        return redirect('deployment:monitoring_deployment')
 
 @login_required
 def topology_data(request, deployment_id=None):
@@ -121,6 +122,14 @@ def topology_data(request, deployment_id=None):
 
     return response
 
+@login_required
+def monitoring_deployment(request, deployment_id=None):
+    result = {}
+
+    response = HttpResponse(result, content_type="application/json")
+    response["Access-Control-Allow-Origin"] = "*"
+
+    return response
 
 @login_required
 def delete_deployment(request, deployment_id=None):
@@ -152,13 +161,19 @@ def delete_deployment(request, deployment_id=None):
 @login_required
 def agents_list(request, agent_type=None):
     try:
-        agents = DeployAgent.objects.filter()
-        print 'agents', agents
 
+        options = {}
+        for key in ('type', 'name'):
+            value = request.GET.get(key)
+            if value:
+                options[key] = value
+        agents = DeployAgent.objects.filter(**options)
+        print 'options', options
+        print agents
         project_types = Project.get_project_types()
-
+        #print project_types
         return render(request, 'agents/agents_list.html',
-                      {'agents': agents, 'agent_type': agent_type, 'data_type_selector': project_types})
+                      {'agents': agents, 'agent_type': options['type'] if 'type' in options else None, 'data_type_selector': project_types})
 
     except Exception as e:
         print e
