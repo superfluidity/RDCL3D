@@ -108,7 +108,7 @@ def new_deployment(request):
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Error Creating Deployment.'})
-        return redirect('deployment:monitoring_deployment')
+        return redirect('deployment:monitoring_deployment', deployment_id=new_deployment.id)
 
 @login_required
 def topology_data(request, deployment_id=None):
