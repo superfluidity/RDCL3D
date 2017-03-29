@@ -265,10 +265,19 @@ textarea {
 }
 
 
-.palette-open >.palette-content {
+.palette-close >.palette-content {
     background: #fff;
     padding: 3px;
     display: none;
+}
+
+.palette-close >.palette-header > i.fa.fa-chevron-down   {
+
+    filter: none;
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
 .palette-node {

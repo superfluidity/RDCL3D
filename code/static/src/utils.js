@@ -57,7 +57,7 @@ function buildPalette(args) {
             var category_id = "category_" + category.category_name.replace(/[.*+?^${}()|[\]\\]/g, "_");//.replace(/\s/g, '');
             var content_id = "palette-content-" + category.category_name.replace(/[.*+?^${}()|[\]\\]/g, "_");//.replace(/\s/g, '');
             $("#paletteContainer").append('<div id="' + category_id + '" class="palette-category" ><div class="palette-header" onClick="handlePaletteCat(this);" category_id="' + category_id + '"> ' +
-                '<i class="fa fa-chevron-right fa-rotate-90"></i>' +
+                '<i class="fa fa-chevron-down "></i>' +
                 '<span>  ' + category.category_name + '</span>' +
                 '</div>' +
                 '<div id="' + content_id + '" class="palette-content">' +
@@ -87,7 +87,7 @@ function buildPalette(args) {
 function handlePaletteCat(item) {
     console.log("handlePaletteContainer")
     var category_id = $(item).attr("category_id")
-    $('#' + category_id).toggleClass("palette-open");
+    $('#' + category_id).toggleClass("palette-close");
 
 }
 
