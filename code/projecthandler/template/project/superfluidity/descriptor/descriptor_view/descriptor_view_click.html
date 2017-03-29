@@ -1,0 +1,142 @@
+{% extends "descriptor/descriptor_view_base.html" %}
+
+{% load staticfiles %}
+
+
+{% block title_header_big %}
+{{ block.super }}
+Edit {{descriptor_type}} Descriptor
+{% endblock %}
+
+
+{% block left_sidebar %}
+{% include 'click/click_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+<li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">
+    {{descriptor_type}} Descriptors</a></li>
+<li><a>{{descriptor_id}}</a></li>
+
+{% endblock %}
+
+{% block tab_pane_button_list %}
+{{ block.super }}
+<li class="active" id="editor_li"><a href="#editor" data-toggle="tab"><i class="fa fa-file-code-o"></i>
+                    Editor</a></li>
+{% endblock %}
+
+{% block nav_buttons_list %}
+    {{ block.super }}
+<li class="pull-right">
+                    <button id="save" type="button" class="btn btn-block btn-primary btn-sm" onclick="update(this.id)">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                </li>
+                <li class="pull-right">
+                    <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm"
+                            onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph
+                    </button>
+                </li>
+                <li class="pull-right">
+                    <button type="button" class="btn btn-block btn-primary btn-sm" onclick="goToGraph()"><i
+                            class="fa fa-sitemap"></i> Show Graph
+                    </button>
+                </li>{% endblock %}
+
+{% block tab_pane_list %}
+{{ block.super }}
+
+<div class="active tab-pane" id="editor_tab">
+                    <textarea id="code_editor">
+                    </textarea>
+                </div>
+                <!-- /.tab-pane-->
+
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+
+<script>
+var editorClick;
+
+    var click_editor_settings = {
+            mode: "text",
+            showCursorWhenSelecting: true,
+            autofocus: true,
+            lineNumbers: true,
+            lineWrapping: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            extraKeys: {
+                "F11": function(cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Esc": function(cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                },
+                "Ctrl-Q": function(cm) {
+                    cm.foldCode(cm.getCursor());
+                }
+            },
+            theme: "neat",
+            keyMap: "sublime",
+        }
+
+
+
+$(document).ready(function () {
+   var myTextArea = document.getElementById("code_editor");
+   editorClick = CodeMirror(function(elt) {
+                    myTextArea.parentNode.replaceChild(elt, myTextArea);
+                }, click_editor_settings );
+
+
+   editorClick.setValue({{ descriptor_strings.descriptor_string_json |safe }});
+   editorClick.setOption("autoRefresh", true);
+
+
+
+
+});
+
+
+
+function update(e){
+            console.log(e);
+            var type, text ;
+            text = editorClick.getValue();
+            $.ajax({
+                    url: "/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { 'csrfmiddlewaretoken' : '{{csrf_token}}',
+                            'type': type,
+                            'text': text
+                     },
+                    success: function(result) {
+                        if(e =='save'){
+                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+                        }else{
+                            goToGraph();
+                        }
+                    },
+                    error: function(result) {
+                        console.log(result)
+                        alert("some error");
+                    }
+                });
+        }
+
+function goToGraph(){
+    window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{descriptor_id}}'
+}
+
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "descriptor/descriptor_view_base.html" %}
+
+{% load staticfiles %}
+
+{% block title_header_big %}
+{{ block.super }}
+Edit {{ descriptor_type }} Descriptor
+{% endblock %}
+
+
+{% block left_sidebar %}
+{% include 'superfluidity/superfluidity_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+<li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }} Descriptors</a></li>
+<li><a>{{descriptor_id}}</a></li>
+{% endblock %}
+
+
+{% if descriptor_type == 'nsd' %}
+    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_etsi.html' %}
+{% elif descriptor_type == 'vnfd' %}
+    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_etsi.html' %}
+{% elif descriptor_type == 'click' %}
+    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_click.html' %}
+{% endif %}
+
+{% block tab_pane_button_list %}
+{{ block.super }}
+<li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-file-code-o"></i> YAML</a></li>
+<li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-file-code-o"></i> JSON</a></li>
+{% endblock %}
+
+{% block nav_buttons_list %}
+    {{ block.super }}
+    <li class="pull-right"><button id="save" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save</button></li>
+    <li class="pull-right"><button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph</button></li>
+    <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="goToGraph()"><i class="fa fa-sitemap"></i> Show Graph</button></li>
+{% endblock %}
+
+{% block tab_pane_list %}
+{{ block.super }}
+
+<!-- /.tab-pane -->
+<div class="active tab-pane" id="yaml">
+			<textarea id="code_editor_yaml">
+            </textarea>
+</div>
+<!-- /.tab-pane-->
+
+<div class="tab-pane" id="json">
+                    <textarea id="code_editor_json">
+
+                    </textarea>
+</div>
+
+{% endblock %}
+
+{% block resource_block %}
+{{ block.super }}
+
+
+<script>
+var editorJSON;
+var editorYaml;
+
+$(document).ready(function () {
+   //var cmjsoneditor = CodeMirror.fromTextArea(document.getElementById("code_editor"), json_editor_settings);
+   var myJsonTextArea = document.getElementById("code_editor_json");
+   editorJSON = CodeMirror(function(elt) {
+                    myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
+                }, json_editor_settings );
+
+
+   editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
+     editorJSON.setOption("autoRefresh", true);
+   var myYamlTextArea = document.getElementById("code_editor_yaml");
+   editorYaml = CodeMirror(function(elt) {
+                    myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
+                }, yaml_editor_settings );
+   var des_strings = {{ descriptor_strings|safe }};
+   editorYaml.setValue(des_strings.descriptor_string_yaml);
+
+
+});
+
+
+
+function update(e){
+            console.log(e);
+            var id = $('.nav-tabs .active').attr('id');
+            var type, text ;
+            switch(id) {
+                case 'yaml_li':
+                    type = 'yaml';
+                    text = editorYaml.getValue();
+                    break;
+                case 'json_li':
+                    type = 'json';
+                    text = editorJSON.getValue();
+                    break;
+                case 'form_li':
+                    type = 'file'
+                    return;
+                    break;
+            }
+            $.ajax({
+                    url: "/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { 'csrfmiddlewaretoken' : '{{csrf_token}}',
+                            'type': type,
+                            'text': text
+                     },
+                    success: function(result) {
+                        if(e =='save'){
+                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+                        }else{
+                            goToGraph();
+                        }
+                    },
+                    error: function(result) {
+                        console.log(result)
+                        alert("some error");
+                    }
+                });
+        }
+
+function goToGraph(){
+    window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{descriptor_id}}'
+}
+
+
+</script>
+{% endblock %}
+
