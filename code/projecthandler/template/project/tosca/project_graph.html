@@ -27,10 +27,11 @@
 {% block resource_block %}
   	{{ block.super }}
 
-    <script src="{% static "topology3D/js/tosca_graph_editor.js" %}"></script>
+    <script src="{% static "topology3D/js/model_graph_editor.js" %}"></script>
     <!-- tosca -->
     <script src="{% static "src/projecthandler/tosca/gui_properties.js" %}"></script>
     <script src="{% static "src/projecthandler/tosca/project_graph.js" %}"></script>
+    <script src="{% static "src/projecthandler/tosca/controller.js" %}"></script>
 
 <script>
     graph_editor.project_id = '{{project_id}}'

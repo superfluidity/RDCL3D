@@ -30,10 +30,10 @@ from toscaparser.utils.gettextutils import _
 # Topology template key names
 SECTIONS = (DESCRIPTION, INPUTS, NODE_TEMPLATES,
             RELATIONSHIP_TEMPLATES, OUTPUTS, GROUPS,
-            SUBSTITUION_MAPPINGS, POLICIES) = \
+            SUBSTITUION_MAPPINGS, POLICIES, SUBSITITUTION_MAPPINGS) = \
            ('description', 'inputs', 'node_templates',
             'relationship_templates', 'outputs', 'groups',
-            'substitution_mappings', 'policies')
+            'substitution_mappings', 'policies', 'subsititution_mappings')
 
 log = logging.getLogger("tosca.model")
 

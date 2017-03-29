@@ -1,36 +1,20 @@
-#
-#   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
-#
-#   Licensed under the Apache License, Version 2.0 (the );
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an  BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-#
-
 import json
 import logging
 import copy
-import six
 from lib.rdcl_graph import RdclGraph
-
 from toscaparser.tosca_template import ToscaTemplate
 from translator.hot.tosca_translator import TOSCATranslator
 
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('ToscaRdclGraph')
 
-class ToscaRdclGraph(RdclGraph):
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('ToscanfvRdclGraph')
+
+class ToscanfvRdclGraph(RdclGraph):
     """Operates on the graph representation used for the GUI graph views"""
 
     def __init__(self):
         pass
+
 
 
     def build_graph_from_project(self, json_project, model={}):
@@ -111,7 +95,6 @@ class ToscaRdclGraph(RdclGraph):
                             self.add_node(node.name, type, toscayaml_name, positions, graph_object)
                             print 'primaaaaaaaaaaa'
                             related = tosca.graph.vertex(node.name).related_nodes
-                            print 'doppooooo'
                             for related_node in related:
                                 print related_node.name + '->' + tosca.graph.vertex(node.name).related[related_node].type
 
@@ -136,4 +119,3 @@ class ToscaRdclGraph(RdclGraph):
             raise
 
         return graph_object
-

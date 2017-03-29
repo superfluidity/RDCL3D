@@ -8,23 +8,150 @@ var example_gui_properties = {
       "size": 15
     },
     "nodes": {
-      "tosca.nodes.network.Network": {
+      "tosca.nodes.Root": {
         "shape": "circle",
         "color": "#196B90",
         "size": 25
       },
-      "tosca.nodes.network.Port": {
+      "tosca.nodes.Compute": {
         "shape": "triangle",
         "color": "#F27220",
         "size": 12,
-        "name": "CP"
+        "name": "tosca.nodes.Compute"
       },
-      "tosca.nodes.Compute": {
+      "tosca.nodes.SoftwareComponent": {
         "shape": "square",
         "color": "#54A698",
         "size": 35,
-        "name": "VNF"
+        "name": "tosca.nodes.SoftwareComponent"
       },
+      "tosca.nodes.DBMS": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.DBMS"
+      },
+      "tosca.nodes.Database": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.Database"
+      },
+      "tosca.nodes.WebServer": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.WebServer"
+      },
+      "tosca.nodes.WebApplication": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.WebApplication"
+      },
+      "tosca.nodes.BlockStorage": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.BlockStorage"
+      },
+      "tosca.nodes.network.Network": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.network.Network"
+      },
+      "tosca.nodes.network.Port": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.network.Port"
+      },
+      "tosca.nodes.ObjectStorage": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.ObjectStorage"
+      },
+      "tosca.nodes.LoadBalancer": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.LoadBalancer"
+      },
+      "tosca.nodes.Container.Application": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.Container.Application"
+      },
+      "tosca.nodes.Container.Runtime": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.Container.Runtime"
+      },
+      "tosca.nodes.Container.Application.Docker": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.Container.Application.Docker"
+      },
+      "tosca.nodes.nfv.VNF":{
+        "image": "vnf-100.png",
+        // "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.nfv.VNF"
+      },
+      "tosca.nodes.nfv.VDU": {
+        "shape": "square",
+        //"color": "#50A7CC",
+        "color": "#54A698",
+        "size": 18,
+        "name": "tosca.nodes.nfv.VDU"
+      },
+      "tosca.nodes.nfv.CP": {
+        "image" : "cp-80.png",
+        // "shape": "circle",
+        "color": "#F27220",
+        "size": 20,
+        "name": "tosca.nodes.nfv.CP"
+      },
+      "tosca.nodes.nfv.VL": {
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
+        "name": "tosca.nodes.nfv.VL"
+      },
+      "tosca.nodes.nfv.VL.ELine": {
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
+        "name": "tosca.nodes.nfv.VL.ELine"
+      },
+      "tosca.nodes.nfv.VL.ELAN": {
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
+        "name": "tosca.nodes.nfv.VL.ELAN"
+      },
+      "tosca.nodes.nfv.VL.ETree": {
+         "image" : "vl-80.png",
+        // "shape": "triangle",
+        "color": "#196B90",
+        "size": 20,
+        "name": "tosca.nodes.nfv.VL.ETree"
+      },
+      "tosca.nodes.nfv.FP": {
+        "shape": "square",
+        "color": "#54A698",
+        "size": 35,
+        "name": "tosca.nodes.nfv.FP"
+      }
     },
     "graphs": null
   },
