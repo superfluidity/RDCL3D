@@ -61,7 +61,7 @@ A yaml file will be created: ::
 
     lib/TopologyModels/newtype/newtype.yaml
 
-for more info about Description Model see `here <docs/description-models>`_
+for more info about Description Model see `here <description-models>`_
 
 
 HTML templates and JS resources
