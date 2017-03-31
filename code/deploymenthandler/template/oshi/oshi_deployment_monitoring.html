@@ -1,4 +1,4 @@
-{% extends "deployment_details.html" %}
+{% extends "deployment_monitoring.html" %}
 
 {% load staticfiles %}
 
@@ -38,7 +38,7 @@
 
 {% block details_table_nodes %}
 {{ block.super }}
-{% include 'oshi/oshi_deployment_details_table_nodes.html' %}
+{% include 'oshi/oshi_deployment_monitoring_table_nodes.html' %}
 {% endblock %}
 
 

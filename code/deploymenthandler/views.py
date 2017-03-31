@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -29,18 +29,8 @@ from lib.oshi.oshi_parser import OshiParser
 @login_required
 def user_deployments(request):
     # user = CustomUser.objects.get(id=request.user.id)
-    deployments = [{
-        'id': 1,
-        'name': "OshiExp",
-        'profile': "",
-        'project_name': "OshiPrj",
-        'project_id': 1,
-        'creator_name': "admin",
-        'creator_id': 1,
-        'created_date': "2017-03-14 16:18",
-        'status': "ready",
-    }]
-    deployments = Deployment.objects.filter()
+
+    deployments = Deployment.objects.filter(creator_id=request.user.id)
     result = {}
     result.update({'deployments': list(deployments)})
     return render(request, 'deployments_list.html', result)
@@ -50,30 +40,23 @@ def user_deployments(request):
 def open_deployment(request, deployment_id=None):
     try:
 
-        deployment = {
-            'id': 1,
-            'name': "OshiExp",
-            'profile': "",
-            'project_name': "OshiPrj",
-            'project_id': 1,
-            'creator_name': "admin",
-            'creator_id': 1,
-            'created_date': "2017-03-14 16:18",
-            'last_update': "2017-03-14 16:18",
-            'status': "ready",
-        }
+        res_search = Deployment.objects.filter(id=deployment_id)
 
-        topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
+        if len(res_search) > 0:
+            deployment = res_search[0]
+            topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
 
-        topology = topology_data['oshi']['example1']
-        print type(deployment), type(topology)
-        return render(request, 'oshi/oshi_deployment_details.html',
-                      {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'],
-                       'collapsed_sidebar': True})
+            topology = topology_data['oshi']['example1']
+            print type(deployment), type(topology)
+            return render(request, 'deployment_details.html',
+                          {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'],
+                           'collapsed_sidebar': True})
+        else:
+            return render(request, 'error.html', {'error_msg': 'Error: Deployment not found.'})
 
     except Exception as e:
         print e
-        return render(request, 'error.html', {'error_msg': 'Error open project! Please retry.'})
+        return render(request, 'error.html', {'error_msg': 'Error open deployment! Please retry.'})
 
 @login_required
 def new_deployment(request):
@@ -98,17 +81,17 @@ def new_deployment(request):
             project_name = ''#request.POST.get('project_name')
             project_id = request.POST.get('project_id')
             creator_name = user.get_full_name()
-            creator_id = user.id
+            creator_id = user
             status = 'Boot'
 
             new_deployment = Deployment.objects.create(name=name, project_name=project_name, project_id=project_id, profile=profile,
-                                      creator_name=creator_name, creator_id=creator_id, status=status)
-            new_deployment.deployment_agent = agent
+                                      creator_name=creator_name, creator_id=creator_id, status=status, deployment_agent=agent.to_json())
+            #new_deployment.deployment_agent = agent
             new_deployment.save()
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Error Creating Deployment.'})
-        return redirect('deployment:monitoring_deployment', deployment_id=new_deployment.id)
+        return redirect('deployment:open_deployment', deployment_id=new_deployment.id)
 
 @login_required
 def topology_data(request, deployment_id=None):
@@ -124,12 +107,28 @@ def topology_data(request, deployment_id=None):
 
 @login_required
 def monitoring_deployment(request, deployment_id=None):
-    result = {}
+    res_search = Deployment.objects.filter(id=deployment_id)
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
+    if len(res_search) > 0:
+        deployment = res_search[0]
+        topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
+        topology = topology_data['oshi']['example1']
+        print "monitor", DeployAgent(deployment.deployment_agent).base_url
 
-    response = HttpResponse(result, content_type="application/json")
-    response["Access-Control-Allow-Origin"] = "*"
 
-    return response
+    print 'raw_content_types', 'text/html' in raw_content_types
+
+    if 'application/json' in raw_content_types:
+        print 'torna json'
+        response = HttpResponse(result, content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+
+        return response
+    else:
+        return render(request, 'oshi/oshi_deployment_monitoring.html', {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'],
+                           'collapsed_sidebar': True})
+
+
 
 @login_required
 def delete_deployment(request, deployment_id=None):

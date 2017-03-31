@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -36,6 +36,14 @@ class DeployAgent(models.Model):
     type = models.CharField(max_length=20, default='')
     last_update = models.DateTimeField(default=timezone.now)
 
+    def to_json(self):
+        return {
+            'name': self.name,
+            'base_url': self.base_url,
+            'type': self.type,
+            'last_update': self.last_update
+        }
+
 
 class Deployment(models.Model):
     """ Base class for Deployment types
@@ -45,12 +53,14 @@ class Deployment(models.Model):
     profile = jsonfield.JSONField(default={})
     project_name = models.CharField(max_length=20, default='')
     project_id = models.CharField(max_length=20, default='')
+    creator_id = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
     creator_name = models.CharField(max_length=20, default='')
-    creator_id = models.CharField(max_length=20, default='')
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
-    deployment_agent = DeployAgent
-
+    deployment_agent = jsonfield.JSONField(default={})
+    """Stores a JSON representation of the deployment agent info"""
+    deployment_descriptor = jsonfield.JSONField(default={})
+    """Stores a validated JSON representation of the deployment descriptor"""
 
 
