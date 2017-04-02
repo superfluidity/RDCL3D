@@ -11,6 +11,7 @@ def home(request):
     user = CustomUser.objects.get(id=request.user.id)
     projects = Project.objects.filter(owner=user).select_subclasses()
     #projects = []
+    print request.user.has_perm('deploymenthandler')
     deployments = Deployment.objects.filter(creator_id=request.user.id)
     result = {
         'projects': len(projects) if projects else 0,
@@ -19,6 +20,8 @@ def home(request):
     return render(request, 'home.html', result)
 
 
+def forbidden(request):
+    return render(request, 'forbidden.html')
 
 
 

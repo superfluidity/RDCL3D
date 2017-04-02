@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^agents/', include('deploymenthandler.urls.agent', namespace='agent'), name='agents_base'),
     url(r'^$', views.home, name='home'),
     url(r'^home', views.home, name='home'),
+    url(r'^forbidden', views.forbidden, name='forbidden'),
 
 ]

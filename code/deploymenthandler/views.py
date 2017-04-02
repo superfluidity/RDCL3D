@@ -16,8 +16,9 @@
 
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.http import HttpResponse
+from django.http import JsonResponse
 import json
 
 from sf_user.models import CustomUser
@@ -26,7 +27,12 @@ from deploymenthandler.models import DeployAgent, Deployment
 from lib.oshi.oshi_parser import OshiParser
 
 
+def check_not_guest_user(user):
+    return not user.is_guest()
+
+
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def user_deployments(request):
     # user = CustomUser.objects.get(id=request.user.id)
 
@@ -37,6 +43,7 @@ def user_deployments(request):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def open_deployment(request, deployment_id=None):
     try:
 
@@ -61,6 +68,7 @@ def open_deployment(request, deployment_id=None):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def new_deployment(request):
     if request.method == 'POST':
         try:
@@ -105,6 +113,7 @@ def new_deployment(request):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def topology_data(request, deployment_id=None):
     topology = {}
     topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
@@ -118,6 +127,7 @@ def topology_data(request, deployment_id=None):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def monitoring_deployment(request, deployment_id=None):
     res_search = Deployment.objects.filter(id=deployment_id)
     raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
@@ -131,6 +141,7 @@ def monitoring_deployment(request, deployment_id=None):
 
     if 'application/json' in raw_content_types:
         print 'torna json'
+        result = {}
         response = HttpResponse(result, content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
 
@@ -142,6 +153,7 @@ def monitoring_deployment(request, deployment_id=None):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def delete_deployment(request, deployment_id=None):
     if request.method == 'POST':
 
@@ -169,6 +181,7 @@ def delete_deployment(request, deployment_id=None):
 # Agent Section #####
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def agents_list(request):
     raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
     try:
@@ -177,13 +190,12 @@ def agents_list(request):
             value = request.GET.get(key)
             if value:
                 options[key] = value
-        agents = DeployAgent.objects.filter(**options)
-
+        print options
+        agents = DeployAgent.objects.filter(**options).values()
+        print raw_content_types, len(agents)
         if 'application/json' in raw_content_types:
-            response = HttpResponse({'agents': agents, 'agent_type': options['type'] if 'type' in options else None},
-                                    content_type="application/json")
-            response["Access-Control-Allow-Origin"] = "*"
-            return response
+
+            return JsonResponse({'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None})
         else:
             project_types = Project.get_project_types()
             return render(request, 'agents/agents_list.html',
@@ -196,6 +208,7 @@ def agents_list(request):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def new_agent(request):
     if request.method == 'POST':
         try:
@@ -210,6 +223,7 @@ def new_agent(request):
 
 
 @login_required
+@permission_required('deploymenthandler', raise_exception=False)
 def delete_agent(request, agent_id=None):
     try:
 

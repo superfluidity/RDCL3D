@@ -59,9 +59,15 @@
             <div class="icon">
                 <i class="fa fa-terminal"></i>
             </div>
+            {% if user.is_guest %}
+            <a href="#" class="small-box-footer">
+                Guest Users don't have permission <i class="fa fa-arrow-circle-right"></i>
+            </a>
+            {% else %}
             <a href="/deployments/list" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
             </a>
+            {% endif %}
         </div>
     </div>
 

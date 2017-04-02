@@ -1,20 +1,44 @@
 function loadDataOptionsSelector(args){
-
-    $('#agent_select_container').toggleClass("select-container-rdcl-loaded", false);
-    $('#agent_select_container').toggleClass("select-container-rdcl-loading", true);
+    var select_container = args.select_container;
+    var select = args.select;
+    var url = args.url;
+    var value_key = args.value_key || 'value';
+    var text_key = args.text_key || 'text';
+    select_container.toggleClass("select-container-rdcl-loaded", false);
+    select_container.toggleClass("select-container-rdcl-loading", true);
 
     var items = [];
+    $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(result) {
+                console.log(JSON.stringify(result));
+                $.each(result.agents, function (i, item) {
+                    select.append($('<option>', {
+                        value: item[value_key],
+                        text : item[text_key]
+                    }));
+
+                });
+            },
+            error: function(result) {
+
+                console.log("some error: " + JSON.stringify(result));
+            }
+    });
 
     $.each(items, function (i, item) {
-        $('#agent_selected').append($('<option>', {
+        select.append($('<option>', {
             value: item.value,
             text : item.text
         }));
 
     });
 
-    $('#agent_select_container').toggleClass("select-container-rdcl-loaded", true);
-    $('#agent_select_container').toggleClass("select-container-rdcl-loading", false);
+    select_container.toggleClass("select-container-rdcl-loaded", true);
+    select_container.toggleClass("select-container-rdcl-loading", false);
 }
 
 function generateUID() {
