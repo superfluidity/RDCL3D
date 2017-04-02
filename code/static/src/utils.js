@@ -1,3 +1,22 @@
+function loadDataOptionsSelector(args){
+
+    $('#agent_select_container').toggleClass("select-container-rdcl-loaded", false);
+    $('#agent_select_container').toggleClass("select-container-rdcl-loading", true);
+
+    var items = [];
+
+    $.each(items, function (i, item) {
+        $('#agent_selected').append($('<option>', {
+            value: item.value,
+            text : item.text
+        }));
+
+    });
+
+    $('#agent_select_container').toggleClass("select-container-rdcl-loaded", true);
+    $('#agent_select_container').toggleClass("select-container-rdcl-loading", false);
+}
+
 function generateUID() {
     return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
 }

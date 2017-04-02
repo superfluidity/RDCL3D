@@ -49,6 +49,12 @@
 
 
 $(document).ready(function () {
+
+$('#modal_launch_deploy').on('shown.bs.modal', function (e) {
+    //alert('pollame');
+    loadDataOptionsSelector();
+})
+
     window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove();

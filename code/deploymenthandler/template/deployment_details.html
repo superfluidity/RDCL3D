@@ -46,8 +46,8 @@ Details
                 <ul class="nav nav-stacked">
                     <li><a><b>Name:</b> <span class="pull-right">{{deployment.name}}</span></a>
                     </li>
-                    <li><a href='{% url "projects:open_project" project_id=1 %}'><b>Project:</b> <span
-                            class="pull-right">{{deployment.project_name}}</span></a></li>
+                    <li><a href='{% url "projects:open_project" project_id=deployment.project_id %}'><b>Project Id:</b> <span
+                            class="pull-right">{{deployment.project_id}}</span></a></li>
                     <li><a><b>Last updated:</b> <span class="pull-right">{{deployment.last_update}}</span></a>
                     </li>
                     <li><a><b>Owner:</b> <span

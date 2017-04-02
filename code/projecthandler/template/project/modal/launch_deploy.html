@@ -40,12 +40,13 @@
                             <div class="form-group">
                             <label for="agent_selected" class="col-sm-2 control-label">Agent Available</label>
 
-                            <div class="col-sm-10">
+                            <div id="agent_select_container" class="col-sm-10 select-container-rdcl-loading">
+                                    <select id="agent_selected"  class="form-control select-rdcl required" name="agent_id"
+                                        style="width: 75%; float: left"/>
 
-                                <select id="agent_selected" class="form-control required" name="agent_id"
-                                        style="width: 75%">
-
-                                </select>
+                                    </select>
+                                    <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                                    <span class="sr-only">Loading...</span>
                             </div>
                         </div>
                         </div>
