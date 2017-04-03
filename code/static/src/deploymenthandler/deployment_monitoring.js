@@ -33,7 +33,7 @@ function buildBehaviorsOnEvents(){
                         "label": d.id
                     },
                     "shellinabox": {
-                        "endpoint": "http://192.168.100.189:8081/"
+                        "endpoint":  agent_base_url,
                     }
                 };
                 openShellTab(shellData);

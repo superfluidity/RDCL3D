@@ -16,7 +16,7 @@
 
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
@@ -34,12 +34,22 @@ def check_not_guest_user(user):
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def user_deployments(request):
-    # user = CustomUser.objects.get(id=request.user.id)
-
-    deployments = Deployment.objects.filter(creator_id=request.user.id)
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
     result = {}
+    options = {
+        'creator_id': request.user.id
+    }
+    for key in ('project_id', 'name', 'deployment_agent', 'project_name'):
+        value = request.GET.get(key)
+        if value:
+           options[key] = value
+
+    deployments = Deployment.objects.filter(**options)
     result.update({'deployments': list(deployments)})
-    return render(request, 'deployments_list.html', result)
+    if 'application/json' in raw_content_types:
+        return JsonResponse(result)
+    else:
+        return render(request, 'deployments_list.html', result)
 
 
 @login_required
@@ -55,9 +65,9 @@ def open_deployment(request, deployment_id=None):
 
             topology = topology_data['oshi']['example1']
             print type(deployment), type(topology)
-            return render(request, 'deployment_details.html',
+            return render(request, 'oshi/oshi_deployment_details.html',
                           {'deployment': deployment, 'topology_data': json.dumps(topology),
-                           'nodes': topology['vertices'],
+                           'nodes': topology['vertices'], 'deployment_descriptor': json.dumps(topology),
                            'collapsed_sidebar': True})
         else:
             return render(request, 'error.html', {'error_msg': 'Error: Deployment not found.'})
