@@ -42,6 +42,7 @@ dreamer.GraphEditor = (function(global) {
         this.lastKeyDown = -1;
         this._selected_node = undefined;
         this._selected_link = undefined;
+        this._edit_mode = true;
         this.filter_parameters = {
             node: {
                 type: [],

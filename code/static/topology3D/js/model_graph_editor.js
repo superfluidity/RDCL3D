@@ -13,13 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
 if (typeof dreamer === 'undefined') {
     var dreamer = {};
 }
 var level = {}
 
-dreamer.ModelGraphEditor = (function(global) {
+dreamer.ModelGraphEditor = (function (global) {
     'use strict';
 
     var DEBUG = true;
@@ -42,7 +41,7 @@ dreamer.ModelGraphEditor = (function(global) {
     }
 
 
-    ModelGraphEditor.prototype.init = function(args) {
+    ModelGraphEditor.prototype.init = function (args) {
         this.parent.init.call(this, args);
 
         if (args.gui_properties[GUI_VERSION] != undefined) {
@@ -54,8 +53,9 @@ dreamer.ModelGraphEditor = (function(global) {
         this.type_property["unrecognized"] = args.gui_properties["default"];
         this.type_property["unrecognized"]["default_node_label_color"] = args.gui_properties["default"]["label_color"];
         //this.type_property["unrecognized"]["shape"] = d3.symbolCross;
+        this._edit_mode = (args.edit_mode != undefined) ? args.edit_mode : this._edit_mode;
 
-        Object.keys(args.gui_properties["nodes"]).forEach(function(key, index) {
+        Object.keys(args.gui_properties["nodes"]).forEach(function (key, index) {
             this.type_property[key] = args.gui_properties["nodes"][key];
             this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
             if (this.type_property[key]["image"] != undefined) {
@@ -64,27 +64,56 @@ dreamer.ModelGraphEditor = (function(global) {
 
 
         }, this);
+
+        this.customBehavioursOnEvents = args.behaviorsOnEvents || undefined;
+
         var self = this;
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
-        d3.json(data_url, function(error, data) {
-            log('data from remote')
-            console.log(data)
-            self.d3_graph.nodes = data.vertices;
-            self.d3_graph.links = data.edges;
-            self.d3_graph.graph_parameters = data.graph_parameters;
-            self.model = data.model;
+        if (!args.graph_data) {
+            d3.json(data_url, function (error, data) {
+                self.d3_graph.nodes = data.vertices;
+                self.d3_graph.links = data.edges;
+                self.d3_graph.graph_parameters = data.graph_parameters;
+                self.model = data.model;
 
-            self.refreshGraphParameters(self.d3_graph.graph_parameters);
-            self.refresh();
-            self.startForce();
-             //if(args.filter_base != undefined)
+                self.refreshGraphParameters(self.d3_graph.graph_parameters);
+                self.refresh();
+                self.startForce();
+                //if(args.filter_base != undefined)
 
-            setTimeout(function() {
-                //self.handleForce(self.forceSimulationActive);
-                self.handleFiltersParams(args.filter_base);
-            }, 500);
+                setTimeout(function () {
+                    //self.handleForce(self.forceSimulationActive);
+                    self.handleFiltersParams(args.filter_base);
+                }, 500);
 
-        });
+            });
+        } else {
+            this.updateData(args)
+        }
+    }
+
+    /**
+     * Update data of the graph.
+     * @param {Object} Required. An object that specifies tha data of the new node.
+     * @returns {boolean}
+     */
+    ModelGraphEditor.prototype.updateData = function (args) {
+        this.d3_graph.nodes = args.graph_data.vertices;
+        this.d3_graph.links = args.graph_data.edges;
+        this.d3_graph.graph_parameters = args.graph_parameters;
+        this.model = args.model;
+        this.refreshGraphParameters(this.d3_graph.graph_parameters);
+        this.refresh();
+        this.startForce();
+        //if(args.filter_base != undefined)
+
+        //if(args.filter_base){
+        var self = this;
+        setTimeout(function () {
+            self.handleForce(true);
+            self.handleFiltersParams(args.filter_base);
+        }, 500);
+        //}
     }
 
     /**
@@ -92,7 +121,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new node.
      * @returns {boolean}
      */
-    ModelGraphEditor.prototype.addNode = function(node, success, error) {
+    ModelGraphEditor.prototype.addNode = function (node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView()
         var node_type = node.info.type;
@@ -101,7 +130,7 @@ dreamer.ModelGraphEditor = (function(global) {
             if (self.model.layer[current_layer].nodes[node_type].addable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].addable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function() {
+                controller[self.model.layer[current_layer].nodes[node_type].addable.callback](self, node, function () {
                     self.parent.addNode.call(self, node);
                     success && success();
                 }, error);
@@ -111,8 +140,7 @@ dreamer.ModelGraphEditor = (function(global) {
                 log('addNode: callback undefined in model spec.');
                 error && error("You can't add a " + node.info.type + ", callback undefined.");
             }
-        }
-        else{
+        } else {
             //FIXME Error handling????
             log("You can't add a " + node.info.type + " in a current layer " + current_layer);
             error && error("You can't add a " + node.info.type + " in a current layer " + current_layer);
@@ -126,7 +154,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the node.
      * @returns {boolean}
      */
-    ModelGraphEditor.prototype.updateDataNode = function(args) {
+    ModelGraphEditor.prototype.updateDataNode = function (args) {
         //FIXME updating a node properties need commit to server side!
         this.parent.updateDataNode.call(this, args);
     };
@@ -136,7 +164,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @param {String} Required. Id of node to remove.
      * @returns {boolean}
      */
-    ModelGraphEditor.prototype.removeNode = function(node, success, error) {
+    ModelGraphEditor.prototype.removeNode = function (node, success, error) {
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
@@ -144,7 +172,7 @@ dreamer.ModelGraphEditor = (function(global) {
             if (self.model.layer[current_layer].nodes[node_type].removable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;
                 var controller = new dreamer[c]();
-                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function() {
+                controller[self.model.layer[current_layer].nodes[node_type].removable.callback](self, node, function () {
                     self.parent.removeNode.call(self, node);
                     success && success();
                 }, error);
@@ -165,7 +193,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @param {Object} Required. An object that specifies tha data of the new Link.
      * @returns {boolean}
      */
-    ModelGraphEditor.prototype.addLink = function(s, d, success, error) {
+    ModelGraphEditor.prototype.addLink = function (s, d, success, error) {
         var self = this;
         var source_id = s.id;
         var target_id = d.id;
@@ -186,7 +214,7 @@ dreamer.ModelGraphEditor = (function(global) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
                 var c = self.model.callback[callback].class;
                 var controller = new dreamer[c]();
-                controller[callback](self, link, function() {
+                controller[callback](self, link, function () {
                     self._deselectAllNodes();
                     self.parent.addLink.call(self, link);
                     if (success)
@@ -210,7 +238,7 @@ dreamer.ModelGraphEditor = (function(global) {
      * @param {String} Required. The identifier of link to remove.
      * @returns {boolean}
      */
-    ModelGraphEditor.prototype.removeLink = function(link, success, error) {
+    ModelGraphEditor.prototype.removeLink = function (link, success, error) {
         var self = this;
         var s = link.source;
         var d = link.target;
@@ -224,7 +252,7 @@ dreamer.ModelGraphEditor = (function(global) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].removable.callback;
                 var c = self.model.callback[callback].class;
                 var controller = new dreamer[c]();
-                controller[callback](self, link, function() {
+                controller[callback](self, link, function () {
                     self._deselectAllNodes();
                     self._deselectAllLinks();
                     self.parent.removeLink.call(self, link.index);
@@ -245,9 +273,9 @@ dreamer.ModelGraphEditor = (function(global) {
     };
 
 
-    ModelGraphEditor.prototype.savePositions = function(data) {
+    ModelGraphEditor.prototype.savePositions = function (data) {
         var vertices = {}
-        this.node.each(function(d) {
+        this.node.each(function (d) {
             vertices[d.id] = {}
             vertices[d.id]['x'] = d.x;
             vertices[d.id]['y'] = d.y;
@@ -266,124 +294,39 @@ dreamer.ModelGraphEditor = (function(global) {
      *
      *
      */
-    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function(layer) {
-        log("_setupBehaviorsOnEvents");
+
+    ModelGraphEditor.prototype._setupBehaviorsOnEvents = function (layer) {
+
         var self = this;
-        var contextmenuNodesAction = [{
-            title: 'Show graph',
-            action: function(elm, c_node, i) {
-                if (c_node.info.type != undefined) {
-                    var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
-                    if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
-                        if (self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands) {
-                            var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
-                            self.handleFiltersParams({
-                                node: {
-                                    type: Object.keys(self.model.layer[new_layer].nodes),
-                                    group: [c_node.id]
-                                },
-                                link: {
-                                    group: [c_node.id],
-                                    view: [new_layer]
-                                }
-                            });
-
-                        }
-                    }
-                }
-            }
-        }, {
-            title: 'Edit',
-            action: function(elm, d, i) {
-                if (d.info.type != undefined) {
-
-                    //FIXME non va bene :)
-                    window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
-                }
-            }
-
-        }, {
-            title: 'Delete',
-            action: function(elm, d, i) {
-                self.removeNode(d, null, showAlert);
-            }
-
-        }];
-        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
-            for (var i in self.model.layer[layer].action.node) {
-                var action = self.model.layer[layer].action.node[i]
-                contextmenuNodesAction.push({
-                    title: action.title,
-                    action: function(elm, d, i) {
-                        var callback = action.callback;
-                        var c = self.model.callback[callback].class;
-                        var controller = new dreamer[c]();
-                        var args = {
-                            elm: elm,
-                            d: d,
-                            i: i
-                        }
-
-                        controller[callback](self, args);
-                    }
-                });
-            }
-        }
-        var contextmenuLinksAction = [{
+        var contextMenuLinksAction = [{
             title: 'Delete Link',
-            action: function(elm, link, i) {
+            action: function (elm, link, i) {
                 self.removeLink(link);
-            }
-
+            },
+            //edit_mode: false
         }];
-        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.link) {
-            for (var i in self.model.layer[layer].action.link) {
-                var action = self.model.layer[layer].action.link[i];
-                contextmenuLinksAction.push({
-                    title: action.title,
-                    action: function(elm, link, i) {
-                        var callback = action.callback;
-                        var c = self.model.callback[callback].class;
-                        var controller = new dreamer[c]();
-                        var args = {
-                            elm: elm,
-                            link: link,
-                            i: i
-                        }
+        var contextMenuNodesAction = [{
+                title: 'Edit',
+                action: function (elm, d, i) {
+                    if (d.info.type != undefined) {
 
-                        controller[callback](self, args);
+                        //FIXME non va bene :)
+                        window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
                     }
-                });
-            }
-        }
-
-        this.behavioursOnEvents = {
-            'nodes': {
-                'click': function(d) {
-
-                    d3.event.preventDefault();
-
-                    if (self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
-                        self.addLink(self._selected_node, d, null,showAlert);
-                    } else {
-                        self._selectNodeExclusive(this, d);
-                    }
-
                 },
-                'mouseover': function(d) {
-                    self.link.style('stroke-width', function(l) {
-                        if (d === l.source || d === l.target)
-                            return 4;
-                        else
-                            return 2;
-                    });
+                nodes: [],
+                edit_mode: true
+            },
+            {
+                title: 'Delete',
+                action: function (elm, d, i) {
+                    self.removeNode(d, null, showAlert);
                 },
-                'mouseout': function(d) {
-                    self.link.style('stroke-width', 2);
-                },
-                'dblclick': function(c_node) {
-                    d3.event.preventDefault();
-                    log('dblclick');
+                edit_mode: true
+            },
+            {
+                title: 'Show graph',
+                action: function (elm, c_node, i) {
                     if (c_node.info.type != undefined) {
                         var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
                         if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
@@ -401,61 +344,125 @@ dreamer.ModelGraphEditor = (function(global) {
                                 });
 
                             }
+                            else{
+                                showAlert('This is not an explorable node.')
+                            }
                         }
+                    }
+                },
+                edit_mode: false
+            }
+        ];
+        if(this.customBehavioursOnEvents){
+            contextMenuNodesAction = contextMenuNodesAction.concat(this.customBehavioursOnEvents['behaviors'].nodes);
+        }
+
+
+        if ( self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
+            for (var i in self.model.layer[layer].action.node) {
+                var action = self.model.layer[layer].action.node[i]
+                contextMenuNodesAction.push({
+                    title: action.title,
+                    action: function (elm, d, i) {
+                        var callback = action.callback;
+                        var c = self.model.callback[callback].class;
+                        var controller = new dreamer[c]();
+                        var args = {
+                            elm: elm,
+                            d: d,
+                            i: i
+                        }
+
+                        controller[callback](self, args);
+                    },
+                    edit_mode: (action.edit_mode != undefined) ? action.edit_mode: undefined
+                });
+            }
+        }
+
+        this.behavioursOnEvents = {
+            'nodes': {
+                'click': function (d) {
+
+                    d3.event.preventDefault();
+
+                    if (self._edit_mode && self.lastKeyDown == SHIFT_BUTTON && self._selected_node != undefined) {
+                        self.addLink(self._selected_node, d, null, showAlert);
+                    } else {
+                        self._selectNodeExclusive(this, d);
                     }
 
                 },
-                'contextmenu': d3.contextMenu(contextmenuNodesAction)
+                'mouseover': function (d) {
+                    self.link.style('stroke-width', function (l) {
+                        if (d === l.source || d === l.target)
+                            return 4;
+                        else
+                            return 2;
+                    });
+                },
+                'mouseout': function (d) {
+                    self.link.style('stroke-width', 2);
+                },
+                'contextmenu': d3.contextMenu(contextMenuNodesAction, {
+                    'edit_mode': self._edit_mode,
+                    'layer': layer,
+                    'type_object': 'node'
+                })
             },
             'links': {
-                'click': function(d) {
+                'click': function (d) {
                     self._selectLinkExclusive(this, d);
 
                 },
-                'dblclick': function(event) {
+                'dblclick': function (event) {
 
                 },
-                'mouseover': function(d) {
+                'mouseover': function (d) {
                     d3.select(this).style('stroke-width', 4);
                 },
-                'mouseout': function(d) {
+                'mouseout': function (d) {
                     if (d != self._selected_link)
                         d3.select(this).style('stroke-width', 2);
                 },
-                'contextmenu': d3.contextMenu(contextmenuLinksAction)
+                'contextmenu': d3.contextMenu(contextMenuLinksAction, {
+                    'edit_mode': self._edit_mode,
+                    'layer': layer,
+                    'type_object': 'link'
+                })
             }
-        };
-
+        }
     };
 
-    ModelGraphEditor.prototype.handleFiltersParams = function(filtersParams, notFireEvent) {
-        this._setupBehaviorsOnEvents(filtersParams.link.view[0]);
+    ModelGraphEditor.prototype.handleFiltersParams = function (filtersParams, notFireEvent) {
+
         this.parent.handleFiltersParams.call(this, filtersParams, notFireEvent);
+        this._setupBehaviorsOnEvents(filtersParams.link.view[0]);
     };
 
-    ModelGraphEditor.prototype.getAvailableNodes = function (){
+    ModelGraphEditor.prototype.getAvailableNodes = function () {
         log('getAvailableNodes');
         log(this.model)
-        if(this.model && this.model.layer[this.getCurrentView()] != undefined)
+        if (this.model && this.model.layer[this.getCurrentView()] != undefined)
             return this.model.layer[this.getCurrentView()].nodes;
         return [];
     }
 
 
-    ModelGraphEditor.prototype.exploreLayer = function(args) {
+    ModelGraphEditor.prototype.exploreLayer = function (args) {
 
     };
 
-    ModelGraphEditor.prototype.getTypeProperty = function() {
+    ModelGraphEditor.prototype.getTypeProperty = function () {
         return this.type_property;
     };
 
-    ModelGraphEditor.prototype.getCurrentGroup = function() {
+    ModelGraphEditor.prototype.getCurrentGroup = function () {
         return this.filter_parameters.node.group[0];
 
     }
 
-    ModelGraphEditor.prototype.getCurrentView = function() {
+    ModelGraphEditor.prototype.getCurrentView = function () {
         return this.filter_parameters.link.view[0];
 
     }

@@ -1,0 +1,25 @@
+.select-container-rdcl{
+
+}
+
+.select-container-rdcl-loading > .fa{
+    visibility: visible !important;
+}
+
+.select-container-rdcl-loaded > .fa{
+    visibility: hidden !important;
+}
+
+.select-container-rdcl-loading > .select-rdcl{
+    pointer-events: none !important;
+}
+
+.select-container-rdcl-loaded > .select-rdcl{
+    pointer-events: all !important;
+}
+
+.shellIframe {
+    width: 100%;
+    height: 450px;
+}
+
