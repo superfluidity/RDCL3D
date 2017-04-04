@@ -14,11 +14,9 @@
 #   limitations under the License.
 #
 
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 import json
 
 from sf_user.models import CustomUser
