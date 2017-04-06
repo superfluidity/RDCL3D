@@ -1,0 +1,21 @@
+<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="globalmenu">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li class="header">Deployment</li>
+            <li><a href='{% url "deployment:open_deployment" deployment_id=deployment.id %}'><i class="fa fa-list-alt fa-fw"></i><span>Details</span></a></li>
+            <li><a href='{% url "deployment:monitoring_deployment" deployment_id=deployment.id %}'><i class="fa fa-desktop fa-fw"></i><span>Monitoring</span></a></li>
+
+            {% block li_list %}
+
+
+            {% endblock %}
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

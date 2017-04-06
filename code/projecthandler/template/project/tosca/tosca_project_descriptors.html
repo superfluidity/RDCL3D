@@ -4,6 +4,13 @@
 
 {% block head_block %}
   	{{ block.super }}
+<!-- Codemirror core CSS -->
+    <link rel="stylesheet" href="{% static "codemirror/lib/codemirror.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/fold/foldgutter.css" %}" />
+    <link rel="stylesheet" href="{% static "codemirror/theme/neat.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/dialog/dialog.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/display/fullscreen.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/display/autorefresh.js" %}">
 
 {% endblock %}
 
@@ -37,6 +44,8 @@
 <div class="row">
     {% include "tosca/descriptor/descriptorlist.html" %}
 </div>
+
+{% include "modal/modal_text_editor.html" %}
 {% endblock %}
 
 
@@ -44,18 +53,94 @@
 
 {% block resource_block %}
   	{{ block.super }}
-    <script>
+    <script src="{% static "codemirror/lib/codemirror.js" %}"></script>
+    <script src="{% static "codemirror/lib/formatting.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/foldcode.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/foldgutter.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/brace-fold.js" %}"></script>
+    <script src="{% static "codemirror/mode/javascript/javascript.js" %}"></script>
+    <script src="{% static "codemirror/mode/xml/xml.js" %}"></script>
+    <script src="{% static "codemirror/mode/markdown/markdown.js" %}"></script>
+    <script src="{% static "codemirror/addon/search/searchcursor.js" %}"></script>
+    <script src="{% static "codemirror/addon/search/search.js" %}"></script>
+    <script src="{% static "codemirror/addon/dialog/dialog.js" %}"></script>
+    <script src="{% static "codemirror/addon/display/autorefresh.js" %}"></script>
+    <script src="{% static "codemirror/addon/edit/matchbrackets.js" %}"></script>
+    <script src="{% static "codemirror/addon/edit/closebrackets.js" %}"></script>
+    <script src="{% static "codemirror/addon/display/fullscreen.js" %}"></script>
+    <script src="{% static "codemirror/keymap/sublime.js" %}"></script>
 
+    <script>
+var editorYaml;
+
+var yaml_editor_settings = {
+            mode: "yaml-frontmatter",
+            showCursorWhenSelecting: true,
+            autofocus: true,
+            autoRefresh: true,
+            lineNumbers: true,
+            lineWrapping: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            extraKeys: {
+                "F11": function(cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Esc": function(cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                },
+                "Ctrl-Q": function(cm) {
+                    cm.foldCode(cm.getCursor());
+                }
+            },
+            //theme: "neat",
+            keyMap: "sublime",
+        }
 
 $(document).ready(function () {
     window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){
-        $(this).remove();
-    });
-}, 4000);
+            $(this).remove();
+        });
+    }, 4000);
 
+    var myYamlTextArea = document.getElementById("m_t_source");
+    editorYaml = CodeMirror(function(elt) {
+        myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
+    }, yaml_editor_settings);
+    //editorYaml.setValue("");
+
+    $('#modal_text_editor_title').text("Hot Template");
 });
 
+function openHotTemplate(project_id, descriptor_type, descriptor_id){
+    ///projects/{{project_id}}/descriptors/{{descriptor_type}}/{{k}}/action/generatehottemplate
+    var url = '/projects/' + project_id + '/descriptors/' + descriptor_type + '/' + descriptor_id + '/action/generatehottemplate'
+    $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(result) {
+                if(result.error){
+                    showAlert(result.error.error_msg);
+                }
+                else{
+                    console.log(JSON.stringify(result));
+                    editorYaml.setValue(result.hot);
+                    editorYaml.refresh();
+                    $('#modal_text_editor').modal('show');
+                }
+            },
+            error: function(result) {
+                showAlert(result);
+                console.log("some error: " + JSON.stringify(result));
+            }
+    });
+
+}
 
     </script>
 {% endblock %}
