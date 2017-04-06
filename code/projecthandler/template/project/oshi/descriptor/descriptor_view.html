@@ -15,7 +15,8 @@ Edit {{ descriptor_type }} Descriptor
 {% block breadcrumb_body %}
 {{ block.super }}
 <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }} Descriptors</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type
+    }} Descriptors</a></li>
 <li><a>{{descriptor_id}}</a></li>
 {% endblock %}
 
@@ -26,10 +27,22 @@ Edit {{ descriptor_type }} Descriptor
 {% endblock %}
 
 {% block nav_buttons_list %}
-    {{ block.super }}
-    <li class="pull-right"><button id="save" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save</button></li>
-    <li class="pull-right"><button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm"  onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph</button></li>
-    <li class="pull-right"><button type="button" class="btn btn-block btn-primary btn-sm"  onclick="goToGraph()"><i class="fa fa-sitemap"></i> Show Graph</button></li>
+{{ block.super }}
+<li class="pull-right">
+    <button id="save" type="button" class="btn btn-block btn-primary btn-sm" onclick="update(this.id)"><i
+            class="fa fa-save"></i> Save
+    </button>
+</li>
+<li class="pull-right">
+    <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm" onclick="update(this.id)"><i
+            class="fa fa-save"></i> Save and Show Graph
+    </button>
+</li>
+<li class="pull-right">
+    <button type="button" class="btn btn-block btn-primary btn-sm" onclick="goToGraph()"><i class="fa fa-sitemap"></i>
+        Show Graph
+    </button>
+</li>
 {% endblock %}
 
 {% block tab_pane_list %}
@@ -123,6 +136,7 @@ function update(e){
 function goToGraph(){
     window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{descriptor_id}}'
 }
+
 
 
 </script>

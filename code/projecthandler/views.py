@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -17,11 +17,9 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from lib.util import Util
 from sf_user.models import CustomUser
@@ -129,12 +127,16 @@ def user_projects(request):
     projects = Project.objects.filter(owner=user).select_subclasses()
 
     # print list(projects)
-    html = render_to_string('projectlist.html', {
+    #html = render_to_string('projectlist.html', {
+    #    'projects': list(projects),
+    #    'csrf_token': csrf_token_value
+    #})
+    # if request.is_ajax():
+    return render(request, 'projectlist.html', {
         'projects': list(projects),
         'csrf_token': csrf_token_value
     })
-    # if request.is_ajax():
-    return JsonResponse({'html': html});
+    #return JsonResponse({'html': html});
 
 
 @login_required
@@ -189,6 +191,7 @@ def show_descriptors(request, project_id=None, descriptor_type=None):
     return render(request, page, {
         'descriptors': projects[0].get_descriptors(descriptor_type),
         'project_id': project_id,
+        'project_type': prj_token,
         'project_overview_data': project_overview,
         "csrf_token_value": csrf_token_value,
         'descriptor_type': descriptor_type
@@ -494,23 +497,20 @@ def unused_vnf(request, project_id=None, nsd_id=None):
 @login_required
 def generatehottemplate(request, project_id=None, project=None, descriptor_id=None, descriptor_type=None):
     """It is one of the custom_action methods
-    
+        Heat Orchestration Template
     NB The project is already extracted from project_id in the generic custom_action method
     """
-
-    if request.method == 'GET':
-        # projects = Project.objects.filter(id=project_id).select_subclasses()
-        project_overview = project.get_overview_data()
-        prj_token = project_overview['type']
-        page = prj_token + '/descriptor/descriptor_hot_template.html'
+    result = {}
+    error_msg = None
+    try:
         result = project.get_generatehotemplate(request, descriptor_id, descriptor_type)
-        # print result.__class__.__name__
-        return render(request, page, {
-            'project_id': project_id,
-            'descriptor_id': descriptor_id,
-            'project_overview_data': project_overview,
-            'descriptor_type': descriptor_type,
-            'descriptor_strings': {'descriptor_string_yaml': str(result)}})
+    except Exception as e:
+        error_msg = e
+
+    if error_msg is not None:
+        return JsonResponse({'error': {'error_msg': str(error_msg)}})
+
+    return JsonResponse({'hot':  str(result)})
 
 # end TOSCA specific method #
 

@@ -1,10 +1,49 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+{% block title_header_big %}
+    {{ block.super }}
+{% endblock %}
+{% block left_sidebar %}
+
+	<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="globalmenu">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+
+{% endblock %}
+
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+ {% csrf_token %}
+
 <div class="col-md-12">
 
     <div class="box">
         <div class="box-header with-border">
                   <h3 class="box-title">Projects</h3>
             <div class="box-tools">
-                <a href="projects/new/" class="btn btn-block btn-primary btn-sm"><i class="fa fa-plus"></i><span> New Project</span></a>
+                <a href="{% url 'projects:new_project' %}" class="btn btn-block btn-primary btn-sm"><i class="fa fa-plus"></i><span> New Project</span></a>
             </div>
         </div>
         <div class="box-body">
@@ -55,3 +94,13 @@
 		</div>
     </div>
 </div>
+
+
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+
+
+
+{% endblock %}
