@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -193,8 +193,9 @@ class Project(models.Model):
 
     def edit_descriptor(self, type_descriptor, descriptor_id, new_data, data_type):
         try:
+
             ##FIXME questa parte va completamente rivista cosi' ha varie lacune
-            log.debug('editing ' + descriptor_id + ' ' + type_descriptor + ' ' + data_type)
+            #log.info('editing ',+ descriptor_id + ' ' + type_descriptor + ' ' + data_type)
             current_data = json.loads(self.data_project)
             new_descriptor = new_data
             if data_type == 'json':

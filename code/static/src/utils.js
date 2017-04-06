@@ -1,5 +1,56 @@
+function loadDataOptionsSelector(args){
+    var select_container = args.select_container;
+    var select = args.select;
+    var url = args.url;
+    var value_key = args.value_key || 'value';
+    var text_key = args.text_key || 'text';
+    select_container.toggleClass("select-container-rdcl-loaded", false);
+    select_container.toggleClass("select-container-rdcl-loading", true);
+
+    var items = [];
+    $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(result) {
+                console.log(JSON.stringify(result));
+                $.each(result.agents, function (i, item) {
+                    select.append($('<option>', {
+                        value: item[value_key],
+                        text : item[text_key]
+                    }));
+
+                });
+            },
+            error: function(result) {
+
+                console.log("some error: " + JSON.stringify(result));
+            }
+    });
+
+    $.each(items, function (i, item) {
+        select.append($('<option>', {
+            value: item.value,
+            text : item.text
+        }));
+
+    });
+
+    select_container.toggleClass("select-container-rdcl-loaded", true);
+    select_container.toggleClass("select-container-rdcl-loading", false);
+}
+
 function generateUID() {
     return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
+}
+
+function openProject(pId){
+    window.location.href='/projects/' + pId;
+}
+
+function openDeployment(expId){
+    window.location.href='/deployments/' + expId;
 }
 
 function cloneDescriptor(project_id, descriptor_type, descriptor_id) {
@@ -50,7 +101,7 @@ function buildPalette(args) {
             var content_id = "palette-content-" + category.category_name.replace(/[\s.*+?^${}()|[\]\\]/g, "_");//.replace(/\s/g, '');
             console.log(category_id, content_id)
             $("#paletteContainer").append('<div id="' + category_id + '" class="palette-category" ><div class="palette-header" onClick="handlePaletteCat(this);" category_id="' + category_id + '"> ' +
-                '<i class="fa fa-chevron-right fa-rotate-90"></i>' +
+                '<i class="fa fa-chevron-down "></i>' +
                 '<span>  ' + category.category_name + '</span>' +
                 '</div>' +
                 '<div id="' + content_id + '" class="palette-content">' +
@@ -72,7 +123,7 @@ function buildPalette(args) {
 
         });
     }
-    togglePaletteSpinner();
+    togglePaletteSpinner(args.length > 0);
 
 
 }
@@ -80,12 +131,12 @@ function buildPalette(args) {
 function handlePaletteCat(item) {
     console.log("handlePaletteContainer")
     var category_id = $(item).attr("category_id")
-    $('#' + category_id).toggleClass("palette-open");
+    $('#' + category_id).toggleClass("palette-close");
 
 }
 
-function togglePaletteSpinner() {
-    $('#palette').toggleClass("palette-status-hidden");
+function togglePaletteSpinner(addOrRemove) {
+    $('#palette').toggleClass("palette-status-hidden", addOrRemove);
 }
 
 function showAlert(msg) {

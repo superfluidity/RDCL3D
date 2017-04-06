@@ -1,0 +1,40 @@
+<table id="nodes_table" class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>ID</td>
+			<th>Name</th>
+			<th>IP</th>
+			<th>Nodetype</th>
+			<th>Devicetype</th>
+            <th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	{% for v in nodes %}
+		<tr>
+
+			<td>
+				<a href="#" >{{ v.id }}</a>
+			</td>
+			<td>{{ v.id }}</td>
+			<td>{{ v.info.property.ip }}</td>
+			<td>{{ v.info.type }}</td>
+			<td>{{ v.info.property.devicetype }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#"><i class="fa fa-terminal fa-fw"></i>Console</a></li>
+                    </ul>
+                </div>
+            </td>
+
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
