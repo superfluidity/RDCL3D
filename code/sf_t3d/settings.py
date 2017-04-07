@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sf_user',
     'projecthandler',
+    'deploymenthandler',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -76,6 +77,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'projecthandler', 'template'),
             os.path.join(BASE_DIR, 'projecthandler', 'template', 'download'),
             os.path.join(BASE_DIR, 'projecthandler', 'template', 'project'),
+            os.path.join(BASE_DIR, 'deploymenthandler', 'template'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

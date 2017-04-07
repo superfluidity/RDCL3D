@@ -160,6 +160,15 @@ class CustomUser(AbstractCustomUser):
         elif self.is_guest_user:
             return "Guest user"
 
+    def has_perm(self, perm, obj=None):
+        if perm == 'deploymenthandler':
+            if self.is_guest_user:
+                return False
+            else:
+                return True
+        else:
+            super.has_perm(perm, obj)
+
 
 class CustomSession(AbstractBaseSession):
     account_id = models.IntegerField(null=True, db_index=True)

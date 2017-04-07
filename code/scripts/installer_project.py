@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -46,14 +46,15 @@ class ProjectInstaller():
     LIB_PATH = os.path.join(HOME, 'lib')
     UC_PATH = os.path.join(HOME, 'usecases')
     TEMPLATE_PATH = os.path.join(PHANDLER_PATH, 'template', 'project')
+    JS_SRC_PATH = os.path.join(HOME, 'static', 'src', 'projecthandler')
 
-    def __init__(self, uninstall=False, project_name=None, descriptors_type=None):
+    def __init__(self, install=True, uninstall=False, project_name=None, descriptors_type=[]):
         lgr.debug(self.HOME)
         lgr.debug(self.PHANDLER_PATH)
-        lgr.info(descriptors_type)
         self.uninstall = uninstall
         self.project_name = project_name.lower()
-        self.descriptors_type = descriptors_type
+        #print type(descriptors_type)
+        self.descriptors_type = descriptors_type if  descriptors_type is not None else []
 
     def execute(self):
         MODEL_FILE = os.path.join(self.PHANDLER_PATH, self.project_name + '_model.py')
@@ -76,12 +77,13 @@ class ProjectInstaller():
         self.create_lib_files()
         self.create_use_case_dir()
         self.create_template_dir()
+        self.create_js_resources()
 
-        lgr.info(
-            'You can now run: \n' +
+        lgr.info('\n'+
+            'You can now run: \n\n' +
             'python manage.py makemigrations projecthandler \n' +
-            'python manage.py migrate\n' +
-            'and then run\n' +
+            'python manage.py migrate\n\n' +
+            'and then run\n\n' +
             'python manage.py runserver')
 
     def create_model_file(self):
@@ -138,6 +140,12 @@ class ProjectInstaller():
             shutil.rmtree(PJ_TEMPLATE_PATH)
         self.copydir_and_replace(os.path.join(self.TEMPLATE_PATH, 'example'), PJ_TEMPLATE_PATH)
         self.setup_templates(PJ_TEMPLATE_PATH)
+
+    def create_js_resources(self):
+        PJ_JS_SRC_PATH = os.path.join(self.JS_SRC_PATH, self.project_name)
+        if os.path.isdir(PJ_JS_SRC_PATH):
+            shutil.rmtree(PJ_JS_SRC_PATH)
+        self.copydir_and_replace(os.path.join(self.JS_SRC_PATH, 'example'), PJ_JS_SRC_PATH)
 
     def setup_templates(self, template_path):
         # setup left sidebar
@@ -225,6 +233,10 @@ class ProjectInstaller():
             if os.path.isdir(PJ_TEMPLATE_PATH):
                 shutil.rmtree(PJ_TEMPLATE_PATH)
 
+            PJ_JS_SRC_PATH = os.path.join(self.JS_SRC_PATH, self.project_name)
+            if os.path.isdir(PJ_JS_SRC_PATH):
+                shutil.rmtree(PJ_JS_SRC_PATH)
+
             lgr.info('Uninstall Complete!')
         else:
             lgr.info('Uninstall Aborted.')
@@ -283,22 +295,27 @@ class ProjectInstaller():
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser(
-        description=DESCRIPTION, formatter_class=argparse.RawTextHelpFormatter)
+        description=DESCRIPTION, formatter_class=argparse.RawTextHelpFormatter, prog='RDCL')
     default_group = parser.add_mutually_exclusive_group()
     default_group.add_argument('-v', '--verbose', action='store_true',
                                help='Verbose level logging to shell.')
     default_group.add_argument('-q', '--quiet', action='store_true',
                                help='Only print errors.')
 
+    install_uninstall = parser.add_mutually_exclusive_group()
+
+    install_uninstall.add_argument(
+        '--install', action='store_true',
+        help='Install a new project in %(prog)s.')
+    install_uninstall.add_argument(
+        '--uninstall', action='store_true',
+        help='Uninstalls the project from %(prog)s.')
     parser.add_argument(
         '--project-name', type=str, required=True,
-        help='Name of the new project')
+        help='Name of the new project to install/uninstall from %(prog)s.')
     parser.add_argument(
-        '--descriptors-type', type=str, required=True, nargs='*',
-        help='A list of descritors name supported in the project')
-    parser.add_argument(
-        '--uninstall', action='store_true',
-        help='Uninstalls the project from rdcl.')
+        '--descriptors-type', type=str, nargs='*',
+        help='A list of descritors name supported in the project.\n Ex. --descriptors-type nsd vnfd')
 
     return parser.parse_args(args)
 
