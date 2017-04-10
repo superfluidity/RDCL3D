@@ -221,6 +221,8 @@ class ToscaProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
+        x = request.POST.get('x')
+        y = request.POST.get('y')
         current_data = json.loads(self.data_project)
         tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
         node_types = {}
@@ -238,12 +240,22 @@ class ToscaProject(Project):
                         if propriety == 'version':
                             new_element['properties'][propriety] = 1.0
                         else:
-                            new_element['properties'][propriety] = 'prova'
+                            if type_definition['properties'][propriety]['type'] == 'scalar-unit.size':
+                                new_element['properties'][propriety] = '1 MB'
+                            else:
+                               new_element['properties'][propriety] = 'prova'
             element_type = type_definition['derived_from'] if 'derived_from' in type_definition else None
         if 'node_templates' not in current_data['toscayaml'][group_id]['topology_template'] or current_data['toscayaml'][group_id]['topology_template']['node_templates'] is None:
             current_data['toscayaml'][group_id]['topology_template']['node_templates'] = {}
         current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id] = new_element
-
+        if 'positions' not in current_data:
+            current_data['positions'] = {}
+        if 'vertices' not in current_data['positions']:
+            current_data['positions']['vertices'] = {}
+        if element_id not in current_data['positions']['vertices']:
+            current_data['positions']['vertices'][element_id] = {}
+        current_data['positions']['vertices'][element_id]['x'] = x
+        current_data['positions']['vertices'][element_id]['y'] = y
         self.data_project = current_data
         # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
         self.update()
