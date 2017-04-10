@@ -40,6 +40,8 @@ dreamer.GraphRequests = (function(global) {
         data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
+        data.append('x', args.x);
+        data.append('y', args.y);
         if(args.info.desc_id)
             data.append('element_desc_id', args.info.desc_id || '');
         //FIXME questo metodo dovrebbere essere generico
