@@ -106,10 +106,35 @@ class ClickProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
-        print type(current_data['click'][group_id])
-        current_data['click'][group_id]
-        print current_data['click'][group_id]
-        print group_id, element_id, element_type
+        desc_id = request.POST.get('element_desc_id')
+        print group_id, element_id, element_type, desc_id
+        if element_type == 'class_element':
+            class_id = element_id.title()
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                if '//' not in line:
+                    lines = lines[:lines.index(line)] + ["elementclass "+class_id+" {\n};\n"] + lines[lines.index(line):]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+        else:
+            class_id = "PullTee"
+        if group_id != desc_id:
+            group_id = group_id[group_id.rfind(".")+1:]
+            print group_id, desc_id
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                check = "elementclass "+group_id.title()+" {"
+                if  check in line:
+                    lines = lines[:lines.index(line)+1] + [ element_id + " :: "+class_id+" ;\n"] + lines[lines.index(line)+1:]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+
+        else:
+            current_data['click'][desc_id] +=  element_id + " :: "+class_id+" ;\n"
+        self.data_project = current_data
+        self.update()
+        result = True
+
 
         result = True
         return result
