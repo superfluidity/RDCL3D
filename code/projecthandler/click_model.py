@@ -161,18 +161,18 @@ class ClickProject(Project):
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-
-                current_data = {
-                    "id": node,
-                    "category_name": model_graph['nodes'][node]['label'],
-                    "types": [
-                        {
-                            "name": "generic",
-                            "id": node
-                        }
-                    ]
-                }
-                result.append(current_data)
+                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                    current_data = {
+                        "id": node,
+                        "category_name": model_graph['nodes'][node]['label'],
+                        "types": [
+                            {
+                                "name": "generic",
+                                "id": node
+                            }
+                        ]
+                    }
+                    result.append(current_data)
 
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
