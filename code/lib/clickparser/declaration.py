@@ -28,7 +28,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 	elementclass_renamed = {}
 	words3 = []
 	ele_class_lists=[]
-
+	name_ele = ''
 	words = load_list(line,words)
 	control = False	
 

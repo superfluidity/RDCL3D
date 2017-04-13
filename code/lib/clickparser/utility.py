@@ -88,10 +88,10 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 
 
 
-def subgraph_element_name(line, compound_element, element):
+def subgraph_element_name(line, compound_element, element, group):
 
 	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':['click'], 'node_type': 'compound_element'})
+	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':[group], 'node_type': 'compound_element'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
