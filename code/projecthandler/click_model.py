@@ -99,6 +99,59 @@ class ClickProject(Project):
             result = False
         return result
 
+    def get_add_element(self, request):
+
+        result = False
+        current_data = json.loads(self.data_project)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        print type(current_data['click'][group_id])
+        current_data['click'][group_id]
+        print current_data['click'][group_id]
+        print group_id, element_id, element_type
+
+        result = True
+        return result
+
+    def get_remove_element(self, request):
+
+        result = False
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+
+        result = True
+        return result
+
+    def get_add_link(self, request):
+
+        result = False
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+
+        result = True
+        return result
+
+    def get_remove_link(self, request):
+
+        result = False
+        parameters = request.POST.dict()
+        #print "param remove_link", parameters
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+
+        result = True
+        return result
+
 
     def get_available_nodes(self, args):
         """Returns all available node """

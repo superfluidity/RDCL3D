@@ -44,6 +44,12 @@ dreamer.ClickController = (function(global) {
         new dreamer.GraphRequests().removeLink(link, success,error);
     };
 
+    ClickController.prototype.addLink = function(self, link, success, error) {
+        var s = link.source;
+        var d = link.target;
+        new dreamer.GraphRequests().addLink(link, null, success,error);
+    };
+
 
     return ClickController;
 
