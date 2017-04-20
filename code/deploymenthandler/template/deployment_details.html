@@ -130,7 +130,7 @@ Details
 {% block resource_block %}
 {{ block.super }}
 
-<script src="{% static "codemirror/lib/codemirror.js" %}"></script>
+    <script src="{% static "codemirror/lib/codemirror.js" %}"></script>
     <script src="{% static "codemirror/lib/formatting.js" %}"></script>
     <script src="{% static "codemirror/addon/fold/foldcode.js" %}"></script>
     <script src="{% static "codemirror/addon/fold/foldgutter.js" %}"></script>
@@ -147,4 +147,9 @@ Details
     <script src="{% static "codemirror/addon/display/fullscreen.js" %}"></script>
     <script src="{% static "codemirror/keymap/sublime.js" %}"></script>
 
+    <script src="{% static "src/deploymenthandler/deployment_util.js" %}"></script>
+
+<script>
+    var update = setInterval(function(){updateDeploymentInfo({'id': {{deployment.id}} });}, 3000);
+</script>
 {% endblock %}
