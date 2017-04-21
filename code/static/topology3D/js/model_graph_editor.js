@@ -303,7 +303,7 @@ dreamer.ModelGraphEditor = (function (global) {
         var contextMenuLinksAction = [{
             title: 'Delete Link',
             action: function (elm, link, i) {
-                self.removeLink(link);
+                self.removeLink(link, null, showAlert);
             },
             //edit_mode: false
         }];

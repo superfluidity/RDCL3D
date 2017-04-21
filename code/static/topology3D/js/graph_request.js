@@ -134,6 +134,8 @@ dreamer.GraphRequests = (function(global) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('link', JSON.stringify(link));
+        if(link.desc_id)
+            data.append('element_desc_id', link.desc_id || '');
         $.ajax({
             url: "removelink",
             type: 'POST',

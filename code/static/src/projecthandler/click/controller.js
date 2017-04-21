@@ -33,7 +33,7 @@ dreamer.ClickController = (function(global) {
     ClickController.prototype.removeNode = function(self, node, success, error) {
         node.info.desc_id = getUrlParameter('id');
         if(node.id.indexOf('@') !== -1){
-            error('To delete this type of node you must edit the configuration file')
+            error && error('To delete this type of node you must edit the configuration file')
         }else{
             new dreamer.GraphRequests().removeNode(node, null, function() {
                 if (success) {
@@ -46,7 +46,12 @@ dreamer.ClickController = (function(global) {
     ClickController.prototype.removeLink = function(self, link, success, error) {
         var s = link.source;
         var d = link.target;
-        new dreamer.GraphRequests().removeLink(link, success,error);
+        link.desc_id = getUrlParameter('id');
+        if(s.id.indexOf('@') !== -1 || d.id.indexOf('@') !== -1){
+            error && error('To delete this link you must edit the configuration file')
+        }else{
+            new dreamer.GraphRequests().removeLink(link, success,error);
+        }
     };
 
     ClickController.prototype.addLink = function(self, link, success, error) {
@@ -55,7 +60,8 @@ dreamer.ClickController = (function(global) {
         link.desc_id = getUrlParameter('id');
         console.log(link.desc_id )
         if(s.id.indexOf('@') !== -1 || d.id.indexOf('@') !== -1){
-            error('To link this types of nodes you must edit the configuration file')
+            console.log('To link this types of nodes you must edit the configuration file');
+            error && error('To link this types of nodes you must edit the configuration file');
         }else{
             new dreamer.GraphRequests().addLink(link, null, success,error);
         }
