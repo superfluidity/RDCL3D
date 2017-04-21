@@ -109,6 +109,8 @@ dreamer.GraphRequests = (function(global) {
         //data.append('destination', JSON.stringify(destination));
         if (choice)
             data.append('choice', choice);
+        if(link.desc_id)
+            data.append('element_desc_id', link.desc_id || '');
         $.ajax({
             url: "addlink",
             type: 'POST',

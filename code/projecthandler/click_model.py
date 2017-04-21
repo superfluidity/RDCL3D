@@ -167,13 +167,36 @@ class ClickProject(Project):
     def get_add_link(self, request):
 
         result = False
+        current_data = json.loads(self.data_project)
         parameters = request.POST.dict()
         link = json.loads(parameters['link'])
         source = link['source']
         destination = link['target']
         source_type = source['info']['type']
         destination_type = destination['info']['type']
-
+        group_id = source['info']['group'][0]
+        desc_id = request.POST.get('element_desc_id')
+        source_id = source['id']
+        destination_id = destination['id']
+        if group_id != desc_id:
+            source_id = source_id[source_id.rfind(".") + 1:]
+            destination_id = destination_id[destination_id.rfind(".") + 1:]
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                if group_id + " ::" in line:
+                    end = line.rfind("(") if line.rfind("(") != -1 else line.rfind(";")
+                    element_class = line[line.rfind("::") + 2:end]
+            for line in lines:
+                check = element_class + " {"
+                print check
+                if check in line:
+                    lines = lines[:lines.index(line) + 1] + [source_id + ' -> '+ destination_id + " ;\n"] + lines[lines.index(line) + 1:]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+        else:
+            current_data['click'][desc_id] += '\n '+ source_id + ' -> '+ destination_id+' ;'
+        self.data_project = current_data
+        self.update()
         result = True
         return result
 

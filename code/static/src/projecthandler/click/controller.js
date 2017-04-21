@@ -52,7 +52,13 @@ dreamer.ClickController = (function(global) {
     ClickController.prototype.addLink = function(self, link, success, error) {
         var s = link.source;
         var d = link.target;
-        new dreamer.GraphRequests().addLink(link, null, success,error);
+        link.desc_id = getUrlParameter('id');
+        console.log(link.desc_id )
+        if(s.id.indexOf('@') !== -1 || d.id.indexOf('@') !== -1){
+            error('To link this types of nodes you must edit the configuration file')
+        }else{
+            new dreamer.GraphRequests().addLink(link, null, success,error);
+        }
     };
 
 
