@@ -31,11 +31,16 @@ dreamer.ClickController = (function(global) {
 
 
     ClickController.prototype.removeNode = function(self, node, success, error) {
-        new dreamer.GraphRequests().removeNode(node, null, function() {
-            if (success) {
-                success();
-            }
-        });
+        node.info.desc_id = getUrlParameter('id');
+        if(node.id.indexOf('@') !== -1){
+            error('To delete this type of node you must edit the configuration file')
+        }else{
+            new dreamer.GraphRequests().removeNode(node, null, function() {
+                if (success) {
+                    success();
+                }
+            });
+        }
     };
 
     ClickController.prototype.removeLink = function(self, link, success, error) {

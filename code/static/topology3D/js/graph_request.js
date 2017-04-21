@@ -77,6 +77,8 @@ dreamer.GraphRequests = (function(global) {
         if(args.info.type == 'vnf_click_vdu'){
             data.append('vduId', args.vduId);
         }
+        if(args.info.desc_id)
+            data.append('element_desc_id', args.info.desc_id || '');
         if (choice)
             data.append('choice', choice);
         $.ajax({

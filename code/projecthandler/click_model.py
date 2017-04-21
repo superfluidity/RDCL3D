@@ -107,7 +107,6 @@ class ClickProject(Project):
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
         desc_id = request.POST.get('element_desc_id')
-        print group_id, element_id, element_type, desc_id
         if element_type == 'class_element':
             class_id = element_id.title()
             lines = current_data['click'][desc_id].splitlines(True)
@@ -123,8 +122,13 @@ class ClickProject(Project):
             print group_id, desc_id
             lines = current_data['click'][desc_id].splitlines(True)
             for line in lines:
-                check = "elementclass "+group_id.title()+" {"
-                if  check in line:
+                if group_id+" ::" in line:
+                    end = line.rfind("(")  if line.rfind("(") != -1 else line.rfind(";")
+                    element_class = line[line.rfind("::") + 2:end]
+            for line in lines:
+                check = element_class+" {"
+                print check
+                if check in line:
                     lines = lines[:lines.index(line)+1] + [ element_id + " :: "+class_id+" ;\n"] + lines[lines.index(line)+1:]
                     current_data['click'][desc_id] = ''.join(lines)
                     break
@@ -134,18 +138,29 @@ class ClickProject(Project):
         self.data_project = current_data
         self.update()
         result = True
-
-
-        result = True
         return result
 
     def get_remove_element(self, request):
 
         result = False
+        current_data = json.loads(self.data_project)
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
+        desc_id = request.POST.get('element_desc_id')
+        lines = current_data['click'][desc_id].splitlines(True)
+        lines_temp = list(lines)
+        check = element_id
+        if group_id != desc_id:
+            check = element_id[element_id.rfind(".")+1:]
+        for line in lines_temp:
+            if check in line:
+                lines.remove(line)
+        print check
 
+        current_data['click'][desc_id] = ''.join(lines)
+        self.data_project = current_data
+        self.update()
         result = True
         return result
 
