@@ -13,16 +13,28 @@ class Helper():
         pass
 
     def get_agent_status(self, args):
-        log.debug("get status")
+        #log.debug("get status")
         url = self.agent['base_url'] + "/status"
         r = requests.get(url)
         return r.json()
 
+    def get_deployment_info(self, deployment_id=None):
+        url = self.agent['base_url'] + "/deployments/"+str(deployment_id)
+        r = requests.get(url)
+        return r.json()
+
+    def get_deployment_status(self, deployment_id=None):
+        url = self.agent['base_url'] + "/deployments/"+str(deployment_id) + "/status"
+        r = requests.get(url)
+        return r.json()
+
     def open_shell(self, deployment_id, node_id):
-        log.debug("open shell")
+        #log.debug("open shell")
         url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id)
         r = requests.get(url)
         return r.json()
+
+
 
     def _send_post(self, url, data=None, json=None, **kwargs):
             try:

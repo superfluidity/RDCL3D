@@ -55,15 +55,22 @@ class Deployment(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
+    descriptors_id = jsonfield.JSONField(default=[])
     deployment_agent = jsonfield.JSONField(default={})
     """Stores a JSON representation of the deployment agent info"""
     deployment_descriptor = jsonfield.JSONField(default={})
     """Stores a validated JSON representation of the deployment descriptor"""
 
+    def create(self, *args, **kwargs):
+        print "create c"
+        if 'type' in kwargs and isinstance(kwargs['type'], basestring):
+            kwargs['type'] = Deployment.objects.get(name=kwargs['type'])
+        return super(Deployment, self).create(*args, **kwargs)
+
     def launch(self):
         log.debug("launch Deployment")
         deploy = OshiHelper(self.deployment_agent)
-        deploy.launch(deployment_id=self.id)
+        return deploy.launch(self)
 
     def stop(self):
         log.debug("stop Deployment")
@@ -71,9 +78,19 @@ class Deployment(models.Model):
         return deploy.stop(deployment_id=self.id)
 
     def delete(self, *args, **kwargs):
-        log.debug("delete Deployment")
-        stop_res = self.stop()
+        print "delete Deployment"
+        self.stop()
         super(Deployment, self).delete(*args, **kwargs)
+
+    def get_status(self):
+        log.debug("monitoring Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.get_deployment_status(deployment_id=self.id)
+
+    def get_info(self):
+        log.debug("monitoring Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.get_deployment_info(deployment_id=self.id)
 
     def to_json(self):
         return {

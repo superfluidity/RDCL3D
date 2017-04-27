@@ -59,12 +59,14 @@ def open_deployment(request, deployment_id=None):
         res_search = Deployment.objects.filter(id=deployment_id)
         if len(res_search) > 0:
             deployment = res_search[0]
-            topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')['oshi']['example1']
-            deployment_descriptor = topology_data  ##TODO fix it just developing in OSHI
+            monitor_result = deployment.get_info()
+
+            #topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')['oshi']['example1']
+            deployment_descriptor = monitor_result['topology_deployment']#topology_data  ##TODO fix it just developing in OSHI
             url = 'oshi/oshi_deployment_details.html'  ##TODO fix it just developing in OSHI
             if 'application/json' in raw_content_types:
                 deployment = json.dumps(deployment.to_json())
-            result = {'deployment': deployment, 'topology_data': json.dumps(topology_data),
+            result = {'deployment': deployment, 'topology_data': json.dumps(deployment_descriptor),
                       'deployment_descriptor': json.dumps(deployment_descriptor),
                       'collapsed_sidebar': True}
         else:
@@ -104,24 +106,25 @@ def new_deployment(request):
             profile = {}
             project_name = request.POST.get('project_name', '')
             project_id = request.POST.get('project_id')
-
+            descriptors = []#request.POST.get('descriptor_ids', [])
             creator_id = user.id
             status = 'not started'
             new_deployment = Deployment.objects.create(name=name, project_name=project_name, project_id=project_id,
-                                                       profile=profile,
+                                                       profile=profile, descriptors_id=descriptors,
                                                         creator_id=creator_id, status=status,
                                                        deployment_agent=agent.to_json())
             # new_deployment.deployment_agent = agent
             new_deployment.save()
             new_deployment.launch()
             url = 'deployment:open_deployment'
+            result = {}
         except Exception as e:
             print e
             url = 'error.html'
             result = {'error_msg': 'Error Creating Deployment.'}
             return __response_handler(request, result, url)
     ##TODO fix it with response handler
-    return redirect(url, deployment_id=new_deployment.id)
+    return __response_handler(request, result, url, to_redirect=True, deployment_id=new_deployment.id)
 
 
 @login_required
@@ -131,11 +134,17 @@ def monitoring_deployment(request, deployment_id=None):
     raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
     if len(res_search) > 0:
         deployment = res_search[0]
-        topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
-        topology = topology_data['oshi']['example1']
+        monitor_result = deployment.get_status()
+        #topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
+        topology = monitor_result['topology_deployment']#topology_data['oshi']['example1']
         print "monitor", DeployAgent(deployment.deployment_agent).base_url
+        nodes = []
+        topology_data = {}
+        if topology:
+            topology_data = json.dumps(topology)
+            nodes = topology['vertices'] if 'vertices' in topology else []
         url = 'oshi/oshi_deployment_monitoring.html'
-        result = {'deployment': deployment, 'topology_data': json.dumps(topology), 'nodes': topology['vertices'],
+        result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
                   'collapsed_sidebar': True}
     else:
         url = 'error.html'
@@ -149,7 +158,7 @@ def delete_deployment(request, deployment_id=None):
     print "delete_deployment", deployment_id
     if request.method == 'POST':
         try:
-            Deployment.objects.filter(id=deployment_id).delete()
+            Deployment.objects.filter(id=deployment_id)[0].delete()
             url = 'deployment:deployments_list'
             result = {}
         except Exception as e:
@@ -224,19 +233,21 @@ def new_agent(request):
 def delete_agent(request, agent_id=None):
     try:
         DeployAgent.objects.filter(id=agent_id).delete()
+        url = 'agent:agents_list'
+        result = {}
     except Exception as e:
         print e
         url = 'error.html'
         result = {'error_msg': 'Error deleting ' + agent_id + ' Agent! Please retry.'}
-        return __response_handler(request, result, url)
-    return redirect('agent:agents_list')
+    return __response_handler(request, result, url, to_redirect=True)
+    #return redirect('agent:agents_list')
 
 
-def __response_handler(request, data_res, url=None, to_redirect=None):
+def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):
     raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
     if 'application/json' in raw_content_types:
         return JsonResponse(data_res)
     elif to_redirect:
-        return redirect(url)
+        return redirect(url, *args, **kwargs)
     else:
         return render(request, url, data_res)
