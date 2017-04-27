@@ -41,6 +41,16 @@ function loadDataOptionsSelector(args){
     select_container.toggleClass("select-container-rdcl-loading", false);
 }
 
+function openModalDeployment(descId){
+    var modalId = "modal_launch_deploy";
+    $("input[name='descId[]']").remove()
+    descId.forEach(function(id){
+        $('#desc_list').append('<input type="hidden" class="form-control"  name="descId[]" value="'+id+'">')
+    });
+    //show modal
+    $('#'+modalId).modal('show')
+}
+
 function generateUID() {
     return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
 }

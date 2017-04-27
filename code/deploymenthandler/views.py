@@ -104,7 +104,8 @@ def new_deployment(request):
             profile = {}
             project_name = request.POST.get('project_name', '')
             project_id = request.POST.get('project_id')
-            descriptors = []#request.POST.get('descriptor_ids', [])
+            descriptors = request.POST.getlist('descId[]')
+
             creator_id = user.id
             status = 'not started'
             new_deployment = Deployment.objects.create(name=name, project_name=project_name, project_id=project_id,
