@@ -59,12 +59,11 @@ def open_deployment(request, deployment_id=None):
             deployment = res_search[0]
             monitor_result = deployment.get_info()
 
-            #topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')['oshi']['example1']
-            deployment_descriptor = monitor_result['topology_deployment']#topology_data  ##TODO fix it just developing in OSHI
+            deployment_descriptor = monitor_result['topology_deployment']
             url = 'oshi/oshi_deployment_details.html'  ##TODO fix it just developing in OSHI
             if 'application/json' in raw_content_types:
                 deployment = json.dumps(deployment.to_json())
-            result = {'deployment': deployment, 'topology_data': json.dumps(deployment_descriptor),
+            result = {'deployment': deployment,
                       'deployment_descriptor': json.dumps(deployment_descriptor),
                       'collapsed_sidebar': True}
         else:
@@ -122,7 +121,6 @@ def new_deployment(request):
             url = 'error.html'
             result = {'error_msg': 'Error Creating Deployment.'}
             return __response_handler(request, result, url)
-    ##TODO fix it with response handler
     return __response_handler(request, result, url, to_redirect=True, deployment_id=new_deployment.id)
 
 
@@ -130,12 +128,10 @@ def new_deployment(request):
 @permission_required('deploymenthandler', raise_exception=False)
 def monitoring_deployment(request, deployment_id=None):
     res_search = Deployment.objects.filter(id=deployment_id)
-    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
     if len(res_search) > 0:
         deployment = res_search[0]
         monitor_result = deployment.get_status()
-        #topology_data = OshiParser.importprojectdir('usecases/OSHI/example1', 'json')
-        topology = monitor_result['topology_deployment']#topology_data['oshi']['example1']
+        topology = monitor_result['topology_deployment']
         print "monitor", DeployAgent(deployment.deployment_agent).base_url
         nodes = []
         topology_data = {}
@@ -145,6 +141,19 @@ def monitoring_deployment(request, deployment_id=None):
         url = 'oshi/oshi_deployment_monitoring.html'
         result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
                   'collapsed_sidebar': True}
+    else:
+        url = 'error.html'
+        result = {'error_msg': 'Error data monitoring not found.'}
+    return __response_handler(request, result, url)
+
+@login_required
+@permission_required('deploymenthandler', raise_exception=False)
+def monitoring_node_openshell(request, deployment_id=None, node_id=None):
+    res_search = Deployment.objects.filter(id=deployment_id)
+    if len(res_search) > 0:
+        deployment = res_search[0]
+        result = deployment.open_shell(node_id)
+        url = ''
     else:
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
@@ -239,7 +248,6 @@ def delete_agent(request, agent_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error deleting ' + agent_id + ' Agent! Please retry.'}
     return __response_handler(request, result, url, to_redirect=True)
-    #return redirect('agent:agents_list')
 
 
 def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):

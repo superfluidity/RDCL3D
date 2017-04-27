@@ -30,11 +30,10 @@ class Helper():
 
     def open_shell(self, deployment_id, node_id):
         #log.debug("open shell")
-        url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id)
+        url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id) + "/console"
         r = requests.get(url)
+        print r
         return r.json()
-
-
 
     def _send_post(self, url, data=None, json=None, **kwargs):
             try:

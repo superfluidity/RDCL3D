@@ -92,6 +92,11 @@ class Deployment(models.Model):
         deploy = OshiHelper(self.deployment_agent)
         return deploy.get_deployment_info(deployment_id=self.id)
 
+    def open_shell(self, node_id=None):
+        log.debug("monitoring Deployment open shell")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.open_shell(self.id, node_id)
+
     def to_json(self):
         return {
             'name': self.name,

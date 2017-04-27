@@ -23,3 +23,20 @@ function getDeploymentInfo(args, success, error){
             }
         });
 }
+
+function getDeploymentNodeConsole(args, success, error){
+    $.ajax({
+            url: "monitoring/node/"+args.nodeId+"/shell",
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json",
+            success: function(result) {
+                if (success)
+                    success(result);
+            },
+            error: function(result) {
+                if (error)
+                    error(result);
+            }
+        });
+}

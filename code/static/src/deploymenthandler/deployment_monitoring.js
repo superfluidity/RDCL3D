@@ -5,10 +5,23 @@ function closeTab(closeButton){
     $(tabContentId).remove(); //remove respective tab content
 }
 
+function getNodeShell(args){
+
+    getDeploymentNodeConsole({
+        'nodeId': args['node']['id']
+    }, function(result){
+        console.log(result);
+        args['console_info'] = result['console_info']
+        openShellTab(args)
+    }, function(error){
+        showAlert("Error opening shell.")
+    })
+}
+
 function openShellTab(shellData){
 
     var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
-    var html_tab_iframe = '<iframe src="'+ buildShellEndpoint(shellData) +'" class="shellIframe"></iframe>';
+    var html_tab_iframe = '<iframe src="'+ shellData['console_info']['url'] +'" class="shellIframe"></iframe>';
     var html_tab_content = '<div class="tab-pane" id="tab_pane_' + shellData['node']['id'] +'">' + html_tab_iframe + '</div>';
     console.log(html_tab)
     console.log(html_tab_content)
@@ -36,7 +49,7 @@ function buildBehaviorsOnEvents(){
                         "endpoint":  agent_base_url,
                     }
                 };
-                openShellTab(shellData);
+                getNodeShell(shellData);
             },
             edit_mode: false
 
