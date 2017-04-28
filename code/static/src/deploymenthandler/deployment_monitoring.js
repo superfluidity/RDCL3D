@@ -29,11 +29,6 @@ function openShellTab(shellData){
     $('#tab_pane_container').append(html_tab_content);
 }
 
-function buildShellEndpoint(shellData){
-    var endpoint = shellData['shellinabox']['endpoint'] + "?"
-    endpoint+= "nodeid="+shellData['node']['id']
-    return endpoint;
-}
 
 function buildBehaviorsOnEvents(){
     var contextmenuNodesAction = [{
@@ -44,9 +39,6 @@ function buildBehaviorsOnEvents(){
                     "node": {
                         "id": d.id,
                         "label": d.id
-                    },
-                    "shellinabox": {
-                        "endpoint":  agent_base_url,
                     }
                 };
                 getNodeShell(shellData);
