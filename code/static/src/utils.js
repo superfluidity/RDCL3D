@@ -14,7 +14,7 @@ function loadDataOptionsSelector(args){
             dataType: "json",
             contentType: "application/json;charset=utf-8",
             success: function(result) {
-                console.log(JSON.stringify(result));
+
                 $.each(result.agents, function (i, item) {
                     select.append($('<option>', {
                         value: item[value_key],
@@ -39,6 +39,16 @@ function loadDataOptionsSelector(args){
 
     select_container.toggleClass("select-container-rdcl-loaded", true);
     select_container.toggleClass("select-container-rdcl-loading", false);
+}
+
+function openModalDeployment(descId){
+    var modalId = "modal_launch_deploy";
+    $("input[name='descId[]']").remove()
+    descId.forEach(function(id){
+        $('#desc_list').append('<input type="hidden" class="form-control"  name="descId[]" value="'+id+'">')
+    });
+    //show modal
+    $('#'+modalId).modal('show')
 }
 
 function generateUID() {
