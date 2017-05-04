@@ -77,6 +77,8 @@ dreamer.GraphRequests = (function(global) {
         if(args.info.type == 'vnf_click_vdu'){
             data.append('vduId', args.vduId);
         }
+        if(args.info.desc_id)
+            data.append('element_desc_id', args.info.desc_id || '');
         if (choice)
             data.append('choice', choice);
         $.ajax({
@@ -107,6 +109,8 @@ dreamer.GraphRequests = (function(global) {
         //data.append('destination', JSON.stringify(destination));
         if (choice)
             data.append('choice', choice);
+        if(link.desc_id)
+            data.append('element_desc_id', link.desc_id || '');
         $.ajax({
             url: "addlink",
             type: 'POST',
@@ -130,6 +134,8 @@ dreamer.GraphRequests = (function(global) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
         data.append('link', JSON.stringify(link));
+        if(link.desc_id)
+            data.append('element_desc_id', link.desc_id || '');
         $.ajax({
             url: "removelink",
             type: 'POST',

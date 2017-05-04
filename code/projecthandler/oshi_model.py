@@ -256,30 +256,27 @@ class OshiProject(Project):
     def get_available_nodes(self, args):
         """Returns all available node """
         log.debug('get_available_nodes')
-        log.debug(args)
         try:
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-                print "stocazzo0", node
-                print "stocazzo1", model_graph['nodes']
-
-                current_data = {
-                    "id": node,
-                    "category_name": node,
-                    "types": [
-                        {
-                            "name": "generic",
-                            "id": node
-                        }
-                    ]
-                }
-                result.append(current_data)
+                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                    current_data = {
+                        "id": node,
+                        "category_name": model_graph['nodes'][node]['label'],
+                        "types": [
+                            {
+                                "name": "generic",
+                                "id": node
+                            }
+                        ]
+                    }
+                    result.append(current_data)
 
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []
-        log.debug(result)
         return result
+
