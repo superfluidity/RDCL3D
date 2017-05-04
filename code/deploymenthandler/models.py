@@ -20,12 +20,10 @@ import jsonfield
 from django.db import models
 from django.utils import timezone
 import logging
-
+from deploymenthandler.helpers.oshi import OshiHelper
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
-
-project_types = {}
 
 
 class DeployAgent(models.Model):
@@ -53,14 +51,63 @@ class Deployment(models.Model):
     profile = jsonfield.JSONField(default={})
     project_name = models.CharField(max_length=20, default='')
     project_id = models.CharField(max_length=20, default='')
-    creator_id = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
-    creator_name = models.CharField(max_length=20, default='')
+    creator = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, default='')
+    descriptors_id = jsonfield.JSONField(default=[])
     deployment_agent = jsonfield.JSONField(default={})
     """Stores a JSON representation of the deployment agent info"""
     deployment_descriptor = jsonfield.JSONField(default={})
     """Stores a validated JSON representation of the deployment descriptor"""
 
+    def create(self, *args, **kwargs):
+        print "create c"
+        if 'type' in kwargs and isinstance(kwargs['type'], basestring):
+            kwargs['type'] = Deployment.objects.get(name=kwargs['type'])
+        return super(Deployment, self).create(*args, **kwargs)
 
+    def launch(self):
+        log.debug("launch Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.launch(self)
+
+    def stop(self):
+        log.debug("stop Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.stop(deployment_id=self.id)
+
+    def delete(self, *args, **kwargs):
+        print "delete Deployment"
+        self.stop()
+        super(Deployment, self).delete(*args, **kwargs)
+
+    def get_status(self):
+        log.debug("monitoring Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.get_deployment_status(deployment_id=self.id)
+
+    def get_info(self):
+        log.debug("monitoring Deployment")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.get_deployment_info(deployment_id=self.id)
+
+    def open_shell(self, node_id=None):
+        log.debug("monitoring Deployment open shell")
+        deploy = OshiHelper(self.deployment_agent)
+        return deploy.open_shell(self.id, node_id)
+
+    def to_json(self):
+        return {
+            'name': self.name,
+            'profile': self.profile,
+            'project_name': self.project_name,
+            'project_id': self.project_id,
+            'creator_id': self.creator.id,
+            'creator_name': str(self.creator.get_full_name()),
+            'created_date': str(self.created_date),
+            'last_update': str(self.last_update),
+            'status': self.status,
+            'deployment_agent': self.deployment_agent,
+            'deployment_descriptor':  self.deployment_descriptor
+        }

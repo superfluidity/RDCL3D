@@ -46,8 +46,7 @@
                                             class="fa fa-clone   fa-fw"></i>Clone</a></li>
                                 <li class="divider"></li>
                                 {% if not user.is_guest %}
-                                <li><a href='#' data-toggle="modal"
-                   data-target="#modal_launch_deploy"><i
+                                <li><a href="javascript:openModalDeployment(['{{ k }}'])"><i
                                         class="fa fa-play fa-fw" ></i>Deploy</a></li>
                                 <li class="divider"></li>
                                 {% endif %}
