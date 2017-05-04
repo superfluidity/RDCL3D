@@ -13,7 +13,7 @@ class Helper():
         pass
 
     def get_agent_status(self, args):
-        #log.debug("get status")
+        log.debug("get status")
         url = self.agent['base_url'] + "/status"
         r = requests.get(url)
         return r.json()
@@ -29,7 +29,7 @@ class Helper():
         return r.json()
 
     def open_shell(self, deployment_id, node_id):
-        #log.debug("open shell")
+        log.debug("open shell")
         url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id) + "/console"
         r = requests.get(url)
         print r

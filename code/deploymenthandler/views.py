@@ -22,7 +22,6 @@ import json
 from sf_user.models import CustomUser
 from projecthandler.models import Project
 from deploymenthandler.models import DeployAgent, Deployment
-from lib.oshi.oshi_parser import OshiParser
 
 
 def check_not_guest_user(user):
@@ -57,12 +56,15 @@ def open_deployment(request, deployment_id=None):
         res_search = Deployment.objects.filter(id=deployment_id)
         if len(res_search) > 0:
             deployment = res_search[0]
-            monitor_result = deployment.get_info()
+            info_result = deployment.get_info()
 
-            deployment_descriptor = monitor_result['topology_deployment']
-            url = 'oshi/oshi_deployment_details.html'  ##TODO fix it just developing in OSHI
+            agent = deployment.deployment_agent
+            deployment_descriptor = info_result['topology_deployment']
+            agent_type = agent['type']
+            url = agent_type + '/' + agent_type + '_deployment_details.html'
             if 'application/json' in raw_content_types:
                 deployment = json.dumps(deployment.to_json())
+
             result = {'deployment': deployment,
                       'deployment_descriptor': json.dumps(deployment_descriptor),
                       'collapsed_sidebar': True}
@@ -138,7 +140,9 @@ def monitoring_deployment(request, deployment_id=None):
         if topology:
             topology_data = json.dumps(topology)
             nodes = topology['vertices'] if 'vertices' in topology else []
-        url = 'oshi/oshi_deployment_monitoring.html'
+        agent = deployment.deployment_agent
+        agent_type = agent['type']
+        url = agent_type + '/' + agent_type + '_deployment_monitoring.html'
         result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
                   'collapsed_sidebar': True}
     else:
