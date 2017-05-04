@@ -83,17 +83,17 @@ class Deployment(models.Model):
         super(Deployment, self).delete(*args, **kwargs)
 
     def get_status(self):
-        log.debug("monitoring Deployment")
+        log.debug("Deployment get status")
         deploy = OshiHelper(self.deployment_agent)
         return deploy.get_deployment_status(deployment_id=self.id)
 
     def get_info(self):
-        log.debug("monitoring Deployment")
+        log.debug("Deployment get info")
         deploy = OshiHelper(self.deployment_agent)
         return deploy.get_deployment_info(deployment_id=self.id)
 
     def open_shell(self, node_id=None):
-        log.debug("monitoring Deployment open shell")
+        log.debug("Deployment open shell - get info about shell")
         deploy = OshiHelper(self.deployment_agent)
         return deploy.open_shell(self.id, node_id)
 
