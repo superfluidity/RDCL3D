@@ -133,9 +133,9 @@ dreamer.GraphEditor = (function(global) {
                 if (self.lastKeyDown !== -1) return;
                 self.lastKeyDown = d3.event.keyCode;
                 if (self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined) {
-                    self.removeNode(self._selected_node);
+                    self.removeNode(self._selected_node, null, showAlert);
                 } else if (self.lastKeyDown === CANC_BUTTON && self._selected_link != undefined) {
-                    self.removeLink(self._selected_link);
+                    self.removeLink(self._selected_link, null, showAlert);
                 }
 
             })

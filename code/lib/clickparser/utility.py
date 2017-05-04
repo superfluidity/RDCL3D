@@ -88,10 +88,10 @@ def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, wo
 
 
 
-def subgraph_element_name(line, compound_element, element):
+def subgraph_element_name(line, compound_element, element, group):
 
 	name=nameGenerator(element, 'subgraph')
-	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':['click'], 'node_type': 'compound_element'})
+	element[len(element)]=({'element':'Compound_Element', 'name':name, 'config':[],'group':[group], 'node_type': 'compound_element'})
 	compound_element[len(compound_element)] = ({'name':name, 'compound':line})                      
 
 	return name
@@ -102,7 +102,8 @@ def rename_class_element(words, words1,words3, name_ele, name):
 
 
 	for i in range (0,len(words1)):						#Rinomina gli elementi espliciti della riga
-		
+		if i >= len(words1):
+			continue
 		if words1[i] != '::' and words1[i] != '->' and string.find(words[i],'@') == -1 and string.find(words1[i], 'input') == -1 and string.find(words1[i], 'output') == -1:
 				if string.find(words1[i], '[') != -1:
 					start = string.find(words1[i], '[')

@@ -10,6 +10,8 @@
                 <form action='{% url "deployment:new_deployment" %}' class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="box-body">
+                        <div id="desc_list" hidden>
+                        </div>
                         <input type="hidden" class="form-control" id="project_name" name="project_name" value="{{project_name}}">
                         <input type="hidden" class="form-control" id="project_id" name="project_id" value="{{project_id}}" >
                         <div class="form-group">

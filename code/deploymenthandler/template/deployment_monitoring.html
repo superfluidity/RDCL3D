@@ -45,7 +45,7 @@
 {% block breadcrumb_body %}
   	{{ block.super }}
     <li><a href='{% url "deployment:open_deployment" deployment_id=deployment.id %}'><i class="fa fa-terminal fa-fw"></i><span>{{deployment.name}}</span></a></li>
-    <li><a href='{% url "deployment:monitoring_deployment" deployment_id=10 %}'><i class="fa fa-desktop fa-fw"></i><span>Monitoring</span></a></li>
+    <li><a href='{% url "deployment:monitoring_deployment" deployment_id=deployment.id %}'><i class="fa fa-desktop fa-fw"></i><span>Monitoring</span></a></li>
 {% endblock %}
 
 
@@ -139,6 +139,7 @@
     <script src="{% static "topology3D/js/graph_request.js" %}"></script>
     <script src="{% static "topology3D/js/model_graph_editor.js" %}"></script>
 
+    <script src="{% static "src/deploymenthandler/deployment_util.js" %}"></script>
     <script src="{% static "src/deploymenthandler/deployment_monitoring.js" %}"></script>
 
 

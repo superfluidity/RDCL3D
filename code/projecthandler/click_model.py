@@ -99,6 +99,136 @@ class ClickProject(Project):
             result = False
         return result
 
+    def get_add_element(self, request):
+
+        result = False
+        current_data = json.loads(self.data_project)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        desc_id = request.POST.get('element_desc_id')
+        if element_type == 'class_element':
+            class_id = element_id.title()
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                if '//' not in line:
+                    lines = lines[:lines.index(line)] + ["elementclass "+class_id+" {\n};\n"] + lines[lines.index(line):]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+        else:
+            class_id = "PullTee"
+        if group_id != desc_id:
+            group_id = group_id[group_id.rfind(".")+1:]
+            print group_id, desc_id
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                if group_id+" ::" in line:
+                    end = line.rfind("(")  if line.rfind("(") != -1 else line.rfind(";")
+                    element_class = line[line.rfind("::") + 2:end]
+            for line in lines:
+                check = element_class+" {"
+                print check
+                if check in line:
+                    lines = lines[:lines.index(line)+1] + [ element_id + " :: "+class_id+" ;\n"] + lines[lines.index(line)+1:]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+
+        else:
+            current_data['click'][desc_id] +=  element_id + " :: "+class_id+" ;\n"
+        self.data_project = current_data
+        self.update()
+        result = True
+        return result
+
+    def get_remove_element(self, request):
+
+        result = False
+        current_data = json.loads(self.data_project)
+        group_id = request.POST.get('group_id')
+        element_id = request.POST.get('element_id')
+        element_type = request.POST.get('element_type')
+        desc_id = request.POST.get('element_desc_id')
+        lines = current_data['click'][desc_id].splitlines(True)
+        lines_temp = list(lines)
+        check = element_id
+        if group_id != desc_id:
+            check = element_id[element_id.rfind(".")+1:]
+        for line in lines_temp:
+            if check in line:
+                lines.remove(line)
+        print check
+
+        current_data['click'][desc_id] = ''.join(lines)
+        self.data_project = current_data
+        self.update()
+        result = True
+        return result
+
+    def get_add_link(self, request):
+
+        result = False
+        current_data = json.loads(self.data_project)
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        group_id = source['info']['group'][0]
+        desc_id = request.POST.get('element_desc_id')
+        source_id = source['id']
+        destination_id = destination['id']
+        if group_id != desc_id:
+            source_id = source_id[source_id.rfind(".") + 1:]
+            destination_id = destination_id[destination_id.rfind(".") + 1:]
+            lines = current_data['click'][desc_id].splitlines(True)
+            for line in lines:
+                if group_id + " ::" in line:
+                    end = line.rfind("(") if line.rfind("(") != -1 else line.rfind(";")
+                    element_class = line[line.rfind("::") + 2:end]
+            for line in lines:
+                check = element_class + " {"
+                print check
+                if check in line:
+                    lines = lines[:lines.index(line) + 1] + [source_id + ' -> '+ destination_id + " ;\n"] + lines[lines.index(line) + 1:]
+                    current_data['click'][desc_id] = ''.join(lines)
+                    break
+        else:
+            current_data['click'][desc_id] += '\n '+ source_id + ' -> '+ destination_id+' ;'
+        self.data_project = current_data
+        self.update()
+        result = True
+        return result
+
+    def get_remove_link(self, request):
+
+
+        result = False
+        current_data = json.loads(self.data_project)
+        parameters = request.POST.dict()
+        link = json.loads(parameters['link'])
+        source = link['source']
+        destination = link['target']
+        source_type = source['info']['type']
+        destination_type = destination['info']['type']
+        group_id = source['info']['group'][0]
+        desc_id = request.POST.get('element_desc_id')
+        source_id = source['id']
+        destination_id = destination['id']
+        if group_id != desc_id:
+            source_id = source_id[source_id.rfind(".") + 1:]
+            destination_id = destination_id[destination_id.rfind(".") + 1:]
+        lines = current_data['click'][desc_id].splitlines(True)
+        check = source_id + ' -> ' + destination_id
+        for line in lines:
+            if check in line:
+                lines.remove(line)
+        current_data['click'][desc_id] = ''.join(lines)
+        self.data_project = current_data
+        self.update()
+        result = True
+        return result
+
 
     def get_available_nodes(self, args):
         """Returns all available node """
@@ -108,18 +238,18 @@ class ClickProject(Project):
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-
-                current_data = {
-                    "id": node,
-                    "category_name": model_graph['nodes'][node]['label'],
-                    "types": [
-                        {
-                            "name": "generic",
-                            "id": node
-                        }
-                    ]
-                }
-                result.append(current_data)
+                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                    current_data = {
+                        "id": node,
+                        "category_name": model_graph['nodes'][node]['label'],
+                        "types": [
+                            {
+                                "name": "generic",
+                                "id": node
+                            }
+                        ]
+                    }
+                    result.append(current_data)
 
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
