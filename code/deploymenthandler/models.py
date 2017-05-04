@@ -20,7 +20,8 @@ import jsonfield
 from django.db import models
 from django.utils import timezone
 import logging
-from deploymenthandler.helpers.oshi import OshiHelper
+import importlib
+
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
@@ -69,12 +70,14 @@ class Deployment(models.Model):
 
     def launch(self):
         log.debug("launch Deployment")
-        deploy = OshiHelper(self.deployment_agent)
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
         return deploy.launch(self)
 
     def stop(self):
         log.debug("stop Deployment")
-        deploy = OshiHelper(self.deployment_agent)
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
         return deploy.stop(deployment_id=self.id)
 
     def delete(self, *args, **kwargs):
@@ -83,19 +86,29 @@ class Deployment(models.Model):
         super(Deployment, self).delete(*args, **kwargs)
 
     def get_status(self):
-        log.debug("monitoring Deployment")
-        deploy = OshiHelper(self.deployment_agent)
+        log.debug("Deployment get status")
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
         return deploy.get_deployment_status(deployment_id=self.id)
 
     def get_info(self):
-        log.debug("monitoring Deployment")
-        deploy = OshiHelper(self.deployment_agent)
+        log.debug("Deployment get info")
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
         return deploy.get_deployment_info(deployment_id=self.id)
 
     def open_shell(self, node_id=None):
-        log.debug("monitoring Deployment open shell")
-        deploy = OshiHelper(self.deployment_agent)
+        log.debug("Deployment open shell - get info about shell")
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
         return deploy.open_shell(self.id, node_id)
+
+    def _getHelperClass(self):
+        type_agent = self.deployment_agent['type']
+        my_module = importlib.import_module("deploymenthandler.helpers."+type_agent)
+        HelperClass = getattr(my_module, type_agent.capitalize() + "Helper")
+
+        return HelperClass
 
     def to_json(self):
         return {
