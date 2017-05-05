@@ -403,7 +403,7 @@ class EtsiProject(Project):
                             if nsVirtualLinkConnectivity['virtualLinkProfileId'] == vl_profile_id:
                                 vnfProfile['nsVirtualLinkConnectivity'].remove(nsVirtualLinkConnectivity)
             for sapd in current_data['nsd'][ns_id]['sapd']:
-                if sapd['nsVirtualLinkDescId'] == vl_id:
+                if 'nsVirtualLinkDescId' in sapd and sapd['nsVirtualLinkDescId'] == vl_id:
                     sapd['nsVirtualLinkDescId'] = None
             self.data_project = current_data
             self.update()
