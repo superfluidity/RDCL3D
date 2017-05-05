@@ -46,7 +46,9 @@ function initDropOnGraph() {
     dropZone.ondrop = function(e) {
         var group = graph_editor.getCurrentGroup()
         e.preventDefault();
-        var nodetype = e.dataTransfer.getData("text/plain");
+        var elemet_id = e.dataTransfer.getData("text/plain");
+        var nodetype = $('#'+elemet_id).attr('type-name');
+        console.log(nodetype);
         if (nodetype) {
             var type_name = graph_editor.getTypeProperty()[nodetype].name;
                 $('#div_chose_id').show();

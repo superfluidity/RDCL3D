@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+
+
+{% endblock %}
+
+{% block title_header_big %}
+    {{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+	<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="globalmenu">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href='{% url "deployment:open_deployment" deployment_id=deployment.id %}'><i class="fa fa-terminal fa-fw"></i><span>{{deployment.name}}</span></a></li>
+{% endblock %}
+
+
+
+{% block content_body %}
+  	{{ block.super }}
+ <div class="row">
+    {% if deployment.id  %}
+        <div class="col-sm-5">
+      <div class="box box-danger">
+        <div class="box-header with-border">
+              <i class="fa fa-warning"></i>
+
+              <h3 class="box-title">Warning</h3>
+        </div>
+          <div class="box-body">
+              <form role="form" method="post">
+                  {% csrf_token %}
+                  <div class="box-body">
+                        <p>The Deployment <strong>{{deployment.name}}</strong> will be deleted!</p>
+                      <!-- /.box-body -->
+                  </div>
+                   <div class="box-footer">
+                          <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+              </form>
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block resource_block %}
+  	{{ block.super }}
+
+<script>
+
+</script>
+{% endblock %}
+

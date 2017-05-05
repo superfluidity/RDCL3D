@@ -155,7 +155,7 @@ class EntityTemplate(object):
                     c = capabilities[name]
                     properties = {}
                     # first use the definition default value
-                    if c.properties:
+                    if hasattr(c, 'properties') and c.properties:
                         for property_name in c.properties.keys():
                             prop_def = c.properties[property_name]
                             if 'default' in prop_def:

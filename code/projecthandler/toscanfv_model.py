@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -440,26 +440,28 @@ class ToscanfvProject(Project):
         log.debug('get_available_nodes')
         try:
             result = []
-            # current_data = json.loads(self.data_project)
+            #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-                current_data = {
-                    "id": node,
-                    "category_name": model_graph['nodes'][node]['label'],
-                    "types": [
-                        {
-                            "name": "generic",
-                            "id": node
-                        }
-                    ]
-                }
-                result.append(current_data)
+                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                    current_data = {
+                        "id": node,
+                        "category_name": model_graph['nodes'][node]['label'],
+                        "types": [
+                            {
+                                "name": "generic",
+                                "id": node
+                            }
+                        ]
+                    }
+                    result.append(current_data)
 
-                # result = current_data[type_descriptor][descriptor_id]
+            #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []
         return result
+
 
     def get_generatehotemplate(self, request, descriptor_id, descriptor_type):
         """ Generate hot template for a TOSCA descriptor

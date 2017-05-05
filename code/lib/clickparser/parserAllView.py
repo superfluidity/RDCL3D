@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -117,7 +117,7 @@ def parserAllView(file_click, id):
             element_list = load_list(line,compound_list)
 
             compound_line=line[string.find(line, '{')+1:string.find(line, '}')]                 # contiene tutta la dichiarazione del compound element
-            name = subgraph_element_name(compound_line, compound_element, element)
+            name = subgraph_element_name(compound_line, compound_element, element, id)
             line = line[0:string.find(line, '{')]+name+line[string.find(line, '}')+1:]
 
         words2 = []

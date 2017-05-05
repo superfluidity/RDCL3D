@@ -67,7 +67,8 @@ dropZone.ondrop = function(e) {
                         'id': name,
                         'info': {
                             'type': nodetype,
-                            'group': [group]
+                            'group': [group],
+                            'desc_id': getUrlParameter('id'),
                         },
                         'x': e.layerX,
                         'y': e.layerY

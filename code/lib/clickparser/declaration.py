@@ -1,7 +1,7 @@
 #
 #   Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 #
-#   Licensed under the Apache License, Version 2.0 (the );
+#   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
 #
@@ -28,7 +28,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words,ele_class_d
 	elementclass_renamed = {}
 	words3 = []
 	ele_class_lists=[]
-
+	name_ele = ''
 	words = load_list(line,words)
 	control = False	
 

@@ -1,7 +1,7 @@
 /*
    Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
 
-   Licensed under the Apache License, Version 2.0 (the );
+   Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -42,6 +42,7 @@ dreamer.GraphEditor = (function(global) {
         this.lastKeyDown = -1;
         this._selected_node = undefined;
         this._selected_link = undefined;
+        this._edit_mode = true;
         this.filter_parameters = {
             node: {
                 type: [],
@@ -132,9 +133,9 @@ dreamer.GraphEditor = (function(global) {
                 if (self.lastKeyDown !== -1) return;
                 self.lastKeyDown = d3.event.keyCode;
                 if (self.lastKeyDown === CANC_BUTTON && self._selected_node != undefined) {
-                    self.removeNode(self._selected_node);
+                    self.removeNode(self._selected_node, null, showAlert);
                 } else if (self.lastKeyDown === CANC_BUTTON && self._selected_link != undefined) {
-                    self.removeLink(self._selected_link);
+                    self.removeLink(self._selected_link, null, showAlert);
                 }
 
             })

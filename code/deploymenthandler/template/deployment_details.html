@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+<!-- Codemirror core CSS -->
+    <link rel="stylesheet" href="{% static "codemirror/lib/codemirror.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/fold/foldgutter.css" %}" />
+    <link rel="stylesheet" href="{% static "codemirror/theme/neat.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/dialog/dialog.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/display/fullscreen.css" %}">
+    <link rel="stylesheet" href="{% static "codemirror/addon/display/autorefresh.js" %}">
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+Deployment
+{% endblock %}
+
+{% block title_header_small %}
+{{ block.super }}
+Details
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'deployment_base_left_sidebar.html' %}
+{% endblock %}
+
+
+{% block breadcrumb_body %}
+{{ block.super }}
+<li><a href='{% url "deployment:open_deployment" deployment_id=deployment.id %}'><i class="fa fa-terminal fa-fw"></i><span>{{deployment.name}}</span></a>
+</li>
+
+
+{% endblock %}
+
+{% block content_body %}
+{{ block.super }}
+{% csrf_token %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel box box-primary">
+            <div class="box-header with-border">
+                <h4 class="box-title">
+                    Deployment Details
+                </h4>
+            </div>
+            <div class="box-footer no-padding">
+                <ul class="nav nav-stacked">
+                    <li><a><b>Name:</b> <span class="pull-right">{{deployment.name}}</span></a>
+                    </li>
+                    <li><a href='{% url "projects:open_project" project_id=deployment.project_id %}'><b>Project Id:</b> <span
+                            class="pull-right">{{deployment.project_id}}</span></a></li>
+                    <li><a><b>Last updated:</b> <span class="pull-right">{{deployment.last_update}}</span></a>
+                    </li>
+                    <li><a><b>Owner:</b> <span
+                            class="pull-right">{{deployment.creator_name}}</span></a></li>
+
+                    <li><a><b>Status:</b>
+                        {% if deployment.status %}
+                        <span class="pull-right badge bg-green">{{deployment.status}}</span>
+                        {% else %}
+                        <span class="pull-right badge bg-red">{{deployment.status}}</span>
+                        {% endif %}
+                    </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel box box-primary  ">
+            <div class="box-header with-border">
+                <h4 class="box-title">
+                    Agent Details
+                </h4>
+            </div>
+            <div class="box-footer no-padding">
+                <ul class="nav nav-stacked">
+                    <li><a><b>Name:</b> <span class="pull-right">{{deployment.deployment_agent.name}}</span></a>
+                    </li>
+                    <li><a><b>Base URL:</b> <span
+                            class="pull-right">{{deployment.deployment_agent.base_url}}</span></a></li>
+                    <li><a><b>Type:</b> <span
+                            class="pull-right">{{deployment.deployment_agent.type}}</span></a></li>
+                    <li><a><b>Last updated:</b> <span class="pull-right">{{deployment.deployment_agent.last_update}}</span></a>
+                    </li>
+
+
+                </ul>
+
+            </div>
+    </div>
+</div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel box box-primary">
+            <div class="box-header with-border">
+                <h4 class="box-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false"
+                       class="collapsed">
+                        Deployment descriptor Source
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                <div class="box-body">
+                    <textarea id="d_d_source">
+
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block resource_block %}
+{{ block.super }}
+
+    <script src="{% static "codemirror/lib/codemirror.js" %}"></script>
+    <script src="{% static "codemirror/lib/formatting.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/foldcode.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/foldgutter.js" %}"></script>
+    <script src="{% static "codemirror/addon/fold/brace-fold.js" %}"></script>
+    <script src="{% static "codemirror/mode/javascript/javascript.js" %}"></script>
+    <script src="{% static "codemirror/mode/xml/xml.js" %}"></script>
+    <script src="{% static "codemirror/mode/markdown/markdown.js" %}"></script>
+    <script src="{% static "codemirror/addon/search/searchcursor.js" %}"></script>
+    <script src="{% static "codemirror/addon/search/search.js" %}"></script>
+    <script src="{% static "codemirror/addon/dialog/dialog.js" %}"></script>
+    <script src="{% static "codemirror/addon/display/autorefresh.js" %}"></script>
+    <script src="{% static "codemirror/addon/edit/matchbrackets.js" %}"></script>
+    <script src="{% static "codemirror/addon/edit/closebrackets.js" %}"></script>
+    <script src="{% static "codemirror/addon/display/fullscreen.js" %}"></script>
+    <script src="{% static "codemirror/keymap/sublime.js" %}"></script>
+
+    <script src="{% static "src/deploymenthandler/deployment_util.js" %}"></script>
+
+<script>
+    var update = setInterval(function(){updateDeploymentInfo({'id': {{deployment.id}} });}, 3000);
+</script>
+{% endblock %}
