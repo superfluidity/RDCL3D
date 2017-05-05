@@ -195,6 +195,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type == 'vnffg':
             # log.debug("Add ") group_id, element_id
             result = self.add_vnffg(group_id, element_id)
+        elif element_type == 'vnf_click_vdu':
+            result = self.add_vnf_click_vdu(group_id, element_id)
         return result
 
     def get_remove_element(self, request):
@@ -310,6 +312,25 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         except Exception as e:
             log.exception(e)
             result = None  # TODO maybe we should use False ?
+        return result
+
+    def add_vnf_click_vdu(self, vnf_id, vdu_id):
+        try:
+            current_data = json.loads(self.data_project)
+            # utility = Util()
+            vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
+            vdu_descriptor['vduId'] = vdu_id
+            vdu_descriptor['intCpd'] = []
+            vdu_descriptor['vduNestedDesc'] = vdu_id
+            vdu_descriptor['vduNestedDescType'] =  'click'
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            current_data['click'][vdu_id] = ''
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_available_nodes(self, args):
