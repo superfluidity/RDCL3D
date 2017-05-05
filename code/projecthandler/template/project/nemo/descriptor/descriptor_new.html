@@ -1,0 +1,211 @@
+{% extends "descriptor/descriptor_view_base.html" %}
+
+{% load staticfiles %}
+
+{% block title_header_big %}
+{{ block.super }}
+Create new {{ descriptor_type }} descriptor
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'nemo/nemo_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+<li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }}  Descriptors</a></li>
+<li>Create Descriptor</li>
+{% endblock %}
+
+{% block tab_pane_button_list %}
+{{ block.super }}
+<li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
+<li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
+<li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
+{% endblock %}
+
+{% block nav_buttons_list %}
+{{ block.super }}
+<li class="pull-right">
+    <button type="button" id="upload_button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i
+            class="fa fa-save"></i> Save
+    </button>
+</li>
+<li class="pull-right">
+    <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i
+            class="fa fa-sitemap"></i> Save and Show Graph
+    </button>
+</li>
+<li class="pull-right">
+    <button id="cancel" type="button" class="btn btn-block btn-primary btn-sm" onclick="cancel(this.id)"><i
+            class="fa fa-times"></i> Cancel
+    </button>
+</li>
+{% endblock %}
+
+{% block tab_pane_list %}
+{{ block.super }}
+<div class="tab-pane active" id="yaml">
+                            <textarea id="code_editor_yaml">
+
+                            </textarea>
+</div>
+<!-- /.tab-pane-->
+
+<div class="tab-pane" id="json">
+                            <textarea id="code_editor_json">
+
+                            </textarea>
+</div>
+
+<div class="tab-pane" id="upload">
+
+    <!-- Standar Form -->
+    <h4>Select Project Descriptor File from your computer</h4>
+    <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+        <div class="form-inline">
+            <div class="form-group">
+                <input type="file" name="files[]" id="js-upload-files" multiple>
+            </div>
+        </div>
+    </form>
+
+    <!-- Drop Zone -->
+    <h4>Or drag and drop file below</h4>
+    <div class="upload-drop-zone" id="drop-zone">
+        Just drag and drop file here
+    </div>
+</div>
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+
+<script>
+
+    var dropZone = document.getElementById('drop-zone');
+    dropZone.ondrop = function(e) {
+        e.preventDefault();
+        this.className = 'upload-drop-zone';
+        create(e.dataTransfer.files, true);
+    }
+
+    dropZone.ondragover = function() {
+        this.className = 'upload-drop-zone drop';
+        return false;
+    }
+
+    dropZone.ondragleave = function() {
+        this.className = 'upload-drop-zone';
+        return false;
+    }
+
+
+        var editorJSON;
+        var editorYaml;
+        $(document).ready(function () {
+           var myJsonTextArea = document.getElementById("code_editor_json");
+           editorJSON = CodeMirror(function(elt) {
+                            myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
+                        }, json_editor_settings );
+
+            editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
+            var that = this;
+            editorJSON.setOption("autoRefresh", true);
+
+
+
+
+           var myYamlTextArea = document.getElementById("code_editor_yaml");
+           editorYaml = CodeMirror(function(elt) {
+                            myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
+                        }, yaml_editor_settings );
+           var des_strings = {{ descriptor_strings|safe }};
+           editorYaml.setValue(des_strings.descriptor_string_yaml);
+           editorYaml.setOption("autoRefresh", true);
+
+
+
+            setTimeout(function() {
+                console.log("YAML/JSON refresh");
+
+                editorYaml.refresh();
+                editorJSON.refresh();
+            },1);
+
+
+        });
+
+
+        function create(fs, dropzone){
+            var id = $('.nav-tabs .active').attr('id');
+            if (dropzone) id = 'file_li'
+            var type, text ;
+            var data = new FormData();
+            switch(id) {
+                case 'yaml_li':
+                    type = 'yaml';
+                    text = editorYaml.getValue();
+                    break;
+                case 'json_li':
+                    type = 'json';
+                    text = editorJSON.getValue();
+                    break;
+                case 'file_li':
+                    type = 'file'
+
+                    var files = dropzone ? fs : document.getElementById('js-upload-files').files;
+                    if (!files || !files.length) {
+                      files = document.getElementById('drop-zone').files
+                      if(!files || !files.length){
+                        alert("Seletc a file")
+                        return
+                      }
+                    }
+                    console.log(files[0])
+                    var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                    if(!(extension == 'json' || extension =='yaml' || extension == 'nemo' )){
+                        alert("The file must be .nemo, .json or .yaml");
+                        return
+                    }
+
+                     data.append('file', files[0]);
+                    break;
+            }
+            data.append('csrfmiddlewaretoken','{{csrf_token}}');
+            data.append('type', type);
+            data.append('text', text);
+            data.append('id', '{{descriptor_id}}');
+            console.log(text);
+            $.ajax({
+                    url: "new",
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(result) {
+                        console.log(result)
+                        if(fs =='save_show_graph'){
+                            window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id='+result.descriptor_id
+                        }else{
+                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+
+                        }
+                    },
+                    error: function(result) {
+                        alert("some error");
+                    }
+                });
+        }
+
+    function cancel(id){
+        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+    }
+
+
+
+</script>
+{% endblock %}
