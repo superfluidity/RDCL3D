@@ -4,26 +4,25 @@
 
 {% block title_header_big %}
 {{ block.super }}
-Create new {{descriptor_type}} Descriptor
+Create new {{ descriptor_type }} descriptor
 {% endblock %}
 
 {% block left_sidebar %}
-{% include 'click/click_project_left_sidebar.html' %}
+{% include 'superfluidity/superfluidity_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
 {{ block.super }}
 <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{descriptor_type}} Descriptors</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }}  Descriptors</a></li>
 <li>Create Descriptor</li>
 {% endblock %}
 
 {% block tab_pane_button_list %}
 {{ block.super }}
-<li class="active" id="editor_li"><a href="#editor_tab" data-toggle="tab"><i class="fa fa-file-code-o"></i>
-                    Editor</a></li>
+<li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
+<li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
 <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
-
 {% endblock %}
 
 {% block nav_buttons_list %}
@@ -47,12 +46,18 @@ Create new {{descriptor_type}} Descriptor
 
 {% block tab_pane_list %}
 {{ block.super }}
-<div class="active tab-pane" id="editor_tab">
-                    <textarea id="code_editor">
-                    </textarea>
-                </div>
-                <!-- /.tab-pane-->
+<div class="tab-pane active" id="yaml">
+                            <textarea id="code_editor_yaml">
 
+                            </textarea>
+</div>
+<!-- /.tab-pane-->
+
+<div class="tab-pane" id="json">
+                            <textarea id="code_editor_json">
+
+                            </textarea>
+</div>
 
 <div class="tab-pane" id="upload">
 
@@ -97,46 +102,41 @@ Create new {{descriptor_type}} Descriptor
         return false;
     }
 
-    var click_editor_settings = {
-            id: "code_editor",
-            mode: "text",
-            showCursorWhenSelecting: true,
-            autofocus: true,
-            lineNumbers: true,
-            lineWrapping: true,
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            extraKeys: {
-                "F11": function(cm) {
-                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-                },
-                "Esc": function(cm) {
-                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-                },
-                "Ctrl-Q": function(cm) {
-                    cm.foldCode(cm.getCursor());
-                }
-            },
-            theme: "neat",
-            keyMap: "sublime",
-        }
 
-
-        var editorClick;
+        var editorJSON;
+        var editorYaml;
         $(document).ready(function () {
-           var myTextArea = document.getElementById("code_editor");
-           editorClick = CodeMirror(function(elt) {
-                            myTextArea.parentNode.replaceChild(elt, myTextArea);
-                        }, click_editor_settings );
+           var myJsonTextArea = document.getElementById("code_editor_json");
+           editorJSON = CodeMirror(function(elt) {
+                            myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
+                        }, json_editor_settings );
 
-            editorClick.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
-            editorClick.setOption("autoRefresh", true);
+            editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
+            var that = this;
+            editorJSON.setOption("autoRefresh", true);
+
+
+
+
+           var myYamlTextArea = document.getElementById("code_editor_yaml");
+           editorYaml = CodeMirror(function(elt) {
+                            myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
+                        }, yaml_editor_settings );
+           var des_strings = {{ descriptor_strings|safe }};
+           editorYaml.setValue(des_strings.descriptor_string_yaml);
+           editorYaml.setOption("autoRefresh", true);
+
+
+
+            setTimeout(function() {
+                console.log("YAML/JSON refresh");
+
+                editorYaml.refresh();
+                editorJSON.refresh();
+            },1);
+
 
         });
-
-
 
 
         function create(fs, dropzone){
@@ -145,10 +145,13 @@ Create new {{descriptor_type}} Descriptor
             var type, text ;
             var data = new FormData();
             switch(id) {
-
-                case 'editor_li':
-                    type = 'click';
-                    text = editorClick.getValue();
+                case 'yaml_li':
+                    type = 'yaml';
+                    text = editorYaml.getValue();
+                    break;
+                case 'json_li':
+                    type = 'json';
+                    text = editorJSON.getValue();
                     break;
                 case 'file_li':
                     type = 'file'
@@ -163,8 +166,8 @@ Create new {{descriptor_type}} Descriptor
                     }
                     console.log(files[0])
                     var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                    if(!(extension == 'click')){
-                        alert("The file must be .click" );
+                    if(!(extension == 'json' || extension =='yaml')){
+                        alert("The file must be .json or .yaml");
                         return
                     }
 
@@ -172,9 +175,9 @@ Create new {{descriptor_type}} Descriptor
                     break;
             }
             data.append('csrfmiddlewaretoken','{{csrf_token}}');
-            data.append('id', getUrlParameter('id'));
             data.append('type', type);
             data.append('text', text);
+            data.append('id', '{{descriptor_id}}');
             console.log(text);
             $.ajax({
                     url: "new",
