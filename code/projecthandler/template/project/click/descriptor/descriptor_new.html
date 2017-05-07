@@ -137,6 +137,8 @@ Edit {{descriptor_type}} Descriptor
         });
 
 
+
+
         function create(fs, dropzone){
             var id = $('.nav-tabs .active').attr('id');
             if (dropzone) id = 'file_li'
@@ -145,7 +147,7 @@ Edit {{descriptor_type}} Descriptor
             switch(id) {
 
                 case 'editor_li':
-                    type = 'json';
+                    type = 'click';
                     text = editorClick.getValue();
                     break;
                 case 'file_li':
@@ -170,7 +172,7 @@ Edit {{descriptor_type}} Descriptor
                     break;
             }
             data.append('csrfmiddlewaretoken','{{csrf_token}}');
-            data.append('desc_name', text);
+            data.append('id', getUrlParameter('id'));
             data.append('type', type);
             data.append('text', text);
             console.log(text);
