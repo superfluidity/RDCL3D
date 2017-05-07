@@ -71,11 +71,12 @@ dreamer.ModelGraphEditor = (function (global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         if (!args.graph_data) {
             d3.json(data_url, function (error, data) {
+
                 self.d3_graph.nodes = data.vertices;
                 self.d3_graph.links = data.edges;
                 self.d3_graph.graph_parameters = data.graph_parameters;
                 self.model = data.model;
-
+                console.log(JSON.stringify(self.d3_graph))
                 self.refreshGraphParameters(self.d3_graph.graph_parameters);
                 self.refresh();
                 self.startForce();
