@@ -76,7 +76,6 @@ dreamer.ModelGraphEditor = (function (global) {
                 self.d3_graph.links = data.edges;
                 self.d3_graph.graph_parameters = data.graph_parameters;
                 self.model = data.model;
-                console.log(JSON.stringify(self.d3_graph))
                 self.refreshGraphParameters(self.d3_graph.graph_parameters);
                 self.refresh();
                 self.startForce();

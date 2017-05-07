@@ -144,6 +144,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             elif data_type == 'yaml':
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            elif data_type == 'click':
+                new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False

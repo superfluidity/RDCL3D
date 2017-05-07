@@ -4,17 +4,17 @@
 
 {% block title_header_big %}
 {{ block.super }}
-Create new {{descriptor_type}} Descriptor
+Create new {{ descriptor_type }} descriptor
 {% endblock %}
 
 {% block left_sidebar %}
-{% include 'click/click_project_left_sidebar.html' %}
+{% include 'superfluidity/superfluidity_project_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
 {{ block.super }}
 <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
-<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{descriptor_type}} Descriptors</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }}  Descriptors</a></li>
 <li>Create Descriptor</li>
 {% endblock %}
 
@@ -23,7 +23,6 @@ Create new {{descriptor_type}} Descriptor
 <li class="active" id="editor_li"><a href="#editor_tab" data-toggle="tab"><i class="fa fa-file-code-o"></i>
                     Editor</a></li>
 <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
-
 {% endblock %}
 
 {% block nav_buttons_list %}
