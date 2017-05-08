@@ -20,13 +20,13 @@ import copy
 import json
 import os.path
 import yaml
-from lib.util import Util
+import zipfile
 import logging
-from django.db import models
+from lib.util import Util
+from StringIO import StringIO
+
 from projecthandler.click_model import ClickProject
 from projecthandler.etsi_model import EtsiProject
-from projecthandler.models import Project
-
 from lib.superfluidity.superfluidity_parser import SuperfluidityParser
 from lib.superfluidity.superfluidity_rdcl_graph import SuperfluidityRdclGraph
 
@@ -324,7 +324,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             vdu_descriptor['vduId'] = vdu_id
             vdu_descriptor['intCpd'] = []
             vdu_descriptor['vduNestedDesc'] = vdu_id
-            vdu_descriptor['vduNestedDescType'] =  'click'
+            vdu_descriptor['vduNestedDescType'] = 'click'
             current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
             current_data['click'][vdu_id] = ''
             self.data_project = current_data
@@ -362,3 +362,21 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = []
         return result
 
+    def get_zip_archive(self):
+        in_memory = StringIO()
+        try:
+            current_data = json.loads(self.data_project)
+            zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+            for desc_type in current_data:
+                for current_desc in current_data[desc_type]:
+                    if desc_type != 'click':
+                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
+                    else:
+                        zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
+
+            zip.close()
+        except Exception as e:
+            log.debug(e)
+
+        in_memory.flush()
+        return in_memory
