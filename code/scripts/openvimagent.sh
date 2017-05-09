@@ -8,7 +8,8 @@
 
 NSDFILE="nsd.json"
 FLAVORUUID="5a258552-0a51-11e7-a086-0cc47a7794be"
-OPENVIM="/home/openvim/bin/openvim"
+# openvim client
+OPENVIM="/home/openvim/openvim-one/openvim/openvim" 
 CLICKINJECTOR="/home/openvim/rdcl3dopenvim/configinjector"
 STAMINALCLICKOSIMAGE="/home/openvim/rdcl3dopenvim/clickos_x86_64_staminal"
 
@@ -52,7 +53,7 @@ generatenetworkyaml() {
     cat - <<EOF 
 network:
     name:               net-${1}
-    type:               data
+    type:               bridge_data
     provider:           OVS:default
     enable_dhcp:        false
     shared:             false
@@ -104,7 +105,7 @@ mkdir -p "$YAMLDIR"
 # 1. create and onboard the ClickOS images
 
 # take the VNF IDs from the NSD
-vnfids="$(jq -rc '.["vnfdId"]' ${NSDFILE} | transformlist)"
+vnfids="$(jq -r -c '.["vnfdId"]' ${NSDFILE} | transformlist)"
 
 for vnfid in $vnfids; do
     echo "vnfid: $vnfid"
@@ -118,7 +119,7 @@ for vnfid in $vnfids; do
     # search for all the vduIds of the VDUs that have vduNestedDescType == "click"
     vduids=$(jq '.["vdu"][] | select(.vduNestedDescType == "click") | .["vduId"]' "${vnfid}.json" | transformlist)
     # ASSUMPTION: we have at most one vduid per vnfid
-    vduid=$(echo vduids | awk '{print $1}')
+    vduid=$(echo $vduids | awk '{print $1}')
 
     echo "vduid: $vduid"
 
@@ -137,20 +138,22 @@ for vnfid in $vnfids; do
 
     # copy the image to the server. The way to do this is not defined by openvim, so we use scp
     # ASSUMPTION: we are using scp to transfer images to openvim
-    scp "${YAMLDIR}/clickos_${vduid}" root@openvimserver:/var/lib/libvirt/images/
+    scp "${YAMLDIR}/clickos_${vduid}" root@127.0.0.1:/var/lib/libvirt/images/
 
     # create the yaml for the image
     echo "generating yaml: image-clickos-${vduid}.yaml"
     generateimageyaml ${vduid} > ${YAMLDIR}/image-clickos-${vduid}.yaml
     # onboard the image and get its UUID
-    UUID_images[${vduid}]=$($OPENVIM image-create --name ${vduid} ${YAMLDIR}/image-clickos-${vduid}.yaml) 
+    UUID_images[${vduid}]=$($OPENVIM image-create ${YAMLDIR}/image-clickos-${vduid}.yaml | awk '{print $1}') 
+    # TODO: check if onboarding was successful
+    echo "UUID: " ${UUID_images[${vduid}]}
 
 done
 
 
 # 2. create the networks corresponding to the virtuallinks
 
-vlids="$(jq -rc '.["virtualLinkDesc"][] | .["virtualLinkDescId"]' ${NSDFILE} | transformlist)"
+vlids="$(jq -r -c '.["virtualLinkDesc"][] | .["virtualLinkDescId"]' ${NSDFILE} | transformlist)"
 
 for vlid in $vlids; do
     echo "virtualLinkDescId: $vlid"
@@ -158,7 +161,12 @@ for vlid in $vlids; do
     echo "generating yaml: net-${vlid}.yaml"
     generatenetworkyaml ${vlid} > ${YAMLDIR}/net-${vlid}.yaml
     # onboard the network and get its UUID
-    UUID_networks[${vlid}]=$($OPENVIM net-create --name ${vlid} ${YAMLDIR}/net-${vlid}.yaml)
+    UUID_networks[${vlid}]=$($OPENVIM net-create ${YAMLDIR}/net-${vlid}.yaml | awk '{print $1}')
+
+    # FIXME: openvim does not yet create the ovs bridge automatically, so here we create it manually
+    uuid=${UUID_networks[${vlid}]}
+    vlanid=$($OPENVIM net-list -vvv $uuid | grep 'provider:vlan' | awk '{print $2}')
+    sudo ovs-vsctl --may-exist add-br ovim-${vlanid}
 done
 
 
@@ -167,7 +175,7 @@ done
 # find the mapping between each virtualLinkProfileId and virtualLinkDescId 
 # ASSUMPTION: we have only one nsDf in the NSD
 # populate the VLPID2VLID array
-eval "$(jq -rc '.["nsDf"][0]["virtualLinkProfile"][] | [.["virtualLinkProfileId"], .["virtualLinkDescId"]]' $NSDFILE | transformlist | awk '{print "VLPID2VLID[\"" $1 "\"]=" $2 }')"
+eval "$(jq -r -c '.["nsDf"][0]["virtualLinkProfile"][] | [.["virtualLinkProfileId"], .["virtualLinkDescId"]]' $NSDFILE | transformlist | awk '{print "VLPID2VLID[\"" $1 "\"]=" $2 }')"
 
 for vnfid in $vnfids; do
     echo "vnfid: $vnfid"
@@ -175,6 +183,10 @@ for vnfid in $vnfids; do
     vduid=${VNF2VDU[$vnfid]}
 
     echo "vduid: $vduid"
+    if [ -z "$vduid" ]; then
+        echo "skipping..."
+        continue
+    fi
 
     echo "image UUID: ${UUID_images[$vduid]}"
     
@@ -184,13 +196,17 @@ for vnfid in $vnfids; do
 
     # search for the connection points of this VNF in the nsd, and their associated virtualLinkProfileId, to find the UUIDs of the networks
     # ASSUMPTION: on a virtuallink there is at most one extCP per VNF (i.e. a VNF does not have two interfaces on the same network)
-    for line in $(jq -rc '.["nsDf"][0]["vnfProfile"][] | select(.vnfdId == "'${vnfid}'") | .["nsVirtualLinkConnectivity"][] | select(.["virtualLinkProfileId"] != null) | [.["cpdId"][0], .["virtualLinkProfileId"]]' $NSDFILE | transformlist); do
+    for line in $(jq -r -c '.["nsDf"][0]["vnfProfile"][] | select(.vnfdId == "'${vnfid}'") | .["nsVirtualLinkConnectivity"][] | select(.["virtualLinkProfileId"] != null) | [.["cpdId"][0], .["virtualLinkProfileId"]]' $NSDFILE); do
+
+        echo "line: " $line
 
         # iterate on the external connection points of this VNF
-        cpdId=$(echo $line | awk '{print $1}')
+        cpdId=$(echo $line | transformlist  | awk '{print $1}')
 
         # each external connection point is connected to a virtuallink
-        virtualLinkProfileId=$(echo $line | awk '{print $2}')
+        virtualLinkProfileId=$(echo $line | transformlist | awk '{print $2}')
+
+        echo "vlid: $virtualLinkProfileId"
 
         # virtualLinkProfileId -> virtualLinkDescId
         vlid=${VLPID2VLID[$virtualLinkProfileId]}
@@ -200,10 +216,10 @@ for vnfid in $vnfids; do
 
         # now search for the corresponding internalIfRef 
         # cpdId -> intVirtualLinkDesc
-        intVirtualLinkDesc=$(jq -rc '.["vnfExtCpd"][] | select(.["cpdId"] == "'${cpdId}'") | .["intVirtualLinkDesc"]' ${vldid}.json | sed 's/"//')
+        intVirtualLinkDesc=$(jq -r -c '.["vnfExtCpd"][] | select(.["cpdId"] == "'${cpdId}'") | .["intVirtualLinkDesc"]' ${vnfid}.json | sed 's/"//')
 
         # intVirtualLinkDesc -> internalIfRef
-        internalIfRef=$( jq -rc '.["vdu"][0]["intCpd"][] | select(.["intVirtualLinkDesc"] == "'${intVirtualLinkDesc}'") | [.["intVirtualLinkDesc"], .["internalIfRef"]]' ${vldid}.json | sed 's/"//')
+        internalIfRef=$( jq -r -c '.["vdu"][0]["intCpd"][] | select(.["intVirtualLinkDesc"] == "'${intVirtualLinkDesc}'") | .["internalIfRef"]' ${vnfid}.json | sed 's/"//')
 
         # populate the NETUUIDS array 
         NETUUIDS[$internalIfRef]=$netUUID
@@ -212,6 +228,6 @@ for vnfid in $vnfids; do
     # generate the YAML for this VNF
     generatevmyaml ${vnfid} ${UUID_images[$vduid]} ${NETUUIDS[@]} > ${YAMLDIR}/vm-clickos-${vnfid}.yaml
     # onboard
-    $OPENVIM vm create ${YAMLDIR}/vm-clickos-${vnfid}.yaml
+    $OPENVIM vm-create ${YAMLDIR}/vm-clickos-${vnfid}.yaml
 done
 
