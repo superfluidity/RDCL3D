@@ -39,21 +39,23 @@ def importprojectjson(project, model={}, positions={}):
     # args = parse_cmd_line()
     all_edges = []
     all_vertices = []
-    for click in project['click']:
-        type_view = 'AllView'
-        json_click = run_command(type_view, project['click'][click], click)
-        '''
-        if len(nx_topology)!=0:
-            xml2py(nx_topology)
-            #nx.draw(nx_topology)
-            #plt.show()
-        '''
-        json_click = json.loads(json_click)
-        all_vertices = all_vertices + json_click['vertices']
-        for edge in json_click['edges']:
-            if 'click' in edge['group']:
-                edge['group'][edge['group'].index("click")] = click
-        all_edges = all_edges + json_click['edges']
+    json_click = {}
+    if 'click' in project:
+        for click in project['click']:
+            type_view = 'AllView'
+            json_click = run_command(type_view, project['click'][click], click)
+            '''
+            if len(nx_topology)!=0:
+                xml2py(nx_topology)
+                #nx.draw(nx_topology)
+                #plt.show()
+            '''
+            json_click = json.loads(json_click)
+            all_vertices = all_vertices + json_click['vertices']
+            for edge in json_click['edges']:
+                if 'click' in edge['group']:
+                    edge['group'][edge['group'].index("click")] = click
+            all_edges = all_edges + json_click['edges']
     json_click['model'] = model
     json_click['vertices'] = all_vertices
     json_click['edges'] = all_edges

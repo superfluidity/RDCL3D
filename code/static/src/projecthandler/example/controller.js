@@ -19,21 +19,29 @@ dreamer.ExampletokenController = (function(global) {
     }
 
 
-    ExampletokenController.prototype.addNode = function(self, node, success, error) {
+    ExampletokenController.prototype.addNode = function(graph_editor, node, success, error) {
         log('addNode');
-        new dreamer.GraphRequests().addNode(node, null, function() {
+        var data_to_send = {
+                'group_id': node.info.group[0],
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+                'x': node.x,
+                'y': node.y
+         };
+        new dreamer.GraphRequests().addNode(data_to_send, null, function() {
             if (success)
                 success();
         },error);
     };
 
-    ExampletokenController.prototype.addLink = function(self, link, success, error) {
+    ExampletokenController.prototype.addLink = function(graph_editor, link, success, error) {
         log('addLink');
 
         new dreamer.GraphRequests().addLink(link, null, function() {
-            self._deselectAllNodes();
+            graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                self.parent.removeLink.call(self, old_link[0].index);
+                graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
             }
             if (success) {
                 success();
@@ -41,7 +49,7 @@ dreamer.ExampletokenController = (function(global) {
         },error);
     };
 
-    ExampletokenController.prototype.removeNode = function(self, node, success, error) {
+    ExampletokenController.prototype.removeNode = function(graph_editor, node, success, error) {
         log('removeNode');
         new dreamer.GraphRequests().removeNode(node, null, function() {
             if (success) {
@@ -50,7 +58,7 @@ dreamer.ExampletokenController = (function(global) {
         },error);
     };
 
-    ExampletokenController.prototype.removeLink = function(self, link, success, error) {
+    ExampletokenController.prototype.removeLink = function(graph_editor, link, success, error) {
         log('removeLink');
         var s = link.source;
         var d = link.target;
