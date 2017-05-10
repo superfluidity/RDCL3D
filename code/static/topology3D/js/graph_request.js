@@ -43,8 +43,8 @@ dreamer.GraphRequests = (function(global) {
         //FIXME questo metodo dovrebbere essere generico
         if(args.existing_element)
             data.append('existing_element', args.existing_element ? args.existing_element : false)
-        if (choice)
-            data.append('choice', choice);
+        //if (choice)
+        //    data.append('choice', choice);
         $.ajax({
             url: "addelement",
             type: 'POST',

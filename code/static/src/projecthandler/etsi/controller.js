@@ -90,7 +90,8 @@ dreamer.EtsiController = (function(global) {
                 'element_type': 'vnf_vdu_cp',
                 'element_desc_id': node.info.desc_id,
                 'x': node.x - (node.x * 0.1),
-                'y': node.y - (node.y * 0.1)
+                'y': node.y - (node.y * 0.1),
+                'choice': vdu_id
             }
             if (success)
                 success();
@@ -125,7 +126,8 @@ dreamer.EtsiController = (function(global) {
                     'element_type': node.info.type,
                     'element_desc_id': node.info.desc_id,
                     'x': node.x,
-                    'y': node.y
+                    'y': node.y,
+                    'choice': choice
                 };
                 new dreamer.GraphRequests().addNode(data_to_send, choice, function() {
                     if (success)

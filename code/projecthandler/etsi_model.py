@@ -218,7 +218,9 @@ class EtsiProject(Project):
         elif element_type == 'vnf_vdu':
             result = self.add_vnf_vdu(group_id, element_id)
         elif element_type == 'vnf_vdu_cp':
+
             vdu_id = request.POST.get('choice')
+            print 'vnf_vdu_cp', type(vdu_id)
             result = self.add_vnf_vducp(group_id, vdu_id, element_id)
         elif element_type == 'vnffg':
             # log.debug("Add ") group_id, element_id

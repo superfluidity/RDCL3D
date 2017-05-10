@@ -33,8 +33,7 @@ dreamer.SuperfluidityController = (function(global) {
         var vnf_vdus = $.grep(graph_editor.d3_graph.nodes, function(e) {
             return (e.info.group.indexOf(vnf_id) >= 0 && (e.info.type == 'vnf_vdu' || e.info.type == 'vnf_click_vdu'));
         });
-        if (success)
-            success();
+
         if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <= 0) {
             alert('You should add a VDU')
         } else {
@@ -43,9 +42,18 @@ dreamer.SuperfluidityController = (function(global) {
                 var target = choice;
                 choice = $.grep(vnf_vdus, function(e){ return e.id == choice; });
                 console.log(choice)
-                choice = vnf_vdus[0].info.type == 'vnf_vdu' ? choice : vnf_vdus[0].vduId;
-
-                new dreamer.GraphRequests().addNode(node, choice, function() {
+                var choiceId = choice[0].info.type == 'vnf_vdu' ? choice[0].id : choice[0].vduId;
+                var data_to_send = {
+                'group_id': node.info.group[0],
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+                'x': node.x,
+                'y': node.y,
+                'choice': choiceId,
+                 };
+                 console.log(typeof choiceId,data_to_send);
+                new dreamer.GraphRequests().addNode(data_to_send, choice, function() {
                     var link = {
                         source: node.id,
                         target: target,
@@ -54,7 +62,8 @@ dreamer.SuperfluidityController = (function(global) {
                     };
 
                     graph_editor.parent.addLink.call(graph_editor, link);
-
+                    if (success)
+                        success();
                     $('#modal_create_link_chooser').modal('hide');
                 });
             });

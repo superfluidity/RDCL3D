@@ -41,6 +41,9 @@ DESCRIPTOR_TEMPLATE_SUFFIX = '.json'
 GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/superfluidity/superfluidity.yaml'
 EXAMPLES_FOLDER = 'usecases/SUPERFLUIDITY/'
 
+etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vnf_vdu_cp', 'vnffg']
+sf_elements = ['vnf_click_vdu']
+click_elements = ['element', 'compound_element', 'class_element']
 
 class SuperfluidityProject(EtsiProject, ClickProject):
     """Superfluidity Project class
@@ -150,12 +153,10 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 log.debug('Create descriptor: Unknown data type')
                 return False
 
-            # schema = cls.loadjsonfile("lib/superfluidity/schemas/"+type_descriptor+".json")
-            #reference_schema = self.get_json_schema_by_type(type_descriptor)
-            # validate = Util.validate_json_schema(reference_schema, new_descriptor)
+
             validate = False
             new_descriptor_id = descriptor_name
-            if not type_descriptor in current_data:
+            if type_descriptor not in current_data:
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data
@@ -172,80 +173,34 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
     def get_add_element(self, request):
         result = False
-        #group_id = request.POST.get('group_id')
-        #element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
-        #existing_element = request.POST.get('existing_element')
-        print "superfluidity add_element", element_type
-        ##FIXME rimuovere le if/elif
-        etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vnffg', 'vnf_click_vdu']
-        click_elements = ['element', 'compound_element', 'class_element']
 
+
+        print 'get_add_element', element_type
         if element_type in etsi_elements:
             result = EtsiProject.get_add_element(self, request)
+        elif element_type in sf_elements:
+            vnf_id = request.POST.get('group_id')
+            vdu_id = request.POST.get('element_id')
+            result = self.add_vnf_click_vdu(vnf_id, vdu_id)
         elif element_type in click_elements:
-            result = ClickProject.get_add_element(self,request)
+            result = ClickProject.get_add_element(self, request)
 
-
-
-        # if element_type == 'ns_cp':
-        #     result = self.add_ns_sap(group_id, element_id)
-        # elif element_type == 'ns_vl':
-        #     result = self.add_ns_vl(group_id, element_id)
-        # elif element_type == 'vnf':
-        #     if existing_element == 'true':
-        #         result = self.add_ns_existing_vnf(group_id, element_id)
-        #     else:
-        #         result = self.add_ns_vnf(group_id, element_id)
-        # elif element_type == 'vnf_vl':
-        #     result = self.add_vnf_intvl(group_id, element_id)
-        # elif element_type == 'vnf_ext_cp':
-        #     result = self.add_vnf_vnfextcpd(group_id, element_id)
-        # elif element_type == 'vnf_vdu':
-        #     result = self.add_vnf_vdu(group_id, element_id)
-        # elif element_type == 'vnf_vdu_cp':
-        #     vdu_id = request.POST.get('choice')
-        #     result = self.add_vnf_vducp(group_id, vdu_id, element_id)
-        # elif element_type == 'vnffg':
-        #     # log.debug("Add ") group_id, element_id
-        #     result = self.add_vnffg(group_id, element_id)
-        # elif element_type == 'vnf_click_vdu':
-        #     result = self.add_vnf_click_vdu(group_id, element_id)
-        #     #if existing_element == 'true':
-        #     #    result = self.add_vnf_click_vdu(group_id, element_id)
-        #     #else:
-        #     #    result = self.add_vnf_click_vdu(group_id, element_id)
-        #
-        # else:
-        #     result = super(EtsiProject, self).get_add_element(request)
-
-        print "superfluidity result", result
         return result
 
     def get_remove_element(self, request):
 
         result = False
-        group_id = request.POST.get('group_id')
-        element_id = request.POST.get('element_id')
+
         element_type = request.POST.get('element_type')
-        log.debug('in get_remove_element : ' + str(element_id))  # TODO log
-        if element_type == 'ns_cp':
-            result = self.remove_ns_sap(group_id, element_id)
-        elif element_type == 'ns_vl':
-            result = self.remove_ns_vl(group_id, element_id)
-        elif element_type == 'vnf':
-            result = self.remove_ns_vnf(group_id, element_id)
-        elif element_type == 'vnf_vl':
-            result = self.remove_vnf_intvl(group_id, element_id)
-        elif element_type == 'vnf_ext_cp':
-            result = self.remove_vnf_vnfextcpd(group_id, element_id)
-        elif element_type == 'vnf_vdu':
-            result = self.remove_vnf_vdu(group_id, element_id)
-        elif element_type == 'vnf_vdu_cp':
-            vdu_id = request.POST.get('choice')
-            result = self.remove_vnf_vducp(group_id, vdu_id, element_id)
-        elif element_type == 'vnf_click_vdu':
-            result = self.remove_vnf_vdu(group_id, request.POST.get('vduId'))
+
+
+        if element_type in etsi_elements:
+            result = EtsiProject.get_remove_element(self, request)
+        elif element_type in sf_elements:
+            result = False #self.remove
+        elif element_type in click_elements:
+            result = ClickProject.get_remove_element(self, request)
 
         return result
 
@@ -338,6 +293,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def add_vnf_click_vdu(self, vnf_id, vdu_id):
+        print 'add_vnf_click_vdu'
         try:
             current_data = json.loads(self.data_project)
             # utility = Util()
