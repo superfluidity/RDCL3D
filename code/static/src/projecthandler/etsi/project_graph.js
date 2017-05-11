@@ -80,7 +80,7 @@ function initDropOnGraph() {
                     });
                         } else {
                             var node_information = {
-                                'existing_vnf': true,
+                                'existing_element': true,
                                 'id': choice,
                                 'info': {
                                     'type': nodetype,
@@ -246,12 +246,11 @@ function newVnffg() {
     $('#save_choose_node_id').off('click').on('click', function() {
         var name = $('#input_choose_node_id').val();
         var node_information = {
-            'id': name,
-            'info': {
-                'type': "vnffg",
-                'group': [group]
-            }
+            'element_id': name,
+            'element_type': "vnffg",
+            'group_id': group,
         }
+        console.log(JSON.stringify(node_information))
         new dreamer.GraphRequests().addVnffg(node_information, function(result) {
 
             $('#modal_choose_node_id').modal('hide');

@@ -71,7 +71,7 @@ dreamer.ModelGraphEditor = (function (global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         if (!args.graph_data) {
             d3.json(data_url, function (error, data) {
-
+                //console.log(JSON.stringify(data))
                 self.d3_graph.nodes = data.vertices;
                 self.d3_graph.links = data.edges;
                 self.d3_graph.graph_parameters = data.graph_parameters;
@@ -83,7 +83,12 @@ dreamer.ModelGraphEditor = (function (global) {
 
                 setTimeout(function () {
                     //self.handleForce(self.forceSimulationActive);
+                    //var f_t = {"node":{"type":[],"group":["vlan_r3u0"]},"link":{"group":["vlan_r3u0"],"view":[""]}}
+                    //var f_t ={"node":{"type":["vnf_vl","vnf_ext_cp","vnf_vdu_cp","vnf_vdu","vnf_click_vdu"],"group":["vlan_r3u0"]},"link":{"group":["vlan_r3u0"],"view":["vnf"]}}
                     self.handleFiltersParams(args.filter_base);
+                    //self.handleFiltersParams(f_t);
+                    console.log(JSON.stringify(args.filter_base))
+                    console.log(self.d3_graph.nodes)
                 }, 500);
 
             });

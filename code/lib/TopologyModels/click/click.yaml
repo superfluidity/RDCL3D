@@ -106,7 +106,7 @@ layer:                                  #List of Layers
                           callback: removeLink
 
 
-callback:                             #List of callbacks used to controll the link
+callback:                             #List of callbacks used to control the link
   addNode:
       file: controller.js
       class: ClickController

@@ -20,9 +20,19 @@ dreamer.ClickController = (function(global) {
 
 
     ClickController.prototype.addNode = function(self, node, success, error) {
-        console.log("addNode")
-        console.log(node, success, error)
-        new dreamer.GraphRequests().addNode(node, null, function() {
+        console.log("addNode");
+        console.log(JSON.stringify(node), success, error);
+
+        var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+            'x': node.x,
+            'y': node.y
+        };
+        console.log(data_to_send)
+        new dreamer.GraphRequests().addNode(data_to_send, null, function() {
             if (success)
                 success();
         });
