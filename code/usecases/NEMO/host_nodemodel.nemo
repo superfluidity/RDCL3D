@@ -1,0 +1,2 @@
+CREATE Nodemodel host
+  Property string: name, string: location, string: mac-address, string: ip-address;
