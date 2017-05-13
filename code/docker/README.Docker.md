@@ -1,8 +1,8 @@
 To build:
 ---------
-From the project's root directory:
+From the project's root directory type:
 
-   docker build -t rdcl3d -f docker/Dockerfile .
+   docker build -t rdcl3d -f code/docker/Dockerfile .
 
 To launch:
 ---------
