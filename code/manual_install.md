@@ -34,7 +34,7 @@ To setup a local development environment::
 
 #### For the first time:
 
-    $ python manage.py makemigrations sf_user projecthandler
+    $ python manage.py makemigrations sf_user projecthandler deploymenthandler
 
     $ python manage.py migrate
 
