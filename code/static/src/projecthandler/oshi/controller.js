@@ -21,7 +21,15 @@ dreamer.OshiController = (function(global) {
 
     OshiController.prototype.addNode = function(self, node, success, error) {
         log('addNode');
-        new dreamer.GraphRequests().addNode(node, null, function() {
+        var data_to_send = {
+                'group_id': node.info.group[0],
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+                'x': node.x,
+                'y': node.y
+         };
+        new dreamer.GraphRequests().addNode(data_to_send, null, function() {
             if (success)
                 success();
         },error);

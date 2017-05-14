@@ -37,18 +37,14 @@ dreamer.GraphRequests = (function(global) {
     GraphRequests.prototype.addNode = function(args, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group[0]);
-        data.append('element_id', args.id);
-        data.append('element_type', args.info.type);
-        data.append('x', args.x);
-        data.append('y', args.y);
-        if(args.info.desc_id)
-            data.append('element_desc_id', args.info.desc_id || '');
+
+        data = args_to_formdata(args, data);
+
         //FIXME questo metodo dovrebbere essere generico
-        if(args.existing_vnf)
-            data.append('existing_vnf', args.existing_vnf ? args.existing_vnf : false)
-        if (choice)
-            data.append('choice', choice);
+        if(args.existing_element)
+            data.append('existing_element', args.existing_element ? args.existing_element : false)
+        //if (choice)
+        //    data.append('choice', choice);
         $.ajax({
             url: "addelement",
             type: 'POST',
@@ -201,9 +197,10 @@ dreamer.GraphRequests = (function(global) {
     GraphRequests.prototype.addVnffg = function(args, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group[0]);
+       /* data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
-        data.append('element_type', args.info.type);
+        data.append('element_type', args.info.type);*/
+        data = args_to_formdata(args, data);
         $.ajax({
             url: "addelement",
             type: 'POST',
@@ -226,10 +223,12 @@ dreamer.GraphRequests = (function(global) {
     GraphRequests.prototype.addNodeToVnffg = function(args, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('group_id', args.info.group[0]);
+       /* data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
         data.append('element_type', args.info.type);
-        data.append('vnffg_id', args.vnffgId);
+        data.append('vnffg_id', args.vnffgId);*/
+        data = args_to_formdata(args, data);
+
         $.ajax({
             url: "addnodetovnffg",
             type: 'POST',
@@ -283,6 +282,13 @@ dreamer.GraphRequests = (function(global) {
             }
         }
         return cookieValue;
+    };
+
+    function args_to_formdata(args, form_data){
+        for ( var key in args ) {
+            form_data.append(key, args[key]);
+        }
+        return form_data;
     };
 
 

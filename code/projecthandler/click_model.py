@@ -77,7 +77,7 @@ class ClickProject(Project):
 
     def get_graph_data_json_topology(self, descriptor_id):
         current_data = json.loads(self.data_project)
-        topology = click_parser.importprojectjson(current_data, model=self.get_graph_model(GRAPH_MODEL_FULL_NAME), positions= self.get_positions() )
+        topology = click_parser.importprojectjson(current_data, model=self.get_graph_model(GRAPH_MODEL_FULL_NAME), positions=self.get_positions() )
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -100,13 +100,14 @@ class ClickProject(Project):
         return result
 
     def get_add_element(self, request):
-
+        print "click add element"
         result = False
         current_data = json.loads(self.data_project)
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
         desc_id = request.POST.get('element_desc_id')
+        print "click add", group_id, element_id, element_type, desc_id
         if element_type == 'class_element':
             class_id = element_id.title()
             lines = current_data['click'][desc_id].splitlines(True)

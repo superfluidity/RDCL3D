@@ -154,22 +154,94 @@ layer:                                  #List of Layers
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
-                addable: true
-                removable: true
+                addable:
+                  callback: addNode
+                removable:
+                  callback: removeNode
             compound_element:
                 #if the expands key is missing it defaults to false
                 #if it is present the value represents the layer in which the node is expanded
                 #by default the representation will be filtered by the group equal to the node name
                 expands : compact
-                addable: true
-                removable: true
+                addable: false
+                removable:
+                  callback: removeNode
             class_element:
-                addable: true
-                removable: true
+                addable:
+                  callback: addNode
+                removable:
+                  callback: removeNode
                 expands : compact
-        action:           #Action to show on rightclick all types of node/link
-            node:
-            link:
+        allowed_edges:
+            element:
+                destination:
+                    element:
+                        #if the direct_key is missing it defaults to false
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    compound_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    class_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+            compound_element:
+                destination:
+                    element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    compound_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    class_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+            class_element:
+                destination:
+                    element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    compound_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+                    class_element:
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
+    expandable:
+        nodes:
+            element:
+                #if the addable_key is missing it defaults to false
+                addable:
+                  callback: addNode
+                removable:
+                  callback: removeNode
+        allowed_edges:
+            element:
+                destination:
+                    element:
+                        #if the direct_key is missing it defaults to false
+                        callback: addLink
+                        direct_edge: true
+                        removable:
+                          callback: removeLink
 
 
 callback:                             #List of callbacks used
