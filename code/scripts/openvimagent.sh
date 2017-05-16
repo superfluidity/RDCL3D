@@ -9,9 +9,9 @@
 NSDFILE="nsd.json"
 FLAVORUUID="5a258552-0a51-11e7-a086-0cc47a7794be"
 # openvim client
-OPENVIM="/home/openvim/openvim-one/openvim/openvim" 
-CLICKINJECTOR="/home/openvim/rdcl3dopenvim/configinjector"
-STAMINALCLICKOSIMAGE="/home/openvim/rdcl3dopenvim/clickos_x86_64_staminal"
+OPENVIM="/home/rfb/openvimclient/openvim"
+CLICKINJECTOR="/home/rfb/configinjector/configinjector"
+STAMINALCLICKOSIMAGE="/home/rfb/configinjector/clickos_x86_64_staminal"
 
 # directory to store yamls
 YAMLDIR="$(pwd)/yamls"
@@ -33,12 +33,12 @@ declare -A VLPID2VLID
 
 transformlist() {
     # this function transforms a json list into a (more bash friendly) space separated list
-    sed 's/[]"\[]//g' | sed 's/,/\ /g'
+    sed -e 's/[]"\[]//g' | sed -e 's/,/\ /g'
 }
 
 generateimageyaml() {
     # generates a yaml for an openvim clickos image
-    cat - <<EOF 
+    cat - <<EOF
 image:
     name:         clickos-${1}
     description:  click-os ${1} image
@@ -50,7 +50,7 @@ EOF
 
 generatenetworkyaml() {
     # generates a yaml for an openvim network
-    cat - <<EOF 
+    cat - <<EOF
 network:
     name:               net-${1}
     type:               bridge_data
@@ -63,9 +63,9 @@ EOF
 generatemacaddress() {
     # generate a random MAC address
     printf '00:15:17:%02x:%02x:%02x' \
-        $(echo $RANDOM | sed 's/.*\(..\)$/\1/') \
-        $(echo $RANDOM | sed 's/.*\(..\)$/\1/') \
-        $(echo $RANDOM | sed 's/.*\(..\)$/\1/')
+        $(echo $RANDOM | sed 's/.*\(..\)$/\1/' | sed 's/0\(.\)/\1/') \
+        $(echo $RANDOM | sed 's/.*\(..\)$/\1/' | sed 's/0\(.\)/\1/') \
+        $(echo $RANDOM | sed 's/.*\(..\)$/\1/' | sed 's/0\(.\)/\1/')
 }
 
 generatevmyaml() {
@@ -74,10 +74,10 @@ generatevmyaml() {
     imageuuid=$2
     shift 2
     netuuids="$@"
-    cat - <<EOF 
+    cat - <<EOF
 server:
   name: vm-clickos-${name}
-  description: ClickOS vm 
+  description: ClickOS vm
   imageRef: '${imageuuid}'
   flavorRef: '${FLAVORUUID}'
   start:    "yes"
@@ -134,11 +134,12 @@ for vnfid in $vnfids; do
 
     # create a new image corresponding to the click configuration
     cp "$STAMINALCLICKOSIMAGE" "${YAMLDIR}/clickos_${vduid}"
-    $CLICKINJECTOR "${vduid}.click" "${YAMLDIR}/clickos_${vduid}" 
+    $CLICKINJECTOR "${vduid}.click" "${YAMLDIR}/clickos_${vduid}"
+    chmod u+rw "${YAMLDIR}/clickos_${vduid}"
 
     # copy the image to the server. The way to do this is not defined by openvim, so we use scp
     # ASSUMPTION: we are using scp to transfer images to openvim
-    scp "${YAMLDIR}/clickos_${vduid}" root@127.0.0.1:/var/lib/libvirt/images/
+    scp -P2222 "${YAMLDIR}/clickos_${vduid}" root@127.0.0.1:/var/lib/libvirt/images/
 
     # create the yaml for the image
     echo "generating yaml: image-clickos-${vduid}.yaml"
@@ -166,7 +167,7 @@ for vlid in $vlids; do
     # FIXME: openvim does not yet create the ovs bridge automatically, so here we create it manually
     uuid=${UUID_networks[${vlid}]}
     vlanid=$($OPENVIM net-list -vvv $uuid | grep 'provider:vlan' | awk '{print $2}')
-    sudo ovs-vsctl --may-exist add-br ovim-${vlanid}
+    ssh root@127.0.0.1 -p 2222 sudo ovs-vsctl --may-exist add-br ovim-${vlanid}
 done
 
 
@@ -196,7 +197,7 @@ for vnfid in $vnfids; do
 
     # search for the connection points of this VNF in the nsd, and their associated virtualLinkProfileId, to find the UUIDs of the networks
     # ASSUMPTION: on a virtuallink there is at most one extCP per VNF (i.e. a VNF does not have two interfaces on the same network)
-    for line in $(jq -r -c '.["nsDf"][0]["vnfProfile"][] | select(.vnfdId == "'${vnfid}'") | .["nsVirtualLinkConnectivity"][] | select(.["virtualLinkProfileId"] != null) | [.["cpdId"][0], .["virtualLinkProfileId"]]' $NSDFILE); do
+    for line in $(jq -r -c '.["nsDf"][0]["vnfProfile"][] | select(.vnfdId == "'${vnfid}'") | .["nsVirtualLinkConnectivity"][] | select(.["virtualLinkProfileId"] != "") | [.["cpdId"][0], .["virtualLinkProfileId"]]' $NSDFILE); do
 
         echo "line: " $line
 
@@ -230,4 +231,3 @@ for vnfid in $vnfids; do
     # onboard
     $OPENVIM vm-create ${YAMLDIR}/vm-clickos-${vnfid}.yaml
 done
-
