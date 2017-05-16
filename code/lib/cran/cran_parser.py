@@ -20,33 +20,31 @@ import yaml
 from lib.util import Util
 from lib.parser import Parser
 import logging
-import traceback
 import glob
 import os
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('ExampletokenParser')
+log = logging.getLogger('CranParser')
 
-class ExampletokenParser(Parser):
-    """Parser methods for exampletoken project type
+class CranParser(Parser):
+    """Parser methods for cran project type
 
     """
 
     def __init__(self):
-        super(ExampletokenParser, self).__init__()
+        super(CranParser, self).__init__()
     
     @classmethod        
-    def importprojectdir(cls,dir_project, file_type):
+    def importprojectdir(cls, dir_project, file_type):
         """Imports all descriptor files under a given folder
 
-        this method is specific for Exampletoken project type
+        this method is specific for Cran project type
         """
 
         project = {
-            # replace descriptor type empty dictionary #
+            'cran': {},
             'positions': {}
         }
-
 
         for desc_type in project:
             cur_type_path = os.path.join(dir_project, desc_type.upper())
@@ -72,7 +70,8 @@ class ExampletokenParser(Parser):
         The keys in the dictionary are the file types
         """
         project = {
-            # replace descriptor type empty dictionary #
+            'cran': {},
+
         }
         for desc_type in project:
             if desc_type in file_dict:

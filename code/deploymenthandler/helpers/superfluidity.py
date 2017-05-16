@@ -23,7 +23,7 @@ class SuperfluidityHelper(Helper):
         return r
 
     def stop(self, deployment_id=None):
-        print "Superfluidity DeploymentHelper stop deployment %d ", deployment_id
+        log.debug("Superfluidity DeploymentHelper stop deployment %d ", deployment_id)
         url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/stop"
         r = self._send_post(url, headers={'Content-type': 'application/json'})
         return r

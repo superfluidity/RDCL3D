@@ -1,76 +1,77 @@
 api: v1
 kind: sfwless-deployment
 metadata:
-	name: superfluidity-demo1
-	cluster: cluster-demo1
-	labels:
-	app: cran
-	size: xsmall
-	customer: Orange
-	priority: medium
-	zone-range: [edge,feu,core, fhaul]
+ name: superfluidity-demo1
+ cluster: cluster-demo1
+
+ labels:
+ app: cran
+ size: xsmall
+ customer: Orange
+ priority: medium
+ zone-range: [edge,feu,core, fhaul]
 
 Functional-blocks:
 
-	- name: cran1_fb
-			rfb-level:rfb/0
-			metadata:
-			rfb-list:
-				-epc1_fb
-				-fhaul1_fb
-				-enb1_fb
+ - name: cran1_fb
+   rfb-level: rfb/0
+   metadata:
+   rfb-list:
+    - epc1_fb
+    - fhaul1_fb
+    - enb1_fb
 
 
-	- name: epc1_fb
-			rfb-level:rfb/1
-			metadata:
-			rfb-list:
-				-epc1
+ - name: epc1_fb
+   rfb-level: rfb/1
+   metadata:
+   rfb-list:
+    - epc1
 
-	- name: enb1_fb
-			rfb-level: rfb/1
-			metadata:
-			rfb-list:
-				-rrh1
-				-bbu1
+ - name: enb1_fb
+   rfb-level: rfb/1
+   metadata:
+   rfb-list:
+    - rrh1
+    - bbu1
 
-	- name: fhaul1_fb
-			rfb-level:rfb/1
-			metadata:
-			links:
-				- enb1_fb
-			rfb-list:
-				-switch1
-
-
-	- name: epc1
-			type: cran/epcbox
-			metadata:
-			rfb-level: leaf
-			zone: [edge, core]
-
-	- name: rrh1
-			type: cran/rrh
-			metadata:
-			rfb-level: leaf
-			zone: [feu]
+ - name: fhaul1_fb
+   rfb-level: rfb/1
+   metadata:
+   links:
+    - enb1_fb
+   rfb-list:
+    - switch1
 
 
-	- name: bbu1
-			type: cran/bbu
-			metadata:
-			type : bbu
-			rfb-level: leaf
-			links:
-				-epc1
-				-rrh1
-			zone: [edge]
+ - name: epc1
+   type: cran/epcbox
+   metadata:
+   rfb-level: leaf
+   zone: [edge, core]
 
-	- name: switch1
-			type: fhaul/fw_switch
-			metadata:
-			rfb-level: leaf
-			zone: [fhaul]
-			links:
-				-bbu1
-				-rrh1
+ - name: rrh1
+   type: cran/rrh
+   metadata:
+   rfb-level: leaf
+   zone: [feu]
+
+
+ - name: bbu1
+   type: cran/bbu
+   metadata:
+   type : bbu
+   rfb-level: leaf
+   links:
+    - epc1
+    - rrh1
+   zone: [edge]
+
+ - name: switch1
+   type: fhaul/fw_switch
+   metadata:
+   rfb-level: leaf
+   zone: [fhaul]
+   links:
+    - bbu1
+    - rrh1

@@ -1,0 +1,92 @@
+name: CRAN RFB                              #Model name
+description: CRAN RFB Model description                       #Model description
+version: 1.0                            #Model version
+designer: Francesco Lombardo               #Model designer
+nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
+  cran_epcbox:
+    label: cran/epcbox
+  cran_rrh:
+    label: cran/rrh
+  cran_bbu:
+    label: cran/bbu
+  fhaul_fw_switch:
+    label: fhaul/fw_switch
+  haul_h2h_switch:
+    label: haul/h2h_switch
+layer:                                  #List of Layers
+    rfb/0:
+      nodes:                  #List of node to be visualized in the current layer
+        examplenode1:
+          addable: true
+          removable: true
+        examplenode1:
+          addable: true
+          removable: true
+      allowed_edges:                  #List of allowed edges between the layer's nodes
+        examplenode1:                        #Edge's source
+          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
+            examplenode1:
+              direct_edge: false
+              removable: true
+            examplenode2:
+              direct_edge: false
+              removable: true
+    rfb/1:
+      nodes:                  #List of node to be visualized in the current layer
+        cran_epcbox:
+          addable: true
+          removable: true
+        examplenode1:
+          addable: true
+          removable: true
+      allowed_edges:                  #List of allowed edges between the layer's nodes
+        examplenode1:                        #Edge's source
+          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
+            examplenode1:
+              direct_edge: false
+              removable: true
+            examplenode2:
+              direct_edge: false
+              removable:
+    leaf:
+      nodes:                  #List of node to be visualized in the current layer
+        examplenode1:
+          addable: true
+          removable: true
+        examplenode1:
+          addable: true
+          removable: true
+      allowed_edges:                  #List of allowed edges between the layer's nodes
+        examplenode1:                        #Edge's source
+          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
+            examplenode1:
+              direct_edge: false
+              removable: true
+            examplenode2:
+              direct_edge: false
+              removable: true
+
+action:           #Action to show on rightclick on a node/link
+    rightclick:
+      node:
+        delete:
+          title: Delete
+          callback: deleteNode
+      link:
+        delete:
+          title: Delete
+          callback: deleteLink
+
+callback:                             #List of callbacks used
+  addNode:
+      file: example_controller.js
+      class: ExampleController
+  removeNode:
+      file: example_controller.js
+      class: ExampleController
+  addLink:
+      file: example_controller.js
+      class: ExampleController
+  removeLink:
+      file: example_controller.js
+      class: ExampleController

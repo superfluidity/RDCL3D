@@ -14,20 +14,17 @@
 #   limitations under the License.
 #
 
-import json
-import pyaml
 import yaml
 from lib.util import Util
 from lib.parser import Parser
 import logging
-import traceback
 import glob
 import os
 
 
-
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ToscaParser')
+
 
 class ToscaParser(Parser):
     """Parser methods for tosca project type

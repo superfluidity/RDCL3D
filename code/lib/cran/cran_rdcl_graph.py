@@ -20,19 +20,18 @@ import copy
 from lib.rdcl_graph import RdclGraph
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('ExampletokenRdclGraph')
+log = logging.getLogger('CranRdclGraph')
 
-class ExampletokenRdclGraph(RdclGraph):
+
+class CranRdclGraph(RdclGraph):
     """Operates on the graph representation used for the GUI graph views"""
 
     def __init__(self):
         pass
 
-
     def build_graph_from_project(self, json_project, model={}):
         """Creates a single graph for a whole project"""
 
-        #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],
@@ -40,9 +39,8 @@ class ExampletokenRdclGraph(RdclGraph):
             'model': model
         }
         try:
-            positions = json_project['positions'] if 'positions' in json_project else False
+            positions = json_project['positions'] if 'positions' in json_project else []
             log.debug('build graph from project json')
-
 
         except Exception as e:
             log.exception('Exception in build_graph_from_project')

@@ -14,17 +14,14 @@
 #   limitations under the License.
 #
 
-import json
 import logging
-import copy
-import six
 from lib.rdcl_graph import RdclGraph
-
 from toscaparser.tosca_template import ToscaTemplate
-from translator.hot.tosca_translator import TOSCATranslator
+
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ToscaRdclGraph')
+
 
 class ToscaRdclGraph(RdclGraph):
     """Operates on the graph representation used for the GUI graph views"""
@@ -32,14 +29,12 @@ class ToscaRdclGraph(RdclGraph):
     def __init__(self):
         pass
 
-
     def build_graph_from_project(self, json_project, model={}):
         """Creates a single graph for a whole project
 
         json_project is the dict representation of the project
         """
 
-        #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],

@@ -1,0 +1,14 @@
+api: v1
+kind: sfwless-deployment
+metadat:
+	name: superfluidity-template
+	cluster: cluster-template
+
+	labels:
+	app: cran
+	size: xsmall
+	customer: Orange
+	priority: medium
+	zone-range: [edge,feu,core, fhaul]
+
+Functional-blocks:

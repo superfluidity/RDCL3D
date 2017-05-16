@@ -24,23 +24,23 @@ from lib.util import Util
 import logging
 from projecthandler.models import Project
 
-from lib.exampletoken.exampletoken_parser import ExampletokenParser
-from lib.exampletoken.exampletoken_rdcl_graph import ExampletokenRdclGraph
+from lib.cran.cran_parser import CranParser
+from lib.cran.cran_rdcl_graph import CranRdclGraph
 
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('ExampletokenModel.py')
+log = logging.getLogger('CranModel.py')
 
 
-PATH_TO_SCHEMAS = 'lib/exampletoken/schemas/'
-PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/exampletoken/descriptor_template'
-DESCRIPTOR_TEMPLATE_SUFFIX = '.json'
-GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/exampletoken/exampletoken.yaml'
-EXAMPLES_FOLDER = 'usecases/EXAMPLETOKEN/'
+PATH_TO_SCHEMAS = 'lib/cran/schemas/'
+PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/cran/descriptor_template'
+DESCRIPTOR_TEMPLATE_SUFFIX = '.yaml'
+GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/cran/cran.yaml'
+EXAMPLES_FOLDER = 'usecases/CRAN/'
 
 
-class ExampletokenProject(Project):
-    """Exampletoken Project class
+class CranProject(Project):
+    """Cran Project class
     The data model has the following descriptors:
         # descrtiptor list in comment #
 
@@ -55,23 +55,23 @@ class ExampletokenProject(Project):
 
         log.debug(file_dict)
 
-        data_project = ExampletokenParser.importprojectfiles(file_dict)
+        data_project = CranParser.importprojectfiles(file_dict)
 
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
-        exampletoken_id = request.POST.get('example-exampletoken-id', '')
-        data_project = ExampletokenParser.importprojectdir(EXAMPLES_FOLDER + exampletoken_id + '/JSON', 'yaml')
+        cran_id = request.POST.get('example-cran-id', '')
+        data_project = CranParser.importprojectdir(EXAMPLES_FOLDER + cran_id , 'yaml')
         return data_project
 
     @classmethod
     def get_example_list(cls):
-        """Returns a list of directories, in each directory there is a project exampletoken"""
+        """Returns a list of directories, in each directory there is a project cran"""
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'exampletoken': dirs}
+        return {'cran': dirs}
 
     @classmethod
     def get_new_descriptor(cls, descriptor_type, request_id):
@@ -98,7 +98,7 @@ class ExampletokenProject(Project):
         return new_descriptor
 
     def get_type(self):
-        return "exampletoken"
+        return "cran"
 
     def __str__(self):
         return self.name
@@ -110,15 +110,16 @@ class ExampletokenProject(Project):
             'name': self.name,
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
-            'type': 'exampletoken',
-            # replace descriptors counter #
+            'type': 'cran',
+            'cran': len(current_data['cran'].keys()) if 'cran' in current_data else 0,
+
             'validated': self.validated
         }
 
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        rdcl_graph = ExampletokenRdclGraph()
+        rdcl_graph = CranRdclGraph()
         project = self.get_dataproject()
         topology = rdcl_graph.build_graph_from_project(project,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
@@ -140,7 +141,7 @@ class ExampletokenProject(Project):
                 log.debug('Create descriptor: Unknown data type')
                 return False
 
-            # schema = cls.loadjsonfile("lib/exampletoken/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/cran/schemas/"+type_descriptor+".json")
             #reference_schema = self.get_json_schema_by_type(type_descriptor)
             # validate = Util.validate_json_schema(reference_schema, new_descriptor)
             validate = False
