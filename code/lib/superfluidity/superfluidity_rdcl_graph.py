@@ -82,3 +82,19 @@ class SuperfluidityRdclGraph(RdclGraph):
             raise
 
         return graph_object
+
+    def build_deployment_descriptor(self, json_project, nsd_id):
+        descriptor = {
+            'nsd': {},
+            'vnfd': {},
+            'click': {}
+        }
+        nsd_to_deploy = json_project['nsd'][nsd_id]
+        descriptor['nsd'][nsd_id] = json_project['nsd'][nsd_id]
+        for vnfdId in nsd_to_deploy['vnfdId']:
+            descriptor['vnfd'][vnfdId] = json_project['vnfd'][vnfdId]
+            for vdu in descriptor['vnfd'][vnfdId]['vdu']:
+                if 'vduNestedDescType' in vdu and vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                    descriptor['click'][vdu['vduNestedDesc']] = json_project['click'][vdu['vduNestedDesc']]
+
+        return descriptor

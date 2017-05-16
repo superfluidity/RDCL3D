@@ -243,5 +243,6 @@ class Project(models.Model):
 
         return positions
 
-
-
+    def get_deployment_descriptor(self, **kwargs):
+        """Returns the deployment descriptor"""
+        raise NotImplementedError

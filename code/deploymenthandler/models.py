@@ -38,7 +38,7 @@ class DeployAgent(models.Model):
     def to_json(self):
         return {
             'name': self.name,
-            'base_url': self.base_url,
+            'base_url': self.base_url.rstrip('\/'),
             'type': self.type,
             'last_update': self.last_update
         }
