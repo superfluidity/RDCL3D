@@ -1,0 +1,77 @@
+{% extends "deployment_details.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'superfluidity/superfluidity_deployment_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+
+{% block content_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+<script>
+var editorSuperfluidity;
+
+var superfluidity_editor_settings = {
+    mode: "javascript",
+    showCursorWhenSelecting: true,
+    autofocus: true,
+    lineNumbers: true,
+    lineWrapping: true,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    extraKeys: {
+        "F11": function (cm) {
+            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function (cm) {
+            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        },
+        "Ctrl-Q": function (cm) {
+            cm.foldCode(cm.getCursor());
+        }
+    },
+    theme: "neat",
+    keyMap: "sublime",
+    readOnly: true,
+}
+
+$(document).ready(function () {
+    var myTextArea = document.getElementById("d_d_source");
+    editorSuperfluidity = CodeMirror(function (elt) {
+        myTextArea.parentNode.replaceChild(elt, myTextArea);
+    }, superfluidity_editor_settings);
+
+
+    editorSuperfluidity.setValue('{{deployment_descriptor |safe}}');
+    editorSuperfluidity.setOption("autoRefresh", true);
+
+
+
+
+});
+</script>
+{% endblock %}

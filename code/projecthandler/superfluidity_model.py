@@ -344,6 +344,15 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = []
         return result
 
+    def get_deployment_descriptor(self, **kwargs):
+        if 'nsdId' in kwargs:
+            nsd = kwargs['nsdId']
+            rdcl_graph = SuperfluidityRdclGraph()
+            return rdcl_graph.build_deployment_descriptor(self.get_dataproject(), nsd)
+        else:
+            log.debug("no nsdId")
+            return {}
+
     def get_zip_archive(self):
         in_memory = StringIO()
         try:
