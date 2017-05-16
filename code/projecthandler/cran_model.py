@@ -85,7 +85,7 @@ class CranProject(Project):
         """Returns a descriptor template for a given descriptor type"""
 
         try:
-            schema = Util.loadjsonfile(os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
+            schema = Util.loadyamlfile(os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
             return schema
         except Exception as e:
             log.exception(e)
