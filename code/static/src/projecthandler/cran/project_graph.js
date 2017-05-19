@@ -15,12 +15,12 @@ $(document).ready(function() {
     var type = [];
     var params = {
         node: {
-            type: type,
-            group: [getUrlParameter('id')]
+            type: [],
+            group: []
         },
         link: {
-            group: [getUrlParameter('id')],
-            view: []
+            group: [],
+            view: ['full']
         }
     }
 
@@ -113,11 +113,12 @@ function savePositions(el) {
 }
 
 function changeFilter(e, c) {
-    console.log("changeFilter");
+    console.log("changeFilter", JSON.stringify(c));
     var type_property = graph_editor.getTypeProperty();
     $("#title_header").text("Cran NFV Graph Editor");
+
+        view = (c.link && c.link.view && c.link.view[0] ) ? c.link.view[0]: 'full';
     new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
-    //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
     updateBredCrumb(c);
 
 }

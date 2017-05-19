@@ -11,10 +11,12 @@ layer:                                  #List of Layers
     exampleLayer:
       nodes:                  #List of node to be visualized in the current layer
         examplenode1:
-          addable: true
+          addable:
+            callback: addNode
           removable: true
         examplenode1:
-          addable: true
+          addable:
+            callback: addNode
           removable: true
       allowed_edges:                  #List of allowed edges between the layer's nodes
         examplenode1:                        #Edge's source

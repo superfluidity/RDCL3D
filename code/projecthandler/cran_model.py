@@ -121,8 +121,14 @@ class CranProject(Project):
     def get_graph_data_json_topology(self, descriptor_id):
         rdcl_graph = CranRdclGraph()
         project = self.get_dataproject()
-        topology = rdcl_graph.build_graph_from_project(project,
-                                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        for desc_type in project:
+            log.debug(descriptor_id)
+            if descriptor_id in project[desc_type]:
+                descriptor_data = project[desc_type][descriptor_id]
+                positions = project['positions'] if 'positions' in project else {}
+        topology = rdcl_graph.build_graph_from_descriptor(descriptor_data, positions,model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        #topology = rdcl_graph.build_graph_from_project(project,
+        #                                             model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):

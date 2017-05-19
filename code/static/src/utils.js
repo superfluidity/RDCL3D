@@ -107,8 +107,8 @@ function buildPalette(args) {
     if (args.length > 0) {
         args.forEach(function (category) {
 
-            var category_id = "category_" + category.category_name.replace(/[\s.*+?^${}()|[\]\\]/g, "_");//.replace(/\s/g, '');
-            var content_id = "palette-content-" + category.category_name.replace(/[\s.*+?^${}()|[\]\\]/g, "_");//.replace(/\s/g, '');
+            var category_id = "category_" + category.category_name.replace(/[\s.*+?^${}()\/|[\]\\]/g, "_");//.replace(/\s/g, '');
+            var content_id = "palette-content-" + category.category_name.replace(/[\s.*+?^${}()\/|[\]\\]/g, "_");//.replace(/\s/g, '');
             console.log(category_id, content_id)
             $("#paletteContainer").append('<div id="' + category_id + '" class="palette-category" ><div class="palette-header" onClick="handlePaletteCat(this);" category_id="' + category_id + '"> ' +
                 '<i class="fa fa-chevron-down "></i>' +

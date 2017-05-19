@@ -3,68 +3,285 @@ description: CRAN RFB Model description                       #Model description
 version: 1.0                            #Model version
 designer: Francesco Lombardo               #Model designer
 nodes:                                   #List of nodes, with id and label used in the gui (We can add more fields)
-  cran_epcbox:
+  functional_block:
+    label: functional_block
+  cran/epcbox:
     label: cran/epcbox
-  cran_rrh:
+  cran/rrh:
     label: cran/rrh
-  cran_bbu:
+  cran/bbu:
     label: cran/bbu
-  fhaul_fw_switch:
+  fhaul/fw_switch:
     label: fhaul/fw_switch
-  haul_h2h_switch:
-    label: haul/h2h_switch
+  fhaul/h2h_switch:
+    label: fhaul/h2h_switch
+  fhaul/p2p_switch:
+    label: fhaul/p2p_switch
 layer:                                  #List of Layers
     rfb/0:
       nodes:                  #List of node to be visualized in the current layer
-        examplenode1:
-          addable: true
-          removable: true
-        examplenode1:
-          addable: true
-          removable: true
+        functional_block:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
-        examplenode1:                        #Edge's source
-          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
-            examplenode1:
-              direct_edge: false
-              removable: true
-            examplenode2:
-              direct_edge: false
-              removable: true
+
     rfb/1:
       nodes:                  #List of node to be visualized in the current layer
-        cran_epcbox:
-          addable: true
-          removable: true
-        examplenode1:
-          addable: true
-          removable: true
+        functional_block:
+          addable:
+            callback: addNode
+          removable:
+            allback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
-        examplenode1:                        #Edge's source
+        functional_block:                        #Edge's source
           destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
-            examplenode1:
-              direct_edge: false
-              removable: true
-            examplenode2:
-              direct_edge: false
+            functional_block:
+              direct_edge: true
               removable:
+                callback: removeLink
     leaf:
       nodes:                  #List of node to be visualized in the current layer
-        examplenode1:
-          addable: true
-          removable: true
-        examplenode1:
-          addable: true
-          removable: true
+        cran/epcbox:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        cran/rrh:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        cran/bbu:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        fhaul/fw_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        fhaul/h2h_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
-        examplenode1:                        #Edge's source
-          destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
-            examplenode1:
-              direct_edge: false
-              removable: true
-            examplenode2:
-              direct_edge: false
-              removable: true
+        cran/epcbox:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+        cran/rrh:
+          destination:
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+        cran/bbu:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+        fhaul/fw_switch:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+        fhaul/h2h_switch:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeNode
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeNode
+    full:
+      nodes:                  #List of node to be visualized in the current layer
+        functional_block:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        cran/epcbox:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        cran/rrh:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        cran/bbu:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        fhaul/fw_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+        fhaul/h2h_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
+      allowed_edges:                  #List of allowed edges between the layer's nodes
+        cran/epcbox:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+        cran/rrh:
+          destination:
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+        cran/bbu:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+        fhaul/fw_switch:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
+        fhaul/h2h_switch:
+          destination:
+            cran/rrh:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              direct_edge: true
+              removable:
+                callback: removeLink
 
 action:           #Action to show on rightclick on a node/link
     rightclick:
@@ -79,14 +296,14 @@ action:           #Action to show on rightclick on a node/link
 
 callback:                             #List of callbacks used
   addNode:
-      file: example_controller.js
-      class: ExampleController
+      file: cran_controller.js
+      class: CranController
   removeNode:
-      file: example_controller.js
-      class: ExampleController
+      file: cran_controller.js
+      class: CranController
   addLink:
-      file: example_controller.js
-      class: ExampleController
+      file: cran_controller.js
+      class: CranController
   removeLink:
-      file: example_controller.js
-      class: ExampleController
+      file: cran_controller.js
+      class: CranController
