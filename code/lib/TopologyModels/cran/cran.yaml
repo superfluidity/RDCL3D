@@ -38,6 +38,7 @@ layer:                                  #List of Layers
         functional_block:                        #Edge's source
           destination:           #List of edge's destination with the list of controls callback id to call when there is a connections
             functional_block:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
@@ -68,97 +69,204 @@ layer:                                  #List of Layers
             callback: addNode
           removable:
             callback: removeNode
+        fhaul/p2p_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
         cran/epcbox:
           destination:
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         cran/rrh:
           destination:
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         cran/bbu:
           destination:
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/fw_switch:
           destination:
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/h2h_switch:
           destination:
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
-                callback: removeNode
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+        fhaul/p2p_switch:
+          destination:
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
     full:
       nodes:                  #List of node to be visualized in the current layer
         functional_block:
@@ -191,94 +299,268 @@ layer:                                  #List of Layers
             callback: addNode
           removable:
             callback: removeNode
+        fhaul/p2p_switch:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
-        cran/epcbox:
+        functional_block:
           destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+        cran/epcbox:
+          destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
         cran/rrh:
           destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
         cran/bbu:
           destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
         fhaul/fw_switch:
           destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
         fhaul/h2h_switch:
           destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
             cran/rrh:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/epcbox:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             cran/bbu:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink
             fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+        fhaul/p2p_switch:
+          destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
               direct_edge: true
               removable:
                 callback: removeLink

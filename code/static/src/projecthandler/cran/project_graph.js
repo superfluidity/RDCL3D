@@ -55,7 +55,8 @@ dropZone.ondrop = function(e) {
     e.preventDefault();
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
-        nodetype = nodetype.replace(/_/g, ".")
+        //nodetype = nodetype.replace(/_/g, ".")
+        console.log(graph_editor.getTypeProperty())
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
         $('#div_chose_id').show();
                 $('#div_chose_vnf').hide();
@@ -67,7 +68,9 @@ dropZone.ondrop = function(e) {
                         'id': name,
                         'info': {
                             'type': nodetype,
-                            'group': [group]
+                            //'group': [group]
+                            'rfb-level': 'rfb/1',
+                            'desc_id': getUrlParameter('id'),
                         },
                         'x': e.layerX,
                         'y': e.layerY

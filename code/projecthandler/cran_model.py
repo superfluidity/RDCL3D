@@ -169,7 +169,28 @@ class CranProject(Project):
 
     def get_add_element(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
+            current_data = json.loads(self.data_project)
+            if (current_data['cran'][parameters['element_desc_id']]):
+                current_descriptor = current_data['cran'][parameters['element_desc_id']]
 
+                if 'Functional-blocks' not in current_descriptor:
+                    current_descriptor['Functional-blocks'] = []
+
+                new_element = {
+                    'name': parameters['element_id'],
+                    'rfb-level': parameters['element_rfb_level'],
+                    'rfb-list': []
+                }
+
+                current_descriptor['Functional-blocks'].append(new_element)
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_element(self, request):
@@ -178,9 +199,39 @@ class CranProject(Project):
         return result
 
     def get_add_link(self, request):
-
         result = False
+        try:
+            parameters = request.POST.dict()
+            print parameters
+            current_data = json.loads(self.data_project)
+            if current_data['cran'][parameters['element_desc_id']]:
+                current_descriptor = current_data['cran'][parameters['element_desc_id']]
 
+                f_blocks = current_descriptor['Functional-blocks']
+                fb_source = None
+                fb_target = None
+                for fb in f_blocks:
+                    if fb['name'] == parameters['source']:
+                        fb_source = fb
+                    elif fb['name'] == parameters['target']:
+                        fb_target = fb
+
+                if fb_source['rfb-level'] == fb_target['rfb-level']:
+                    l_type = 'links'
+                else:
+                    l_type = 'rfb-list'
+
+                if l_type not in fb_source:
+                    fb_source[l_type] = []
+                fb_source[l_type].append(parameters['target'])
+
+
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_link(self, request):

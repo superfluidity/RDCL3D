@@ -186,7 +186,7 @@ class OshiProject(Project):
             current_data = json.loads(self.data_project)
             if(current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                if 'vertices'  not in current_descriptor:
+                if 'vertices' not in current_descriptor:
                     current_descriptor['vertices'] = []
                 current_descriptor['vertices'].append(new_node)
                 self.data_project = current_data

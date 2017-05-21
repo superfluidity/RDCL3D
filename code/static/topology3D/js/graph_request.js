@@ -58,7 +58,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -90,23 +90,23 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
             }
         });
     };
 
 
 
-    GraphRequests.prototype.addLink = function(link, choice, success, error) {
+    GraphRequests.prototype.addLink = function(args, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('link', JSON.stringify(link));
+        data = args_to_formdata(args, data);
 
         //data.append('destination', JSON.stringify(destination));
         if (choice)
             data.append('choice', choice);
-        if(link.desc_id)
-            data.append('element_desc_id', link.desc_id || '');
+        //if(link.desc_id)
+        //    data.append('element_desc_id', link.desc_id || '');
         $.ajax({
             url: "addlink",
             type: 'POST',
@@ -120,7 +120,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -145,7 +145,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -164,7 +164,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -187,7 +187,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -214,7 +214,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -242,7 +242,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
@@ -260,7 +260,7 @@ dreamer.GraphRequests = (function(global) {
             },
             error: function(result) {
                 if (error)
-                    error();
+                    error(result);
                 log("some error: " + result);
             }
         });
