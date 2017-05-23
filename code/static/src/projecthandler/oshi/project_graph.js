@@ -6,17 +6,25 @@ var show_all = null;
 // Enable Drop Action on the Graph
 initDropOnGraph();
 
+var type_view = {
+    "Data": ["OSHI-CR", "OSHI-PE", "CE", "OF Controller"],
+    "Vll": ["CE"],
+    "PW": ["CE"],
+    "VS": ["VS", "CE"],
+    "Control": ["OSHI-CR", "OSHI-PE", "OF Controller"]
+};
+
 $(document).ready(function() {
     var params = {
         node: {
-            type: [],
+            type: type_view['Data'],
             group: []
         },
         link: {
             group: [],
             view: ['Data']
         }
-    }
+    };
     graph_editor.addListener("filters_changed", changeFilter);
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
@@ -176,7 +184,7 @@ function changeView(e){
     console.log("viewId", viewId)
     var params = {
         node: {
-            type: [],
+            type: type_view[viewId],
             group: []
         },
         link: {
