@@ -45,7 +45,13 @@ dreamer.ClickController = (function(global) {
         if(node.id.indexOf('@') !== -1){
             error && error('To delete this type of node you must edit the configuration file')
         }else{
-            new dreamer.GraphRequests().removeNode(node, null, function() {
+            var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+            };
+            new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
                 if (success) {
                     success();
                 }

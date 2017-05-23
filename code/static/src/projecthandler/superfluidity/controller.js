@@ -148,7 +148,13 @@ dreamer.SuperfluidityController = (function(global) {
             vdu_id = vdu_links[0].target.vduId;
         }
         console.log(vdu_id)
-        new dreamer.GraphRequests().removeNode(node, vdu_id, function() {
+        var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+            };
+        new dreamer.GraphRequests().removeNode(data_to_send, vdu_id, function() {
             if (success) {
                 success();
             }

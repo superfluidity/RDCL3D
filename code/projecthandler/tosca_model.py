@@ -266,6 +266,8 @@ class ToscaProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
+        parameters = request.POST.dict()
+        print "get_remove_element", parameters
         current_data = json.loads(self.data_project)
         if element_id in current_data['toscayaml'][group_id]['topology_template']['node_templates']: del current_data['toscayaml'][group_id]['topology_template']['node_templates'][element_id]
         for key in current_data['toscayaml'][group_id]['topology_template']['node_templates']:

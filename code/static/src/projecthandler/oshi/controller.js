@@ -51,7 +51,13 @@ dreamer.OshiController = (function(global) {
 
     OshiController.prototype.removeNode = function(self, node, success, error) {
         log('removeNode');
-        new dreamer.GraphRequests().removeNode(node, null, function() {
+        var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+            };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
             if (success) {
                 success();
             }

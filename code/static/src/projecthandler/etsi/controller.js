@@ -279,7 +279,14 @@ dreamer.EtsiController = (function(global) {
             var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
             graph_editor.parent.removeNode.call(graph_editor, cp_node);
         }
-        new dreamer.GraphRequests().removeNode(node, null, function() {
+        var data_to_send = {
+                'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+
+         };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
             if (success) {
                 success();
             }
@@ -293,7 +300,13 @@ dreamer.EtsiController = (function(global) {
         });
         var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
         console.log(vdu_id)
-        new dreamer.GraphRequests().removeNode(node, vdu_id, function() {
+        var data_to_send = {
+                'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+         };
+        new dreamer.GraphRequests().removeNode(data_to_send, vdu_id, function() {
             if (success) {
                 success();
             }
@@ -301,7 +314,13 @@ dreamer.EtsiController = (function(global) {
     };
 
     EtsiController.prototype.removeNode = function(graph_editor, node, success, error) {
-        new dreamer.GraphRequests().removeNode(node, null, function() {
+        var data_to_send = {
+                'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+         };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
             if (success) {
                 success();
             }

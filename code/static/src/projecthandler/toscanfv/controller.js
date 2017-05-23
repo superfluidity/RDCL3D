@@ -107,7 +107,16 @@ dreamer.ToscanfvController = (function(global) {
 
     ToscanfvController.prototype.removeNode = function(graph_editor, node, success, error) {
         log('removeNode');
-        new dreamer.GraphRequests().removeNode(node, null, function() {
+        /*
+        data.append('group_id', args.info.group[0]);
+        data.append('element_id', args.id);
+        data.append('element_type', args.info.type);*/
+        var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type
+        };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
             if (success) {
                 success();
             }

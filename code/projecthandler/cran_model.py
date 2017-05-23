@@ -173,7 +173,7 @@ class CranProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print parameters
+
             current_data = json.loads(self.data_project)
             if (current_data['cran'][parameters['element_desc_id']]):
                 current_descriptor = current_data['cran'][parameters['element_desc_id']]
