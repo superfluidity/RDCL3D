@@ -69,6 +69,10 @@ See documentation for manual installation [here](docs/manual_install.md)
 
 Open your browser and point it to http://localhost:8000 (if you have not changed the default IP and port)
 
+### Installation of deployers/agents
+
+See documentation for the installation of deployers/agent [here](docs/agent_install.md)
+
 ## License
 
    Copyright 2017 CNIT - Consorzio Nazionale Interuniversitario per le Telecomunicazioni
