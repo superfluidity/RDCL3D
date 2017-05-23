@@ -170,6 +170,7 @@ dreamer.ModelGraphEditor = (function (global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.removeNode = function (node, success, error) {
+        console.log('removeNode', JSON.stringify(node))
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;

@@ -133,7 +133,7 @@ function buildPalette(args) {
 
         });
     }
-    togglePaletteSpinner(args.length > 0);
+    togglePaletteSpinner(true);
 
 
 }

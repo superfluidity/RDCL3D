@@ -260,8 +260,10 @@ class OshiProject(Project):
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
+            print model_graph['layer'][args['layer']]['nodes']
             for node in model_graph['layer'][args['layer']]['nodes']:
-                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                print node
+                if model_graph['layer'][args['layer']]['nodes'][node] is not None and 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
                     current_data = {
                         "id": node,
                         "category_name": model_graph['nodes'][node]['label'],
@@ -273,7 +275,7 @@ class OshiProject(Project):
                         ]
                     }
                     result.append(current_data)
-
+            print "available nodes", result
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)

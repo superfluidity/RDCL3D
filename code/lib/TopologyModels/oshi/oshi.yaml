@@ -1,141 +1,164 @@
-name: Oshi                              #Model name
-description: oshi                       #Model description
-version: 1.0                            #Model version
-designer: Pierluigi Greto               #Model designer
-nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
-    OSHI-CR:
-        label: cro
-    OSHI-PE:
-        label: peo
-    CE:
-        label: cer
-    VS:
-        label: vs
-    OF Controller:
-        label: ctr
+name: Oshi                #Model name
+description: oshi             #Model description
+version: 1.0              #Model version
+designer: Pierluigi Greto         #Model designer
+nodes:                  #List of nodes, with id and label used in the gui (We can add more fields)
+  OSHI-CR:
+    label: cro
+  OSHI-PE:
+    label: peo
+  CE:
+    label: cer
+  VS:
+    label: vs
+  OF Controller:
+    label: ctr
 
 
-layer:                                  #List of Layers
-    Data:
-        nodes:                          #List of node to be visualized in the current layer
-            OSHI-CR:
-                addable:
-                    callback: addNode
-                removable:
-                    callback: removeNode
-            OSHI-PE:
-                addable:
-                    callback: addNode
-                removable:
-                    callback: removeNode
-            CE:
-                addable:
-                    callback: addNode
-                removable:
-                    callback: removeNode
-            OF Controller:
-                addable:
-                    callback: addNode
-                removable:
-                    callback: removeNode
-        allowed_edges:                  #List of allowed edges between the layer's nodes
-            CE:                         #Edge's source
-                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
-                    OSHI-PE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-                    CE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-            OSHI-CR:
-                destination:
-                    OSHI-CR:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-                    OSHI-PE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-                    OF Controller:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
+layer:                  #List of Layers
+  Data:
+    nodes:              #List of node to be visualized in the current layer
+      OSHI-CR:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+      OSHI-PE:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+      CE:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+      OF Controller:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+    allowed_edges:          #List of allowed edges between the layer's nodes
+      CE:             #Edge's source
+        destination:      #List of edge's destination with the list of controls callback id to call when there is a connections
+          OSHI-PE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+          CE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+      OSHI-CR:
+        destination:
+          OSHI-CR:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+          OSHI-PE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+          OF Controller:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
 
-            OSHI-PE:
-                destination:
-                    OSHI-CR:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-                    OSHI-PE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
+      OSHI-PE:
+        destination:
+          OSHI-CR:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+          OSHI-PE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
 
-            OF Controller:
-                 destination:
-                     OSHI-CR:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
+      OF Controller:
+         destination:
+           OSHI-CR:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
 
-    Vll:
-        nodes:
-            CE:
-        allowed_edges:
-            CE:
-                destination:                  #List of edge's destination with the list of controls callback id to call when there is a connections
-                    CE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-    PW:
-        nodes:
-            CE:
-        allowed_edges:
-            CE:
-                destination:                #List of edge's destination with the list of controls callback id to call when there is a connections
-                    CE:
-                        callback: addLink
-                        direct_edge: false
-                        removable:
-                            callback: removeLink
-    Control:
-        nodes:
-            OSHI-CR:
-            OSHI-PE:
-            OF Controller:
-        allowed_edges:
-    VS:
-        nodes:
-            VS:
-            CE:
-        allowed_edges:
+  Vll:
+    nodes:
+      CE:
+    allowed_edges:
+      CE:
+        destination:          #List of edge's destination with the list of controls callback id to call when there is a connections
+          CE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+  PW:
+    nodes:
+      CE:
+    allowed_edges:
+      CE:
+        destination:        #List of edge's destination with the list of controls callback id to call when there is a connections
+          CE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+  Control:
+    nodes:
+      OSHI-CR:
+      OSHI-PE:
+      OF Controller:
+    allowed_edges:
+
+  VS:
+    nodes:
+      VS:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+      CE:
+        addable:
+          callback: addNode
+        removable:
+          callback: removeNode
+    allowed_edges:
+      CE:
+        destination:
+          VS:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
+      VS:
+        destination:
+          CE:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
 
 
 
-callback:                             #List of callbacks used to controll the link
+callback:               #List of callbacks used to controll the link
   addNode:
-      file: oshi_controller.js
-      class: OshiController
+    file: oshi_controller.js
+    class: OshiController
   removeNode:
-      file: oshi_controller.js
-      class: OshiController
+    file: oshi_controller.js
+    class: OshiController
   addLink:
-      file: oshi_controller.js
-      class: OshiController
+    file: oshi_controller.js
+    class: OshiController
   removeLink:
-      file: oshi_controller.js
-      class: OshiController
+    file: oshi_controller.js
+    class: OshiController
