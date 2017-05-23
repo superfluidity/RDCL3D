@@ -203,7 +203,7 @@ class Project(models.Model):
             elif data_type == 'yaml':
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
-            if type_descriptor != 'click' and type_descriptor != 'oshi':
+            if type_descriptor != 'click' and type_descriptor != 'oshi' and type_descriptor !='cran':
                 reference_schema = self.get_json_schema_by_type(type_descriptor)
                 Util.validate_json_schema(reference_schema, new_descriptor)
             current_data[type_descriptor][descriptor_id] = new_descriptor

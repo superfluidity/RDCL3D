@@ -17,8 +17,10 @@
 from __future__ import unicode_literals
 
 import copy
-import json
 import os.path
+from StringIO import StringIO
+import zipfile
+import json
 import yaml
 from lib.util import Util
 import logging
@@ -322,3 +324,24 @@ class CranProject(Project):
             log.debug(e)
             result = []
         return result
+
+    def get_zip_archive(self):
+        in_memory = StringIO()
+        try:
+            current_data = json.loads(self.data_project)
+            zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+            for desc_type in current_data:
+                print "t", desc_type
+                for current_desc in current_data[desc_type]:
+                    if desc_type == 'positions':
+                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
+                    else:
+                        zip.writestr(current_desc + '.yaml', Util.json2yaml(current_data[desc_type][current_desc]))
+
+
+            zip.close()
+        except Exception as e:
+            log.debug(e)
+
+        in_memory.flush()
+        return in_memory

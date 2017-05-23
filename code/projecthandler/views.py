@@ -355,6 +355,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
 @login_required
 def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_type=None):
     if request.method == 'POST':
+        print "edit_descriptor"
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].edit_descriptor(descriptor_type, descriptor_id, request.POST.get('text'),
                                              request.POST.get('type'))
