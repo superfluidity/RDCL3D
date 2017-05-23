@@ -26,10 +26,11 @@ dreamer.CranController = (function(global) {
                 'element_id': node.id,
                 'element_type': node.info.type,
                 'element_desc_id': node.info.desc_id,
-                'element_rfb_level': node.info.element_rfb_level,
+                'rfb_level': node.info['rfb-level'],
                 'x': node.x,
                 'y': node.y
          };
+         console.log(JSON.stringify(data_to_send))
         new dreamer.GraphRequests().addNode(data_to_send, null, function() {
             if (success)
                 success();
@@ -57,7 +58,17 @@ dreamer.CranController = (function(global) {
 
     CranController.prototype.removeNode = function(graph_editor, node, success, error) {
         log('removeNode');
-        new dreamer.GraphRequests().removeNode(node, null, function() {
+        console.log(JSON.stringify(node))
+        var data_to_send = {
+                'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': node.info.desc_id,
+                'rfb_level': node.info.rfb_level,
+                'x': node.x,
+                'y': node.y
+         };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
             if (success) {
                 success();
             }
@@ -68,7 +79,16 @@ dreamer.CranController = (function(global) {
         log('removeLink');
         var s = link.source;
         var d = link.target;
-        new dreamer.GraphRequests().removeLink(link, function() {
+        var data_to_send = {
+            'element_desc_id': getUrlParameter('id'),
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            //'rfb_level': link.rfb_level
+        };
+        console.log(JSON.stringify(data_to_send))
+        new dreamer.GraphRequests().removeLink(data_to_send, function() {
             if (success) {
                 success();
             }

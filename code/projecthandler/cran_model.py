@@ -171,6 +171,7 @@ class CranProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
+            print parameters
             current_data = json.loads(self.data_project)
             if (current_data['cran'][parameters['element_desc_id']]):
                 current_descriptor = current_data['cran'][parameters['element_desc_id']]
@@ -180,9 +181,11 @@ class CranProject(Project):
 
                 new_element = {
                     'name': parameters['element_id'],
-                    'rfb-level': parameters['element_rfb_level'],
-                    'rfb-list': []
+                    'rfb-level': parameters['rfb_level'],
+                    'rfb-list': [],
+                    'type': parameters['element_type']
                 }
+                print parameters['element_type'], "new_element", new_element
 
                 current_descriptor['Functional-blocks'].append(new_element)
                 self.data_project = current_data
@@ -195,7 +198,36 @@ class CranProject(Project):
 
     def get_remove_element(self, request):
         result = False
-        
+        try:
+            parameters = request.POST.dict()
+            current_data = json.loads(self.data_project)
+            print parameters
+            if (current_data['cran'][parameters['element_desc_id']]):
+                current_descriptor = current_data['cran'][parameters['element_desc_id']]
+
+                index = 0
+                del_index = None
+                found = False
+                for fb in current_descriptor['Functional-blocks']:
+                    if fb['name'] == parameters['element_id']:
+                        del_index = index
+                        found = True
+
+                    if 'links' in fb:
+                        if parameters['element_id'] in fb['links']: fb['links'].remove(parameters['element_id'])
+                    if 'rfb-list' in fb:
+                        if parameters['element_id'] in fb['rfb-list']: fb['rfb-list'].remove(parameters['element_id'])
+                    index += 1
+
+                if found:
+                    del current_descriptor['Functional-blocks'][del_index]
+
+                self.data_project = current_data
+                self.update()
+                result = found
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_add_link(self, request):
@@ -236,7 +268,31 @@ class CranProject(Project):
 
     def get_remove_link(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
+            current_data = json.loads(self.data_project)
+            print parameters
+            if current_data['cran'][parameters['element_desc_id']]:
+                current_descriptor = current_data['cran'][parameters['element_desc_id']]
+                fblocks = current_descriptor['Functional-blocks']
+                for fb in fblocks:
+                   if fb['name'] == parameters['source']:
 
+                       if parameters['source_type'] == parameters['target_type']:
+                           l_type = 'links'
+                       else:
+                           l_type = 'rfb-list'
+
+                       if l_type in fb:
+                        while parameters['target'] in fb[l_type]: fb[l_type].remove(parameters['target'])
+
+                #    del current_descriptor['Functional-blocks'][del_index]
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
 

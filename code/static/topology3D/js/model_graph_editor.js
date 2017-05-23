@@ -173,6 +173,9 @@ dreamer.ModelGraphEditor = (function (global) {
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
+        if (node.info.desc_id == undefined){
+            node.info.desc_id = self.desc_id;
+        }
         if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].removable) {
             if (self.model.layer[current_layer].nodes[node_type].removable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;

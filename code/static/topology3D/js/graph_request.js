@@ -67,14 +67,13 @@ dreamer.GraphRequests = (function(global) {
     GraphRequests.prototype.removeNode = function(args, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
+        /*
         data.append('group_id', args.info.group[0]);
         data.append('element_id', args.id);
-        data.append('element_type', args.info.type);
-        if(args.info.type == 'vnf_click_vdu'){
-            data.append('vduId', args.vduId);
-        }
-        if(args.info.desc_id)
-            data.append('element_desc_id', args.info.desc_id || '');
+        data.append('element_type', args.info.type);*/
+        data = args_to_formdata(args, data);
+
+
         if (choice)
             data.append('choice', choice);
         $.ajax({
@@ -126,12 +125,11 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
-    GraphRequests.prototype.removeLink = function(link, success, error) {
+    GraphRequests.prototype.removeLink = function(args, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        data.append('link', JSON.stringify(link));
-        if(link.desc_id)
-            data.append('element_desc_id', link.desc_id || '');
+        data = args_to_formdata(args, data);
+
         $.ajax({
             url: "removelink",
             type: 'POST',

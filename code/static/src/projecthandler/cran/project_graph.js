@@ -31,7 +31,7 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParameter('id'),
+        desc_id: getUrlParameter('id'),
         data_url: "graph_data/"+getUrlParameter('id'),
         filter_base: params
     });
@@ -69,7 +69,7 @@ dropZone.ondrop = function(e) {
                         'info': {
                             'type': nodetype,
                             //'group': [group]
-                            'rfb-level': 'rfb/1',
+                            'rfb-level': (nodetype != 'functional_block' ) ? 'leaf' : 'rfb/1',
                             'desc_id': getUrlParameter('id'),
                         },
                         'x': e.layerX,

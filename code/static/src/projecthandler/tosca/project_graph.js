@@ -30,7 +30,7 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        descriptor_id: getUrlParameter('id'),
+        desc_id: getUrlParameter('id'),
         data_url: "graph_data/"+getUrlParameter('id'),
         filter_base: params
     });
