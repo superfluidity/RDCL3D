@@ -260,11 +260,11 @@ class OshiProject(Project):
             target = link['target']
             print source['id'], target['id']
             current_data = json.loads(self.data_project)
-            if 'element_desc_id' in link and current_data['oshi'][link['element_desc_id']]:
+            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
                 print "dentro"
-                current_descriptor = current_data['oshi'][link['element_desc_id']]
+                current_descriptor = current_data['oshi'][link['desc_id']]
                 current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
-                                               (e['source'] == source['id'] and e['target'] == target['id']) ]
+                                               (e['source'] == source['id'] and e['target'] == target['id'] and e['view'] == link['view']) == False ]
             self.data_project = current_data
             self.update()
             result = True

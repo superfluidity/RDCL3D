@@ -62,6 +62,7 @@ dreamer.OshiController = (function(global) {
         log('removeLink');
         var s = link.source;
         var d = link.target;
+        link.desc_id = getUrlParameter('id');
         new dreamer.GraphRequests().removeLink(link, function() {
             if (success) {
                 success();
