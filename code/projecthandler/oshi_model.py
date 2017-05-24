@@ -201,14 +201,13 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
+            print parameters
             current_data = json.loads(self.data_project)
             if (current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                index = 0
-                for node in current_descriptor['vertices']:
-                    if node.id == parameters['element_id']:
-                        del current_descriptor['vertices'][index]
-                    index =+ 1
+
+                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if n['id'] != parameters['element_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if e['source'] != parameters['element_id'] and e['target'] != parameters['element_id']]
 
                 self.data_project = current_data
                 self.update()
@@ -223,20 +222,20 @@ class OshiProject(Project):
         try:
             parameters = request.POST.dict()
             print '###', parameters
-            link = json.loads(parameters['link'])
-            source = link['source']
-            target = link['target']
+            #link = json.loads(parameters['link'])
+            source = parameters['source']
+            target = parameters['target']
             new_link = {
                 "source": source['id'],
-                "group": link['group'] if 'group' in link else [],
+                "group": parameters['group'] if 'group' in parameters else [],
                 "target": target['id'],
-                "view": link['view'] if 'view' in link else []
+                "view": parameters['view'] if 'view' in parameters else []
             }
             print new_link
             current_data = json.loads(self.data_project)
-            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
+            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
 
-                current_descriptor = current_data['oshi'][link['desc_id']]
+                current_descriptor = current_data['oshi'][parameters['desc_id']]
                 if 'edges' not in current_descriptor:
                     current_descriptor['edges'] = []
                 current_descriptor['edges'].append(new_link)
