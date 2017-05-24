@@ -201,14 +201,16 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
+            print parameters
             current_data = json.loads(self.data_project)
             if (current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                index = 0
-                for node in current_descriptor['vertices']:
-                    if node.id == parameters['element_id']:
-                        del current_descriptor['vertices'][index]
-                    index =+ 1
+
+                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if
+                                                  n['id'] != parameters['element_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                                               e['source'] != parameters['element_id'] and e['target'] != parameters[
+                                                   'element_id']]
 
                 self.data_project = current_data
                 self.update()
@@ -250,7 +252,25 @@ class OshiProject(Project):
 
     def get_remove_link(self, request):
         result = False
-
+        try:
+            parameters = request.POST.dict()
+            print '###', parameters
+            link = json.loads(parameters['link'])
+            source = link['source']
+            target = link['target']
+            print source['id'], target['id']
+            current_data = json.loads(self.data_project)
+            if 'element_desc_id' in link and current_data['oshi'][link['element_desc_id']]:
+                print "dentro"
+                current_descriptor = current_data['oshi'][link['element_desc_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                                               (e['source'] == source['id'] and e['target'] == target['id']) ]
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_available_nodes(self, args):
