@@ -249,7 +249,25 @@ class OshiProject(Project):
 
     def get_remove_link(self, request):
         result = False
-
+        try:
+            parameters = request.POST.dict()
+            print '###', parameters
+            link = json.loads(parameters['link'])
+            source = link['source']
+            target = link['target']
+            print source['id'], target['id']
+            current_data = json.loads(self.data_project)
+            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
+                print "dentro"
+                current_descriptor = current_data['oshi'][link['desc_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                                               (e['source'] == source['id'] and e['target'] == target['id'] and e['view'] == link['view']) == False ]
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_available_nodes(self, args):
