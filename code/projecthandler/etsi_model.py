@@ -220,7 +220,7 @@ class EtsiProject(Project):
         elif element_type == 'vnf_vdu_cp':
 
             vdu_id = request.POST.get('choice')
-            print 'vnf_vdu_cp', type(vdu_id)
+            print 'vnf_vdu_cp', (vdu_id)
             result = self.add_vnf_vducp(group_id, vdu_id, element_id)
         elif element_type == 'vnffg':
             # log.debug("Add ") group_id, element_id
@@ -235,7 +235,7 @@ class EtsiProject(Project):
         group_id = request.POST.get('group_id')
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
-        log.debug('in get_remove_element : ' + str(element_id))  # TODO log
+        log.debug('in get_remove_element : ' + str(element_id))
         if element_type == 'ns_cp':
             result = self.remove_ns_sap(group_id, element_id)
         elif element_type == 'ns_vl':
@@ -258,75 +258,77 @@ class EtsiProject(Project):
 
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        #source = json.loads(request.POST.get('source'))
-        #destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
+        print "ets_model", parameters
+
+        source_type = parameters['source_type']
+        destination_type = parameters['target_type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        group_id = parameters['group_id']
+
         if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = self.link_vl_sap(source['info']['group'][0], vl_id, sap_id)
+            vl_id = source_id if source_type == 'ns_vl' else destination_id
+            sap_id = source_id if source_type == 'ns_cp' else destination_id
+            result = self.link_vl_sap(group_id, vl_id, sap_id)
         elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
+            vl_id = source_id if source_type == 'ns_vl' else destination_id
+            vnf_id = source_id if source_type == 'vnf' else destination_id
+            ns_id = group_id
             vnf_ext_cp = request.POST.get('choice')
             result = self.link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
         if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
+            vnf_id = source_id if source_type == 'vnf' else destination_id
+            sap_id = source_id if source_type == 'ns_cp' else destination_id
+            ns_id = group_id
             vnf_ext_cp = request.POST.get('choice')
             result = self.link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
         elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
             vdu_id = request.POST.get('choice')
-            vnf_id = source['info']['group'][0]
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
+            vnf_id = group_id
+            intvl_id = source_id if source_type == 'vnf_vl' else destination_id
+            vducp_id = source_id if source_type == 'vnf_vdu_cp' else destination_id
             result = self.link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
         elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = self.link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+            vnfExtCpd_id = source_id if source_type == 'vnf_ext_cp' else destination_id
+            intvl_id = source_id if source_type == 'vnf_vl' else destination_id
+            result = self.link_vnfextcpd_intvl(group_id, vnfExtCpd_id, intvl_id)
         return result
 
     def get_remove_link(self, request):
 
         result = False
         parameters = request.POST.dict()
-        #print "param remove_link", parameters
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
+        print "removelink", parameters
 
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        source_type = parameters['source_type']
+        destination_type = parameters['target_type']
+        group_id = parameters['group_id']
+
         if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = self.unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
+            vl_id = source_id if source_type == 'ns_vl' else destination_id
+            sap_id = source_id if source_type == 'ns_cp' else destination_id
+            result = self.unlink_vl_sap(group_id, vl_id, sap_id)
         elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
+            vl_id = source_id if source_type == 'ns_vl' else destination_id
+            vnf_id = source_id if source_type == 'vnf' else destination_id
+            ns_id = group_id
             result = self.unlink_vl_vnf(ns_id, vl_id, vnf_id)
         if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
+            vnf_id = source_id if source_type == 'vnf' else destination_id
+            sap_id = source_id if source_type == 'ns_cp' else destination_id
+            ns_id = group_id
             result = self.unlink_vl_sap(ns_id, vnf_id, sap_id)
         elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            vnf_id = source['info']['group'][0]
+            intvl_id = source_id if source_type == 'vnf_vl' else destination_id
+            vducp_id = source_id if source_type == 'vnf_vdu_cp' else destination_id
+            vnf_id = group_id
             result = self.unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
         elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = self.unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+            vnfExtCpd_id = source_id if source_type == 'vnf_ext_cp' else destination_id
+            intvl_id = source_id if source_type == 'vnf_vl' else destination_id
+            result = self.unlink_vnfextcpd_intvl(group_id, vnfExtCpd_id, intvl_id)
         return result
 
     def get_unused_vnf(self, nsd_id):
@@ -711,6 +713,7 @@ class EtsiProject(Project):
     # VNF operationd: add/remove CP VDU
     def add_vnf_vducp(self, vnf_id, vdu_id, vducp_id):
         try:
+            print vnf_id, vdu_id, vducp_id
             current_data = json.loads(self.data_project)
             # utility = Util()
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)

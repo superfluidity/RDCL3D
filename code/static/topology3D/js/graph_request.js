@@ -74,8 +74,8 @@ dreamer.GraphRequests = (function(global) {
         data = args_to_formdata(args, data);
 
 
-        if (choice)
-            data.append('choice', choice);
+       // if (choice)
+       //)     data.append('choice', choice);
         $.ajax({
             url: "removeelement",
             type: 'POST',

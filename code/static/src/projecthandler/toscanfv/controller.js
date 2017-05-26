@@ -36,9 +36,33 @@ dreamer.ToscanfvController = (function(global) {
         },error);
     };
 
+    ToscanfvController.prototype.removeNode = function(graph_editor, node, success, error) {
+        log('removeNode');
+
+        var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+        };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
+            if (success) {
+                success();
+            }
+        },error);
+    };
+
     ToscanfvController.prototype.addLink = function(graph_editor, link, success, error) {
         log('addLink');
-
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
         new dreamer.GraphRequests().addLink(link, null, function() {
             graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
@@ -69,7 +93,16 @@ dreamer.ToscanfvController = (function(global) {
             }
         });
         console.log(vl_type , cp_id)
-        new dreamer.GraphRequests().addLink(link, null, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().addLink(data_to_send, null, function() {
             graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
@@ -94,7 +127,16 @@ dreamer.ToscanfvController = (function(global) {
             return (e.source.id == cp_id || e.target.id == cp_id) && (vl_types.indexOf(e.source.info.type)>=0 || vl_types.indexOf(e.target.info.type)>=0);
         });
         console.log(vl_type , cp_id)
-        new dreamer.GraphRequests().addLink(link, null, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().addLink(data_to_send, null, function() {
             graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
@@ -105,29 +147,20 @@ dreamer.ToscanfvController = (function(global) {
         },error);
     };
 
-    ToscanfvController.prototype.removeNode = function(graph_editor, node, success, error) {
-        log('removeNode');
-        /*
-        data.append('group_id', args.info.group[0]);
-        data.append('element_id', args.id);
-        data.append('element_type', args.info.type);*/
-        var data_to_send = {
-            'group_id': node.info.group[0],
-            'element_id': node.id,
-            'element_type': node.info.type
-        };
-        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
-            if (success) {
-                success();
-            }
-        },error);
-    };
+
 
     ToscanfvController.prototype.removeLink = function(graph_editor, link, success, error) {
         log('removeLink');
-        var s = link.source;
-        var d = link.target;
-        new dreamer.GraphRequests().removeLink(link, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().removeLink(data_to_send, function() {
             if (success) {
                 success();
             }

@@ -149,11 +149,7 @@ class ToscaProject(Project):
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
             'type': 'tosca',
-            'toscayaml' : len(current_data['toscayaml'].keys()) if 'toscayaml' in current_data else 0,
-            # 'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
-            # 'vnffgd': len(current_data['vnffgd'].keys()) if 'vnffgd' in current_data else 0,
-            # 'vld': len(current_data['vld'].keys()) if 'vld' in current_data else 0,
-            # 'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
+            'toscayaml': len(current_data['toscayaml'].keys()) if 'toscayaml' in current_data else 0,
             'validated': self.validated
         }
 
@@ -209,13 +205,10 @@ class ToscaProject(Project):
             print 'Exception in create descriptor', e
         return result
 
-
     def set_validated(self, value):
         self.validated = True if value is not None and value == True else False
 
-
     def get_add_element(self, request):
-
         result = False
 
         group_id = request.POST.get('group_id')
@@ -287,14 +280,14 @@ class ToscaProject(Project):
     def get_add_link(self, request):
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        source_id = source['id']
-        destination_id = destination['id']
-        group = source['info']['group'][0]
+        #link = json.loads(parameters['link'])
+        #source = link['source']
+        #destination = link['target']
+        source_type = parameters['source_type'] #source['info']['type']
+        destination_type = parameters['target_type'] #destination['info']['type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        group = parameters['group']
         current_data = json.loads(self.data_project)
         tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
         added = False
@@ -351,14 +344,14 @@ class ToscaProject(Project):
     def get_remove_link(self, request):
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        source_id = source['id']
-        destination_id = destination['id']
-        group = source['info']['group'][0]
+        #link = json.loads(parameters['link'])
+        #source = link['source']
+        #destination = link['target']
+        source_type = parameters['source_type']  # source['info']['type']
+        destination_type = parameters['target_type']  # destination['info']['type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        group = parameters['group']
         current_data = json.loads(self.data_project)
         tosca_definition = Util().loadyamlfile(PATH_TO_TOSCA_DEFINITION)
         removed = False
@@ -409,8 +402,6 @@ class ToscaProject(Project):
         # self.validated = validate #TODO(stefano) not clear if this is the validation for the whole project
         self.update()
         result = True
-        result = True
-
 
         return result
 

@@ -19,7 +19,7 @@ dreamer.OshiController = (function(global) {
     }
 
 
-    OshiController.prototype.addNode = function(self, node, success, error) {
+    OshiController.prototype.addNode = function(graph_editor, node, success, error) {
         log('addNode');
         var data_to_send = {
                 'group_id': node.info.group[0],
@@ -35,13 +35,21 @@ dreamer.OshiController = (function(global) {
         },error);
     };
 
-    OshiController.prototype.addLink = function(self, link, success, error) {
+    OshiController.prototype.addLink = function(graph_editor, link, success, error) {
         log('addLink');
-
-        new dreamer.GraphRequests().addLink(link, null, function() {
-            self._deselectAllNodes();
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().addLink(data_to_send, null, function() {
+            graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
-                self.parent.removeLink.call(self, old_link[0].index);
+                graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
             }
             if (success) {
                 success();
@@ -49,7 +57,7 @@ dreamer.OshiController = (function(global) {
         },error);
     };
 
-    OshiController.prototype.removeNode = function(self, node, success, error) {
+    OshiController.prototype.removeNode = function(graph_editor, node, success, error) {
         log('removeNode');
         var data_to_send = {
             'group_id': node.info.group[0],
@@ -64,12 +72,20 @@ dreamer.OshiController = (function(global) {
         },error);
     };
 
-    OshiController.prototype.removeLink = function(self, link, success, error) {
+    OshiController.prototype.removeLink = function(graph_editor, link, success, error) {
         log('removeLink');
-        var s = link.source;
-        var d = link.target;
+
         link.desc_id = getUrlParameter('id');
-        new dreamer.GraphRequests().removeLink(link, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().removeLink(data_to_send, function() {
             if (success) {
                 success();
             }

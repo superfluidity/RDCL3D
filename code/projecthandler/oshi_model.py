@@ -201,7 +201,7 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print parameters
+            print "oshi", parameters
             current_data = json.loads(self.data_project)
             if (current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
@@ -223,12 +223,12 @@ class OshiProject(Project):
             parameters = request.POST.dict()
             print '###', parameters
             #link = json.loads(parameters['link'])
-            source = parameters['source']
-            target = parameters['target']
+            #source = parameters['source']
+            #target = parameters['target']
             new_link = {
-                "source": source['id'],
+                "source": parameters['source'],
                 "group": parameters['group'] if 'group' in parameters else [],
-                "target": target['id'],
+                "target": parameters['target'],
                 "view": parameters['view'] if 'view' in parameters else []
             }
             print new_link
@@ -252,16 +252,18 @@ class OshiProject(Project):
         try:
             parameters = request.POST.dict()
             print '###', parameters
-            link = json.loads(parameters['link'])
-            source = link['source']
-            target = link['target']
-            print source['id'], target['id']
+            #link = json.loads(parameters['link'])
+            #source = link['source']
+            #target = link['target']
+            #print source['id'], target['id']
+            source_id = parameters['source']
+            target_id = parameters['target']
+            link_view = parameters['view']
             current_data = json.loads(self.data_project)
-            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
-                print "dentro"
-                current_descriptor = current_data['oshi'][link['desc_id']]
+            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
+                current_descriptor = current_data['oshi'][parameters['desc_id']]
                 current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
-                                               (e['source'] == source['id'] and e['target'] == target['id'] and e['view'] == link['view']) == False ]
+                                               (e['source'] == source_id and e['target'] == target_id and e['view'] == link_view) == False ]
             self.data_project = current_data
             self.update()
             result = True
