@@ -45,6 +45,7 @@ etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vn
 sf_elements = ['vnf_click_vdu', 'vnf_k8s_vdu']
 click_elements = ['element', 'compound_element', 'class_element']
 
+
 class SuperfluidityProject(EtsiProject, ClickProject):
     """Superfluidity Project class
     The data model has the following descriptors:
@@ -182,8 +183,11 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type in sf_elements:
             vnf_id = request.POST.get('group_id')
             vdu_id = request.POST.get('element_id')
-            print "vnf_id", vnf_id, "vdu_id", vdu_id
-            result = self.add_vnf_click_vdu(vnf_id, vdu_id)
+            if element_type == 'vnf_click_vdu':
+                result = self.add_vnf_click_vdu(vnf_id, vdu_id)
+            elif element_type == 'vnf_k8s_vdu':
+                result = self.add_vnf_k8s_vdu(vnf_id, vdu_id)
+
         elif element_type in click_elements:
             result = ClickProject.get_add_element(self, request)
 
@@ -216,7 +220,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         if source_type in etsi_elements and destination_type in etsi_elements:
             result = EtsiProject.get_add_link(self, request)
-
+        elif source_type in click_elements and destination_type in click_elements:
+            result = ClickProject.get_add_link(self, request)
         return result
 
     def get_remove_link(self, request):
@@ -246,7 +251,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def add_vnf_click_vdu(self, vnf_id, vdu_id):
-        print 'add_vnf_click_vdu'
+        log.debug('add_vnf_click_vdu')
         try:
             current_data = json.loads(self.data_project)
             # utility = Util()
@@ -260,6 +265,29 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 current_data['click'] = {}
             if vdu_id not in current_data['click']:
                 current_data['click'][vdu_id] = ''
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def add_vnf_k8s_vdu(self, vnf_id, vdu_id):
+        log.debug('add_vnf_k8s_vdu')
+        try:
+            current_data = json.loads(self.data_project)
+            # utility = Util()
+            vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
+            vdu_descriptor['vduId'] = vdu_id
+            vdu_descriptor['intCpd'] = []
+            vdu_descriptor['vduNestedDesc'] = vdu_id
+            vdu_descriptor['vduNestedDescType'] = 'kubernetes'
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            if 'k8s' not in current_data:
+                current_data['k8s'] = {}
+            if vdu_id not in current_data['k8s']:
+                current_data['k8s'][vdu_id] = ''
             self.data_project = current_data
             self.update()
             result = True

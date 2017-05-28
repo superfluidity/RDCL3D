@@ -69,7 +69,7 @@ var example_gui_properties = {
         //"color": "#50A7CC",
         "color": "#f44250",
         "size": 18,
-        "name": "ClickVDU"
+        "name": "K8s VDU"
       },
       "element": {
         "shape": "square",
