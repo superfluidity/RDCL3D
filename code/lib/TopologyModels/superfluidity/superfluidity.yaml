@@ -18,7 +18,9 @@ nodes:                                  #List of nodes, with id and label used i
     vnf_vdu_cp:
         label: VduCp
     vnf_click_vdu:
-        label: CLickVDU
+        label: CLick VDU
+    vnf_k8s_vdu:
+        label: K8s VDU
     element:
         label: ClickElement
     compound_element:
@@ -105,6 +107,12 @@ layer:                                  #List of Layers
                 removable:
                     callback: removeVnfVdu
             vnf_click_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
+                expands : compact
+            vnf_k8s_vdu:
                 addable:
                     callback: addVnfVdu
                 removable:

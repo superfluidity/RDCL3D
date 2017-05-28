@@ -55,11 +55,17 @@ class SuperfluidityRdclGraph(RdclGraph):
                 for vnf_id in json_project['vnfd']:
                     vnfd = json_project['vnfd'][vnf_id]
                     for vdu in vnfd['vdu']:
-                        if 'vduNestedDescType' in vdu and vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                        if 'vduNestedDescType' in vdu:
+                            if vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                                vdu_type = 'vnf_click_vdu'
+                            elif vdu['vduNestedDescType'] == 'kubernetes' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['k8s']:
+                                vdu_type = 'vnf_k8s_vdu'
+                            else:
+                                vdu_type = None
                             vertice = next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
                             if vertice is not None:
                                 vertice['id'] = vdu['vduNestedDesc']
-                                vertice['info']['type'] = 'vnf_click_vdu'
+                                vertice['info']['type'] = 'vnf_k8s_vdu'
                                 vertice['group'] = [vdu['vduNestedDesc']]
                                 vertice['vduId'] = vdu['vduId']
                                 if positions and vertice['id'] in positions['vertices']:
@@ -95,7 +101,8 @@ class SuperfluidityRdclGraph(RdclGraph):
         for vnfdId in nsd_to_deploy['vnfdId']:
             descriptor['vnfd'][vnfdId] = json_project['vnfd'][vnfdId]
             for vdu in descriptor['vnfd'][vnfdId]['vdu']:
-                if 'vduNestedDescType' in vdu and vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
-                    descriptor['click'][vdu['vduNestedDesc']] = json_project['click'][vdu['vduNestedDesc']]
+                if 'vduNestedDescType' in vdu :
+                    if vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                        descriptor['click'][vdu['vduNestedDesc']] = json_project['click'][vdu['vduNestedDesc']]
 
         return descriptor

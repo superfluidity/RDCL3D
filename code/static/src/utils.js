@@ -105,6 +105,7 @@ function buildPalette(args) {
     $("#paletteContainer").empty();
     var type_property = graph_editor.getTypeProperty();
     if (args.length > 0) {
+     console.log(JSON.stringify(args))
         args.forEach(function (category) {
 
             var category_id = "category_" + category.category_name.replace(/[\s.*+?^${}()\/|[\]\\]/g, "_");//.replace(/\s/g, '');

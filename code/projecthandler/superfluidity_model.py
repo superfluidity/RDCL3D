@@ -42,7 +42,7 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/superfluidity/superfluidity.yaml'
 EXAMPLES_FOLDER = 'usecases/SUPERFLUIDITY/'
 
 etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vnf_vdu_cp', 'vnffg']
-sf_elements = ['vnf_click_vdu']
+sf_elements = ['vnf_click_vdu', 'vnf_k8s_vdu']
 click_elements = ['element', 'compound_element', 'class_element']
 
 class SuperfluidityProject(EtsiProject, ClickProject):

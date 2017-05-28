@@ -56,6 +56,7 @@ class SuperfluidityParser(Parser):
 
             'positions': {}
         }
+
         nfv_path = dir_project+"/NFV/"
         etsi_project = EtsiParser.importprojectdir( nfv_path + '/JSON', 'json')
         print etsi_project
@@ -63,6 +64,12 @@ class SuperfluidityParser(Parser):
         project['vnfd'] = etsi_project['vnfd']
         project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/' , 'click')['click']
         # FIXME import k8s descriptors
+        for k8s_filename in glob.glob(os.path.join(dir_project + '/K8S/', '*.yaml')):
+            log.info(k8s_filename)
+            yaml_object = Util().loadyamlfile(k8s_filename)
+            json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
+            filename = os.path.splitext(os.path.basename(str(k8s_filename)))[0]
+            project['k8s'][filename] = json_object
 
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':
@@ -79,17 +86,25 @@ class SuperfluidityParser(Parser):
         The keys in the dictionary are the file types
         """
         project = {
-            'nsd':{},
+            'nsd': {},
 
-            'vnfd':{},
+            'vnfd': {},
 
-            'click':{},
+            'click': {},
+
+            'k8s': {}
 
         }
         for desc_type in project:
             if desc_type in file_dict:
                 files_desc_type = file_dict[desc_type]
                 for file in files_desc_type:
-                    project[desc_type][os.path.splitext(file.name)[0]] = json.loads(file.read())
+                    if(desc_type != 'k8s'):
+                        project[desc_type][os.path.splitext(file.name)[0]] = json.loads(file.read())
+                    else:
+                        yaml_object = Util().loadyamlfile(file)
+                        json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
+                        filename = os.path.splitext(os.path.basename(str(file)))[0]
+                        project[desc_type][filename] = json_object
 
         return project
