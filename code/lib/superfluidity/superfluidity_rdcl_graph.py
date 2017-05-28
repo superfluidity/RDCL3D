@@ -87,7 +87,8 @@ class SuperfluidityRdclGraph(RdclGraph):
         descriptor = {
             'nsd': {},
             'vnfd': {},
-            'click': {}
+            'click': {},
+            'k8s': {}
         }
         nsd_to_deploy = json_project['nsd'][nsd_id]
         descriptor['nsd'][nsd_id] = json_project['nsd'][nsd_id]

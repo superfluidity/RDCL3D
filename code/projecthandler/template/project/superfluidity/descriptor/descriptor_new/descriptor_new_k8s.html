@@ -20,8 +20,8 @@ Create new {{ descriptor_type }} descriptor
 
 {% block tab_pane_button_list %}
 {{ block.super }}
-<li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
-<li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
+<li class="active" id="yaml_li"><a href="#editor_tab" data-toggle="tab"><i class="fa fa-file-code-o"></i>
+                    Editor</a></li>
 <li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
 {% endblock %}
 
@@ -32,11 +32,7 @@ Create new {{ descriptor_type }} descriptor
             class="fa fa-save"></i> Save
     </button>
 </li>
-<li class="pull-right">
-    <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i
-            class="fa fa-sitemap"></i> Save and Show Graph
-    </button>
-</li>
+
 <li class="pull-right">
     <button id="cancel" type="button" class="btn btn-block btn-primary btn-sm" onclick="cancel(this.id)"><i
             class="fa fa-times"></i> Cancel
@@ -47,17 +43,12 @@ Create new {{ descriptor_type }} descriptor
 {% block tab_pane_list %}
 {{ block.super }}
 <div class="tab-pane active" id="yaml">
-                            <textarea id="code_editor_yaml">
+    <textarea id="code_editor_yaml">
 
-                            </textarea>
+    </textarea>
 </div>
 <!-- /.tab-pane-->
 
-<div class="tab-pane" id="json">
-                            <textarea id="code_editor_json">
-
-                            </textarea>
-</div>
 
 <div class="tab-pane" id="upload">
 
@@ -103,22 +94,11 @@ Create new {{ descriptor_type }} descriptor
     }
 
 
-        var editorJSON;
+
         var editorYaml;
         $(document).ready(function () {
-           var myJsonTextArea = document.getElementById("code_editor_json");
-           editorJSON = CodeMirror(function(elt) {
-                            myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
-                        }, json_editor_settings );
 
-            editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
-            var that = this;
-            editorJSON.setOption("autoRefresh", true);
-
-
-
-
-           var myYamlTextArea = document.getElementById("code_editor_yaml");
+            var myYamlTextArea = document.getElementById("code_editor_yaml");
            editorYaml = CodeMirror(function(elt) {
                             myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
                         }, yaml_editor_settings );
@@ -126,17 +106,14 @@ Create new {{ descriptor_type }} descriptor
            editorYaml.setValue(des_strings.descriptor_string_yaml);
            editorYaml.setOption("autoRefresh", true);
 
-
-
-            setTimeout(function() {
-                console.log("YAML/JSON refresh");
-
+           setTimeout(function() {
+                console.log("YAML refresh");
                 editorYaml.refresh();
-                editorJSON.refresh();
             },1);
 
-
         });
+
+
 
 
         function create(fs, dropzone){
@@ -145,13 +122,10 @@ Create new {{ descriptor_type }} descriptor
             var type, text ;
             var data = new FormData();
             switch(id) {
+
                 case 'yaml_li':
                     type = 'yaml';
                     text = editorYaml.getValue();
-                    break;
-                case 'json_li':
-                    type = 'json';
-                    text = editorJSON.getValue();
                     break;
                 case 'file_li':
                     type = 'file'
@@ -160,14 +134,14 @@ Create new {{ descriptor_type }} descriptor
                     if (!files || !files.length) {
                       files = document.getElementById('drop-zone').files
                       if(!files || !files.length){
-                        alert("Seletc a file");
+                        alert("Seletc a file")
                         return
                       }
                     }
                     console.log(files[0])
                     var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                    if(!(extension == 'json' || extension =='yaml')){
-                        alert("The file must be .json or .yaml");
+                    if(!(extension == 'yaml')){
+                        alert("The file must be .yaml" );
                         return
                     }
 
@@ -175,9 +149,9 @@ Create new {{ descriptor_type }} descriptor
                     break;
             }
             data.append('csrfmiddlewaretoken','{{csrf_token}}');
+            data.append('id', getUrlParameter('id'));
             data.append('type', type);
             data.append('text', text);
-            data.append('id', '{{descriptor_id}}');
             console.log(text);
             $.ajax({
                     url: "new",
@@ -196,7 +170,7 @@ Create new {{ descriptor_type }} descriptor
                         }
                     },
                     error: function(result) {
-                        alert("some error");
+                         showAlert(result);
                     }
                 });
         }

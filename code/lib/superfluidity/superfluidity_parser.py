@@ -52,6 +52,8 @@ class SuperfluidityParser(Parser):
 
             'click':{},
 
+            'k8s': {},
+
             'positions': {}
         }
         nfv_path = dir_project+"/NFV/"
@@ -60,7 +62,7 @@ class SuperfluidityParser(Parser):
         project['nsd'] = etsi_project['nsd']
         project['vnfd'] = etsi_project['vnfd']
         project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/' , 'click')['click']
-
+        # FIXME import k8s descriptors
 
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':

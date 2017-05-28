@@ -118,11 +118,9 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             'info': self.info,
             'type': 'superfluidity',
             'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
-
             'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
-
             'click': len(current_data['click'].keys()) if 'click' in current_data else 0,
-
+            'k8s': len(current_data['k8s'].keys()) if 'k8s' in current_data else 0,
             'validated': self.validated
         }
 
@@ -149,6 +147,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
             elif data_type == 'click':
                 new_descriptor = new_data
+            #elif data_type == 'k8s':
+            #    new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
@@ -199,7 +199,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         if element_type in etsi_elements:
             result = EtsiProject.get_remove_element(self, request)
         elif element_type in sf_elements:
-            result = False #self.remove
+            result = False  #FIXME
         elif element_type in click_elements:
             result = ClickProject.get_remove_element(self, request)
 
@@ -313,10 +313,12 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
             for desc_type in current_data:
                 for current_desc in current_data[desc_type]:
-                    if desc_type != 'click':
-                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
-                    else:
+                    if desc_type == 'click':
                         zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
+                    elif desc_type == 'k8s':
+                        zip.writestr(current_desc + '.yaml',  yaml.dumps(Util.json2yaml(current_data[desc_type][current_desc])))
+                    else:
+                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
             zip.close()
         except Exception as e:

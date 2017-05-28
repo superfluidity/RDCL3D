@@ -5,6 +5,8 @@
     {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_etsi.html' %}
 {% elif descriptor_type == 'click' %}
     {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_click.html' %}
+{% elif descriptor_type == 'k8s' %}
+    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_k8s.html' %}
 {% endif %}
 
 

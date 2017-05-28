@@ -159,14 +159,16 @@ class ClickProject(Project):
         print check
 
         # remove node in click descriptor
-
-        # (^\brt6\b\s*[\b\:\b]{2}\s*\w+\([\w\S\s]*?\)[^\/][^\/].*?;) #by clauz
+        # find and delete this:
+        # example :: Example...
+        # (^\bexample\b\s*[\b\:\b]{2}\s*\w+\([\w\S\s]*?\)[^\/][^\/].*?;) #by clauz
         regex_node = "(^\\b"+check+"\\b\s*[\\b\:\\b]{2}\s*\w+\([\w\S\s]*?\)[^\/][^\/].*?;)"
         print regex_node
         regex_node_comp = re.compile(regex_node, flags=re.MULTILINE)
         descriptor = regex_node_comp.sub("", descriptor)
 
         # remove all links with source the node
+        # example[x] ->
         # (^\brt6\b\[[0-9]\][\w\S\s]*?;)
         #regex_node_src = "(^\\b"+check+"\\b\[[0-9]\][\w\S\s]*?;)"
         # (\bnds\b\[[0-9]+\][\w\s\S]*?;\s*?(?=\w)) #by clauz
@@ -174,7 +176,7 @@ class ClickProject(Project):
         regex_node_src_comp = re.compile(regex_node_src, flags=re.MULTILINE)
         descriptor = regex_node_src_comp.sub("", descriptor)
 
-        #remove all link with target the node
+        # remove all link with the node in the chain
 
 
         print descriptor

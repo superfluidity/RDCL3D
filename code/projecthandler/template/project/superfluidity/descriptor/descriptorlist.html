@@ -58,7 +58,10 @@
                     {% endfor %}
                     </tbody>
                 </table>
+            {% elif descriptor_type == 'k8s' %}
+                {% include 'superfluidity/descriptor/descriptorlist_k8s.html' %}
             {% endif %}
+
 
         </div>
     </div>

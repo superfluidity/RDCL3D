@@ -42,8 +42,12 @@ dreamer.ClickController = (function(global) {
 
     ClickController.prototype.removeNode = function(self, node, success, error) {
         node.info.desc_id = getUrlParameter('id');
+        //FIXME fix
+        error && error('To delete this type of node you must edit the configuration file')
+        /*
         if(node.id.indexOf('@') !== -1){
             error && error('To delete this type of node you must edit the configuration file')
+
         }else{
             var data_to_send = {
             'group_id': node.info.group[0],
@@ -57,13 +61,14 @@ dreamer.ClickController = (function(global) {
                     success();
                 }
             });
-        }
+        }*/
     };
 
     ClickController.prototype.removeLink = function(self, link, success, error) {
         var s = link.source;
         var d = link.target;
-
+        error && error('To delete this link you must edit the configuration file')
+        /*
         //link.desc_id = getUrlParameter('id');
         if(s.id.indexOf('@') !== -1 || d.id.indexOf('@') !== -1){
             error && error('To delete this link you must edit the configuration file')
@@ -77,6 +82,7 @@ dreamer.ClickController = (function(global) {
             };
             new dreamer.GraphRequests().removeLink(data_to_send, success, error);
         }
+        */
     };
 
     ClickController.prototype.addLink = function(self, link, success, error) {
