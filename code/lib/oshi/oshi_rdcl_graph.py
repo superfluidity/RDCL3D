@@ -47,13 +47,16 @@ class OshiRdclGraph(RdclGraph):
 
         return graph_object
 
-    def build_graph_from_oshi_descriptor(self, json_data, model={}):
+    def build_graph_from_oshi_descriptor(self, json_data, positions={}, model={}):
         """Creates a single graph for a oshi descriptor"""
 
         try:
             graph_object = json_data
+            for node in graph_object['vertices']:
+                if positions and 'vertices' in positions and node['id'] in positions['vertices'] and 'x' in positions['vertices'][node['id']] and 'y' in positions['vertices'][node['id']]:
+                    node['fx'] = positions['vertices'][node['id']]['x']
+                    node['fy'] = positions['vertices'][node['id']]['y']
             graph_object['model'] = model
-
         except Exception as e:
             log.exception('Exception in build_graph_from_project')
             raise

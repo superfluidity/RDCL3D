@@ -53,7 +53,6 @@ class OshiProject(Project):
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
-        log.debug(file_dict)
 
         data_project = OshiParser.importprojectfiles(file_dict)
 
@@ -61,7 +60,6 @@ class OshiProject(Project):
 
     @classmethod
     def data_project_from_example(cls, request):
-        print request.POST.dict()
         oshi_id = request.POST.get('example-oshi-id', '')
         data_project = OshiParser.importprojectdir(EXAMPLES_FOLDER + oshi_id , 'json')
         return data_project
@@ -124,11 +122,10 @@ class OshiProject(Project):
         descriptor_data = {}
         project = self.get_dataproject()
         for desc_type in project:
-            log.debug(descriptor_id)
             if descriptor_id in project[desc_type]:
                 descriptor_data = project[desc_type][descriptor_id]
-        log.debug(descriptor_data)
-        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data,
+        positions = project['positions'] if 'positions' in project else {}
+        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data, positions=positions,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
@@ -201,7 +198,6 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print "oshi", parameters
             current_data = json.loads(self.data_project)
             if (current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
@@ -221,17 +217,13 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print '###', parameters
-            #link = json.loads(parameters['link'])
-            #source = parameters['source']
-            #target = parameters['target']
+
             new_link = {
                 "source": parameters['source'],
                 "group": parameters['group'] if 'group' in parameters else [],
                 "target": parameters['target'],
                 "view": parameters['view'] if 'view' in parameters else []
             }
-            print new_link
             current_data = json.loads(self.data_project)
             if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
 
@@ -251,11 +243,7 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print '###', parameters
-            #link = json.loads(parameters['link'])
-            #source = link['source']
-            #target = link['target']
-            #print source['id'], target['id']
+
             source_id = parameters['source']
             target_id = parameters['target']
             link_view = parameters['view']
@@ -279,9 +267,7 @@ class OshiProject(Project):
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
-            print model_graph['layer'][args['layer']]['nodes']
             for node in model_graph['layer'][args['layer']]['nodes']:
-                print node
                 if model_graph['layer'][args['layer']]['nodes'][node] is not None and 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
                     current_data = {
                         "id": node,
@@ -294,8 +280,6 @@ class OshiProject(Project):
                         ]
                     }
                     result.append(current_data)
-            print "available nodes", result
-            #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []
