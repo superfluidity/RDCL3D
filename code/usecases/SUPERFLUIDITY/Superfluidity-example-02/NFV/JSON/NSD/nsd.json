@@ -103,7 +103,7 @@
       "nsVirtualLinkDescId": "vl3"
     }
   ],
-  "nsdIdentifier": "NSExample",
+  "nsdIdentifier": "nsd",
   "version": "1.0",
   "vnffgd": [],
   "nsDf": [
