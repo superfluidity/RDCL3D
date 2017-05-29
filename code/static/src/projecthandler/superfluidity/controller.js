@@ -9,7 +9,7 @@ dreamer.SuperfluidityController = (function(global) {
     var DEBUG = true;
 
     SuperfluidityController.prototype.constructor = SuperfluidityController;
-
+    var sf_vnf_vdu = ['vnf_click_vdu', 'vnf_k8s_vdu']
 
     /**
      * Constructor
@@ -31,7 +31,7 @@ dreamer.SuperfluidityController = (function(global) {
     SuperfluidityController.prototype.addVnfVduCp = function(graph_editor, node, success, error) {
          var vnf_id = node.info.group[0];
         var vnf_vdus = $.grep(graph_editor.d3_graph.nodes, function(e) {
-            return (e.info.group.indexOf(vnf_id) >= 0 && (e.info.type == 'vnf_vdu' || e.info.type == 'vnf_click_vdu' || e.info.type == 'vnf_k8s_vdu'));
+            return (e.info.group.indexOf(vnf_id) >= 0 && (e.info.type == 'vnf_vdu' || sf_vnf_vdu.indexOf(e.info.type) > -1 ));
         });
 
         if (typeof vnf_vdus == 'undefined' || vnf_vdus.length <= 0) {
@@ -92,7 +92,7 @@ dreamer.SuperfluidityController = (function(global) {
         var vnf_vdu_cp_id = source_type == 'vnf_vdu_cp' ? source_id : target_id;
         var vdu_links = $.grep(graph_editor.d3_graph.links, function(e) {
             return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu'
-            || e.source.info.type == 'vnf_click_vdu' || e.target.info.type == 'vnf_click_vdu')
+            || sf_vnf_vdu.indexOf(e.source.info.type) > -1  || sf_vnf_vdu.indexOf(e.target.info.type) > -1)
         });
         var vdu_id = vdu_links[0].source.info.type == 'vnf_vdu' ? vdu_links[0].source.id : vdu_links[0].target.id;
         if(vdu_links[0].source.info.type == 'vnf_vdu'){
@@ -114,7 +114,17 @@ dreamer.SuperfluidityController = (function(global) {
         var old_link = $.grep(graph_editor.d3_graph.links, function(e) {
             return (e.source.id == vnf_vdu_cp_id || e.target.id == vnf_vdu_cp_id) && (e.source.info.type == 'vnf_vl' || e.target.info.type == 'vnf_vl')
         });
-        new dreamer.GraphRequests().addLink(link,  vdu_id, function() {
+        var data_to_send = {
+                'group_id': link.source.info.group[0],
+                'element_desc_id': getUrlParameter('id'),
+                'source': link.source.id,
+                'source_type': link.source.info.type,
+                'target': link.target.id,
+                'target_type': link.target.info.type,
+                'choice': vdu_id
+            };
+
+        new dreamer.GraphRequests().addLink(data_to_send,  vdu_id, function() {
             graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
@@ -136,7 +146,7 @@ dreamer.SuperfluidityController = (function(global) {
     SuperfluidityController.prototype.removeVnfVduCp = function(graph_editor, node, success, error) {
         var vdu_links = $.grep(graph_editor.d3_graph.links, function(e) {
             return (e.source.id == node.id || e.target.id == node.id) && (e.source.info.type == 'vnf_vdu' || e.target.info.type == 'vnf_vdu'
-            || e.source.info.type == 'vnf_click_vdu' || e.target.info.type == 'vnf_click_vdu' || e.source.info.type == 'vnf_k8s_vdu' || e.target.info.type == 'vnf_k8s_vdu')
+            || sf_vnf_vdu.indexOf(e.source.info.type) > -1 || sf_vnf_vdu.indexOf(e.target.info.type) > -1)
         });
         var vdu_id;
         if(vdu_links[0].source.info.type == 'vnf_vdu'){

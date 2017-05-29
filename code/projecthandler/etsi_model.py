@@ -684,9 +684,11 @@ class EtsiProject(Project):
         return result
 
     def remove_vnf_vdu(self, vnf_id, vdu_id):
+        print 'remove_vnf_vdu', vnf_id, vdu_id
         try:
             current_data = json.loads(self.data_project)
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
+            print 'vdu_descriptor', vdu_descriptor
             if vdu_descriptor is not None:
                 current_data['vnfd'][vnf_id]['vdu'].remove(vdu_descriptor)
             self.data_project = current_data

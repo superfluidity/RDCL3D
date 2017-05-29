@@ -203,7 +203,10 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         if element_type in etsi_elements:
             result = EtsiProject.get_remove_element(self, request)
         elif element_type in sf_elements:
-            result = False  #FIXME
+            if element_type == 'vnf_k8s_vdu' or element_type == 'vnf_click_vdu':
+                group_id = request.POST.get('group_id')
+                element_id = request.POST.get('element_id')
+                result = EtsiProject.remove_vnf_vdu(self, group_id, element_id)
         elif element_type in click_elements:
             result = ClickProject.get_remove_element(self, request)
 

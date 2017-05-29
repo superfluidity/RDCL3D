@@ -326,9 +326,10 @@ dreamer.EtsiController = (function(global) {
             var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
             graph_editor.parent.removeNode.call(graph_editor, cp_node);
         }
+        console.log("removeVnfVdu", node.vduId)
         var data_to_send = {
                 'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
-                'element_id': node.id,
+                'element_id': (node.vduId != undefined) ? node.vduId : node.id,
                 'element_type': node.info.type,
                 'element_desc_id': node.info.desc_id,
 
