@@ -38,14 +38,15 @@ class RdclGraph(object):
     def __init__(self):
         pass
 
-    def add_link(self, source, target, view, group, graph_object ):
+    def add_link(self, source, target, view, group, graph_object, directed=False):
         if (source is None) or (target is None):
             return;
         edge_obj = {
             'source': source,
             'target': target,
             'view': view,
-            'group': [group]
+            'group': [group],
+            'directed_edge': directed
         }
         if edge_obj not in graph_object['edges']:
             graph_object['edges'].append(edge_obj)
@@ -60,10 +61,19 @@ class RdclGraph(object):
             node = copy.deepcopy(self.node_t3d_base)
             node['id'] = id
             node['info']['type'] = type
-            if group != False:
+            if group is not False:
                 node['info']['group'].append(group)
-            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
+            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id]:
                 node['fx'] = positions['vertices'][id]['x']
                 node['fy'] = positions['vertices'][id]['y']
             graph_object['vertices'].append(node)
 
+    def is_directed_edge(self, source_type=None, target_type=None, layer=None, model={}):
+        if source_type is None or target_type is None or layer is None:
+            return None
+        if layer in model['layer'] and 'allowed_edges' in model['layer'][layer]:
+            if source_type in model['layer'][layer]['allowed_edges'] and target_type in model['layer'][layer]['allowed_edges'][source_type]['destination']:
+                edge_pro = model['layer'][layer]['allowed_edges'][source_type]['destination'][target_type]
+                return edge_pro['direct_edge'] if 'direct_edge' in edge_pro else False
+
+        return None

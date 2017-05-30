@@ -356,7 +356,9 @@ dreamer.GraphEditor = (function(global) {
             .style("stroke", function(d) {
                 return default_link_color;
             })
-            .attr("marker-end",function(d) {return (d.directed_edge ? "url(#end)" : ''); });
+            .attr("marker-end",function(d) {
+                return (d.directed_edge ? "url(#end)" : '');
+            });
 
         this.nodeContainer = this.svg
             .selectAll()

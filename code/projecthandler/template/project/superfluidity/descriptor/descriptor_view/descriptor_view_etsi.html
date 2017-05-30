@@ -116,8 +116,7 @@ function update(e){
                         }
                     },
                     error: function(result) {
-                        console.log(result)
-                        alert("some error");
+                        showAlert(result);
                     }
                 });
         }

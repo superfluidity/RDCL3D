@@ -14,11 +14,8 @@
 #   limitations under the License.
 #
 
-import json
 import logging
-import copy
 from lib.rdcl_graph import RdclGraph
-from lib.util import Util
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('CranRdclGraph')
@@ -26,7 +23,6 @@ log = logging.getLogger('CranRdclGraph')
 
 class CranRdclGraph(RdclGraph):
     """Operates on the graph representation used for the GUI graph views"""
-
 
     def __init__(self):
         pass
@@ -66,13 +62,29 @@ class CranRdclGraph(RdclGraph):
                 self.add_node(f_block['name'], type_fb, False, positions, graph_object)
                 if 'rfb-list' in f_block:
                     for rfb in f_block['rfb-list']:
-                        self.add_link(f_block['name'], rfb, 'full', None, graph_object)
+                        rfb_data = self.get_functional_block(rfb, functional_blocks)
+                        target_type = rfb_data['type'] if 'type' in rfb_data else 'functional_block'
+                        directed = self.is_directed_edge(source_type=type_fb, target_type=target_type, layer='full',
+                                                         model=model)
+                        self.add_link(f_block['name'], rfb, 'full', None, graph_object, directed=directed)
                 if 'links' in f_block:
                     for link in f_block['links']:
-                        self.add_link(f_block['name'], link, 'full', None, graph_object)
-                        self.add_link(f_block['name'], link, f_block['rfb-level'], None, graph_object)
+                        rfb_data = self.get_functional_block(link, functional_blocks)
+                        target_type = rfb_data['type'] if 'type' in rfb_data else 'functional_block'
+                        directed_full = self.is_directed_edge(source_type=type_fb, target_type=target_type,
+                                                              layer='full', model=model)
+                        self.add_link(f_block['name'], link, 'full', None, graph_object, directed=directed_full)
+                        directed_level_c = self.is_directed_edge(source_type=type_fb, target_type=target_type,
+                                                                 layer=f_block['rfb-level'], model=model)
+                        self.add_link(f_block['name'], link, f_block['rfb-level'], None, graph_object,
+                                      directed=directed_level_c)
 
         except Exception as e:
             log.exception('Exception in build_graph_from_descriptor')
             raise
         return graph_object
+
+    def get_functional_block(self, name, fb_list):
+        for fb in fb_list:
+            if fb['name'] == name:
+                return fb
