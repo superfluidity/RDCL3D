@@ -52,6 +52,17 @@ var example_gui_properties = {
             "name":"P2P Switch"
          }
       },
+      "edges":{
+        "hierarchical":{
+            "color": "blue"
+        },
+        "same_level":{
+            "color": "red"
+        },
+        "unrecognized":{
+            "color": "red"
+        }
+      },
       "graphs":null
    }
 };

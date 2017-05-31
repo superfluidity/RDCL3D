@@ -92,6 +92,13 @@ dreamer.GraphEditor = (function(global) {
             },
         };
 
+        this.type_property_link = {
+            "unrecognized": {
+                "color": "#888",
+                //"color": "red",
+            },
+        };
+
         this.force = d3.forceSimulation()
             .force("collide", d3.forceCollide().radius(40))
             .force("link", d3.forceLink().distance(80).iterations(1).id(function(d) {
@@ -111,12 +118,14 @@ dreamer.GraphEditor = (function(global) {
             .attr("height", this.height);
 
         //End Arrow style
-        this.svg.append("svg:defs").selectAll("marker")
-            .data(["end"])      // Different link/path types can be defined here
+        this.defs = this.svg.append("svg:defs");
+
+        this.defs.selectAll("marker")
+            .data(["unrecognized"])      // Different link/path types can be defined here
             .enter().append("svg:marker")    // This section adds in the arrows
             .attr("id", String)
             .attr("viewBox", "-5 -5 10 10")
-            .attr("refX", 13) /*must be smarter way to calculate shift*/
+            .attr("refX", 13) //must be smarter way to calculate shift
             .attr("refY", 0)
             .attr("markerUnits", "userSpaceOnUse")
             .attr("markerWidth", 12)
@@ -124,7 +133,7 @@ dreamer.GraphEditor = (function(global) {
             .attr("orient", "auto")
             .append("path")
             .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
-            .attr('fill', default_link_color);
+            .attr('fill', this.type_property_link['unrecognized']['color']);
 
         d3.select(window)
             .on('keydown', function() {
@@ -354,10 +363,14 @@ dreamer.GraphEditor = (function(global) {
             .attr("class", "cleanable")
             .style("stroke-width", nominal_stroke)
             .style("stroke", function(d) {
-                return default_link_color;
+                return self._link_property_by_type((d.type_link)? d.type_link : "unrecognized", "color");
             })
             .attr("marker-end",function(d) {
-                return (d.directed_edge ? "url(#end)" : '');
+                if(!d.directed_edge)
+                    return '';
+
+                var marker_url = (d.type_link)? d.type_link : "unrecognized"
+                return (d.directed_edge ? "url(#"+marker_url+")" : '');
             });
 
         this.nodeContainer = this.svg
@@ -643,7 +656,21 @@ dreamer.GraphEditor = (function(global) {
             return this.type_property['unrecognized'][property];
         }
 
+    };
+
+    GraphEditor.prototype._link_property_by_type = function(type, property) {
+        //log(type + "-" + property)
+        if (this.type_property_link[type] != undefined && this.type_property_link[type][property] != undefined){
+            //if(property == "shape")
+            //    log("dentro" + this.type_property[type][property])
+            return this.type_property_link[type][property];
+            }
+        else{
+            return this.type_property_link['unrecognized'][property];
+        }
+
     }
+
 
     /**
      *

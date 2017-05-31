@@ -64,20 +64,33 @@ class CranRdclGraph(RdclGraph):
                     for rfb in f_block['rfb-list']:
                         rfb_data = self.get_functional_block(rfb, functional_blocks)
                         target_type = rfb_data['type'] if 'type' in rfb_data else 'functional_block'
+
                         directed = self.is_directed_edge(source_type=type_fb, target_type=target_type, layer='full',
                                                          model=model)
-                        self.add_link(f_block['name'], rfb, 'full', None, graph_object, directed=directed)
+                        optional = {
+                            'type_link': 'hierarchical',
+                            'directed_edge': directed
+                        }
+                        self.add_link(f_block['name'], rfb, 'full', None, graph_object, optional=optional)
                 if 'links' in f_block:
                     for link in f_block['links']:
                         rfb_data = self.get_functional_block(link, functional_blocks)
                         target_type = rfb_data['type'] if 'type' in rfb_data else 'functional_block'
+
                         directed_full = self.is_directed_edge(source_type=type_fb, target_type=target_type,
                                                               layer='full', model=model)
-                        self.add_link(f_block['name'], link, 'full', None, graph_object, directed=directed_full)
+                        optional = {
+                            'type_link': 'same_level',
+                            'directed_edge': directed_full
+                        }
+                        self.add_link(f_block['name'], link, 'full', None, graph_object,optional=optional)
                         directed_level_c = self.is_directed_edge(source_type=type_fb, target_type=target_type,
                                                                  layer=f_block['rfb-level'], model=model)
-                        self.add_link(f_block['name'], link, f_block['rfb-level'], None, graph_object,
-                                      directed=directed_level_c)
+                        optional = {
+                            'type_link': 'same_level',
+                            'directed_edge': directed_level_c
+                        }
+                        self.add_link(f_block['name'], link, f_block['rfb-level'], None, graph_object, optional=optional)
 
         except Exception as e:
             log.exception('Exception in build_graph_from_descriptor')

@@ -38,7 +38,7 @@ class RdclGraph(object):
     def __init__(self):
         pass
 
-    def add_link(self, source, target, view, group, graph_object, directed=False):
+    def add_link(self, source, target, view, group, graph_object,optional={}):
         if (source is None) or (target is None):
             return;
         edge_obj = {
@@ -46,8 +46,10 @@ class RdclGraph(object):
             'target': target,
             'view': view,
             'group': [group],
-            'directed_edge': directed
+
         }
+
+        edge_obj.update(optional)
         if edge_obj not in graph_object['edges']:
             graph_object['edges'].append(edge_obj)
 
