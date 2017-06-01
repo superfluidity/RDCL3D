@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block left_sidebar %}
-{% include 'oshi/oshi_deployment_left_sidebar.html' %}
+{% include 'cran/cran_deployment_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -31,9 +31,9 @@
 {% block resource_block %}
 {{ block.super }}
 <script>
-var editorOshi;
+var editorCran;
 
-var oshi_editor_settings = {
+var cran_editor_settings = {
     mode: "javascript",
     showCursorWhenSelecting: true,
     autofocus: true,
@@ -61,13 +61,13 @@ var oshi_editor_settings = {
 
 $(document).ready(function () {
     var myTextArea = document.getElementById("d_d_source");
-    editorOshi = CodeMirror(function (elt) {
+    editorCran = CodeMirror(function (elt) {
         myTextArea.parentNode.replaceChild(elt, myTextArea);
-    }, oshi_editor_settings);
+    }, cran_editor_settings);
 
 
-    editorOshi.setValue('{{deployment_descriptor |safe}}');
-    editorOshi.setOption("autoRefresh", true);
+    editorCran.setValue('{{deployment_descriptor |safe}}');
+    editorCran.setOption("autoRefresh", true);
 
 
 

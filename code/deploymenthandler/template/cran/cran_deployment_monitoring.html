@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block left_sidebar %}
-{% include 'oshi/oshi_deployment_left_sidebar.html' %}
+{% include 'cran/cran_deployment_left_sidebar.html' %}
 {% endblock %}
 
 {% block breadcrumb_body %}
@@ -38,15 +38,15 @@
 
 {% block details_table_nodes %}
 {{ block.super }}
-{% include 'oshi/oshi_deployment_monitoring_table_nodes.html' %}
+{% include 'cran/cran_deployment_monitoring_table_nodes.html' %}
 {% endblock %}
 
 
 {% block resource_block %}
 {{ block.super }}
 
-<script src="{% static "src/deploymenthandler/oshi/gui_properties.js" %}"></script>
-<script src="{% static "src/deploymenthandler/oshi/deployment_topology.js" %}"></script>
+<script src="{% static "src/deploymenthandler/cran/gui_properties.js" %}"></script>
+<script src="{% static "src/deploymenthandler/cran/deployment_topology.js" %}"></script>
 
 {% endblock %}
 

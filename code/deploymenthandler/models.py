@@ -105,6 +105,7 @@ class Deployment(models.Model):
 
     def _getHelperClass(self):
         type_agent = self.deployment_agent['type']
+        print "type_ageny", type_agent
         my_module = importlib.import_module("deploymenthandler.helpers."+type_agent)
         HelperClass = getattr(my_module, type_agent.capitalize() + "Helper")
 
