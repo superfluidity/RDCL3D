@@ -21,7 +21,7 @@ from django.db import models
 from django.utils import timezone
 import logging
 import importlib
-
+import json
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
@@ -63,7 +63,6 @@ class Deployment(models.Model):
     """Stores a validated JSON representation of the deployment descriptor"""
 
     def create(self, *args, **kwargs):
-        print "create c"
         if 'type' in kwargs and isinstance(kwargs['type'], basestring):
             kwargs['type'] = Deployment.objects.get(name=kwargs['type'])
         return super(Deployment, self).create(*args, **kwargs)
@@ -72,7 +71,14 @@ class Deployment(models.Model):
         log.debug("launch Deployment")
         HelperClass = self._getHelperClass()
         deploy = HelperClass(self.deployment_agent)
-        return deploy.launch(self)
+
+        result = deploy.launch(self)
+        if 'error' not in result:
+            self.status = "running"
+        else:
+            self.status = "not started"
+        self.save()
+        return result
 
     def stop(self):
         log.debug("stop Deployment")
@@ -95,7 +101,12 @@ class Deployment(models.Model):
         log.debug("Deployment get info")
         HelperClass = self._getHelperClass()
         deploy = HelperClass(self.deployment_agent)
-        return deploy.get_deployment_info(deployment_id=self.id)
+        result = deploy.get_deployment_info(deployment_id=self.id)
+        if 'error' not in result:
+            self.deployment_descriptor = json.dumps(result['deployment_descriptor'])
+            self.save()
+        return result
+
 
     def open_shell(self, node_id=None):
         log.debug("Deployment open shell - get info about shell")
@@ -105,7 +116,7 @@ class Deployment(models.Model):
 
     def _getHelperClass(self):
         type_agent = self.deployment_agent['type']
-        print "type_ageny", type_agent
+        print "type_agent", type_agent
         my_module = importlib.import_module("deploymenthandler.helpers."+type_agent)
         HelperClass = getattr(my_module, type_agent.capitalize() + "Helper")
 

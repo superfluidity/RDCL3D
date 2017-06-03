@@ -30,12 +30,12 @@ class Helper():
         log.debug("open shell")
         url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id) + "/console"
         r = requests.get(url)
-        print r
         return r.json()
 
     def _send_post(self, url, data=None, json=None, **kwargs):
         try:
             r = requests.post(url, data=data, json=json, **kwargs)
         except Exception as e:
+            print "Exception during send POST"
             return {'error': 'error during connection to agent'}
         return r.json()

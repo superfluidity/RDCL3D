@@ -60,7 +60,7 @@ Details
                             class="pull-right">{{deployment.creator_name}}</span></a></li>
 
                     <li><a><b>Status:</b>
-                        {% if deployment.status %}
+                        {% if deployment.status == "running" %}
                         <span class="pull-right badge bg-green">{{deployment.status}}</span>
                         {% else %}
                         <span class="pull-right badge bg-red">{{deployment.status}}</span>
@@ -150,6 +150,6 @@ Details
     <script src="{% static "src/deploymenthandler/deployment_util.js" %}"></script>
 
 <script>
-    var update = setInterval(function(){updateDeploymentInfo({'id': {{deployment.id}} });}, 3000);
+    var update = setInterval(function(){updateDeploymentInfo({'id': {{deployment.id}} });}, 10000);
 </script>
 {% endblock %}

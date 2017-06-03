@@ -11,10 +11,9 @@ $(document).ready(function() {
         },
         link: {
             group: [],
-            view: ['Data']
+            view: []
         }
     }
-
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
     console.log(example_gui_properties)
@@ -22,9 +21,7 @@ $(document).ready(function() {
     graph_editor.init({
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
-        graph_data: topology_data,//{ 'vertices': [], 'edges': []},
-        //data_url: "graph_data/"+getUrlParameter('id'),
-        desc_id: getUrlParameter('id'),
+        graph_data: topology_data,
         gui_properties: example_gui_properties,
         edit_mode: false,
         behaviorsOnEvents:{
@@ -56,10 +53,12 @@ function handleForce(el) {
 }
 
 
+
 function refreshGraphParameters(e, graphParameters) {
 
     var self = $(this);
     if (graphParameters == null) return;
+
 
 }
 

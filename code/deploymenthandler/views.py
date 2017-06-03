@@ -55,16 +55,15 @@ def open_deployment(request, deployment_id=None):
         if len(res_search) > 0:
             deployment = res_search[0]
             info_result = deployment.get_info()
-            print 'info_result', info_result
+            #FIXME usare info_result
             agent = deployment.deployment_agent
-            #deployment_descriptor = info_result['topology_deployment']
             agent_type = agent['type']
             url = agent_type + '/' + agent_type + '_deployment_details.html'
             if 'application/json' in raw_content_types:
                 deployment = json.dumps(deployment.to_json())
 
             result = {'deployment': deployment,
-                      'deployment_descriptor': json.dumps(deployment.deployment_descriptor),
+                      #'deployment_descriptor': json.dumps(deployment.deployment_descriptor),
                       'collapsed_sidebar': True}
         else:
             url = 'error.html'
@@ -131,18 +130,21 @@ def monitoring_deployment(request, deployment_id=None):
     if len(res_search) > 0:
         deployment = res_search[0]
         monitor_result = deployment.get_status()
-        topology = monitor_result['topology_deployment']
-        print "monitor", DeployAgent(deployment.deployment_agent).base_url
-        nodes = []
-        topology_data = {}
-        if topology:
-            topology_data = json.dumps(topology)
-            nodes = topology['vertices'] if 'vertices' in topology else []
-        agent = deployment.deployment_agent
-        agent_type = agent['type']
-        url = agent_type + '/' + agent_type + '_deployment_monitoring.html'
-        result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
-                  'collapsed_sidebar': True}
+        if 'error' not in monitor_result:
+            topology = monitor_result['topology_deployment']
+            nodes = []
+            topology_data = {}
+            if topology:
+                topology_data = json.dumps(topology)
+                nodes = topology['vertices'] if 'vertices' in topology else []
+            agent = deployment.deployment_agent
+            agent_type = agent['type']
+            url = agent_type + '/' + agent_type + '_deployment_monitoring.html'
+            result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
+                      'collapsed_sidebar': True}
+        else:
+            url = 'error.html'
+            result = monitor_result
     else:
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
