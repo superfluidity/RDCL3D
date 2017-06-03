@@ -15,7 +15,6 @@ class SuperfluidityHelper(Helper):
         url = self.agent['base_url'] + "/deployments"
         projects = Project.objects.filter(id=deployment.project_id).select_subclasses()
         descriptor = projects[0].get_deployment_descriptor(nsdId=deployment.descriptors_id[0])
-        print descriptor
         deployment.deployment_descriptor = descriptor
         deployment.save()
         r = self._send_post(url, json.dumps({'deployment_descriptor': descriptor, 'deployment_id': deployment.id}),

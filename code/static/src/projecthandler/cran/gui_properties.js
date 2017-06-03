@@ -9,10 +9,25 @@ var example_gui_properties = {
       },
       "nodes":{
          "functional_block":{
-            "shape":"circle",
-            "color":"#1F77B4",
-            "size":20,
-            "name":"Functional Block"
+            "property": "rfb-level",
+
+                        "rfb/0":{
+                            "shape":"triangle",
+                            "color":"#1F77B4",
+                            "size":20,
+                            "name":"Functional Block"
+                        },
+                        "rfb/1":{
+                            "shape":"square",
+                            "color":"#1F77B4",
+                            "size":20,
+                            "name":"Functional Block"
+                        }
+
+
+
+
+
          },
 
          "cran/epcbox":{
@@ -50,6 +65,13 @@ var example_gui_properties = {
             "color":"#8C564B",
             "size":20,
             "name":"P2P Switch"
+         },
+         "fhaul/sdn_ctrl":{
+            "image" : "ofcontroller.png",
+            //"shape":"circle",
+            "color":"#8C564B",
+            "size": 30,
+            "name":"Sdn Controller"
          }
       },
       "edges":{

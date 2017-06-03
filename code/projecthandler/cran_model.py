@@ -325,6 +325,21 @@ class CranProject(Project):
             result = []
         return result
 
+    def get_deployment_descriptor(self, **kwargs):
+        """Returns the deployment descriptor"""
+        result = {}
+        try:
+            if 'desId' in kwargs:
+                desId = kwargs['desId']
+                current_data = json.loads(self.data_project)
+                result = current_data['cran'][desId]
+            else:
+                log.debug("no desId")
+        except Exception as e:
+            log.debug(e)
+            result = None
+        return result
+
     def get_zip_archive(self):
         in_memory = StringIO()
         try:

@@ -36,7 +36,7 @@ $(document).ready(function() {
         filter_base: params
     });
     //console.log(graph_editor.getCurrentView())
-    graph_editor.handleFiltersParams(params);
+    graph_editor.handleFiltersParams(params, false);
     graph_editor.addListener("filters_changed", changeFilter);
 
 });
@@ -56,7 +56,7 @@ dropZone.ondrop = function(e) {
     var nodetype = e.dataTransfer.getData("text/plain");
     if (nodetype) {
         //nodetype = nodetype.replace(/_/g, ".")
-        console.log(graph_editor.getTypeProperty())
+        //console.log(graph_editor.getTypeProperty())
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
         $('#div_chose_id').show();
                 $('#div_chose_vnf').hide();

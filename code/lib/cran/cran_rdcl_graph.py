@@ -59,7 +59,10 @@ class CranRdclGraph(RdclGraph):
             functional_blocks = descriptor['Functional-blocks']
             for f_block in functional_blocks:
                 type_fb = f_block['type'] if 'type' in f_block else 'functional_block'
-                self.add_node(f_block['name'], type_fb, False, positions, graph_object)
+                node_optional = {
+                    'rfb-level': f_block['rfb-level']
+                }
+                self.add_node(f_block['name'], type_fb, f_block['rfb-level'], positions, graph_object,optional=node_optional)
                 if 'rfb-list' in f_block:
                     for rfb in f_block['rfb-list']:
                         rfb_data = self.get_functional_block(rfb, functional_blocks)

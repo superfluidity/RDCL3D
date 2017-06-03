@@ -305,7 +305,6 @@ dreamer.EtsiController = (function(global) {
                 'source_type': link.source.info.type,
                 'target': link.target.id,
                 'target_type': link.target.info.type,
-                //'choice': vdu_id
         };
         new dreamer.GraphRequests().addLink(data_to_send,  null, function() {
             graph_editor._deselectAllNodes();

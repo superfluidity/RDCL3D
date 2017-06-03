@@ -17,6 +17,8 @@ nodes:                                   #List of nodes, with id and label used 
     label: fhaul/h2h_switch
   fhaul/p2p_switch:
     label: fhaul/p2p_switch
+  fhaul/sdn_ctrl:
+    label: fhaul/sdn_ctrl
 layer:                                  #List of Layers
     rfb/0:
       nodes:                  #List of node to be visualized in the current layer
@@ -74,6 +76,11 @@ layer:                                  #List of Layers
             callback: addNode
           removable:
             callback: removeNode
+        fhaul/sdn_ctrl:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
         cran/epcbox:
           destination:
@@ -103,6 +110,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -139,6 +151,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         cran/bbu:
           destination:
             cran/rrh:
@@ -167,6 +184,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -203,6 +225,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/h2h_switch:
           destination:
             cran/rrh:
@@ -235,6 +262,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/p2p_switch:
           destination:
             cran/rrh:
@@ -263,6 +295,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -304,6 +341,11 @@ layer:                                  #List of Layers
             callback: addNode
           removable:
             callback: removeNode
+        fhaul/sdn_ctrl:
+          addable:
+            callback: addNode
+          removable:
+            callback: removeNode
       allowed_edges:                  #List of allowed edges between the layer's nodes
         functional_block:
           destination:
@@ -338,6 +380,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -379,6 +426,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         cran/rrh:
           destination:
             functional_block:
@@ -412,6 +464,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -453,6 +510,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/fw_switch:
           destination:
             functional_block:
@@ -486,6 +548,11 @@ layer:                                  #List of Layers
               removable:
                 callback: removeLink
             fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
               callback: addLink
               direct_edge: true
               removable:
@@ -527,6 +594,11 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
         fhaul/p2p_switch:
           destination:
             functional_block:
@@ -564,7 +636,53 @@ layer:                                  #List of Layers
               direct_edge: true
               removable:
                 callback: removeLink
-
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+        fhaul/sdn_crt:
+          destination:
+            functional_block:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/rrh:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/epcbox:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            cran/bbu:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/fw_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/h2h_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/p2p_switch:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
+            fhaul/sdn_ctrl:
+              callback: addLink
+              direct_edge: true
+              removable:
+                callback: removeLink
 action:           #Action to show on rightclick on a node/link
     rightclick:
       node:

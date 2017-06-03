@@ -57,10 +57,24 @@ dreamer.ModelGraphEditor = (function (global) {
 
         Object.keys(args.gui_properties["nodes"]).forEach(function (key, index) {
             this.type_property[key] = args.gui_properties["nodes"][key];
-            this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
-            if (this.type_property[key]["image"] != undefined) {
-                this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
+            if ( this.type_property[key]['property'] != undefined){
+                for(var c_prop in this.type_property[key]){
+                    if(c_prop != 'property'){
+
+                        this.type_property[key][c_prop]['shape'] = this.parent.get_d3_symbol(this.type_property[key][c_prop]['shape']);
+                        if(this.type_property[key][c_prop]["image"] != undefined){
+                            this.type_property[key][c_prop]["image"] = IMAGE_PATH + this.type_property[key][c_prop]["image"]
+                        }
+                    }
+                }
             }
+            else{
+                this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
+                if (this.type_property[key]["image"] != undefined) {
+                    this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
+                }
+            }
+
 
 
         }, this);
@@ -131,6 +145,7 @@ dreamer.ModelGraphEditor = (function (global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.updateData = function (args) {
+        console.log("updateData")
         this.d3_graph.nodes = args.graph_data.vertices;
         this.d3_graph.links = args.graph_data.edges;
         this.d3_graph.graph_parameters = args.graph_parameters;
