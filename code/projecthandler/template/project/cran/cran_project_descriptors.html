@@ -55,7 +55,7 @@ $('#modal_launch_deploy').on('shown.bs.modal', function (e) {
     loadDataOptionsSelector({
         'select_container': $('#agent_select_container'),
         'select': $('#agent_selected'),
-        'url': '{% url 'agent:agents_list' %}' + '?type=oshi',
+        'url': '{% url 'agent:agents_list' %}' + '?type=cran',
         'text_key': 'name',
         'value_key': 'id'
     });
