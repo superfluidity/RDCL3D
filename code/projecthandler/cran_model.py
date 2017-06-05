@@ -329,12 +329,12 @@ class CranProject(Project):
         """Returns the deployment descriptor"""
         result = {}
         try:
-            if 'desId' in kwargs:
-                desId = kwargs['desId']
+            if 'descId' in kwargs:
+                desId = kwargs['descId']
                 current_data = json.loads(self.data_project)
                 result = current_data['cran'][desId]
             else:
-                log.debug("no desId")
+                log.debug("no descId")
         except Exception as e:
             log.debug(e)
             result = None

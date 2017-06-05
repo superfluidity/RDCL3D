@@ -31,44 +31,10 @@
 {% block resource_block %}
 {{ block.super }}
 <script>
-var editorOshi;
-
-var oshi_editor_settings = {
-    mode: "javascript",
-    showCursorWhenSelecting: true,
-    autofocus: true,
-    lineNumbers: true,
-    lineWrapping: true,
-    foldGutter: true,
-    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-    autoCloseBrackets: true,
-    matchBrackets: true,
-    extraKeys: {
-        "F11": function (cm) {
-            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-        },
-        "Esc": function (cm) {
-            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-        },
-        "Ctrl-Q": function (cm) {
-            cm.foldCode(cm.getCursor());
-        }
-    },
-    theme: "neat",
-    keyMap: "sublime",
-    readOnly: true,
-}
-
 $(document).ready(function () {
-    var myTextArea = document.getElementById("d_d_source");
-    editorOshi = CodeMirror(function (elt) {
-        myTextArea.parentNode.replaceChild(elt, myTextArea);
-    }, oshi_editor_settings);
 
-
-    editorOshi.setValue('{{deployment_descriptor |safe}}');
-    editorOshi.setOption("autoRefresh", true);
-
+    var descriptors_data = {{deployment.deployment_descriptor |safe}};
+    appendDescriptorTab({'id': 'Overall', 'desc_data': descriptors_data, 'editor_setting': click_editor_settings})
 
 
 
