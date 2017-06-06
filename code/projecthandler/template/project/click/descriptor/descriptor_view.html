@@ -128,8 +128,8 @@ function update(e){
                         }
                     },
                     error: function(result) {
-                        console.log(result)
-                        alert("some error");
+                        console.log("error: " + result)
+                        showAlert(result);
                     }
                 });
         }

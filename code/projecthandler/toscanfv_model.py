@@ -285,12 +285,17 @@ class ToscanfvProject(Project):
 
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        group = source['info']['group'][0]
+        #link = json.loads(parameters['link'])
+        #source = link['source']
+        #destination = link['target']
+
+        print parameters
+        source_type = parameters['source_type']  # source['info']['type']
+        destination_type = parameters['target_type']  # destination['info']['type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        group = parameters['group']
+
         current_data = json.loads(self.data_project)
         if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL'),
                                                ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.CP'),
@@ -300,8 +305,8 @@ class ToscanfvProject(Project):
                                                ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.CP'),
                                                ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ETree'),
                                                ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.CP')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.CP' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.CP' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:
@@ -317,8 +322,8 @@ class ToscanfvProject(Project):
                 requirements.append(element)
         if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VDU'),
                                                ('tosca.nodes.nfv.VDU', 'tosca.nodes.nfv.CP')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.CP' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.CP' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:
@@ -340,8 +345,8 @@ class ToscanfvProject(Project):
                                                ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.VNF'),
                                                ('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL.ETree'),
                                                ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.VNF')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.VNF' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.VNF' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.VNF' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.VNF' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:
@@ -366,12 +371,13 @@ class ToscanfvProject(Project):
     def get_remove_link(self, request):
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        group = source['info']['group'][0]
+        print parameters
+        source_type = parameters['source_type']  # source['info']['type']
+        destination_type = parameters['target_type']  # destination['info']['type']
+        source_id = parameters['source']
+        destination_id = parameters['target']
+        group = parameters['group']
+
         current_data = json.loads(self.data_project)
         if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL'),
                                                ('tosca.nodes.nfv.VL', 'tosca.nodes.nfv.CP'),
@@ -381,8 +387,8 @@ class ToscanfvProject(Project):
                                                ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.CP'),
                                                ('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VL.ETree'),
                                                ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.CP')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.CP' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.CP' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:
@@ -395,8 +401,8 @@ class ToscanfvProject(Project):
                     'requirements'].remove(element)
         if (source_type, destination_type) in [('tosca.nodes.nfv.CP', 'tosca.nodes.nfv.VDU'),
                                                ('tosca.nodes.nfv.VDU', 'tosca.nodes.nfv.CP')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.CP' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.CP' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.CP' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.CP' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:
@@ -415,8 +421,8 @@ class ToscanfvProject(Project):
                                                ('tosca.nodes.nfv.VL.ELAN', 'tosca.nodes.nfv.VNF'),
                                                ('tosca.nodes.nfv.VNF', 'tosca.nodes.nfv.VL.ETree'),
                                                ('tosca.nodes.nfv.VL.ETree', 'tosca.nodes.nfv.VNF')]:
-            cp_id = source['id'] if source_type == 'tosca.nodes.nfv.VNF' else destination['id']
-            vl_id = source['id'] if source_type != 'tosca.nodes.nfv.VNF' else destination['id']
+            cp_id = source_id if source_type == 'tosca.nodes.nfv.VNF' else destination_id
+            vl_id = source_id if source_type != 'tosca.nodes.nfv.VNF' else destination_id
             if 'requirements' not in current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id] or \
                             current_data['toscayaml'][group]['topology_template']['node_templates'][cp_id][
                                 'requirements'] is None:

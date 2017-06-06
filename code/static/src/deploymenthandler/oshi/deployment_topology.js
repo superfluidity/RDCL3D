@@ -1,6 +1,5 @@
 //GraphEditor instance
 var graph_editor = new dreamer.ModelGraphEditor();
-var selected_vnffgId = null;
 var show_all = null;
 
 
@@ -15,7 +14,7 @@ $(document).ready(function() {
             view: ['Data']
         }
     }
-    //graph_editor.addListener("filters_changed", changeFilter);
+
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
     console.log(example_gui_properties)
@@ -43,8 +42,6 @@ var filters = function(e, params) {
 }
 
 
-
-
 function handleForce(el) {
     if (el.id == "topology_play") {
         $("#topology_pause").removeClass('active');
@@ -59,48 +56,10 @@ function handleForce(el) {
 }
 
 
-function changeFilter(e, c) {
-
-    console.log("changeFilter", JSON.stringify(c));
-    //$("#title_header").text("OSHI Graph Editor");
-    //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
-    if(c)
-        new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
-
-}
-
-function openEditor(project_id) {
-    window.location.href = '/projects/' + project_id + '/descriptors/'+getUrlParameter('type')+'/' + getUrlParameter('id');
-}
-
-
-
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
-}
-
-function showChooserModal(title, chooses, callback) {
-    console.log('showchooser')
-    $('#selection_chooser').empty();
-    for (var i in chooses) {
-        $('#selection_chooser').append('<option id="' + chooses[i].id + '">' + chooses[i].id + '</option>');
-    }
-    $('#modal_chooser_title').text(title)
-    var self = this;
-    $('#save_chooser').off('click').on('click', function() {
-        var choice = $("#selection_chooser option:selected").text();
-        callback(choice);
-
-    });
-    $('#modal_create_link_chooser').modal('show');
-
-}
-
 function refreshGraphParameters(e, graphParameters) {
 
     var self = $(this);
     if (graphParameters == null) return;
-
 
 }
 

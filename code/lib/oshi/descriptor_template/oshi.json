@@ -89,5 +89,12 @@
       },
       "id": "ctr1"
     }
-  ]
+  ],
+  "graph_parameters":{
+      "tunneling":"OPENVPN",
+      "vlan":0,
+      "generated":false,
+      "mapped":false,
+      "testbed":"MININET"
+   }
 }

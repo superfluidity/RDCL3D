@@ -35,6 +35,21 @@ dreamer.ToscaController = (function(global) {
         },error);
     };
 
+    ToscaController.prototype.removeNode = function(graph_editor, node, success, error) {
+        log('removeNode');
+         var data_to_send = {
+            'group_id': node.info.group[0],
+            'element_id': node.id,
+            'element_type': node.info.type,
+            'element_desc_id': node.info.desc_id,
+        };
+        new dreamer.GraphRequests().removeNode(data_to_send, null, function() {
+            if (success) {
+                success();
+            }
+        },error);
+    };
+
     ToscaController.prototype.addLink = function(graph_editor, link, success, error) {
         log('addLink');
         var s = link.source;
@@ -47,7 +62,16 @@ dreamer.ToscaController = (function(global) {
             return ((e.source.id == source_id || e.target.id == source_id) ||(e.source.id == target_id || e.target.id == target_id)) &&
             ((e.source.info.type == source_type && e.target.info.type == destination_type) || (e.source.info.type == destination_type && e.target.info.type == source_type));
         });
-        new dreamer.GraphRequests().addLink(link, null, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().addLink(data_to_send, null, function() {
             graph_editor._deselectAllNodes();
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
                 graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
@@ -58,21 +82,18 @@ dreamer.ToscaController = (function(global) {
         },error);
     };
 
-
-    ToscaController.prototype.removeNode = function(graph_editor, node, success, error) {
-        log('removeNode');
-        new dreamer.GraphRequests().removeNode(node, null, function() {
-            if (success) {
-                success();
-            }
-        },error);
-    };
-
     ToscaController.prototype.removeLink = function(graph_editor, link, success, error) {
         log('removeLink');
-        var s = link.source;
-        var d = link.target;
-        new dreamer.GraphRequests().removeLink(link, function() {
+        var data_to_send = {
+            'desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+            'view': link.view,
+            'group': link.group
+        };
+        new dreamer.GraphRequests().removeLink(data_to_send, function() {
             if (success) {
                 success();
             }

@@ -1,0 +1,56 @@
+{% extends "deployment_details.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'superfluidity/superfluidity_deployment_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+
+{% block content_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+<script>
+
+
+
+$(document).ready(function () {
+
+    var descriptors_data = {{deployment.deployment_descriptor |safe}};
+
+    for(var desc_type in descriptors_data){
+        console.log(desc_type);
+        for(var desc_name in descriptors_data[desc_type]){
+            if(desc_type == 'click'){
+                appendDescriptorTab({'id': desc_name, 'desc_data': descriptors_data[desc_type][desc_name], 'editor_setting': click_editor_settings})
+            }
+            else{
+                appendDescriptorTab({'id': desc_name, 'desc_data': descriptors_data[desc_type][desc_name], 'editor_setting': json_editor_settings})
+            }
+
+        }
+    }
+
+});
+</script>
+{% endblock %}

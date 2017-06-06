@@ -63,8 +63,15 @@ or https:
 
 ### Manual Installation
 
-See documentation for manual installation [here](code/manual_install.md)
+See documentation for manual installation [here](docs/manual_install.md)
 
+### Start the web GUI
+
+Open your browser and point it to http://localhost:8000 (if you have not changed the default IP and port)
+
+### Installation of deployers/agents
+
+See documentation for the installation of deployers/agent [here](docs/agent_install.md)
 
 ## License
 

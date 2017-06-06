@@ -26,6 +26,7 @@ from sf_user.models import CustomUser
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
+from projecthandler.cran_model import CranProject
 from projecthandler.toscanfv_model import ToscanfvProject
 from projecthandler.superfluidity_model import SuperfluidityProject
 from projecthandler.oshi_model import OshiProject
@@ -36,6 +37,7 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
+Project.add_project_type('cran', CranProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
 Project.add_project_type('superfluidity', SuperfluidityProject)
 Project.add_project_type('oshi', OshiProject)
@@ -353,6 +355,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
 @login_required
 def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_type=None):
     if request.method == 'POST':
+        print "edit_descriptor"
         projects = Project.objects.filter(id=project_id).select_subclasses()
         result = projects[0].edit_descriptor(descriptor_type, descriptor_id, request.POST.get('text'),
                                              request.POST.get('type'))

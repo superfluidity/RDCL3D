@@ -42,8 +42,9 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/superfluidity/superfluidity.yaml'
 EXAMPLES_FOLDER = 'usecases/SUPERFLUIDITY/'
 
 etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vnf_vdu_cp', 'vnffg']
-sf_elements = ['vnf_click_vdu']
+sf_elements = ['vnf_click_vdu', 'vnf_k8s_vdu']
 click_elements = ['element', 'compound_element', 'class_element']
+
 
 class SuperfluidityProject(EtsiProject, ClickProject):
     """Superfluidity Project class
@@ -118,11 +119,9 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             'info': self.info,
             'type': 'superfluidity',
             'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
-
             'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
-
             'click': len(current_data['click'].keys()) if 'click' in current_data else 0,
-
+            'k8s': len(current_data['k8s'].keys()) if 'k8s' in current_data else 0,
             'validated': self.validated
         }
 
@@ -149,6 +148,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
             elif data_type == 'click':
                 new_descriptor = new_data
+            #elif data_type == 'k8s':
+            #    new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
@@ -174,15 +175,19 @@ class SuperfluidityProject(EtsiProject, ClickProject):
     def get_add_element(self, request):
         result = False
         element_type = request.POST.get('element_type')
-
-
+        parameters = request.POST.dict()
+        print "get_add_element", parameters
         print 'get_add_element', element_type
         if element_type in etsi_elements:
             result = EtsiProject.get_add_element(self, request)
         elif element_type in sf_elements:
             vnf_id = request.POST.get('group_id')
             vdu_id = request.POST.get('element_id')
-            result = self.add_vnf_click_vdu(vnf_id, vdu_id)
+            if element_type == 'vnf_click_vdu':
+                result = self.add_vnf_click_vdu(vnf_id, vdu_id)
+            elif element_type == 'vnf_k8s_vdu':
+                result = self.add_vnf_k8s_vdu(vnf_id, vdu_id)
+
         elif element_type in click_elements:
             result = ClickProject.get_add_element(self, request)
 
@@ -191,14 +196,17 @@ class SuperfluidityProject(EtsiProject, ClickProject):
     def get_remove_element(self, request):
 
         result = False
-
+        parameters = request.POST.dict()
+        print "get_remove_element", parameters
         element_type = request.POST.get('element_type')
-
 
         if element_type in etsi_elements:
             result = EtsiProject.get_remove_element(self, request)
         elif element_type in sf_elements:
-            result = False #self.remove
+            if element_type == 'vnf_k8s_vdu' or element_type == 'vnf_click_vdu':
+                group_id = request.POST.get('group_id')
+                element_id = request.POST.get('element_id')
+                result = EtsiProject.remove_vnf_vdu(self, group_id, element_id)
         elif element_type in click_elements:
             result = ClickProject.get_remove_element(self, request)
 
@@ -208,75 +216,28 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         result = False
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        # source = json.loads(request.POST.get('source'))
-        # destination = json.loads(request.POST.get('destination'))
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = self.link_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = self.link_vl_vnf(ns_id, vl_id, vnf_id, vnf_ext_cp)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            vnf_ext_cp = request.POST.get('choice')
-            result = self.link_vnf_sap(ns_id, vnf_id, sap_id, vnf_ext_cp)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            vdu_id = request.POST.get('choice')
-            vnf_id = source['info']['group'][0]
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            result = self.link_vducp_intvl(vnf_id, vdu_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = self.link_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        print "get_add_link", parameters
+
+        source_type = parameters['source_type']
+        destination_type = parameters['target_type']
+
+        if source_type in etsi_elements and destination_type in etsi_elements:
+            result = EtsiProject.get_add_link(self, request)
+        elif source_type in click_elements and destination_type in click_elements:
+            result = ClickProject.get_add_link(self, request)
         return result
 
     def get_remove_link(self, request):
 
         result = False
         parameters = request.POST.dict()
-        # print "param remove_link", parameters
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
+        print "param remove_link", parameters
+        source_type = parameters['source_type']
+        destination_type = parameters['target_type']
 
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        if (source_type, destination_type) in [('ns_vl', 'ns_cp'), ('ns_cp', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            result = self.unlink_vl_sap(source['info']['group'][0], vl_id, sap_id)
-        elif (source_type, destination_type) in [('ns_vl', 'vnf'), ('vnf', 'ns_vl')]:
-            vl_id = source['id'] if source_type == 'ns_vl' else destination['id']
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = self.unlink_vl_vnf(ns_id, vl_id, vnf_id)
-        if (source_type, destination_type) in [('vnf', 'ns_cp'), ('ns_cp', 'vnf')]:
-            vnf_id = source['id'] if source_type == 'vnf' else destination['id']
-            sap_id = source['id'] if source_type == 'ns_cp' else destination['id']
-            ns_id = source['info']['group'][0]
-            result = self.unlink_vl_sap(ns_id, vnf_id, sap_id)
-        elif (source_type, destination_type) in [('vnf_vl', 'vnf_vdu_cp'), ('vnf_vdu_cp', 'vnf_vl')]:
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            vducp_id = source['id'] if source_type == 'vnf_vdu_cp' else destination['id']
-            vnf_id = source['info']['group'][0]
-            result = self.unlink_vducp_intvl(vnf_id, vducp_id, intvl_id)
-        elif (source_type, destination_type) in [('vnf_ext_cp', 'vnf_vl'), ('vnf_vl', 'vnf_ext_cp')]:
-            vnfExtCpd_id = source['id'] if source_type == 'vnf_ext_cp' else destination['id']
-            intvl_id = source['id'] if source_type == 'vnf_vl' else destination['id']
-            result = self.unlink_vnfextcpd_intvl(source['info']['group'][0], vnfExtCpd_id, intvl_id)
+        if source_type in etsi_elements and destination_type in etsi_elements:
+            result = EtsiProject.get_remove_link(self, request)
+
         return result
 
     def get_unused_vnf(self, nsd_id):
@@ -293,7 +254,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def add_vnf_click_vdu(self, vnf_id, vdu_id):
-        print 'add_vnf_click_vdu'
+        log.debug('add_vnf_click_vdu')
         try:
             current_data = json.loads(self.data_project)
             # utility = Util()
@@ -307,6 +268,29 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 current_data['click'] = {}
             if vdu_id not in current_data['click']:
                 current_data['click'][vdu_id] = ''
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def add_vnf_k8s_vdu(self, vnf_id, vdu_id):
+        log.debug('add_vnf_k8s_vdu')
+        try:
+            current_data = json.loads(self.data_project)
+            # utility = Util()
+            vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
+            vdu_descriptor['vduId'] = vdu_id
+            vdu_descriptor['intCpd'] = []
+            vdu_descriptor['vduNestedDesc'] = vdu_id
+            vdu_descriptor['vduNestedDescType'] = 'kubernetes'
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            if 'k8s' not in current_data:
+                current_data['k8s'] = {}
+            if vdu_id not in current_data['k8s']:
+                current_data['k8s'][vdu_id] = ''
             self.data_project = current_data
             self.update()
             result = True
@@ -344,6 +328,15 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = []
         return result
 
+    def get_deployment_descriptor(self, **kwargs):
+        if 'nsdId' in kwargs:
+            nsd = kwargs['nsdId']
+            rdcl_graph = SuperfluidityRdclGraph()
+            return rdcl_graph.build_deployment_descriptor(self.get_dataproject(), nsd)
+        else:
+            log.debug("no nsdId")
+            return {}
+
     def get_zip_archive(self):
         in_memory = StringIO()
         try:
@@ -351,10 +344,12 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
             for desc_type in current_data:
                 for current_desc in current_data[desc_type]:
-                    if desc_type != 'click':
-                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
-                    else:
+                    if desc_type == 'click':
                         zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
+                    elif desc_type == 'k8s':
+                        zip.writestr(current_desc + '.yaml',  yaml.dumps(Util.json2yaml(current_data[desc_type][current_desc])))
+                    else:
+                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
             zip.close()
         except Exception as e:

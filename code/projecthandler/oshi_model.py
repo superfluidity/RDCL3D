@@ -53,7 +53,6 @@ class OshiProject(Project):
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
-        log.debug(file_dict)
 
         data_project = OshiParser.importprojectfiles(file_dict)
 
@@ -61,7 +60,6 @@ class OshiProject(Project):
 
     @classmethod
     def data_project_from_example(cls, request):
-        print request.POST.dict()
         oshi_id = request.POST.get('example-oshi-id', '')
         data_project = OshiParser.importprojectdir(EXAMPLES_FOLDER + oshi_id , 'json')
         return data_project
@@ -124,11 +122,10 @@ class OshiProject(Project):
         descriptor_data = {}
         project = self.get_dataproject()
         for desc_type in project:
-            log.debug(descriptor_id)
             if descriptor_id in project[desc_type]:
                 descriptor_data = project[desc_type][descriptor_id]
-        log.debug(descriptor_data)
-        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data,
+        positions = project['positions'] if 'positions' in project else {}
+        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data, positions=positions,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
@@ -186,7 +183,7 @@ class OshiProject(Project):
             current_data = json.loads(self.data_project)
             if(current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                if 'vertices'  not in current_descriptor:
+                if 'vertices' not in current_descriptor:
                     current_descriptor['vertices'] = []
                 current_descriptor['vertices'].append(new_node)
                 self.data_project = current_data
@@ -204,11 +201,9 @@ class OshiProject(Project):
             current_data = json.loads(self.data_project)
             if (current_data['oshi'][parameters['element_desc_id']]):
                 current_descriptor = current_data['oshi'][parameters['element_desc_id']]
-                index = 0
-                for node in current_descriptor['vertices']:
-                    if node.id == parameters['element_id']:
-                        del current_descriptor['vertices'][index]
-                    index =+ 1
+
+                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if n['id'] != parameters['element_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if e['source'] != parameters['element_id'] and e['target'] != parameters['element_id']]
 
                 self.data_project = current_data
                 self.update()
@@ -222,21 +217,17 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print '###', parameters
-            link = json.loads(parameters['link'])
-            source = link['source']
-            target = link['target']
-            new_link = {
-                "source": source['id'],
-                "group": link['group'] if 'group' in link else [],
-                "target": target['id'],
-                "view": link['view'] if 'view' in link else []
-            }
-            print new_link
-            current_data = json.loads(self.data_project)
-            if 'desc_id' in link and current_data['oshi'][link['desc_id']]:
 
-                current_descriptor = current_data['oshi'][link['desc_id']]
+            new_link = {
+                "source": parameters['source'],
+                "group": parameters['group'] if 'group' in parameters else [],
+                "target": parameters['target'],
+                "view": parameters['view'] if 'view' in parameters else []
+            }
+            current_data = json.loads(self.data_project)
+            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
+
+                current_descriptor = current_data['oshi'][parameters['desc_id']]
                 if 'edges' not in current_descriptor:
                     current_descriptor['edges'] = []
                 current_descriptor['edges'].append(new_link)
@@ -250,7 +241,23 @@ class OshiProject(Project):
 
     def get_remove_link(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
 
+            source_id = parameters['source']
+            target_id = parameters['target']
+            link_view = parameters['view']
+            current_data = json.loads(self.data_project)
+            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
+                current_descriptor = current_data['oshi'][parameters['desc_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                                               (e['source'] == source_id and e['target'] == target_id and e['view'] == link_view) == False ]
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_available_nodes(self, args):
@@ -261,7 +268,7 @@ class OshiProject(Project):
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                if model_graph['layer'][args['layer']]['nodes'][node] is not None and 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
                     current_data = {
                         "id": node,
                         "category_name": model_graph['nodes'][node]['label'],
@@ -273,8 +280,6 @@ class OshiProject(Project):
                         ]
                     }
                     result.append(current_data)
-
-            #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []

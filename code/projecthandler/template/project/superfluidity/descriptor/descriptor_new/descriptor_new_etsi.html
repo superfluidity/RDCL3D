@@ -160,7 +160,7 @@ Create new {{ descriptor_type }} descriptor
                     if (!files || !files.length) {
                       files = document.getElementById('drop-zone').files
                       if(!files || !files.length){
-                        alert("Seletc a file")
+                        alert("Seletc a file");
                         return
                       }
                     }
@@ -196,7 +196,7 @@ Create new {{ descriptor_type }} descriptor
                         }
                     },
                     error: function(result) {
-                        alert("some error");
+                        showAlert(result);
                     }
                 });
         }

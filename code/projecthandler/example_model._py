@@ -61,7 +61,7 @@ class ExampletokenProject(Project):
 
     @classmethod
     def data_project_from_example(cls, request):
-        exampletoken_id = request.POST.get('exampletoken-exampletoken-id', '')
+        exampletoken_id = request.POST.get('example-exampletoken-id', '')
         data_project = ExampletokenParser.importprojectdir(EXAMPLES_FOLDER + exampletoken_id + '/JSON', 'yaml')
         return data_project
 

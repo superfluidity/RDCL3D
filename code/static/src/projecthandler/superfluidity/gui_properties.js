@@ -64,6 +64,13 @@ var example_gui_properties = {
         "size": 18,
         "name": "ClickVDU"
       },
+      "vnf_k8s_vdu": {
+        "image" : "k8s.png",
+        //"color": "#50A7CC",
+        "color": "#f44250",
+        "size": 18,
+        "name": "K8s VDU"
+      },
       "element": {
         "shape": "square",
         "color": "#196B90",

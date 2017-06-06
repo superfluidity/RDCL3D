@@ -17,11 +17,12 @@
 from __future__ import unicode_literals
 
 import json
-from lib.util import Util
-from projecthandler.models import Project
-from lib.clickparser import click_parser
 import os.path
 import logging
+import re
+
+from projecthandler.models import Project
+from lib.clickparser import click_parser
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ClickModel.py')
@@ -99,6 +100,7 @@ class ClickProject(Project):
             result = False
         return result
 
+    # TODO modificare l'add_element credo non sia corretto
     def get_add_element(self, request):
         print "click add element"
         result = False
@@ -149,36 +151,53 @@ class ClickProject(Project):
         element_id = request.POST.get('element_id')
         element_type = request.POST.get('element_type')
         desc_id = request.POST.get('element_desc_id')
-        lines = current_data['click'][desc_id].splitlines(True)
-        lines_temp = list(lines)
+        descriptor = current_data['click'][desc_id]
+
         check = element_id
         if group_id != desc_id:
             check = element_id[element_id.rfind(".")+1:]
-        for line in lines_temp:
-            if check in line:
-                lines.remove(line)
         print check
 
-        current_data['click'][desc_id] = ''.join(lines)
+        # remove node in click descriptor
+        # find and delete this:
+        # example :: Example...
+        # (^\bexample\b\s*[\b\:\b]{2}\s*\w+\([\w\S\s]*?\)[^\/][^\/].*?;) #by clauz
+        regex_node = "(^\\b"+check+"\\b\s*[\\b\:\\b]{2}\s*\w+\([\w\S\s]*?\)[^\/][^\/].*?;)"
+        print regex_node
+        regex_node_comp = re.compile(regex_node, flags=re.MULTILINE)
+        descriptor = regex_node_comp.sub("", descriptor)
+
+        # remove all links with source the node
+        # example[x] ->
+        # (^\brt6\b\[[0-9]\][\w\S\s]*?;)
+        #regex_node_src = "(^\\b"+check+"\\b\[[0-9]\][\w\S\s]*?;)"
+        # (\bnds\b\[[0-9]+\][\w\s\S]*?;\s*?(?=\w)) #by clauz
+        regex_node_src = "(^\\b" + check + "\\b\[[0-9]+\][\w\s\S]*?;\s*?(?=\w))"
+        regex_node_src_comp = re.compile(regex_node_src, flags=re.MULTILINE)
+        descriptor = regex_node_src_comp.sub("", descriptor)
+
+        # remove all link with the node in the chain
+
+
+        print descriptor
+        current_data['click'][desc_id] = descriptor
         self.data_project = current_data
         self.update()
         result = True
         return result
 
+    # TODO modificare l'add_link
     def get_add_link(self, request):
 
         result = False
         current_data = json.loads(self.data_project)
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        group_id = source['info']['group'][0]
+        print "get_add_link", parameters
+
+        group_id = request.POST.get('group_id')
         desc_id = request.POST.get('element_desc_id')
-        source_id = source['id']
-        destination_id = destination['id']
+        source_id = request.POST.get('source')
+        destination_id = request.POST.get('target')
         if group_id != desc_id:
             source_id = source_id[source_id.rfind(".") + 1:]
             destination_id = destination_id[destination_id.rfind(".") + 1:]
@@ -207,24 +226,25 @@ class ClickProject(Project):
         result = False
         current_data = json.loads(self.data_project)
         parameters = request.POST.dict()
-        link = json.loads(parameters['link'])
-        source = link['source']
-        destination = link['target']
-        source_type = source['info']['type']
-        destination_type = destination['info']['type']
-        group_id = source['info']['group'][0]
+        print "get_remove_link", parameters
+
+        group_id = request.POST.get('group_id')
         desc_id = request.POST.get('element_desc_id')
-        source_id = source['id']
-        destination_id = destination['id']
+        source_id = request.POST.get('source')
+        destination_id = request.POST.get('target')
+        descriptor = current_data['click'][desc_id]
         if group_id != desc_id:
             source_id = source_id[source_id.rfind(".") + 1:]
             destination_id = destination_id[destination_id.rfind(".") + 1:]
-        lines = current_data['click'][desc_id].splitlines(True)
-        check = source_id + ' -> ' + destination_id
-        for line in lines:
-            if check in line:
-                lines.remove(line)
-        current_data['click'][desc_id] = ''.join(lines)
+
+        # (\barp\b\[[0-9]+\][\w\s\S]*?\bto_eth0\b;\s*?(?=\w))
+        regex_link = "(\\b"+source_id +"\\b\[[0-9]+\][\w\s\S]*?\\b"+destination_id+"\\b;\s*?(?=\w))"
+        print regex_link
+        regex_link_comp = re.compile(regex_link, flags=re.MULTILINE)
+        descriptor = regex_link_comp.sub("", descriptor)
+
+        current_data['click'][desc_id] = descriptor
+
         self.data_project = current_data
         self.update()
         result = True

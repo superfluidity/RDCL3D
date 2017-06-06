@@ -38,19 +38,22 @@ class RdclGraph(object):
     def __init__(self):
         pass
 
-    def add_link(self, source, target, view, group, graph_object ):
+    def add_link(self, source, target, view, group, graph_object, optional={}):
         if (source is None) or (target is None):
-            return;
+            return
         edge_obj = {
             'source': source,
             'target': target,
             'view': view,
-            'group': [group]
+            'group': [group],
+
         }
+
+        edge_obj.update(optional)
         if edge_obj not in graph_object['edges']:
             graph_object['edges'].append(edge_obj)
 
-    def add_node(self, id, type, group, positions, graph_object):
+    def add_node(self, id, type, group, positions, graph_object, optional={}):
         if id is None:
             return
         node = next((x for x in graph_object['vertices'] if x['id'] == id), None)
@@ -60,9 +63,20 @@ class RdclGraph(object):
             node = copy.deepcopy(self.node_t3d_base)
             node['id'] = id
             node['info']['type'] = type
-            node['info']['group'].append(group)
-            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id] :
+            if group is not None:
+                node['info']['group'].append(group)
+            if positions and id in positions['vertices'] and 'x' in positions['vertices'][id] and 'y' in positions['vertices'][id]:
                 node['fx'] = positions['vertices'][id]['x']
                 node['fy'] = positions['vertices'][id]['y']
+            node['info'].update(optional)
             graph_object['vertices'].append(node)
 
+    def is_directed_edge(self, source_type=None, target_type=None, layer=None, model={}):
+        if source_type is None or target_type is None or layer is None:
+            return None
+        if layer in model['layer'] and 'allowed_edges' in model['layer'][layer]:
+            if source_type in model['layer'][layer]['allowed_edges'] and target_type in model['layer'][layer]['allowed_edges'][source_type]['destination']:
+                edge_pro = model['layer'][layer]['allowed_edges'][source_type]['destination'][target_type]
+                return edge_pro['direct_edge'] if 'direct_edge' in edge_pro else False
+
+        return None

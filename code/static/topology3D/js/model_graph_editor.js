@@ -57,13 +57,51 @@ dreamer.ModelGraphEditor = (function (global) {
 
         Object.keys(args.gui_properties["nodes"]).forEach(function (key, index) {
             this.type_property[key] = args.gui_properties["nodes"][key];
-            this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
-            if (this.type_property[key]["image"] != undefined) {
-                this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
+            if ( this.type_property[key]['property'] != undefined){
+                for(var c_prop in this.type_property[key]){
+                    if(c_prop != 'property'){
+
+                        this.type_property[key][c_prop]['shape'] = this.parent.get_d3_symbol(this.type_property[key][c_prop]['shape']);
+                        if(this.type_property[key][c_prop]["image"] != undefined){
+                            this.type_property[key][c_prop]["image"] = IMAGE_PATH + this.type_property[key][c_prop]["image"]
+                        }
+                    }
+                }
+            }
+            else{
+                this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
+                if (this.type_property[key]["image"] != undefined) {
+                    this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
+                }
             }
 
 
+
         }, this);
+        if(args.gui_properties["edges"]){
+            this.type_property_link = args.gui_properties["edges"];
+            var self = this;
+            var link_types = ['unrecognized'].concat(Object.keys(self.type_property_link))
+                this.defs.selectAll("marker")
+                    .data(link_types)
+                    .enter()
+                    .append("svg:marker")    // This section adds in the arrows
+                    .attr("id", function(d){
+                        return d;
+                    })
+                    .attr("viewBox", "-5 -5 10 10")
+                    .attr("refX", 13) /*must be smarter way to calculate shift*/
+                    .attr("refY", 0)
+                    .attr("markerUnits", "userSpaceOnUse")
+                    .attr("markerWidth", 12)
+                    .attr("markerHeight", 12)
+                    .attr("orient", "auto")
+                    .append("path")
+                    .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
+                    .attr('fill', function(d){
+                        return self.type_property_link[d].color;
+                    });
+        }
 
         this.customBehavioursOnEvents = args.behaviorsOnEvents || undefined;
 
@@ -87,8 +125,12 @@ dreamer.ModelGraphEditor = (function (global) {
                     //var f_t ={"node":{"type":["vnf_vl","vnf_ext_cp","vnf_vdu_cp","vnf_vdu","vnf_click_vdu"],"group":["vlan_r3u0"]},"link":{"group":["vlan_r3u0"],"view":["vnf"]}}
                     self.handleFiltersParams(args.filter_base);
                     //self.handleFiltersParams(f_t);
-                    console.log(JSON.stringify(args.filter_base))
-                    console.log(self.d3_graph.nodes)
+                    //console.log(JSON.stringify(args.filter_base))
+                    //console.log(self.d3_graph.nodes.length)
+                    //console.log(JSON.stringify(self.d3_graph.nodes))
+                    //self.d3_graph.nodes.forEach(function(key, index){
+                    //console.log(key, index);
+                    //})
                 }, 500);
 
             });
@@ -103,6 +145,7 @@ dreamer.ModelGraphEditor = (function (global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.updateData = function (args) {
+        console.log("updateData")
         this.d3_graph.nodes = args.graph_data.vertices;
         this.d3_graph.links = args.graph_data.edges;
         this.d3_graph.graph_parameters = args.graph_parameters;
@@ -170,9 +213,13 @@ dreamer.ModelGraphEditor = (function (global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.removeNode = function (node, success, error) {
+        console.log('removeNode', JSON.stringify(node))
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
+        if (node.info.desc_id == undefined){
+            node.info.desc_id = self.desc_id;
+        }
         if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].removable) {
             if (self.model.layer[current_layer].nodes[node_type].removable.callback) {
                 var c = self.model.callback[self.model.layer[current_layer].nodes[node_type].removable.callback].class;

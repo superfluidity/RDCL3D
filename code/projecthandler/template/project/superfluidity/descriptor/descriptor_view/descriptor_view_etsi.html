@@ -20,13 +20,6 @@ Edit {{ descriptor_type }} Descriptor
 {% endblock %}
 
 
-{% if descriptor_type == 'nsd' %}
-    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_etsi.html' %}
-{% elif descriptor_type == 'vnfd' %}
-    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_etsi.html' %}
-{% elif descriptor_type == 'click' %}
-    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_click.html' %}
-{% endif %}
 
 {% block tab_pane_button_list %}
 {{ block.super }}
@@ -123,8 +116,7 @@ function update(e){
                         }
                     },
                     error: function(result) {
-                        console.log(result)
-                        alert("some error");
+                        showAlert(result);
                     }
                 });
         }

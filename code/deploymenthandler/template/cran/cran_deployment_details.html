@@ -1,0 +1,47 @@
+{% extends "deployment_details.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'cran/cran_deployment_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+
+{% block content_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+<script>
+
+
+$(document).ready(function () {
+
+    var descriptors_data = {{deployment.deployment_descriptor |safe}};
+
+                appendDescriptorTab({'id': 'Overall', 'desc_data': descriptors_data, 'editor_setting': yaml_editor_settings})
+
+
+
+});
+
+</script>
+{% endblock %}

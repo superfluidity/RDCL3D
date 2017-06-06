@@ -14,10 +14,7 @@
 #   limitations under the License.
 #
 
-import json
 import logging
-import copy
-
 from lib.clickparser import click_parser
 from lib.etsi.etsi_rdcl_graph import EtsiRdclGraph
 from lib.rdcl_graph import RdclGraph
@@ -35,7 +32,6 @@ class SuperfluidityRdclGraph(RdclGraph):
     def build_graph_from_project(self, json_project, model={}):
         """Creates a single graph for a whole project"""
 
-        #print "json_project ",json_project
         graph_object = {
             'vertices': [],
             'edges': [],
@@ -55,11 +51,17 @@ class SuperfluidityRdclGraph(RdclGraph):
                 for vnf_id in json_project['vnfd']:
                     vnfd = json_project['vnfd'][vnf_id]
                     for vdu in vnfd['vdu']:
-                        if 'vduNestedDescType' in vdu and vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                        if 'vduNestedDescType' in vdu:
+                            if vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                                vdu_type = 'vnf_click_vdu'
+                            elif vdu['vduNestedDescType'] == 'kubernetes' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['k8s']:
+                                vdu_type = 'vnf_k8s_vdu'
+                            else:
+                                vdu_type = None
                             vertice = next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
                             if vertice is not None:
                                 vertice['id'] = vdu['vduNestedDesc']
-                                vertice['info']['type'] = 'vnf_click_vdu'
+                                vertice['info']['type'] = vdu_type
                                 vertice['group'] = [vdu['vduNestedDesc']]
                                 vertice['vduId'] = vdu['vduId']
                                 if positions and vertice['id'] in positions['vertices']:
@@ -82,3 +84,21 @@ class SuperfluidityRdclGraph(RdclGraph):
             raise
 
         return graph_object
+
+    def build_deployment_descriptor(self, json_project, nsd_id):
+        descriptor = {
+            'nsd': {},
+            'vnfd': {},
+            'click': {},
+            'k8s': {}
+        }
+        nsd_to_deploy = json_project['nsd'][nsd_id]
+        descriptor['nsd'][nsd_id] = json_project['nsd'][nsd_id]
+        for vnfdId in nsd_to_deploy['vnfdId']:
+            descriptor['vnfd'][vnfdId] = json_project['vnfd'][vnfdId]
+            for vdu in descriptor['vnfd'][vnfdId]['vdu']:
+                if 'vduNestedDescType' in vdu:
+                    if vdu['vduNestedDescType'] == 'click' and vdu['vduNestedDesc'] and vdu['vduNestedDesc'] in json_project['click']:
+                        descriptor['click'][vdu['vduNestedDesc']] = json_project['click'][vdu['vduNestedDesc']]
+
+        return descriptor

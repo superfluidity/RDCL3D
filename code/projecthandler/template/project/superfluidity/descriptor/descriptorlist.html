@@ -1,5 +1,7 @@
 {% load staticfiles %}
 {% include 'modal/new_descriptor_name.html' %}
+{% include 'modal/launch_deploy.html' %}
+
 <div class="col-md-12">
 
     <div class="box">
@@ -56,7 +58,10 @@
                     {% endfor %}
                     </tbody>
                 </table>
+            {% elif descriptor_type == 'k8s' %}
+                {% include 'superfluidity/descriptor/descriptorlist_k8s.html' %}
             {% endif %}
+
 
         </div>
     </div>
