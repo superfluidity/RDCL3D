@@ -26,7 +26,7 @@ nda :: IP6NDAdvertiser(
 nds :: IP6NDSolicitor(
 	fe80::2a0:c9ff:fe9c:fd9e, 00:A0:C9:9C:FD:9E);
 
-c :: Classifier(
+ip64c :: Classifier(
 	12/86dd 20/3aff 54/87,
 	12/86dd 20/3aff 54/88,		 
 	12/86dd,
@@ -82,36 +82,36 @@ pt64 :: ProtocolTranslator64();
 pt46 :: ProtocolTranslator46();	
 
 FromDevice(eth0, 1)
-  	-> c;
+  	-> ip64c;
 to_eth0 :: ToDevice(eth0);
 
-c[0] 	-> nda
+ip64c[0] 	-> nda
 	//-> Print(nda, 200)
 	-> Queue(1024)
 	-> to_eth0;
-c[1] 	-> [1]nds;
-c[2]	//-> Print(before-Strip, 200) 
+ip64c[1] 	-> [1]nds;
+ip64c[2]	//-> Print(before-Strip, 200) 
 	-> Strip(14)
 	-> CheckIP6Header(3ffe:1ce1:2:0:200::ffff 3ffe:1ce1:2::ffff)
 	-> GetIP6Address(24)
 	//-> Print(before-rout6, 200) 
 	-> rt6;
 
-c[3] 	//-> Print(arr, 200) 
+ip64c[3] 	//-> Print(arr, 200) 
 	-> arr	
 	-> Queue(1024)
 	-> to_eth0;
 	
-c[4] 	//-> Print(arp-reply, 200) 
+ip64c[4] 	//-> Print(arp-reply, 200) 
 	->[1]arp;
 	
-c[5] 	//-> Print(c5-normal-ip-pkt, 200) 
+ip64c[5] 	//-> Print(c5-normal-ip-pkt, 200) 
 	-> Strip(14)
 	-> CheckIPHeader(BADSRC 18.26.4.255)
 	-> GetIPAddress(16)
 	-> rt;
 
-c[6]	//-> Print(c6-normal-ip-pkt, 200) 
+ip64c[6]	//-> Print(c6-normal-ip-pkt, 200) 
 	->Discard;
 
 rt[0]	->Print(rt0, 200) ->Discard;

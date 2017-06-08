@@ -4,14 +4,14 @@
 // 16384  B/s -> 128 Kb/s
 // 7168   B/s -> 56  Kb/s
 
-PollDevice(eth1, true)
+pdd1 :: PollDevice(eth1, true)
   -> SetTimestamp
   -> Queue(8)
   -> DelayShaper(10)
   -> BandwidthShaper(131072B/s) // 1Mb
   -> ToDevice(eth2);
 
-PollDevice(eth2, true)
+pdd2 :: PollDevice(eth2, true)
   -> SetTimestamp
   -> Queue(8)
   -> DelayShaper(10)
