@@ -26,11 +26,11 @@ then move in Django project directory
 If you want to use a python virtual environment as shown in in the [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 call the directory simply "env" (otherwise remember to add the new directory in .gitignore file):
 
-   cd /home/user/workspace/RDCL3D/code
+    cd /home/user/workspace/RDCL3D/code
    
-   virtualenv env
+    virtualenv env
 
-To setup a local development environment::
+To setup a local development environment:
 
     source env/bin/activate
 
