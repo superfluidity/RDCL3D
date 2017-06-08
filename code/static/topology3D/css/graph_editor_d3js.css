@@ -139,6 +139,26 @@
     user-select: none;
 }
 
+.left-tool-bar-monitoring {
+
+    z-index: 1;
+    text-align: center;
+    font-size: 12px;
+
+    top: 64px;
+    cursor: default;
+    padding: 0 6px;
+    line-height: 22px;
+    position: absolute;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .vnffg-box {
     top: 80px;
     left:100px;
@@ -240,6 +260,7 @@ textarea {
 }
 
 .palette-category{
+   
     border-bottom: 1px solid #ccc;
 }
 
@@ -252,7 +273,7 @@ textarea {
     background: #f3f3f3;
     cursor: pointer;
     text-align: left;
-    padding: 9px;
+    padding: 1px;
     font-weight: bold;
     overflow: hidden;
     white-space: nowrap;
@@ -260,6 +281,7 @@ textarea {
 }
 
 .palette-content {
+    
     background: #fff;
     padding: 3px;
 }
@@ -283,8 +305,8 @@ textarea {
 .palette-node {
     cursor: move;
     background: #ddd;
-    margin: 10px auto;
-    height: 25px;
+    margin: 0px auto;
+    height: 35px;
     border-radius: 5px;
     border: 1px solid #999;
     background-position: 5% 50%;
@@ -315,7 +337,7 @@ textarea {
 
 .palette-node-icon {
     display: inline-block;
-    width: 20px;
+    width: 30px;
     height: 100%;
     background-position: 50% 50%;
     background-size: contain;

@@ -31,39 +31,45 @@ var example_gui_properties = {
          },
 
          "cran/epcbox":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"cran-epcbox.png",
             "color":"#17BECF",
-            "size":20,
+            "size":40,
             "name":"EPC_BOX"
          },
          "cran/rrh":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"cran-rrh.png",
             "color":"#BCBD22",
-            "size":20,
+            "size":40,
             "name":"RRH"
          },
          "cran/bbu":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"cran-bbu.png",
             "color":"#E377C2",
-            "size":20,
+            "size":40,
             "name":"BBU"
          },
          "fhaul/fw_switch":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"fhaul-fw-switch.png",
             "color":"#7F7F7F",
-            "size":20,
+            "size":40,
             "name":"FW Switch"
          },
          "fhaul/h2h_switch":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"fhaul-h2h-switch.png",
             "color":"#D62728",
-            "size":20,
+            "size":40,
             "name":"H2H Switch"
          },
          "fhaul/p2p_switch":{
-            "shape":"circle",
+            //"shape":"circle",
+            "image":"fhaul-p2p-switch.png",
             "color":"#8C564B",
-            "size":20,
+            "size":40,
             "name":"P2P Switch"
          },
          "fhaul/sdn_ctrl":{
