@@ -69,14 +69,15 @@ dreamer.GraphEditor = (function (global) {
     GraphEditor.prototype.init = function (args) {
         args = args || {}
         var self = this;
-        this.width = args.width || 500;
-        this.height = args.height || 500;
+        this.width = 550//args.width || 500;
+        this.height = 550// args.height || 500;
         this.forceSimulationActive = false;
 
         //FixMe
         this.width = this.width - this.width * 0.007;
         this.height = this.height - this.height * 0.07;
 
+        console.log("this.width", this.width, "this.height", this.height);
         var min_zoom = 0.1;
         var max_zoom = 7;
         this._setupBehaviorsOnEvents();
@@ -113,6 +114,7 @@ dreamer.GraphEditor = (function (global) {
 
         this.svg = d3.select("#graph_ed_container").append("svg")
             .attr("id", "graph_svg")
+            .attr("perserveAspectRatio", "xMinYMid")
             .attr("width", this.width)
             .attr("height", this.height);
 
@@ -151,7 +153,18 @@ dreamer.GraphEditor = (function (global) {
                 log('keyup' + self.lastKeyDown);
                 self.lastKeyDown = -1;
             });
-
+        var chart = $("#graph_svg");
+        this.aspect = chart.width() / chart.height();
+        this.container = chart.parent();
+        $(window).on("resize", function() {
+            console.log("RESIZE")
+            var palette_width = $("#palette").width()
+            var working_width = self.container.width() - palette_width;
+            self.width = (working_width < 0) ? 0 : working_width;
+            self.height = Math.round(self.width / self.aspect)
+            chart.attr("width", self.width);
+            chart.attr("height", self.height);
+        }).trigger("resize");
 
     }
 
