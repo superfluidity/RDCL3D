@@ -75,7 +75,7 @@ also takes care of creating a set of JavaScript files: ::
 
 The graphical appearance (e.g. icons and shapes) is defined in static/src/projecthandler/newtype/gui_properties.js
 
-the common resources folder for images is static/topology3D/img/
+the common resources folder for images is static/assets/img/
 
 Uninstall
 ---------
