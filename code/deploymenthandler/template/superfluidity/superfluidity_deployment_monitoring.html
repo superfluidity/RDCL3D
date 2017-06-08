@@ -22,6 +22,11 @@
 {% endblock %}
 
 
+{% block topology_toolbar %}
+    {{ block.super }}
+     {% include 'monitoring_topology_toolbar.html' %}
+{% endblock %}
+
 
 
 {% block tab_pane_button_list %}
