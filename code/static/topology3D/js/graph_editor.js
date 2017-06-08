@@ -508,7 +508,16 @@ dreamer.GraphEditor = (function (global) {
             .append("svg:text")
             .attr("class", "nodetext")
             .attr("class", "cleanable")
-            .attr("dy", "-5")
+            .attr("dy", function(d) { 
+                if (self._node_property_by_type(d.info.type, 'image', d) == undefined) {
+                    //shape
+                    return "-5"
+                }
+                else {
+                    //image
+                    return (-self._node_property_by_type(d.info.type, 'size', d)/2).toString()
+                }
+            })
             .attr("pointer-events", "none")
             .style("font-size", nominal_text_size + "px")
             .style("font-family", "Lucida Console")
