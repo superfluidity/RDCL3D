@@ -161,7 +161,7 @@ dreamer.GraphEditor = (function (global) {
             var palette_width = $("#palette").width()
             var working_width = self.container.width() - palette_width;
             self.width = (working_width < 0) ? 0 : working_width;
-            self.height = Math.round(self.width / self.aspect)
+            self.height = self.container.height();
             chart.attr("width", self.width);
             chart.attr("height", self.height);
         }).trigger("resize");

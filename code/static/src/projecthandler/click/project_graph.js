@@ -32,7 +32,11 @@ $(document).ready(function() {
         gui_properties: example_gui_properties,
         desc_id: getUrlParameter('id'),
         data_url: "graph_data/"+getUrlParameter('id'),
-        filter_base: params
+        filter_base: params,
+        behaviorsOnEvents:{
+            viewBased: false,
+            behaviors: buildBehaviorsOnEvents()
+        }
     });
     //console.log(graph_editor.getCurrentView())
     graph_editor.handleFiltersParams(params);
@@ -121,6 +125,44 @@ function changeFilter(e, c) {
     //updateNodeDraggable({type_property: type_property, nodes_layer: graph_editor.getAvailableNodes()})
     updateBredCrumb(c);
 
+}
+
+function buildBehaviorsOnEvents(){
+    var contextmenuNodesAction = [
+        {
+                title: 'Show graph',
+                action: function (elm, c_node, i) {
+                    if (c_node.info.type != undefined) {
+                        var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
+                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                            if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
+                                var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
+                                graph_editor.handleFiltersParams({
+                                    node: {
+                                        type: Object.keys(graph_editor.model.layer[new_layer].nodes),
+                                        group: [c_node.id]
+                                    },
+                                    link: {
+                                        group: [c_node.id],
+                                        view: [new_layer]
+                                    }
+                                });
+
+                            }
+                            else{
+                                showAlert('This is not an explorable node.')
+                            }
+                        }
+                    }
+                },
+                edit_mode: false
+        }];
+        var behavioursOnEvents = {
+            'nodes': contextmenuNodesAction,
+
+        };
+
+    return behavioursOnEvents;
 }
 
 

@@ -378,34 +378,7 @@ dreamer.ModelGraphEditor = (function (global) {
                 },
                 edit_mode: true
             },
-            {
-                title: 'Show graph',
-                action: function (elm, c_node, i) {
-                    if (c_node.info.type != undefined) {
-                        var current_layer_nodes = Object.keys(self.model.layer[self.getCurrentView()].nodes);
-                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
-                            if (self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands) {
-                                var new_layer = self.model.layer[self.getCurrentView()].nodes[c_node.info.type].expands;
-                                self.handleFiltersParams({
-                                    node: {
-                                        type: Object.keys(self.model.layer[new_layer].nodes),
-                                        group: [c_node.id]
-                                    },
-                                    link: {
-                                        group: [c_node.id],
-                                        view: [new_layer]
-                                    }
-                                });
 
-                            }
-                            else{
-                                showAlert('This is not an explorable node.')
-                            }
-                        }
-                    }
-                },
-                edit_mode: false
-            }
         ];
         if(this.customBehavioursOnEvents){
             contextMenuNodesAction = contextMenuNodesAction.concat(this.customBehavioursOnEvents['behaviors'].nodes);

@@ -50,7 +50,11 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        filter_base: params
+        filter_base: params,
+        behaviorsOnEvents:{
+            viewBased: false,
+            behaviors: buildBehaviorsOnEvents()
+        }
     });
 
     // this will filter in the different views, excluding the node types that are not listed in params
@@ -366,4 +370,45 @@ function handleVnffgParameter(vnffgId, class_name) {
             return result;
         });
     }
+
+
+
+}
+
+function buildBehaviorsOnEvents(){
+    var contextmenuNodesAction = [
+        {
+                title: 'Show graph',
+                action: function (elm, c_node, i) {
+                    if (c_node.info.type != undefined) {
+                        var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
+                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                            if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
+                                var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
+                                graph_editor.handleFiltersParams({
+                                    node: {
+                                        type: Object.keys(graph_editor.model.layer[new_layer].nodes),
+                                        group: [c_node.id]
+                                    },
+                                    link: {
+                                        group: [c_node.id],
+                                        view: [new_layer]
+                                    }
+                                });
+
+                            }
+                            else{
+                                showAlert('This is not an explorable node.')
+                            }
+                        }
+                    }
+                },
+                edit_mode: false
+        }];
+        var behavioursOnEvents = {
+            'nodes': contextmenuNodesAction,
+
+        };
+
+    return behavioursOnEvents;
 }
