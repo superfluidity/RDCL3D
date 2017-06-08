@@ -260,6 +260,7 @@ textarea {
 }
 
 .palette-category{
+   
     border-bottom: 1px solid #ccc;
 }
 
@@ -272,7 +273,7 @@ textarea {
     background: #f3f3f3;
     cursor: pointer;
     text-align: left;
-    padding: 9px;
+    padding: 1px;
     font-weight: bold;
     overflow: hidden;
     white-space: nowrap;
@@ -280,6 +281,7 @@ textarea {
 }
 
 .palette-content {
+    
     background: #fff;
     padding: 3px;
 }
@@ -303,8 +305,8 @@ textarea {
 .palette-node {
     cursor: move;
     background: #ddd;
-    margin: 10px auto;
-    height: 25px;
+    margin: 0px auto;
+    height: 35px;
     border-radius: 5px;
     border: 1px solid #999;
     background-position: 5% 50%;
@@ -335,7 +337,7 @@ textarea {
 
 .palette-node-icon {
     display: inline-block;
-    width: 20px;
+    width: 30px;
     height: 100%;
     background-position: 50% 50%;
     background-size: contain;
