@@ -21,8 +21,6 @@ elementclass RatedSampler2 {
   s4 [0] -> [0] output;		  
 };
 
-// FromHost(sampler, 192.0.2.0/24) -> Discard;
-
 PollDevice(eth2) -> s1 :: RatedSampler2(20000);
 s1 [0] -> c ::  Queue -> ToDevice(eth2);
 s1 [1] ->  c2 :: Queue -> ToDevice(eth2);
