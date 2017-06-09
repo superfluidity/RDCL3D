@@ -86,3 +86,10 @@ function changeView(e){
     }
     graph_editor.handleFiltersParams(params);
 }
+
+function openNodeModalInfo(args){
+    console.log("openNodeModalInfo")
+   // $('#modal_alert_text').text(alert_msg);
+    //$('#modal_node_info').modal('show');
+    graph_editor.showNodeInfo(args);
+}

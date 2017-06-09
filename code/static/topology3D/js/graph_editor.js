@@ -153,11 +153,17 @@ dreamer.GraphEditor = (function (global) {
                 log('keyup' + self.lastKeyDown);
                 self.lastKeyDown = -1;
             });
+        var popup = this.svg.append("g")
+            .attr("id", "popup")
+            .attr("class", "popup")
+            .attr("opacity", "0")
+            .attr("transform", "translate(1 1)");
+
         var chart = $("#graph_svg");
         this.aspect = chart.width() / chart.height();
         this.container = chart.parent();
         $(window).on("resize", function() {
-            console.log("RESIZE")
+
             var palette_width = $("#palette").width()
             var working_width = self.container.width() - palette_width;
             self.width = (working_width < 0) ? 0 : working_width;
@@ -167,6 +173,7 @@ dreamer.GraphEditor = (function (global) {
         }).trigger("resize");
 
     }
+
 
     GraphEditor.prototype.get_d3_symbol =
         function (myString) {
@@ -655,6 +662,98 @@ dreamer.GraphEditor = (function (global) {
             .classed(class_name, filter_cb);
     }
 
+    GraphEditor.prototype.showNodeInfo = function(args){
+        this.addLineToPopup(args['node_info'].split(/\r?\n/), "Info about node selected")
+        this.handlePopupVisibility(true, 'right')
+    }
+    GraphEditor.prototype.addLineToPopup = function(lines, title) {
+        var self = this;
+        var index = 1;
+        var translate_y = 0;
+
+        d3.selectAll(".popupcleanable").remove(); // clean
+
+        var popupbg = d3.select(".popup").append("rect")
+            .attr("id", "popupbg")
+            .attr("class", "popup bg popupcleanable")
+            .attr("width", "400")
+            .attr("height", "0")
+            .attr("rx", 10) // set the x corner curve radius
+            .attr("ry", 10); // set the y corner curve radius
+
+        d3.select(".popup").append("svg:path")
+            .attr("d", d3.symbol()
+                .size(function (d) {
+                    return 80
+                })
+                .type(function (d) {
+                    return (self.get_d3_symbol());
+                })
+            )
+            .style("fill", 'red')
+            .attr("transform", function () {
+                return "translate(380,15) rotate(-45)";
+
+            })
+            .attr("stroke-width", 2.4)
+
+            .attr("id", "close_popup")
+            .on("click", function(d) {
+                self.handlePopupVisibility(false);
+            });
+
+        d3.select(".popup").append("text")
+            .attr("class", "popup title popupcleanable")
+            .attr("x", "10")
+            .attr("y", "20")
+            .text(title);
+
+
+        for (var i in lines) {
+            if(lines[i] != "" && lines[i].length > 0){
+            translate_y = 25 * index;
+            var summary = d3.select(".popup").append("g")
+                .attr("class", "popup summary popupcleanable")
+                .attr("transform", "translate(10 " + translate_y + ")");
+            var summary_g = summary.append("g");
+            summary_g.append("rect")
+                .attr("class", "popup summary bg popupcleanable")
+                .attr("width", "380")
+                .attr("height", "20");
+            summary_g.append("circle")
+                .attr("fill", "red")
+                .attr("cx", "10")
+                .attr("cy", "10")
+                .attr("r", "4");
+            summary_g.append("text")
+                .attr("class", "popup summary counter popupcleanable")
+                .attr("x", "20")
+                .attr("y", "17")
+                .attr("width", "100")
+                .text(function(d){
+                    console.log(lines[i].length)
+                    if (lines[i].length > 50)
+                        return lines[i].substring(0, 50) + '...';
+                    else
+                        return lines[i];
+                });
+            /*summary_g.append("text")
+                .attr("class", "popup summary countervalue popupcleanable")
+                .attr("x", "270")
+                .attr("y", "17")
+                .attr("text-anchor", "end")
+                .text(self.sinossi_data[date][items[i]]);
+            */
+            index++;
+            }
+        }
+
+        translate_y = 26 * index;
+
+        popupbg.attr("height", translate_y); //background size fix
+
+    };
+
     /**
      *  Remove all the graph objects from the view
      */
@@ -873,6 +972,22 @@ dreamer.GraphEditor = (function (global) {
         this.svg.attr('height', height);
 
     }
+
+    GraphEditor.prototype.handlePopupVisibility = function(visible, side) {
+        var opacity = (visible) ? 1 : 0;
+
+        var translate_op = (side == "left") ? "translate(50 50)" : "translate("+(this.width - 450).toString()+" 50)";
+
+        if (!visible) {
+            d3.selectAll(".popupcleanable").remove();
+            d3.select(".popup")
+                .attr("transform", "translate(-1 -1)");
+        } else {
+            d3.select(".popup")
+                .attr("transform", translate_op);
+        }
+        d3.select(".popup").attr("opacity", opacity);
+    };
 
     GraphEditor.prototype.refreshGraphParameters = function (graphParameters) {
         this.eventHandler.fire("refresh_graph_parameters", graphParameters);

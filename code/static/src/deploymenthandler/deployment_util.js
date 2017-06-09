@@ -118,6 +118,23 @@ function getDeploymentNodeConsole(args, success, error){
         });
 }
 
+function getDeploymentNodeInfo(args, success, error){
+    $.ajax({
+            url: "monitoring/node/"+args.nodeId+"/",
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json",
+            success: function(result) {
+                if (success)
+                    success(result);
+            },
+            error: function(result) {
+                if (error)
+                    error(result);
+            }
+        });
+}
+
 
 function appendDescriptorTab(args){
     var class_li = (args['active'])? 'active': ''

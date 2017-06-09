@@ -343,3 +343,32 @@ textarea {
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.popup.bg{
+   fill: black;
+   opacity: 0.21;
+   border-radius: 3px;
+}
+
+.popup.summary.bg{
+   fill: white;
+   opacity: 1;
+}
+
+.popup.summary.counter{
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-family: HelveticaNeue;
+}
+
+.popup.summary.countervalue{
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-family: HelveticaNeue;
+}
+
+.popup.title {
+   fill: black;
+   font-size: 16px;
+   font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif ;
+}

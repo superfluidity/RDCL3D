@@ -114,6 +114,12 @@ class Deployment(models.Model):
         deploy = HelperClass(self.deployment_agent)
         return deploy.open_shell(self.id, node_id)
 
+    def node_info(self, node_id=None):
+        log.debug("Deployment node info - get info about node")
+        HelperClass = self._getHelperClass()
+        deploy = HelperClass(self.deployment_agent)
+        return deploy.node_info(self.id, node_id)
+
     def _getHelperClass(self):
         type_agent = self.deployment_agent['type']
         print "type_agent", type_agent

@@ -2,6 +2,8 @@
 
 {% load staticfiles %}
 
+
+
 {% block head_block %}
 {{ block.super }}
 
@@ -28,6 +30,10 @@
 {% endblock %}
 
 
+{% block content_body %}
+  	{{ block.super }}
+    {% include "superfluidity/superfluidity_deployment_monitoring_node_info.html" %}
+{% endblock %}
 
 {% block tab_pane_button_list %}
 {{ block.super }}
