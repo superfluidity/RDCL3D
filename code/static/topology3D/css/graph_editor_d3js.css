@@ -358,17 +358,17 @@ textarea {
 .popup.summary.counter{
    overflow: hidden;
    text-overflow: ellipsis;
-   font-family: HelveticaNeue;
+   font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 
 .popup.summary.countervalue{
    overflow: hidden;
    text-overflow: ellipsis;
-   font-family: HelveticaNeue;
+   font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 
 .popup.title {
    fill: black;
    font-size: 16px;
-   font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif ;
+   font-family:  'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif ;
 }

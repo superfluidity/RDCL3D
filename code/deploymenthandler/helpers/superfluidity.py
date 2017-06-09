@@ -1,6 +1,8 @@
 import json
 import logging
-
+import requests
+import yaml
+from lib.util import Util
 from deploymenthandler.helpers.helper import Helper
 from projecthandler.models import Project
 
@@ -27,6 +29,15 @@ class SuperfluidityHelper(Helper):
         r = self._send_post(url, headers={'Content-type': 'application/json'})
         return r
 
-
-
+    def node_info(self, deployment_id, node_id):
+        log.debug("get node info cRAN")
+        log.debug("get node info")
+        url = self.agent['base_url'] + "/deployments/" + str(deployment_id) + "/node/" + str(node_id)
+        r = requests.get(url).json()
+        # WARNING: expect openvim data
+        if 'node_info' in r:
+            splitted = r['node_info'].splitlines(True)[1:]
+            joined = "".join(splitted)
+            r['node_info'] = Util.yaml2json(yaml.load(joined))
+        return r
 

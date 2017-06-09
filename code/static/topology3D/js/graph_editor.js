@@ -663,10 +663,10 @@ dreamer.GraphEditor = (function (global) {
     }
 
     GraphEditor.prototype.showNodeInfo = function(args){
-        this.addLineToPopup(args['node_info'].split(/\r?\n/), "Info about node selected")
+        this.addLineToPopup(args['node_info'], "Info about node selected")
         this.handlePopupVisibility(true, 'right')
     }
-    GraphEditor.prototype.addLineToPopup = function(lines, title) {
+    GraphEditor.prototype.addLineToPopup = function(data, title) {
         var self = this;
         var index = 1;
         var translate_y = 0;
@@ -708,9 +708,9 @@ dreamer.GraphEditor = (function (global) {
             .attr("y", "20")
             .text(title);
 
+        for (var i in data) {
+            console.log(i, data[i])
 
-        for (var i in lines) {
-            if(lines[i] != "" && lines[i].length > 0){
             translate_y = 25 * index;
             var summary = d3.select(".popup").append("g")
                 .attr("class", "popup summary popupcleanable")
@@ -720,32 +720,24 @@ dreamer.GraphEditor = (function (global) {
                 .attr("class", "popup summary bg popupcleanable")
                 .attr("width", "380")
                 .attr("height", "20");
-            summary_g.append("circle")
-                .attr("fill", "red")
-                .attr("cx", "10")
-                .attr("cy", "10")
-                .attr("r", "4");
+
             summary_g.append("text")
-                .attr("class", "popup summary counter popupcleanable")
-                .attr("x", "20")
+                .attr("class", "popup summary  popupcleanable")
+                .attr("x", "10")
                 .attr("y", "17")
                 .attr("width", "100")
                 .text(function(d){
-                    console.log(lines[i].length)
-                    if (lines[i].length > 50)
-                        return lines[i].substring(0, 50) + '...';
-                    else
-                        return lines[i];
+                    return i.toUpperCase() + ":";
                 });
-            /*summary_g.append("text")
-                .attr("class", "popup summary countervalue popupcleanable")
-                .attr("x", "270")
+            summary_g.append("text")
+                .attr("class", "popup summary  popupcleanable")
+                .attr("x", "370")
                 .attr("y", "17")
                 .attr("text-anchor", "end")
-                .text(self.sinossi_data[date][items[i]]);
-            */
+                .text(function(d){return data[i]});
+
             index++;
-            }
+
         }
 
         translate_y = 26 * index;
