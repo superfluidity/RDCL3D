@@ -53,8 +53,8 @@ To setup a local development environment:
 or:
     
     $ python manage.py runserver [host]:[port] 
-
-
+    $ python manage.py runserver 0.0.0.0:8000
+    
 
 ### Development hints
 
