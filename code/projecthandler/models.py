@@ -158,6 +158,7 @@ class Project(models.Model):
         try:
             current_data = json.loads(self.data_project)
             result = current_data[type_descriptor][descriptor_id]
+            print descriptor_id, type_descriptor, result
         except Exception as e:
             log.debug(e)
             result = {}
@@ -245,4 +246,8 @@ class Project(models.Model):
 
     def get_deployment_descriptor(self, **kwargs):
         """Returns the deployment descriptor"""
+        raise NotImplementedError
+
+    def get_node_overview(self, **kwargs):
+        """Returns the node overview"""
         raise NotImplementedError

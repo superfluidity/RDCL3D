@@ -77,7 +77,7 @@ dreamer.GraphEditor = (function (global) {
         this.width = this.width - this.width * 0.007;
         this.height = this.height - this.height * 0.07;
 
-        console.log("this.width", this.width, "this.height", this.height);
+        //console.log("this.width", this.width, "this.height", this.height);
         var min_zoom = 0.1;
         var max_zoom = 7;
         this._setupBehaviorsOnEvents();
@@ -157,7 +157,27 @@ dreamer.GraphEditor = (function (global) {
             .attr("id", "popup")
             .attr("class", "popup")
             .attr("opacity", "0")
-            .attr("transform", "translate(1 1)");
+            .attr("transform", "translate(1 1)")
+            .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+        function dragstarted(d) {
+          //d3.select(this).raise().classed("active", true);
+        }
+
+        function dragged(d) {
+            //console.log(JSON.stringify(d))
+          d3.select(this).attr("transform", function () {
+                return "translate("+d3.event.x+","+d3.event.y+")";
+
+            })
+        }
+
+        function dragended(d) {
+          //d3.select(this).classed("active", false);
+        }
 
         var chart = $("#graph_svg");
         this.aspect = chart.width() / chart.height();
@@ -663,13 +683,15 @@ dreamer.GraphEditor = (function (global) {
     }
 
     GraphEditor.prototype.showNodeInfo = function(args){
-        this.addLineToPopup(args['node_info'], "Info about node selected")
+        this.addLinesToPopup(args['node_info'], "Info about node selected")
         this.handlePopupVisibility(true, 'right')
     }
-    GraphEditor.prototype.addLineToPopup = function(data, title) {
+    GraphEditor.prototype.addLinesToPopup = function(data, title) {
         var self = this;
         var index = 1;
         var translate_y = 0;
+        var width_popup = 400;
+        var height_popup = 0;
 
         d3.selectAll(".popupcleanable").remove(); // clean
 
@@ -680,6 +702,7 @@ dreamer.GraphEditor = (function (global) {
             .attr("height", "0")
             .attr("rx", 10) // set the x corner curve radius
             .attr("ry", 10); // set the y corner curve radius
+
 
         d3.select(".popup").append("svg:path")
             .attr("d", d3.symbol()
@@ -696,7 +719,6 @@ dreamer.GraphEditor = (function (global) {
 
             })
             .attr("stroke-width", 2.4)
-
             .attr("id", "close_popup")
             .on("click", function(d) {
                 self.handlePopupVisibility(false);
@@ -709,42 +731,68 @@ dreamer.GraphEditor = (function (global) {
             .text(title);
 
         for (var i in data) {
-            console.log(i, data[i])
-
-            translate_y = 25 * index;
-            var summary = d3.select(".popup").append("g")
-                .attr("class", "popup summary popupcleanable")
-                .attr("transform", "translate(10 " + translate_y + ")");
-            var summary_g = summary.append("g");
-            summary_g.append("rect")
-                .attr("class", "popup summary bg popupcleanable")
-                .attr("width", "380")
-                .attr("height", "20");
-
-            summary_g.append("text")
-                .attr("class", "popup summary  popupcleanable")
-                .attr("x", "10")
-                .attr("y", "17")
-                .attr("width", "100")
-                .text(function(d){
-                    return i.toUpperCase() + ":";
-                });
-            summary_g.append("text")
-                .attr("class", "popup summary  popupcleanable")
-                .attr("x", "370")
-                .attr("y", "17")
-                .attr("text-anchor", "end")
-                .text(function(d){return data[i]});
-
-            index++;
+            //console.log(i, data, data[i])
+            //var typeofvalue = typeof data[i];
+            var record = data[i];
+            index = this._addRecordToPopup(i, record,index)
 
         }
 
-        translate_y = 26 * index;
-
-        popupbg.attr("height", translate_y); //background size fix
-
     };
+
+    GraphEditor.prototype._addRecordToPopup = function (key, record, index, tab) {
+        //console.log("_addRecordToPopup", key, record, index)
+        var translate_y = 23 * index;
+            var summary = d3.select(".popup").append("g")
+                    .attr("class", "popup summary d popupcleanable")
+                    .attr("transform", "translate(10 " + translate_y + ")");
+        if(Object.prototype.toString.call( record ) !== '[object Array]'){ //is a record simple key:value
+            //console.log(key, record)
+            var summary_g = summary.append("g");
+                summary_g.append("rect")
+                    .attr("class", "popup summary bg popupcleanable")
+                    .attr("width", "380")
+                    .attr("height", "20");
+
+                summary_g.append("text")
+                    .attr("class", "popup summary  popupcleanable")
+                    .attr("x", (tab)? tab: 10)
+                    .attr("y", "17")
+                    .attr("width", "100")
+                    .text(function(d){
+                        return key.toUpperCase() + ":";
+                    });
+
+                summary_g.append("text")
+                    .attr("class", "popup summary  popupcleanable")
+                    .attr("x", "370")
+                    .attr("y", "17")
+                    .attr("text-anchor", "end")
+                    .text(function(d){return record});
+        }
+        else {//is a record simple complex: have a list of sub record key:value
+                //index ++;
+                this._addRecordToPopup(key, "", index)
+                for(var r in record){
+                    //console.log(i, r, record, record[r])
+                    for(var k in record[r]){
+                        //console.log(i, r, k, record[r][k])
+                        var curr_key = k;
+                        var recordValue = record[r][k]
+
+                        index ++;
+                        this._addRecordToPopup(curr_key, recordValue, index, 20)
+                    }
+                }
+
+        }
+
+        translate_y = 30 * index++;
+        d3.select('#popupbg').attr("height", translate_y);
+        return index;
+    };
+
+
 
     /**
      *  Remove all the graph objects from the view

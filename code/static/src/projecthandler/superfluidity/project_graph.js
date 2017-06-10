@@ -376,7 +376,25 @@ function handleVnffgParameter(vnffgId, class_name) {
 }
 
 function buildBehaviorsOnEvents(){
-    var contextmenuNodesAction = [
+    var contextmenuNodesAction = [{
+            title: 'Show info',
+            action: function(elm, d, i) {
+                console.log('Show NodeInfo', elm, d, i);
+                var nodeData = {
+                    "node": {
+                        "id": d.id
+                    }
+                };
+                new dreamer.SuperfluidityController().getNodeOverview(graph_editor,d, function(result){
+                    console.log(JSON.stringify(result))
+                    graph_editor.showNodeInfo({'node_info': result['node_overview']})
+                }, function(error){
+                    showAlert("Error opening info node.")
+                });
+            },
+            edit_mode: false
+
+        },
         {
                 title: 'Show graph',
                 action: function (elm, c_node, i) {

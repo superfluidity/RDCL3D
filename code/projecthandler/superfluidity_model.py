@@ -212,8 +212,34 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         return result
 
-    def get_add_link(self, request):
+    def get_node_overview(self, **kwargs):
+        """Returns the node overview"""
+        element_type = kwargs['element_type']
+        #print kwargs
+        if element_type == 'vnf':
+            return self._vnf_overview(**kwargs)
+        return {}
 
+    def _vnf_overview(self, **kwargs):
+        result = {
+            'vdu':[]
+        }
+        # {
+        #     "vduId": "vnf_vdu_testvm",
+        #     "vdutype": "default" | | vduNestedDescType
+        #     "vdusource": swImageDesc.swImage | | vduNestedDesc
+        # }
+        descriptor = self.get_descriptor(kwargs['element_id'], 'vnfd')
+        for vdu in descriptor['vdu']:
+            current = {
+                "vduId": vdu['vduId'],
+                "type": vdu['vduNestedDescType'] if 'vduNestedDescType' in vdu else 'default (full VM)',
+                "source": vdu['vduNestedDesc'] if 'vduNestedDesc' in vdu else (vdu['swImageDesc']['swImage'])
+            }
+            result['vdu'].append(current)
+        return result
+
+    def get_add_link(self, request):
         result = False
         parameters = request.POST.dict()
         print "get_add_link", parameters
