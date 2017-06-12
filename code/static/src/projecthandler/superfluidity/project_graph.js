@@ -245,7 +245,7 @@ function nodeDragStart(event){
     event.dataTransfer.setData("Text", event.target.id);
 }
 
-function openEditor(project_id,) {
+function openEditor(project_id) {
     //FIXME is not a good solution
     var current_view = graph_editor.getCurrentView();
     if(['expandable', 'compact'].indexOf(current_view) > -1)
