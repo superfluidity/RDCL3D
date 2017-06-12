@@ -20,7 +20,8 @@ function startFromChoose(start) {
     if (start == 'files')
         $('#div-file-upload-' + type).show();
     else if (start == 'example')
-        $('#div-example-' + type).show();
+        //document.getElementById['#div-example-' + type].style.display = "block";
+       $('#div-example-' + type).css("display", "inline");
 
 }
 
@@ -33,7 +34,7 @@ function resetStartFromInputs() {
 $(document).ready(function () {
 
     // init selector
-
+    $(".start-selector").css("display", "inline");
     $('#select_type').select2({
         placeholder: {
             id: '-1',
@@ -78,6 +79,6 @@ $(document).ready(function () {
         }
     });
 
-
+    $(".start-selector").css("display", "none");
 
 });
