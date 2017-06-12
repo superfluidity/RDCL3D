@@ -216,6 +216,9 @@ textarea {
     box-shadow: #999 1px 1px 1px;
 }
 
+/*
+Palette section
+*/
 #palette {
     position: absolute;
     top: 20px;
@@ -344,6 +347,37 @@ textarea {
     background-repeat: no-repeat;
 }
 
+.palette-node-circle {
+      width: 30px;
+      height: 30px;
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      border-radius: 15px;
+      background: red;
+}
+
+.palette-node-square {
+      width: 30px;
+      height: 30px;
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      border-radius: 15px;
+      background: red;
+}
+
+.palette-node-triangle {
+    width: 0;
+    height: 0;
+    border: solid 30px;
+    border-color: transparent transparent black transparent;
+}
+/*
+END Palette section
+*/
+
+/*
+Popup section
+*/
 .popup.bg{
    fill: black;
    opacity: 0.21;

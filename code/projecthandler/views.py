@@ -161,7 +161,7 @@ def delete_project(request, project_id=None):
 
         try:
             Project.objects.filter(id=project_id).delete()
-            return render(request, 'project_delete.html', {})
+            return redirect('projects:projects_list')
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Error deleting Project.'})
