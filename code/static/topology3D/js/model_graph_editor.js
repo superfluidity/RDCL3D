@@ -363,9 +363,7 @@ dreamer.ModelGraphEditor = (function (global) {
                 title: 'Edit',
                 action: function (elm, d, i) {
                     if (d.info.type != undefined) {
-
-                        //FIXME non va bene :)
-                        window.location.href = '/projects/' + self.project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
+                        self.eventHandler.fire("edit_descriptor", self.project_id, d);
                     }
                 },
                 nodes: [],

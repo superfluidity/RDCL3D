@@ -697,7 +697,7 @@ dreamer.GraphEditor = (function (global) {
 
         var popupbg = d3.select(".popup").append("rect")
             .attr("id", "popupbg")
-            .attr("class", "popup bg popupcleanable")
+            .attr("class", "popup bg popupcleanable cleanable")
             .attr("width", "400")
             .attr("height", "0")
             .attr("rx", 10) // set the x corner curve radius
@@ -720,12 +720,13 @@ dreamer.GraphEditor = (function (global) {
             })
             .attr("stroke-width", 2.4)
             .attr("id", "close_popup")
+            .attr("class", "popupcleanable cleanable")
             .on("click", function(d) {
                 self.handlePopupVisibility(false);
             });
 
         d3.select(".popup").append("text")
-            .attr("class", "popup title popupcleanable")
+            .attr("class", "popup title popupcleanable cleanable")
             .attr("x", "10")
             .attr("y", "20")
             .text(title);
@@ -744,18 +745,18 @@ dreamer.GraphEditor = (function (global) {
         //console.log("_addRecordToPopup", key, record, index)
         var translate_y = 23 * index;
             var summary = d3.select(".popup").append("g")
-                    .attr("class", "popup summary d popupcleanable")
+                    .attr("class", "popup summary d popupcleanable cleanable")
                     .attr("transform", "translate(10 " + translate_y + ")");
         if(Object.prototype.toString.call( record ) !== '[object Array]'){ //is a record simple key:value
             //console.log(key, record)
             var summary_g = summary.append("g");
                 summary_g.append("rect")
-                    .attr("class", "popup summary bg popupcleanable")
+                    .attr("class", "popup summary bg popupcleanable cleanable")
                     .attr("width", "380")
                     .attr("height", "20");
 
                 summary_g.append("text")
-                    .attr("class", "popup summary  popupcleanable")
+                    .attr("class", "popup summary  popupcleanable cleanable")
                     .attr("x", (tab)? tab: 10)
                     .attr("y", "17")
                     .attr("width", "100")
@@ -764,7 +765,7 @@ dreamer.GraphEditor = (function (global) {
                     });
 
                 summary_g.append("text")
-                    .attr("class", "popup summary  popupcleanable")
+                    .attr("class", "popup summary  popupcleanable cleanable")
                     .attr("x", "370")
                     .attr("y", "17")
                     .attr("text-anchor", "end")
@@ -799,7 +800,6 @@ dreamer.GraphEditor = (function (global) {
      */
     GraphEditor.prototype.cleanAll = function () {
         this.svg.selectAll('.cleanable').remove();
-
     };
 
     /**

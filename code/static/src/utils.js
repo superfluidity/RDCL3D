@@ -101,6 +101,10 @@ function createNewDescriptor(project_id, descriptor_type) {
 
 }
 
+function openEditorEvent(e, id){
+    openEditor(id);
+}
+
 function buildPalette(args) {
     $("#paletteContainer").empty();
     var type_property = graph_editor.getTypeProperty();

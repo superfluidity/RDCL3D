@@ -40,6 +40,7 @@ $(document).ready(function() {
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
     graph_editor.addListener("filters_changed", changeFilter);
+    graph_editor.addListener("edit_descriptor", openEditorEvent);
 
 });
 

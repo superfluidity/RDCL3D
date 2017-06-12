@@ -60,6 +60,7 @@ $(document).ready(function() {
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
     graph_editor.addListener("filters_changed", changeFilter);
+    graph_editor.addListener("edit_descriptor", openEditorEvent);
 
 });
 
@@ -244,8 +245,15 @@ function nodeDragStart(event){
     event.dataTransfer.setData("Text", event.target.id);
 }
 
-function openEditor(project_id) {
-    window.location.href = '/projects/' + project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
+function openEditor(project_id,) {
+    //FIXME is not a good solution
+    var current_view = graph_editor.getCurrentView();
+    if(['expandable', 'compact'].indexOf(current_view) > -1)
+        current_view = 'click'
+    else
+        current_view +='d'
+   window.location.href = '/projects/' + project_id + '/descriptors/' + current_view + '/' + graph_editor.getCurrentGroup();
+
 }
 
 
