@@ -113,7 +113,7 @@ function buildPalette(args) {
 
             var category_id = "category_" + category.category_name.replace(/[\s.*+?^${}()\/|[\]\\]/g, "_");//.replace(/\s/g, '');
             var content_id = "palette-content-" + category.category_name.replace(/[\s.*+?^${}()\/|[\]\\]/g, "_");//.replace(/\s/g, '');
-            console.log(category_id, content_id)
+
             $("#paletteContainer").append('<div id="' + category_id + '" class="palette-category" ><div class="palette-header" onClick="handlePaletteCat(this);" category_id="' + category_id + '"> ' +
                 '<i class="fa fa-chevron-down "></i>' +
                 '<span>  ' + category.category_name + '</span>' +
@@ -123,9 +123,18 @@ function buildPalette(args) {
                 '</div>' +
                 '</div>');
             category.types.forEach(function (type) {
+                console.log(graph_editor.get_name_from_d3_symbol(d3.symbolCircle))
                 var type_id = type.id.replace(/[\s.*+?^${}()|[\]\\]/g, "_");
-                var palette_node_icon = (type_property[category.id].image) ? '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image || "") + ')"></div>' :
-                    '<div class="palette-node-icon" style="background-color:' + type_property[category.id].color + '"></div>'
+                var palette_node_icon = //(type_property[category.id].image) ? '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image || "") + ')"></div>' :
+                    '<div class="palette-node-icon" style="background-color:' + type_property[category.id].color + '"></div>';
+
+                if(type_property[category.id].image && type_property[category.id].image != ''){
+                    palette_node_icon = '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image || "") + ')"></div>';
+                }
+                else if(type_property[category.id].shape){
+                    palette_node_icon = buildHtmlShape({shape: type_property[category.id].shape, color: type_property[category.id].color})
+                }
+
                 var html_to_append = '<div class="palette-node ui-draggable" draggable="true" type-name="'+ type.id +'" id="' + type_id + '" ondragstart="nodeDragStart(event)">' +
                     '<div class="palette-node-label">' + type.name + '</div>' +
                     '<div class="palette-node-icon-container">' +
@@ -171,6 +180,37 @@ function getUrlParameter(par_name) {
     } else {
         return results[1] || 0;
     }
+}
+
+function buildHtmlShape(args){
+    var mySymbol = args.shape;
+            switch (mySymbol) {
+            case d3.symbolCircle:
+                return '<div class="palette-node-icon"> <div class="palette-node-circle" style="background:'+args.color+';"></div></div>';
+                break;
+            case d3.symbolSquare:
+                return '<div class="palette-node-icon"> <div class="palette-node-square" style="background:'+args.color+';"></div></div>';
+                break;
+            case d3.symbolDiamond:
+                return '<div class="palette-node-icon" style="background-color:' + args.color + '"></div>';;
+                break;
+            case d3.symbolTriangle:
+                return '<div class="palette-node-icon"> <div class="palette-node-triangle" style="border-color: transparent transparent '+args.color+' transparent;"></div></div>';
+                break;
+            case d3.symbolStar:
+                return '<div class="palette-node-icon" style="background-color:' + args.color + '"></div>';;
+                break;
+            case d3.symbolCross:
+                return '<div class="palette-node-icon" style="background-color:' + args.color + '"></div>';;
+                break;
+            default:
+                // if the string is not recognized
+                return "unknown";
+                //return d3.symbolCircleUnknown;
+            }
+
+
+
 }
 
 if (!String.format) {

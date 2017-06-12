@@ -225,6 +225,36 @@ dreamer.GraphEditor = (function (global) {
 
         }
 
+     GraphEditor.prototype.get_name_from_d3_symbol =
+        function (mySymbol) {
+            //log(myString)
+            switch (mySymbol) {
+            case d3.symbolCircle:
+                return "circle";
+                break;
+            case d3.symbolSquare:
+                return "square";
+                break;
+            case d3.symbolDiamond:
+                return "diamond";
+                break;
+            case d3.symbolTriangle:
+                return "triangle";
+                break;
+            case d3.symbolStar:
+                return "star";
+                break;
+            case d3.symbolCross:
+                return "cross";
+                break;
+            default:
+                // if the string is not recognized
+                return "unknown";
+                //return d3.symbolCircleUnknown;
+            }
+
+        }
+
     /**
      * Start or Stop force layout
      * @param {boolean} Required. Value true: start, false: stop
