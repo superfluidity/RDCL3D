@@ -10,7 +10,7 @@
 {% block title_header_big %}
     {{ block.super }}
   {% if descriptor_type  %}
-     {{ descriptor_type }}
+     {{ descriptor_type|title }}
   {% else%}
     Undefined
   {% endif %} Descriptors
