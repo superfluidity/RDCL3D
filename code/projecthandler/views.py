@@ -161,7 +161,7 @@ def delete_project(request, project_id=None):
 
         try:
             Project.objects.filter(id=project_id).delete()
-            return render(request, 'project_delete.html', {})
+            return redirect('projects:projects_list')
         except Exception as e:
             print e
             return render(request, 'error.html', {'error_msg': 'Error deleting Project.'})
@@ -465,6 +465,24 @@ def get_available_nodes(request, project_id=None):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
+@login_required
+def overviewelement(request, project_id=None):
+    if request.method == 'GET':
+        result = {}
+        error_msg = None
+        try:
+            projects = Project.objects.filter(id=project_id).select_subclasses()
+            project = projects[0]
+            parameters = request.GET.dict()
+            print "parameters", parameters
+            result = project.get_node_overview(**parameters)
+        except Exception as e:
+            error_msg = str(e)
+
+        if error_msg is not None:
+            return JsonResponse({'error': {'error_msg': str(error_msg)}})
+
+        return JsonResponse({'node_overview': result})
 
 # ETSI specific method #
 @login_required

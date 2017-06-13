@@ -86,3 +86,12 @@ function changeView(e){
     }
     graph_editor.handleFiltersParams(params);
 }
+
+function openNodeModalInfo(args){
+    console.log("openNodeModalInfo")
+   // $('#modal_alert_text').text(alert_msg);
+    //$('#modal_node_info').modal('show');
+    console.log(typeof args['node_info'])
+    args['node_info'] = (typeof args['node_info'] == 'string') ? JSON.parse(args['node_info'])['server'] : args['node_info']['server'];
+    graph_editor.showNodeInfo(args);
+}

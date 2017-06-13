@@ -163,6 +163,19 @@ def monitoring_node_openshell(request, deployment_id=None, node_id=None):
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
 
+@login_required
+@permission_required('deploymenthandler', raise_exception=False)
+def monitoring_node_info(request, deployment_id=None, node_id=None):
+    res_search = Deployment.objects.filter(id=deployment_id)
+    if len(res_search) > 0:
+        deployment = res_search[0]
+        result = deployment.node_info(node_id)
+        print 'monitoring_node_info', result
+        url = ''
+    else:
+        url = 'error.html'
+        result = {'error_msg': 'Error data monitoring not found.'}
+    return __response_handler(request, result, url)
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)

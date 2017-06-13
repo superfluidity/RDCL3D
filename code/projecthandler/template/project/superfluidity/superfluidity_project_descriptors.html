@@ -10,7 +10,7 @@
 {% block title_header_big %}
     {{ block.super }}
   {% if descriptor_type  %}
-     {{ descriptor_type }}
+     {{ descriptor_type |capfirst }}
   {% else%}
     Undefined
   {% endif %} Descriptors
@@ -24,7 +24,7 @@
   	{{ block.super }}
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
     <li><a> {% if descriptor_type  %}
-     {{ descriptor_type }}
+     {{ descriptor_type|capfirst }}
   {% else%}
     Undefined
   {% endif %} Descriptors</a></li>

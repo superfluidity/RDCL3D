@@ -210,6 +210,25 @@ dreamer.SuperfluidityController = (function(global) {
         }
     };
 
+    SuperfluidityController.prototype.getNodeOverview = function(graph_editor, node, success, error) {
+        var data_to_send = {
+                'group_id': node.info.group &&  node.info.group.length > 0 ? node.info.group[0] : undefined,
+                'element_id': node.id,
+                'element_type': node.info.type,
+                'element_desc_id': (node.info.desc_id) ? node.info.desc_id : node.info.group[0]
+         };
+         console.log(data_to_send)
+        new dreamer.GraphRequests().getNodeOverview(data_to_send, function(result) {
+            if (success) {
+                success(result);
+            }
+        }, function(e) {
+            if (error) {
+                error(e);
+            }
+        });
+    };
+
 
     return SuperfluidityController;
 

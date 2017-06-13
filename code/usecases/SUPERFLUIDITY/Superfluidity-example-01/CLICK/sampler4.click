@@ -7,19 +7,19 @@
 
 elementclass RatedSampler {
 // $rate |
-  input -> rs :: RatedSplitter($rate);
-  rs [0] -> [0] output;
-  rs [1] -> t :: Tee;
-  t [0] -> [0] output;
-  t [1] -> [1] output;
+  input -> rs1 :: RatedSplitter($rate);
+  rs1 [0] -> [0] output;
+  rs1 [1] -> t1 :: Tee;
+  t1 [0] -> [0] output;
+  t1 [1] -> [1] output;
 };
 
 elementclass RatedSampler2 {
 // $rate |
-  input -> rs :: RatedSplitter($rate);
-  rs [0] -> [0] output;
-  rs [1] -> t :: Tee;
-  t [0] -> [0] output;
+  input -> rs2 :: RatedSplitter($rate);
+  rs2 [0] -> [0] output;
+  rs2 [1] -> t2 :: Tee;
+  t2 [0] -> [0] output;
   
 };
 

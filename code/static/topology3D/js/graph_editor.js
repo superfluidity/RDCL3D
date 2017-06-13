@@ -69,14 +69,15 @@ dreamer.GraphEditor = (function (global) {
     GraphEditor.prototype.init = function (args) {
         args = args || {}
         var self = this;
-        this.width = args.width || 500;
-        this.height = args.height || 500;
+        this.width = 550//args.width || 500;
+        this.height = 550// args.height || 500;
         this.forceSimulationActive = false;
 
         //FixMe
         this.width = this.width - this.width * 0.007;
         this.height = this.height - this.height * 0.07;
 
+        //console.log("this.width", this.width, "this.height", this.height);
         var min_zoom = 0.1;
         var max_zoom = 7;
         this._setupBehaviorsOnEvents();
@@ -113,6 +114,7 @@ dreamer.GraphEditor = (function (global) {
 
         this.svg = d3.select("#graph_ed_container").append("svg")
             .attr("id", "graph_svg")
+            .attr("perserveAspectRatio", "xMinYMid")
             .attr("width", this.width)
             .attr("height", this.height);
 
@@ -151,9 +153,47 @@ dreamer.GraphEditor = (function (global) {
                 log('keyup' + self.lastKeyDown);
                 self.lastKeyDown = -1;
             });
+        var popup = this.svg.append("g")
+            .attr("id", "popup")
+            .attr("class", "popup")
+            .attr("opacity", "0")
+            .attr("transform", "translate(1 1)")
+            .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
 
+        function dragstarted(d) {
+          //d3.select(this).raise().classed("active", true);
+        }
+
+        function dragged(d) {
+            //console.log(JSON.stringify(d))
+          d3.select(this).attr("transform", function () {
+                return "translate("+d3.event.x+","+d3.event.y+")";
+
+            })
+        }
+
+        function dragended(d) {
+          //d3.select(this).classed("active", false);
+        }
+
+        var chart = $("#graph_svg");
+        this.aspect = chart.width() / chart.height();
+        this.container = chart.parent();
+        $(window).on("resize", function() {
+
+            var palette_width = $("#palette").width()
+            var working_width = self.container.width() - palette_width;
+            self.width = (working_width < 0) ? 0 : working_width;
+            self.height = self.container.height();
+            chart.attr("width", self.width);
+            chart.attr("height", self.height);
+        }).trigger("resize");
 
     }
+
 
     GraphEditor.prototype.get_d3_symbol =
         function (myString) {
@@ -180,6 +220,36 @@ dreamer.GraphEditor = (function (global) {
             default:
                 // if the string is not recognized
                 return d3.symbolCross;
+                //return d3.symbolCircleUnknown;
+            }
+
+        }
+
+     GraphEditor.prototype.get_name_from_d3_symbol =
+        function (mySymbol) {
+            //log(myString)
+            switch (mySymbol) {
+            case d3.symbolCircle:
+                return "circle";
+                break;
+            case d3.symbolSquare:
+                return "square";
+                break;
+            case d3.symbolDiamond:
+                return "diamond";
+                break;
+            case d3.symbolTriangle:
+                return "triangle";
+                break;
+            case d3.symbolStar:
+                return "star";
+                break;
+            case d3.symbolCross:
+                return "cross";
+                break;
+            default:
+                // if the string is not recognized
+                return "unknown";
                 //return d3.symbolCircleUnknown;
             }
 
@@ -508,7 +578,16 @@ dreamer.GraphEditor = (function (global) {
             .append("svg:text")
             .attr("class", "nodetext")
             .attr("class", "cleanable")
-            .attr("dy", "-5")
+            .attr("dy", function(d) { 
+                if (self._node_property_by_type(d.info.type, 'image', d) == undefined) {
+                    //shape
+                    return "-5"
+                }
+                else {
+                    //image
+                    return (-self._node_property_by_type(d.info.type, 'size', d)/2).toString()
+                }
+            })
             .attr("pointer-events", "none")
             .style("font-size", nominal_text_size + "px")
             .style("font-family", "Lucida Console")
@@ -633,12 +712,124 @@ dreamer.GraphEditor = (function (global) {
             .classed(class_name, filter_cb);
     }
 
+    GraphEditor.prototype.showNodeInfo = function(args){
+        this.addLinesToPopup(args['node_info'], "Info about node selected")
+        this.handlePopupVisibility(true, 'right')
+    }
+    GraphEditor.prototype.addLinesToPopup = function(data, title) {
+        var self = this;
+        var index = 1;
+        var translate_y = 0;
+        var width_popup = 400;
+        var height_popup = 0;
+
+        d3.selectAll(".popupcleanable").remove(); // clean
+
+        var popupbg = d3.select(".popup").append("rect")
+            .attr("id", "popupbg")
+            .attr("class", "popup bg popupcleanable cleanable")
+            .attr("width", "400")
+            .attr("height", "0")
+            .attr("rx", 10) // set the x corner curve radius
+            .attr("ry", 10); // set the y corner curve radius
+
+
+        d3.select(".popup").append("svg:path")
+            .attr("d", d3.symbol()
+                .size(function (d) {
+                    return 80
+                })
+                .type(function (d) {
+                    return (self.get_d3_symbol());
+                })
+            )
+            .style("fill", 'red')
+            .attr("transform", function () {
+                return "translate(380,15) rotate(-45)";
+
+            })
+            .attr("stroke-width", 2.4)
+            .attr("id", "close_popup")
+            .attr("class", "popupcleanable cleanable")
+            .on("click", function(d) {
+                self.handlePopupVisibility(false);
+            });
+
+        d3.select(".popup").append("text")
+            .attr("class", "popup title popupcleanable cleanable")
+            .attr("x", "10")
+            .attr("y", "20")
+            .text(title);
+
+        for (var i in data) {
+            //console.log(i, data, data[i])
+            //var typeofvalue = typeof data[i];
+            var record = data[i];
+            index = this._addRecordToPopup(i, record,index)
+
+        }
+
+    };
+
+    GraphEditor.prototype._addRecordToPopup = function (key, record, index, tab) {
+        //console.log("_addRecordToPopup", key, record, index)
+        var translate_y = 23 * index;
+            var summary = d3.select(".popup").append("g")
+                    .attr("class", "popup summary d popupcleanable cleanable")
+                    .attr("transform", "translate(10 " + translate_y + ")");
+        if(Object.prototype.toString.call( record ) !== '[object Array]'){ //is a record simple key:value
+            //console.log(key, record)
+            var summary_g = summary.append("g");
+                summary_g.append("rect")
+                    .attr("class", "popup summary bg popupcleanable cleanable")
+                    .attr("width", "380")
+                    .attr("height", "20");
+
+                summary_g.append("text")
+                    .attr("class", "popup summary  popupcleanable cleanable")
+                    .attr("x", (tab)? tab: 10)
+                    .attr("y", "17")
+                    .attr("width", "100")
+                    .text(function(d){
+                        return key.toUpperCase() + ":";
+                    });
+
+                summary_g.append("text")
+                    .attr("class", "popup summary  popupcleanable cleanable")
+                    .attr("x", "370")
+                    .attr("y", "17")
+                    .attr("text-anchor", "end")
+                    .text(function(d){return record});
+        }
+        else {//is a record simple complex: have a list of sub record key:value
+                //index ++;
+                this._addRecordToPopup(key, "", index)
+                for(var r in record){
+                    //console.log(i, r, record, record[r])
+                    for(var k in record[r]){
+                        //console.log(i, r, k, record[r][k])
+                        var curr_key = k;
+                        var recordValue = record[r][k]
+
+                        index ++;
+                        this._addRecordToPopup(curr_key, recordValue, index, 20)
+                    }
+                }
+
+        }
+
+        translate_y = 30 * index++;
+        d3.select('#popupbg').attr("height", translate_y);
+        return index;
+    };
+
+
+
     /**
      *  Remove all the graph objects from the view
      */
     GraphEditor.prototype.cleanAll = function () {
         this.svg.selectAll('.cleanable').remove();
-
     };
 
     /**
@@ -851,6 +1042,22 @@ dreamer.GraphEditor = (function (global) {
         this.svg.attr('height', height);
 
     }
+
+    GraphEditor.prototype.handlePopupVisibility = function(visible, side) {
+        var opacity = (visible) ? 1 : 0;
+
+        var translate_op = (side == "left") ? "translate(50 50)" : "translate("+(this.width - 450).toString()+" 50)";
+
+        if (!visible) {
+            d3.selectAll(".popupcleanable").remove();
+            d3.select(".popup")
+                .attr("transform", "translate(-1 -1)");
+        } else {
+            d3.select(".popup")
+                .attr("transform", translate_op);
+        }
+        d3.select(".popup").attr("opacity", opacity);
+    };
 
     GraphEditor.prototype.refreshGraphParameters = function (graphParameters) {
         this.eventHandler.fire("refresh_graph_parameters", graphParameters);

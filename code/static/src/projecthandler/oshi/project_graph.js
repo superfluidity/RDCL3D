@@ -27,6 +27,7 @@ $(document).ready(function() {
     };
     graph_editor.addListener("filters_changed", changeFilter);
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
+    graph_editor.addListener("edit_descriptor", openEditorEvent);
 
     console.log(example_gui_properties)
     // graph_editor initialization

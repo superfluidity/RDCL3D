@@ -139,6 +139,26 @@
     user-select: none;
 }
 
+.left-tool-bar-monitoring {
+
+    z-index: 1;
+    text-align: center;
+    font-size: 12px;
+
+    top: 64px;
+    cursor: default;
+    padding: 0 6px;
+    line-height: 22px;
+    position: absolute;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .vnffg-box {
     top: 80px;
     left:100px;
@@ -196,6 +216,9 @@ textarea {
     box-shadow: #999 1px 1px 1px;
 }
 
+/*
+Palette section
+*/
 #palette {
     position: absolute;
     top: 20px;
@@ -240,6 +263,7 @@ textarea {
 }
 
 .palette-category{
+   
     border-bottom: 1px solid #ccc;
 }
 
@@ -252,7 +276,7 @@ textarea {
     background: #f3f3f3;
     cursor: pointer;
     text-align: left;
-    padding: 9px;
+    padding: 1px;
     font-weight: bold;
     overflow: hidden;
     white-space: nowrap;
@@ -260,6 +284,7 @@ textarea {
 }
 
 .palette-content {
+    
     background: #fff;
     padding: 3px;
 }
@@ -283,8 +308,8 @@ textarea {
 .palette-node {
     cursor: move;
     background: #ddd;
-    margin: 10px auto;
-    height: 25px;
+    margin: 0px auto;
+    height: 35px;
     border-radius: 5px;
     border: 1px solid #999;
     background-position: 5% 50%;
@@ -314,10 +339,78 @@ textarea {
 }
 
 .palette-node-icon {
-    display: inline-block;
-    width: 20px;
+    //display: inline-block;
+    width: 30px;
     height: 100%;
     background-position: 50% 50%;
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.palette-node-circle {
+    display: inline-block;
+    margin-top: 2px;
+      width: 28px;
+      height: 28px;
+      -webkit-border-radius: 14px;
+      -moz-border-radius: 14px;
+      border-radius: 14px;
+      background: red;
+}
+
+.palette-node-square {
+    display: inline-block;
+    margin-top: 4px;
+    padding-top: 1px;
+      width: 26px;
+      height: 26px;
+      background: red;
+}
+
+.palette-node-triangle {
+    padding-top: 1px;
+    width: 0px;
+    height: 0px;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid #2f2f2f;
+}
+/*
+END Palette section
+*/
+
+/*
+Popup section
+*/
+.popup.bg{
+   fill: black;
+   opacity: 0.21;
+   border-radius: 3px;
+}
+
+.popup.summary.bg{
+   fill: white;
+   opacity: 1;
+}
+
+.popup.summary.counter{
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+.popup.summary.countervalue{
+   overflow: hidden;
+   text-overflow: ellipsis;
+   font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+.popup.title {
+   fill: black;
+   font-size: 16px;
+   font-family:  'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif ;
+}
+
+/*
+Popup section
+*/

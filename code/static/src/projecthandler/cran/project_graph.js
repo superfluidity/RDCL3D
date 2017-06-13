@@ -38,6 +38,7 @@ $(document).ready(function() {
     //console.log(graph_editor.getCurrentView())
     graph_editor.handleFiltersParams(params, false);
     graph_editor.addListener("filters_changed", changeFilter);
+    graph_editor.addListener("edit_descriptor", openEditorEvent);
 
 });
 

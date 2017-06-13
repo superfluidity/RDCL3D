@@ -67,15 +67,9 @@ dreamer.GraphRequests = (function(global) {
     GraphRequests.prototype.removeNode = function(args, choice, success, error) {
         var data = new FormData();
         data.append('csrfmiddlewaretoken', this.getCookie('csrftoken'));
-        /*
-        data.append('group_id', args.info.group[0]);
-        data.append('element_id', args.id);
-        data.append('element_type', args.info.type);*/
+
         data = args_to_formdata(args, data);
 
-
-       // if (choice)
-       //)     data.append('choice', choice);
         $.ajax({
             url: "removeelement",
             type: 'POST',
@@ -94,7 +88,23 @@ dreamer.GraphRequests = (function(global) {
         });
     };
 
+    GraphRequests.prototype.getNodeOverview = function(args, success, error) {
 
+        var params = jQuery.param(args)
+        console.log("params", params)
+        $.ajax({
+            url: "overviewelement?"+params,
+            type: 'GET',
+            success: function(result) {
+                if (success)
+                    success(result);
+            },
+            error: function(result) {
+                if (error)
+                    error(result);
+            }
+        });
+    };
 
     GraphRequests.prototype.addLink = function(args, choice, success, error) {
         var data = new FormData();

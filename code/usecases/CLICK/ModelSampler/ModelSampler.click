@@ -7,25 +7,23 @@
 
 elementclass RatedSampler {
 // $rate |
-  input -> rs :: RatedSplitter($rate);
-  rs [0] -> t :: Tee;
-  t [0] -> [0] output;
+  input -> mrs :: RatedSplitter($rate);
+  mrs [0] -> mt :: Tee;
+  mt [0] -> [0] output;
 };
 
 elementclass RatedSampler2 {
 // $rate |
-  input -> rs :: RatedSplitter($rate);
-  rs [1] -> [1] output;
-  rs [0] -> t :: Tee;
-  t [0] -> s4 :: RatedSampler(20000);
-  s4 [0] -> [0] output;		  
+  input -> mrs2 :: RatedSplitter($rate);
+  mrs2 [1] -> [1] output;
+  mrs2 [0] -> mt2 :: Tee;
+  mt2 [0] -> ms4 :: RatedSampler(20000);
+  ms4 [0] -> [0] output;		  
 };
 
-// FromHost(sampler, 192.0.2.0/24) -> Discard;
-
-PollDevice(eth2) -> s1 :: RatedSampler2(20000);
-s1 [0] -> c ::  Queue -> ToDevice(eth2);
-s1 [1] ->  c2 :: Queue -> ToDevice(eth2);
+PollDevice(eth2) -> ms1 :: RatedSampler2(20000);
+ms1 [0] -> mc ::  Queue -> ToDevice(eth2);
+ms1 [1] ->  mc2 :: Queue -> ToDevice(eth2);
 
 
 

@@ -47,11 +47,11 @@ layer:                                  #List of Layers
                     callback: addNode
                 removable:
                     callback: removeNode
-        #action:           #Action to show on rightclick all types of node/link
-            #node:
-            #    addToCurrentVNFFG:
-            #        title: Add to current VNFFG
-            #        callback: addToCurrentVNFFG
+#        action:           #Action to show on rightclick all types of node/link
+#            node:
+#                prova:
+#                    title: Add to prova
+#                    callback: addToCurrentVNFFG
             #link:
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf:                        #Edge's source
@@ -304,3 +304,4 @@ callback:                             #List of callbacks used
   addToCurrentVNFFG:
       file: sf_controller.js
       class: SuperfluidityController
+

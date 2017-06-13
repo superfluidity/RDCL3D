@@ -22,6 +22,9 @@ $(document).ready(function () {
         console.log("select")
         startFromAgent(this.value);
     });
-
+    // Bind events
+    $("form").submit(function(e) {
+        $("#start_new_deployment").button('loading');
+    });
 
 });

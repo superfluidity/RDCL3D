@@ -18,6 +18,21 @@ function getNodeShell(args){
     })
 }
 
+
+function getNodeInfo(args){
+
+    getDeploymentNodeInfo({
+        'nodeId': args['node']['id']
+    }, function(result){
+        console.log("getNodeInfo")
+        console.log(result);
+        //args['console_info'] = result['console_info']
+        //openShellTab(args)
+        openNodeModalInfo(result);
+    }, function(error){
+        showAlert("Error opening info node.")
+    })
+}
 function openShellTab(shellData){
 
     var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
@@ -30,8 +45,23 @@ function openShellTab(shellData){
 }
 
 
+
+
 function buildBehaviorsOnEvents(){
     var contextmenuNodesAction = [{
+            title: 'Show info',
+            action: function(elm, d, i) {
+                console.log('Show NodeInfo', elm, d, i);
+                var nodeData = {
+                    "node": {
+                        "id": d.id
+                    }
+                };
+                getNodeInfo(nodeData);
+            },
+            edit_mode: false
+
+        },{
             title: 'Open Console',
             action: function(elm, d, i) {
                 console.log('Open Console from menu', elm, d, i);

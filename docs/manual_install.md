@@ -24,9 +24,13 @@ Install pip as shown in the [install guide](https://pip.readthedocs.org/en/stabl
 then move in Django project directory
 
 If you want to use a python virtual environment as shown in in the [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
-call the directory simply "env" otherwise remember to add the new directory in .gitignore file.
+call the directory simply "env" (otherwise remember to add the new directory in .gitignore file):
 
-To setup a local development environment::
+    cd /home/user/workspace/RDCL3D/code
+   
+    virtualenv env
+
+To setup a local development environment:
 
     source env/bin/activate
 
@@ -49,8 +53,8 @@ To setup a local development environment::
 or:
     
     $ python manage.py runserver [host]:[port] 
-
-
+    $ python manage.py runserver 0.0.0.0:8000
+    
 
 ### Development hints
 

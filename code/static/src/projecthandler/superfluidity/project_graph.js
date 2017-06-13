@@ -50,12 +50,17 @@ $(document).ready(function() {
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
-        filter_base: params
+        filter_base: params,
+        behaviorsOnEvents:{
+            viewBased: false,
+            behaviors: buildBehaviorsOnEvents()
+        }
     });
 
     // this will filter in the different views, excluding the node types that are not listed in params
     graph_editor.handleFiltersParams(params);
     graph_editor.addListener("filters_changed", changeFilter);
+    graph_editor.addListener("edit_descriptor", openEditorEvent);
 
 });
 
@@ -241,7 +246,14 @@ function nodeDragStart(event){
 }
 
 function openEditor(project_id) {
-    window.location.href = '/projects/' + project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
+    //FIXME is not a good solution
+    var current_view = graph_editor.getCurrentView();
+    if(['expandable', 'compact'].indexOf(current_view) > -1)
+        current_view = 'click'
+    else
+        current_view +='d'
+   window.location.href = '/projects/' + project_id + '/descriptors/' + current_view + '/' + graph_editor.getCurrentGroup();
+
 }
 
 
@@ -366,4 +378,63 @@ function handleVnffgParameter(vnffgId, class_name) {
             return result;
         });
     }
+
+
+
+}
+
+function buildBehaviorsOnEvents(){
+    var contextmenuNodesAction = [{
+            title: 'Show info',
+            action: function(elm, d, i) {
+                console.log('Show NodeInfo', elm, d, i);
+                var nodeData = {
+                    "node": {
+                        "id": d.id
+                    }
+                };
+                new dreamer.SuperfluidityController().getNodeOverview(graph_editor,d, function(result){
+                    console.log(JSON.stringify(result))
+                    graph_editor.showNodeInfo({'node_info': result['node_overview']})
+                }, function(error){
+                    showAlert("Error opening info node.")
+                });
+            },
+            edit_mode: false
+
+        },
+        {
+                title: 'Show graph',
+                action: function (elm, c_node, i) {
+                    if (c_node.info.type != undefined) {
+                        var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
+                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                            if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
+                                var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
+                                graph_editor.handleFiltersParams({
+                                    node: {
+                                        type: Object.keys(graph_editor.model.layer[new_layer].nodes),
+                                        group: [c_node.id]
+                                    },
+                                    link: {
+                                        group: [c_node.id],
+                                        view: [new_layer]
+                                    }
+                                });
+
+                            }
+                            else{
+                                showAlert('This is not an explorable node.')
+                            }
+                        }
+                    }
+                },
+                edit_mode: false
+        }];
+        var behavioursOnEvents = {
+            'nodes': contextmenuNodesAction,
+
+        };
+
+    return behavioursOnEvents;
 }
