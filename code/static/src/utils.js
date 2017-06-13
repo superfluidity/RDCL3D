@@ -133,6 +133,10 @@ function buildPalette(args) {
                 }
                 else if(type_property[category.id].shape){
                     palette_node_icon = buildHtmlShape({shape: type_property[category.id].shape, color: type_property[category.id].color});
+
+                }
+                else{//#1F77B4
+                    palette_node_icon = '<div class="palette-node-icon"> <div class="palette-node-square" style="background:#1F77B4;"></div></div>';
                 }
 
                 var html_to_append = '<div class="palette-node ui-draggable" draggable="true" type-name="'+ type.id +'" id="' + type_id + '" ondragstart="nodeDragStart(event)">' +
