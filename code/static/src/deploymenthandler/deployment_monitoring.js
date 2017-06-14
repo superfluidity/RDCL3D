@@ -34,10 +34,10 @@ function getNodeInfo(args){
     })
 }
 function openShellTab(shellData){
-
-    var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
-    var html_tab_iframe = '<iframe src="'+ shellData['console_info']['url'] +'" class="shellIframe"></iframe>';
-    var html_tab_content = '<div class="tab-pane" id="tab_pane_' + shellData['node']['id'] +'">' + html_tab_iframe + '</div>';
+    var name = generateUID();
+    var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'_'+name+'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
+    var html_tab_iframe = '<iframe name='+name+' src="'+ shellData['console_info']['url'] +'" class="shellIframe"></iframe>';
+    var html_tab_content = '<div class="tab-pane" id="tab_pane_' + shellData['node']['id'] +'_'+name+'">' + html_tab_iframe + '</div>';
     console.log(html_tab)
     console.log(html_tab_content)
     $('#deploymentTab').append(html_tab);
