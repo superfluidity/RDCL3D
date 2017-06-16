@@ -39,16 +39,28 @@ def explicit_element_decl_with_conf(i, words, element, name_subgraph, group, typ
 		name_subgraph = name_subgraph+'.'
 	if group[len(group)-1] == '.':
 		group = group[0:len(group)-1]
+	if words[0] == '[':
+		index = string.find(words, ']')
+		words = words[index+1:]
+
 	element[len(element)]=({'element':word[0:index], 'name':name_subgraph+words[i-1], 'config':config,'group':[group], 'node_type': type_element})
 	
 
 
 def explicit_element_decl_without_conf(i, words, element, name_subgraph, group, type_element):
+	word = ''
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
 	if group[len(group)-1] == '.':
 		group = group[0:len(group)-1]
-	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+words[i-1], 'config':[],'group':[group], 'node_type': type_element})
+	
+	if words[i-1][0] == '[':
+		index = string.find(words[i-1], ']')
+		word = words[i-1][index+1:]
+	else:
+		word = words[i-1]
+		
+	element[len(element)]=({'element':words[i+1], 'name':name_subgraph+word, 'config':[],'group':[group], 'node_type': type_element})
 	
 
 
@@ -80,7 +92,6 @@ def implicit_element_decl_with_conf(i, words,element, name_subgraph, group, word
 def implicit_element_decl_without_conf(i,words,element, name_subgraph, group, words2):
 
 	name=nameGenerator(element, words[i])
-
 	if name_subgraph != '' and name_subgraph[len(name_subgraph)-1] != '.':
 		name_subgraph = name_subgraph+'.'
 	element[len(element)]=({'element':words[i], 'name':name_subgraph+name, 'config':[],'group':[group], 'node_type': 'element'})
@@ -255,3 +266,23 @@ def handle_edgeslevel(connection):
 					c[1]['depth'] = c1[1]['depth']+1
 	
 	
+
+def check_element(check, element_name, words):
+	word = words
+
+	if string.find(words, '[') == 0:
+		index = string.find(words, ']')
+		word = words[index+1:]
+
+	elif string.find(words,']') == len(words)-1:
+		index = string.find(words,'[')
+		word = words[0:index]
+	start = 0
+	for i in range(0,len(element_name)):
+		if element_name[i]=='.':
+			start = i + 1
+
+	if word == element_name[start:]:
+		check = True
+
+	return check

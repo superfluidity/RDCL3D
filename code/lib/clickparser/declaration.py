@@ -40,6 +40,7 @@ def explicit_element_decl(line, element, name_subgraph, group, words, ele_class_
                 if words[i + 1][c1] == '(':
                     break
                 ele_class_name = ele_class_name + words[i + 1][c1]
+
             for c2 in ele_class_dict.keys():
                 if ele_class_name == ele_class_dict[c2]['name']:
                     control = True
@@ -59,12 +60,14 @@ def explicit_element_decl(line, element, name_subgraph, group, words, ele_class_
 
                             explicit_element_decl(line_class_element, element, name_ele, name_ele, words,
                                                   ele_class_dict, ele_class_connections)
+
                             implicit_element_decl(line_class_element, element, name_ele, name_ele, words, words1)
 
                             if name_ele[len(name_ele) - 1] == '.':
                                 name_ele = name_ele[0:len(name_ele) - 1]
 
                             rename_class_element(words, words1, words3, name_ele, words[i - 1])
+
                             words3.append(words1)
 
                             line_class_element = ''
@@ -72,7 +75,9 @@ def explicit_element_decl(line, element, name_subgraph, group, words, ele_class_
                             line_class_element = line_class_element + j
 
                     # '********** Lista di parole pulite*********'
+
                     ele_class_lists = sum(words3, [])
+                    
                     ele_class_connections[len(ele_class_connections)] = (
                     {'element name': name_ele, 'connection_elem_list': ele_class_lists})
                 # '*******************************************'
@@ -90,20 +95,26 @@ def explicit_element_decl(line, element, name_subgraph, group, words, ele_class_
 
 def implicit_element_decl(line, element, name_subgraph, group, words, words2):
     words = []
+    
 
     words = load_list(line, words)
 
     for w in words:
         words2.append(w)
-    for i in range(0, len(words)):
-        index = string.find(words[i], '(')
-        if words[i][0].isupper():
-            if words[i - 1] != '::':
-                if string.find(words[i], '(') != -1 and string.find(words[i], ')') != -1:
-                    implicit_element_decl_with_conf(i, words, element, name_subgraph, group, words2)
 
-                elif string.find(words[i], '(') == -1 and string.find(words[i], ')') == -1:
-                    implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
+    for i in range(0, len(words)):
+        check = False                                                   # se falso significa che e' un elemento implicito e non una variabile con lettera maiuscola
+        index = string.find(words[i], '(')
+        for el in element:
+            check = check_element(check, element[el]['name'], words[i]) 
+
+        if check == False and words[i][0].isupper() and words[i-1]!='::':
+                if string.find(words[i], '(') !=-1 and string.find(words[i], ')') !=-1:
+                    implicit_element_decl_with_conf(i, words, element, name_subgraph, group, words2)
+        
+                elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
+                        implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
+
 
 
 def explicit_compound_decl(line, element, name_subgraph, group, words, element_renamed):
@@ -138,14 +149,18 @@ def implicit_compound_decl(line, element, name_subgraph, group, words, words2):
         words2.append(w)
 
     for i in range(0, len(words)):
+        check = False
         index = string.find(words[i], '(')
-        if words[i][0].isupper():
-            if words[i - 1] != '::':
-                if string.find(words[i], '(') != -1 and string.find(words[i], ')') != -1:
-                    implicit_element_decl_with_conf(i, words, element, name_subgraph, group, words2)
+        for el in element:
+            check = check_element(check, element[el]['name'], words[i]) 
 
-                elif string.find(words[i], '(') == -1 and string.find(words[i], ')') == -1:
-                    implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
+        if check == False and words[i][0].isupper() and words[i-1]!='::':
+                if string.find(words[i], '(') !=-1 and string.find(words[i], ')') !=-1:
+                    implicit_element_decl_with_conf(i, words, element, name_subgraph, group, words2)
+        
+                elif string.find(words[i], '(') ==-1 and string.find(words[i], ')') ==-1:
+                        implicit_element_decl_without_conf(i, words, element, name_subgraph, group, words2)
+
 
 
 def subgraph_ele_class(line2, ele_class_element):
@@ -183,6 +198,7 @@ def subgraph_ele_class(line2, ele_class_element):
 
 
 def connection_decl(words, connection, element):
+
     for i in range(0, len(words)):
         if words[i] == '->':
             port_input = 0
