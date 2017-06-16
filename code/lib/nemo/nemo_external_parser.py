@@ -4,8 +4,49 @@ class Nemo_Intent:
     objects = []
     operations = []
 
-    def __init__(self):
+    def __init__(self, intent_text):
         self.objects = Nemo_objects()
+        #Get sentences
+        sentences = intent_text.split('\n')
+        while '' in sentences:
+            sentences.remove('')
+        self.sentences = sentences
+
+        #Go over the intent sentence by sentence
+        for sentence in self.sentences:
+            sentence = sentence.replace(',','')
+            sentence = sentence.replace(';','')
+            words = sentence.split(' ')
+            if words[0] == 'CREATE' or words[0] == 'IMPORT':
+                #Get nodes
+                if words[1] == 'Node':
+                    name = words [2]
+                    node_type = words[4]
+                    properties = {}
+                    subnodes = []
+                    if len(words) > 5:
+                        index = 6
+                        if words[5] == 'Property':
+                            while index < len(words) - 1:
+                                node_property = words[index].replace(':', '')
+                                properties[node_property] = words[index +1].replace('"', '')
+                                index = index + 2
+                        if words[5] == 'Contain':
+                            while index < len(words):
+                                subnodes.append(words[index])
+                                index = index + 1
+                           
+                    self.objects.append_Node(name, node_type, subnodes, properties)  
+
+                #Get connections
+                if words[1] == 'Connection':
+                       name = words[2]
+                       index = 4
+                       endpoints = []
+                       while index < len(words):
+                           endpoints.append(words[index])    
+                           index = index + 1
+                       self.objects.append_Connect(name, endpoints)
 
     def to_dict(self):
         intent_dict=self.objects.to_dict()
@@ -26,11 +67,11 @@ class Nemo_objects:
     def to_dict(self):
         objects_dict = {'nodes': [], 'flows': [], 'connections': []}
         for node in self.nodes:
-            objects_dict['nodes'].append(str(node))
+            objects_dict['nodes'].append(node.to_dict())
         for flow in self.flows:
             objects_dict['flows'].append(str(flows))
         for conn in self.connections:
-            objects_dict['connections'].append(str(conn))
+            objects_dict['connections'].append(conn.to_dict())
         return objects_dict
 
 class Nemo_Node:
@@ -48,6 +89,7 @@ class Nemo_Node:
         if properties:
             self.properties = properties
 
+
     def __str__(self):
         string = "name: " + self.name + '\n' + "type: " + self.node_type
         if self.properties:
@@ -55,6 +97,14 @@ class Nemo_Node:
         if self.sub_nodes:
             string = string + '\n' + "subnodes: " + str(self.sub_nodes)
         return string
+
+    def to_dict(self):
+        node_dict = { "name": self.name, "type":  self.node_type}
+        if self.properties:
+            node_dict["properties"] = self.properties
+        if self.sub_nodes:
+            node_dict["subnodes"] = self.sub_nodes
+        return node_dict
 
 class Nemo_Connection:
 
@@ -69,53 +119,49 @@ class Nemo_Connection:
         string = "name: " + self.name + '\n' + "endpoints: " + str(self.endpoints)
         return string
 
-def parse_Intent(intent_text):
-    Intent = Nemo_Intent()
+    def to_dict(self):
+        conn_dict = {"name": self.name, "endpoints": self.endpoints}
+        return conn_dict
+        
 
-    #Read intent file
-    #f = open(intent_file, 'r')
-    #intent_text = f.read()
+class Nemo_Nodemodel:
 
-    #Get sentences
-    sentences = intent_text.split('\n')
-    while '' in sentences:
-        sentences.remove('')
-    Intent.sentences = sentences
+    name = None
+    sub_nodes = []
+    properties = []
 
-    #Go over the intent sentence by sentence
-    for sentence in Intent.sentences:
-        sentence = sentence.replace(',','')
-        sentence = sentence.replace(';','')
-        words = sentence.split(' ')
-        if words[0] == 'CREATE' or words[0] == 'IMPORT':
-            #Get nodes
-            if words[1] == 'Node':
-                name = words [2]
-                node_type = words[4]
-                properties = {}
-                subnodes = []
-                if len(words) > 5:
-                    index = 6
-                    if words[5] == 'Property':
-                        while index < len(words) - 1:
-                            node_property = words[index].replace(':', '')
-                            properties[node_property] = words[index +1].replace('"', '')
-                            index = index + 2
-                    if words[5] == 'Contain':
-                        while index < len(words):
-                            subnodes.append(words[index])
-                            index = index + 1
-                           
-                Intent.objects.append_Node(name, node_type, subnodes, properties)  
+    def __init__(self, node_text):
+        node_text = node_text.replace('\n', '')
+        node_text = node_text.replace(',','')
+        node_text = node_text.replace(';','')
+        words = node_text.split(' ')
+        self.name = words[2]
+        if len(words) > 3:
+            index = 4
+            if words[3] == 'Property':
+                while index < len(words) - 1:
+                    properties.append(words[index + 1])
+                    index = index + 2
+                self.properties = properties
+            if words[3] == 'Contain':
+                while index < len(words):
+                    subnodes.append(words[index])
+                    index = index + 1
+                self.subnodes = subnodes
 
-            #Get connections
-            if words[1] == 'Connection':
-                   name = words[2]
-                   index = 4
-                   endpoints = []
-                   while index < len(words):
-                       endpoints.append(words[index])
-                       index = index + 1
-                   Intent.objects.append_Connect(name, endpoints)
+    def __str__(self):
+        string = "name: " + self.name + '\n'
+        if self.properties:
+            string = string +'\n' + "properties: " + str(self.properties)
+        if self.sub_nodes:
+            string = string + '\n' + "subnodes: " + str(self.sub_nodes)
+        return string
 
-    return Intent
+    def to_dict(self):
+        node_dict = { "name": self.name}
+        if self.properties:
+            node_dict["properties"] = self.properties
+        if self.sub_nodes:
+            node_dict["subnodes"] = self.sub_nodes
+        return node_dict
+
