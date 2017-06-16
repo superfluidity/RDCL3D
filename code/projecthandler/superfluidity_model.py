@@ -20,13 +20,13 @@ import copy
 import json
 import os.path
 import yaml
-from lib.util import Util
+import zipfile
 import logging
-from django.db import models
+from lib.util import Util
+from StringIO import StringIO
+
 from projecthandler.click_model import ClickProject
 from projecthandler.etsi_model import EtsiProject
-from projecthandler.models import Project
-
 from lib.superfluidity.superfluidity_parser import SuperfluidityParser
 from lib.superfluidity.superfluidity_rdcl_graph import SuperfluidityRdclGraph
 
@@ -144,6 +144,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             elif data_type == 'yaml':
                 yaml_object = yaml.load(new_data)
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            elif data_type == 'click':
+                new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
@@ -195,6 +197,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type == 'vnffg':
             # log.debug("Add ") group_id, element_id
             result = self.add_vnffg(group_id, element_id)
+        elif element_type == 'vnf_click_vdu':
+            result = self.add_vnf_click_vdu(group_id, element_id)
         return result
 
     def get_remove_element(self, request):
@@ -312,6 +316,25 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = None  # TODO maybe we should use False ?
         return result
 
+    def add_vnf_click_vdu(self, vnf_id, vdu_id):
+        try:
+            current_data = json.loads(self.data_project)
+            # utility = Util()
+            vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
+            vdu_descriptor['vduId'] = vdu_id
+            vdu_descriptor['intCpd'] = []
+            vdu_descriptor['vduNestedDesc'] = vdu_id
+            vdu_descriptor['vduNestedDescType'] = 'click'
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            current_data['click'][vdu_id] = ''
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
     def get_available_nodes(self, args):
         """Returns all available node """
         log.debug('get_available_nodes')
@@ -339,3 +362,21 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = []
         return result
 
+    def get_zip_archive(self):
+        in_memory = StringIO()
+        try:
+            current_data = json.loads(self.data_project)
+            zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+            for desc_type in current_data:
+                for current_desc in current_data[desc_type]:
+                    if desc_type != 'click':
+                        zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
+                    else:
+                        zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
+
+            zip.close()
+        except Exception as e:
+            log.debug(e)
+
+        in_memory.flush()
+        return in_memory

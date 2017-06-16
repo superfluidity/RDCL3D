@@ -325,19 +325,17 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
         })
     elif request.method == 'POST':
         csrf_token_value = get_token(request)
-        if request.POST.get('type') == "file":
-            file = request.FILES['file']
-            text = file.read()
-            print file.name.split(".")[0]
-            type = file.name.split(".")[-1]
-            desc_name = file.name.split(".")[0]
-            print type
+        data_type = request.POST.get('type')
+        if data_type == "file":
+            file_uploaded = request.FILES['file']
+            text = file_uploaded.read()
+            data_type = file_uploaded.name.split(".")[-1]
+            desc_name = file_uploaded.name.split(".")[0]
+
         else:
             text = request.POST.get('text')
-            type = request.POST.get('type')
             desc_name = request.POST.get('id')
-        print desc_name
-        result = projects[0].create_descriptor(desc_name, descriptor_type, text, type)
+        result = projects[0].create_descriptor(desc_name, descriptor_type, text, data_type)
 
         response_data = {
             'project_id': project_id,
