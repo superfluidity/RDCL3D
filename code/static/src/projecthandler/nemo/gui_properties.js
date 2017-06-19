@@ -21,6 +21,13 @@ var example_gui_properties = {
         "color": "#fce0cf",
         "size": 15,
         "name": "Subnode"
+      },
+      "nemo_property": {
+        "shape": "square",
+        //"color": "#E74C35",
+        "color": "#54A698",
+        "size": 15,
+        "name": "Property"
       }
     },
     "graphs": null
@@ -47,6 +54,13 @@ var example_gui_properties = {
         "color": "#fce0cf",
         "size": 15,
         "name": "Subnode"
+      },
+      "nemo_property": {
+        "shape": "square",
+        //"color": "#E74C35",
+        "color": "#54A698",
+        "size": 15,
+        "name": "Property"
       }
     },
     "graphs": null

@@ -33,13 +33,15 @@ class NemoRdclGraph(RdclGraph):
             if 'intent' in json_project:
                 #intents = {}
                 for intent in json_project['intent']:
+                    #print "intent name", intent
+                    #print "intent_conent ", json_project['intent'][intent]
                     self.create_views_for_intent(Nemo_Intent(json_project['intent'][intent]).to_dict(), intent, positions, graph_object)
 
 
             if 'nodemodel' in json_project:
                 #nodemodels = {}
                 for nodemodel in json_project['nodemodel']:
-                    self.create_views_for_nodemodel(Nemo_Nodemodel(json_project['nodemodel'][nodemodel]).to_dict(), positions, graph_object)
+                    self.create_views_for_nodemodel(Nemo_Nodemodel(json_project['nodemodel'][nodemodel]).to_dict(), nodemodel, positions, graph_object)
 
             #print "intents ", intents
             #print "nodemodels ", nodemodels
@@ -49,7 +51,7 @@ class NemoRdclGraph(RdclGraph):
             log.exception('Exception in build_graph_from_project')
             raise
 
-        print "graph_object ", graph_object
+        #print "graph_object ", graph_object
         return graph_object
 
     def create_views_for_intent(self, intent, name, positions, graph_object):
@@ -62,5 +64,13 @@ class NemoRdclGraph(RdclGraph):
             #print "link ", link
             self.add_link(link['endpoints'][0], link['endpoints'][1], 'intent', name, graph_object)
 
-    def create_views_for_nodemodel(self, nodemodel, positions, graph_object):
-        pass
+    def create_views_for_nodemodel(self, nodemodel, name, positions, graph_object):
+        self.add_node(name, 'nodemodel', name, positions, graph_object)
+        #print "nodemodel ", nodemodel
+        for node in nodemodel['subnodes']:
+            self.add_node(node, 'subnode', name, positions, graph_object)
+
+        for nemo_property in nodemodel['properties']:
+            #print "property ", nemo_property
+            self.add_node(nemo_property, 'nemo_property', name, positions, graph_object)
+            #print "node ", graph_object['vertices'][-1]

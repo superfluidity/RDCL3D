@@ -135,15 +135,18 @@ class Nemo_Nodemodel:
         node_text = node_text.replace(',','')
         node_text = node_text.replace(';','')
         words = node_text.split(' ')
+        #print "words ", words
         self.name = words[2]
-        if len(words) > 3:
-            index = 4
-            if words[3] == 'Property':
+        if len(words) > 4:
+            index = 5
+            if words[4] == 'Property':
+                properties = []
                 while index < len(words) - 1:
                     properties.append(words[index + 1])
                     index = index + 2
                 self.properties = properties
-            if words[3] == 'Contain':
+            if words[4] == 'Contain':
+                subnodes = []
                 while index < len(words):
                     subnodes.append(words[index])
                     index = index + 1
@@ -158,7 +161,7 @@ class Nemo_Nodemodel:
         return string
 
     def to_dict(self):
-        node_dict = { "name": self.name}
+        node_dict = { "name": self.name, "subnodes": [], "properties" : []}
         if self.properties:
             node_dict["properties"] = self.properties
         if self.sub_nodes:
