@@ -9,8 +9,8 @@ initDropOnGraph();
 
 
 $(document).ready(function() {
-    var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf'
-    var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
+    var descriptor_type = getUrlParameter('type') == 'intent' || getUrlParameter('type') == 'intent' ? 'intent' : 'nodemodel'
+    var allowed_types = descriptor_type == 'intent' ? ['nodemodel'] : ['subnode', 'nemo_property'];
     var params = {
         node: {
             type: allowed_types,
@@ -49,16 +49,16 @@ function initDropOnGraph() {
         var nodetype = e.dataTransfer.getData("text/plain");
         if (nodetype) {
             var type_name = graph_editor.getTypeProperty()[nodetype].name;
-            if (nodetype == 'vnf') {
-                new dreamer.GraphRequests().getUnusedVnf(group, function(vnfs) {
+            if (nodetype == 'nodemodel') {
+                new dreamer.GraphRequests().getUnusedVnf(group, function(nodemodels) {
                     $('#div_chose_id').hide();
-                    $('#div_chose_vnf').show();
-                    $('#input_choose_node_vnf').val(nodetype + "_" + generateUID());
-                    $('#selection_chooser_vnf').empty();
-                    $('#selection_chooser_vnf').append('<option >None</option>');
+                    $('#div_chose_nodemodel').show();
+                    $('#input_choose_node_nodemodel').val(nodetype + "_" + generateUID());
+                    $('#selection_chooser_nodemodel').empty();
+                    $('#selection_chooser_nodemodel').append('<option >None</option>');
                     $('#modal_chooser_title_add_node').text('Add ' + type_name);
-                    for (var i in vnfs) {
-                        $('#selection_chooser_vnf').append('<option id="' + vnfs[i] + '">' + vnfs[i] + '</option>');
+                    for (var i in nodemodels) {
+                        $('#selection_chooser_nodemodel').append('<option id="' + nodemodels[i] + '">' + nodemodels[i] + '</option>');
                     }
                     $('#save_choose_node_id').off('click').on('click', function() {
                         var choice = $("#selection_chooser_vnf option:selected").text();
@@ -80,7 +80,7 @@ function initDropOnGraph() {
                     });
                         } else {
                             var node_information = {
-                                'existing_vnf': true,
+                                'existing_nodemodel': true,
                                 'id': choice,
                                 'info': {
                                     'type': nodetype,
@@ -103,7 +103,7 @@ function initDropOnGraph() {
 
             } else {
                 $('#div_chose_id').show();
-                $('#div_chose_vnf').hide();
+                $('#div_chose_nodemodel').hide();
                 $('#input_choose_node_id').val(nodetype + "_" + generateUID());
                 $('#modal_chooser_title_add_node').text('Add ' + type_name);
                 $('#save_choose_node_id').off('click').on('click', function() {
@@ -161,12 +161,12 @@ function savePositions(el) {
 function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     if (c.link.view == 'ns') {
-        $("#title_header").text("NS Graph Editor")
+        $("#title_header").text("Intent Graph Editor")
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     } else {
 
-        $("#title_header").text("VNF Graph Editor");
+        $("#title_header").text("Nodemodel Graph Editor");
         $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled", true);
     }
