@@ -63,7 +63,6 @@ def open_deployment(request, deployment_id=None):
                 deployment = json.dumps(deployment.to_json())
 
             result = {'deployment': deployment,
-                      #'deployment_descriptor': json.dumps(deployment.deployment_descriptor),
                       'collapsed_sidebar': True}
         else:
             url = 'error.html'
