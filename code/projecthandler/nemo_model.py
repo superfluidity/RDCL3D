@@ -64,7 +64,7 @@ class NemoProject(Project):
     @classmethod
     def data_project_from_example(cls, request):
         nemo_id = request.POST.get('nemo-nemo-id', '')
-        data_project = NemoParser.importprojectdir(EXAMPLES_FOLDER + nemo_id + '/JSON', 'yaml')
+        data_project = NemoParser.importprojectdir(EXAMPLES_FOLDER + nemo_id, 'nemo')
         return data_project
 
     @classmethod
@@ -72,7 +72,9 @@ class NemoProject(Project):
         """Returns a list of directories, in each directory there is a project nemo"""
 
         path = EXAMPLES_FOLDER
+        #print "example path ", path
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+        #print "dirs ", dirs
         return {'nemo': dirs}
 
     @classmethod
@@ -92,6 +94,11 @@ class NemoProject(Project):
         except Exception as e:
             log.exception(e)
             return False
+
+    @classmethod
+    def get_json_schema_by_type(cls, type_descriptor):
+        schema = PATH_TO_SCHEMAS + type_descriptor + ".json"
+        return schema
 
     @classmethod
     def get_clone_descriptor(cls, descriptor, type_descriptor, new_descriptor_id):
@@ -127,6 +134,7 @@ class NemoProject(Project):
         project = self.get_dataproject()
         topology = rdcl_graph.build_graph_from_project(project,
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        print "topology ", topology['vertices']
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -139,7 +147,7 @@ class NemoProject(Project):
             if data_type == 'nemo':
                 new_descriptor = new_data
             else:
-                log.debug('Create descriptor: Unknown data type')
+                log.debug('Create descriptor: Unknown data type ' + data_type)
                 return False
 
             # schema = cls.loadjsonfile("lib/nemo/schemas/"+type_descriptor+".json")
