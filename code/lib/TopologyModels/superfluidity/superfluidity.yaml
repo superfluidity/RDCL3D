@@ -158,7 +158,7 @@ layer:                                  #List of Layers
         action:           #Action to show on rightclick all types of node/link
             node:
             link:
-    compact:
+    compact:  # click compact view
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
@@ -233,7 +233,7 @@ layer:                                  #List of Layers
                         direct_edge: true
                         removable:
                           callback: removeLink
-    expandable:
+    expandable: # click expandable view
         nodes:
             element:
                 #if the addable_key is missing it defaults to false
