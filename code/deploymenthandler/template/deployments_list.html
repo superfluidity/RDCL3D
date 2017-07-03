@@ -57,6 +57,7 @@
 
 						<th>Name</th>
 						<th>Project</th>
+						<th>Project Type</th>
 						<th>Creator</th>
 						<th>Status</th>
 						<th>Created</th>
@@ -71,9 +72,12 @@
 							<a href="javascript:openDeployment('{{ exp.id }}')" >{{ exp.name }}</a>
 						</td>
 						<td>
-                            <a href="javascript:openProject('{{ exp.project_id }}')" >{{ exp.project_id }}</a>
+                            <a href="javascript:openProject('{{ exp.project_id }}')" >{{ exp.project_name }}</a>
                         </td>
-						<td>{{ exp.creator_name }}</td>
+						<td>
+                            {{ exp.project_type }}
+                        </td>
+						<td>{{ exp.creator }}</td>
 						<td>{{ exp.status }}</td>
 						<td>{{ exp.created_date }}</td>
 						<td><div class="btn-group">

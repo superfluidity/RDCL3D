@@ -211,7 +211,7 @@ def graph(request, project_id=None):
         return render(request, prj_token + '/project_graph.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
-            'collapsed_sidebar': True
+            'collapsed_sidebar': False
         })
 
 

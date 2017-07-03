@@ -50,8 +50,10 @@ class Deployment(models.Model):
     """
     name = models.CharField(max_length=20, default='')
     profile = jsonfield.JSONField(default={})
+    #project = models.ForeignKey('projecthandler.Project', db_column='project_id')
+    project_type = models.CharField(max_length=20, default='')
     project_name = models.CharField(max_length=20, default='')
-    project_id = models.CharField(max_length=20, default='')
+    project_id =  models.CharField(max_length=20, default='')
     creator = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
@@ -132,8 +134,9 @@ class Deployment(models.Model):
         return {
             'name': self.name,
             'profile': self.profile,
-            'project_name': self.project_name,
             'project_id': self.project_id,
+            'project_name': self.project_name,
+            'project_type': self.project_name,
             'creator_id': self.creator.id,
             'creator_name': str(self.creator.get_full_name()),
             'created_date': str(self.created_date),
