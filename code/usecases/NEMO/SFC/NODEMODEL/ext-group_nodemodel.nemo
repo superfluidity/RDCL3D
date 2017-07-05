@@ -1,0 +1,2 @@
+CREATE Nodemodel ext-group
+  Property string: ip-prefix, string: location, string: ac-info-network, string: ac-info-protocol;

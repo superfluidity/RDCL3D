@@ -27,6 +27,7 @@ from sf_user.models import CustomUser
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
 from projecthandler.cran_model import CranProject
+from projecthandler.nemo_model import NemoProject
 from projecthandler.toscanfv_model import ToscanfvProject
 from projecthandler.superfluidity_model import SuperfluidityProject
 from projecthandler.oshi_model import OshiProject
@@ -38,6 +39,7 @@ from projecthandler.tosca_model import ToscaProject
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
 Project.add_project_type('cran', CranProject)
+Project.add_project_type('nemo', NemoProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
 Project.add_project_type('superfluidity', SuperfluidityProject)
 Project.add_project_type('oshi', OshiProject)

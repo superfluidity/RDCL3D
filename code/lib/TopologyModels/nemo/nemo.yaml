@@ -1,0 +1,88 @@
+name: Nemo                              #Model name
+description: nemo                       #Model description
+version: 1.0                            #Model version
+designer: Juan Manuel Sanchez               #Model designer
+nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
+    nodemodel:
+        label: nodemodel
+    subnode:
+        label: subnode
+    nemo_property:
+        label: nemo_property
+
+layer:                                  #List of Layers
+    intent:
+        nodes:                  #List of node to be visualized in the current layer
+            nodemodel:
+                addable:
+                    callback: addNodemodel
+                removable:
+                    callback: removeNode
+                expands : nodemodel
+        allowed_edges:                  #List of allowed edges between the layer's nodes
+            nodemodel:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+                    nodemodel:
+                        callback: LinkNode2Node
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+        action:           #Action to show on rightclick all types of node/link
+            node:
+
+            link:
+
+    nodemodel:
+        nodes:                  #List of node to be visualized in the current layer
+            subnode:
+                addable:
+                    callback: addSubnode
+                removable:
+                    callback: removeNode
+            nemo_property:
+                addable:
+                    callback: addProperty
+                removable:
+                    callback: removeNode
+        allowed_edges:                  #List of allowed edges between the layer's nodes
+            subnode:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+                    subnode:
+                        callback: addLink
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            nemo_property:                        #Edge's source
+                destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
+                    nemo_property:
+                        callback: addLink
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+
+
+callback:  
+  addNodemodel:
+      file: controller.js
+      class: NemoController    
+  addSubnode:
+      file: controller.js
+      class: NemoController 
+  addProperty:
+      file: controller.js
+      class: NemoController                        
+  addNode:
+      file: controller.js
+      class: NemoController
+  LinkNode2Node:
+      file: controller.js
+      class: NemoController
+  removeNode:
+      file: controller.js
+      class: NemoController
+  addLink:
+      file: controller.js
+      class: NemoController
+  removeLink:
+      file: controller.js
+      class: NemoController

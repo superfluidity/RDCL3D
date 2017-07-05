@@ -53,7 +53,7 @@ class Deployment(models.Model):
     #project = models.ForeignKey('projecthandler.Project', db_column='project_id')
     project_type = models.CharField(max_length=20, default='')
     project_name = models.CharField(max_length=20, default='')
-    project_id =  models.CharField(max_length=20, default='')
+    project_id = models.CharField(max_length=20, default='')
     creator = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)

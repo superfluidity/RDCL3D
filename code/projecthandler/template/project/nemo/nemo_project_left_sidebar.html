@@ -1,0 +1,18 @@
+{% extends "project_base_left_sidebar.html" %}
+
+{% block li_list %}
+{{ block.super }}
+<li class="treeview">
+    <a href="#">
+        <i class="fa fa-archive fa-fw"></i> <span>Project descriptors</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu" style="display: none;">
+        <li><a href="/projects/{{project_id}}/descriptors/intent"><i class="fa fa-files-o fa-fw"></i>Intent</a></li>
+        <li><a href="/projects/{{project_id}}/descriptors/nodemodel"><i class="fa fa-files-o fa-fw"></i>Nodemodel</a></li>
+
+    </ul>
+</li>
+{% endblock %}
