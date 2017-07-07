@@ -1,0 +1,329 @@
+{
+  "vnfdId": "vnf_template",
+  "vnfProvider": "netgroup",
+  "vnfProductName": "vnf1",
+  "vnfSoftwareVersion": "0.1",
+  "vnfdVersion": "0.1",
+  "vnfmInfo":[
+    "VNFM compatible"
+  ],
+  "vdu":[
+    {
+      "vduId":null,
+      "name": "",
+      "description":"",
+      "intCpd":[
+        {
+          "cpdId": null,
+          "layerProtocol": "E-LAN",
+          "cpRole": "root or leaf",
+          "description": "description",
+          "intVirtualLinkDesc": null
+        }
+      ],
+      "virtualComputeDesc": "id",
+      "virtualStorageDesc": "id",
+      "bootOrder":[
+
+      ],
+      "swImageDesc":{
+        "id": "id",
+        "name": "Name",
+        "version": "0.1",
+        "checksum": "checksum",
+        "containerFormat": "containerFormat",
+        "diskFormat": "Fat32",
+        "minDisk": 500,
+        "minRam": 1,
+        "size":300,
+        "swImage":"Reference to a SwImage",
+        "operatingSystem": "operatingSystem",
+        "supportedVirtualisationEnvironment":[
+          ""
+        ]
+      },
+      "nfviConstraint":[
+        ""
+      ],
+      "monitoringParameter":[
+        {
+          "id": "id",
+          "name": "name",
+          "performanceMetric": "performanceMetric"
+        }
+      ],
+      "configurableProperties": {
+        "additionalVnfcConfigurableProperty":[
+
+        ]
+      }
+
+
+    }
+  ],
+  "virtualComputeDesc":[
+    {
+      "virtualComputeDescId": "virtualComputeDescId",
+      "requestAdditionalCapabilities":[
+        {
+          "requestedAdditionalCapabilityName": "",
+          "supportMandatory": true,
+          "minRequestedAdditionalCapabilityVersion": "",
+          "preferredRequestedAdditionalCapabilityVersion": "",
+          "targetPerformanceParameters": [
+
+          ]
+        }
+      ],
+      "virtualMemory": {
+        "virtualMemSize": 1,
+        "virtualMemOversubscriptionPolicy": "",
+        "numaEnabled": false
+      },
+      "virtualCpu": {
+        "cpuArchitecture": "x86",
+        "numVirtualCpu": 2,
+        "virtualCpuClock": 2.6,
+        "virtualCpuOversubscriptionPolicy":"",
+        "virtualCpuPinning": {
+          "cpuPinningPolicy": "Enum",
+          "cpuPinningMap": ""
+        }
+      }
+    }
+  ],
+  "virtualStorageDesc":[
+    {
+      "id": "id",
+      "typeOfStorage": "volume",
+      "sizeOfStorage": 100,
+      "rdmaEnabled": false,
+      "swImageDesc": "reference SwImageDesc"
+    }
+  ],
+  "intVirtualLinkDesc":[
+    {
+      "virtualLinkDescId": null,
+      "virtualLinkDescFlavour": [
+        {
+              "flavourId": "flavourId",
+              "bitrateRequirements": {
+                "root": 7,
+                "leaf": 13
+              },
+              "qos": {
+                "latency": 500,
+                "packetDelayVariation": 50,
+                "packetLossRatio": 5,
+                "priority": 1
+            },
+            "connectivityType": {
+              "layerProtocol": "Enum",
+              "flowPattern": ""
+
+            },
+            "testAccess":"",
+            "description": "",
+            "monitoringParameter":  {
+              "id": "id",
+              "name": "name",
+              "performanceMetric": "performanceMetric"
+            }
+
+          }
+      ],
+      "connectivityType": {
+        "layerProtocol": "Enum",
+        "flowPattern": ""
+      },
+      "testAccess":[
+        ""
+      ],
+      "description": "",
+      "monitoringParameter": [
+        {
+          "id": "id",
+          "name": "name",
+          "performanceMetric": "performanceMetric"
+        }
+      ]
+    }
+
+  ],
+  "vnfExtCpd":[
+    {
+      "cpdId": null,
+      "layerProtocol": "E-LAN",
+      "cpRole": "root or leaf",
+      "description": "description",
+      "intVirtualLinkDesc": null,
+      "intCpd":null ,
+      "virtualNetworkInterfaceRequirements":{
+        "name": "name",
+        "description": "description",
+        "supportMandatory": true,
+        "requirement": ""
+      }
+    }
+  ],
+  "deploymentFlavour":[
+    {
+      "flavourId": "flavourId",
+      "description": "description",
+      "vduProfile":[
+        {
+          "vduId": "vduId",
+          "minNumberOfInstances": 1,
+          "maxNumberOfInstances": 5,
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "type": "Enum",
+              "scope": "enum"
+            }
+
+          ],
+          "affinityOrAntiAffinityGroupId":[
+            "affinityOrAntiAffinityGroupId"
+          ]
+        }
+      ],
+      "virtualLinkProfile":[
+        {
+          "vnfVirtualLinkDescId": null,
+          "flavourId": "flavourId",
+          "localAffinityOrAntiAffinityRule":[
+            {
+              "type": "Enum",
+              "scope": "enum"
+            }
+          ],
+          "affinityOrAntiAffinityGroupId":"affinityOrAntiAffinityGroupId"
+
+        }
+      ],
+      "instantiationLevel":[
+        {
+          "levelId": "",
+          "description": "",
+          "vduLevel":[
+            {
+              "vduId": "vduId",
+              "numberOfInstances": 5
+            }
+          ],
+          "scaleInfo": {
+            "aspectId": "aspectId",
+            "scaleLevel": 1
+          }
+        }
+      ],
+      "defaultInstantiationLevelId":"defaultInstantiationLevelId",
+      "supportedOperation":[
+        "eum"
+      ],
+      "vnfLcmOperationsConfiguration": {
+        "instantiateVnfOpConfig": {
+          "parameter":[
+            ""
+          ]
+        },
+        "scaleVnfOpConfig": {
+          "parameter":[
+            ""
+          ],
+          "scalingByMoreThanOneStepSupported": true
+        },
+        "scaleVnfToLevelOpConfig": {
+          "parameter": [
+            ""
+          ],
+          "arbitraryTargetLevelsSupported": true
+        },
+        "healVnfOpConfig": {
+          "parameter":[
+            ""
+          ],
+          "cause":[
+            ""
+          ]
+        },
+        "terminateVnfOpConfig": {
+          "minGracefulTerminationTimeout": 1,
+          "maxRecommendedGracefulTerminationtimeout": 5
+        },
+        "operateVnfOpConfig": {
+          "minGracefulStopTimeout": 1,
+          "maxRecommendedGracefulStopTimeout" : 5
+        }
+      },
+      "affinityOrAntiAffinityGroup":[
+        {
+          "groupId": "groupId",
+          "type": "Enum",
+          "scope": "Enum"
+        }
+
+      ],
+      "monitoringParameter":[
+         {
+          "id": "id",
+          "name": "name",
+          "performanceMetric": "performanceMetric"
+        }
+      ],
+      "scalingAspect":[
+        {
+          "id": "id",
+          "name": "name",
+          "description": "description",
+          "associatedGroup": "reference to VnfdElementGroup",
+          "maxScaleLevel": 10
+        }
+      ]
+    }
+  ],
+  "configurableProperties": {
+    "instantiateVnfOpConfig":"",
+    "scaleVnfOpConfig":"",
+    "scaleVnfToLevelOpConfig":""
+  },
+  "modifiableAttributes": {
+    "extension": [],
+    "metadata": []
+  },
+  "lifeCycleManagementScript":[
+    {
+      "event": [
+        ""
+      ],
+      "script": ""
+    }
+
+  ],
+  "elementGroup":[
+    {
+      "vnfdElementGroupId": "groupId",
+      "description": "description",
+      "vdu":[
+
+      ],
+      "virtualLinkDesc":[
+
+      ]
+
+    }
+  ],
+  "vnfIndicator":[
+    {
+      "id": "id",
+      "name": "name",
+      "indicatorValue": [
+        ""
+      ],
+      "source": "Enum"
+    }
+  ],
+  "autoScale":[
+    "script"
+  ]
+}

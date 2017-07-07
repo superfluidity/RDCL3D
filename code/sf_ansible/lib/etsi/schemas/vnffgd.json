@@ -1,0 +1,114 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":true,
+	"properties":{
+		"connection_point": {
+			"type":"array",
+			"id": "http://jsonschema.net/connection_point",
+			"required":true,
+			"items": {
+				"type":"string",
+				"id": "http://jsonschema.net/connection_point/0",
+				"required": true
+			}
+		},
+		"constituent_vnfs": {
+			"type":"array",
+			"id": "http://jsonschema.net/constituent_vnfs",
+			"required":true,
+			"items": {
+				"type":"string",
+				"id": "http://jsonschema.net/constituent_vnfs/0",
+				"required":true
+			}
+
+		},
+		"dependent_virtual_link": {
+			"type":"array",
+			"id": "http://jsonschema.net/dependent_virtual_link",
+			"required":true,
+			"items": {
+					"type": "string",
+					"id": "http://jsonschema.net/dependent_virtual_link/0",
+					"required":true
+			}
+
+
+		},
+		"descriptor_version": {
+			"type":"string",
+			"id": "http://jsonschema.net/descriptor_version",
+			"required":true
+		},
+		"id": {
+			"type":"string",
+			"id": "http://jsonschema.net/id",
+			"required":true
+		},
+		"network_forwarding_path": {
+			"type":"array",
+			"id": "http://jsonschema.net/network_forwarding_path",
+			"required":true,
+			"items":
+				{
+					"type":"object",
+					"id": "http://jsonschema.net/network_forwarding_path/0",
+					"required":true,
+					"properties":{
+						"connection": {
+							"type":"array",
+							"id": "http://jsonschema.net/network_forwarding_path/0/connection",
+							"required":true,
+							"items":
+								{
+									"type":"array",
+									"id": "http://jsonschema.net/network_forwarding_path/0/connection/0",
+									"required":true
+								}
+
+
+						},
+						"id": {
+							"type":"string",
+							"id": "http://jsonschema.net/network_forwarding_path/0/id",
+							"required":true
+						},
+						"policy": {
+							"type":"string",
+							"id": "http://jsonschema.net/network_forwarding_path/0/policy",
+							"required":true
+						}
+					}
+				}
+
+
+		},
+		"number_of_endpoints": {
+			"type":"number",
+			"id": "http://jsonschema.net/number_of_endpoints",
+			"required":true
+		},
+		"number_of_virtual_links": {
+			"type":"number",
+			"id": "http://jsonschema.net/number_of_virtual_links",
+			"required":true
+		},
+		"vendor": {
+			"type":"string",
+			"id": "http://jsonschema.net/vendor",
+			"required":true
+		},
+		"version": {
+			"type":"string",
+			"id": "http://jsonschema.net/version",
+			"required":true
+		},
+		"vnffgd_security": {
+			"type":"string",
+			"id": "http://jsonschema.net/vnffgd_security",
+			"required":true
+		}
+	}
+}
