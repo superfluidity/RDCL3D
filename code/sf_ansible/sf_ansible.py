@@ -150,14 +150,14 @@ def generate_playbook(sf_data, name, pb_path):
             deploy_roles.append(role)
 
     # Deploy site file
-    deploy_file = UnsortableOrderedDict([("hosts", host), ("become", "yes"), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", deploy_roles)])
+    deploy_file = [UnsortableOrderedDict([("hosts", host), ("become", True), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", deploy_roles)])]
 
     dstfile = open(pb_path + 'site_deploy.yaml', 'w')
     UnsortableOrderedDict.dump(deploy_file, dstfile)
     dstfile.close
 
     # Undeploy site file
-    undeploy_file = UnsortableOrderedDict([("hosts", host), ("become", "yes"), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", undeploy_roles)])
+    undeploy_file = [UnsortableOrderedDict([("hosts", host), ("become", True), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", undeploy_roles)])]
 
     dstfile = open(pb_path + 'site_undeploy.yaml', 'w')
     yaml.dump(undeploy_file, dstfile, default_flow_style=False, explicit_start=True)
