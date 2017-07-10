@@ -1,12 +1,17 @@
 import json
+import pyaml
 import yaml
 
-
+from lib.clickparser import click_parser
 from lib.etsi.etsi_parser import EtsiParser
 from lib.util import Util
+from lib.parser import Parser
 from unsortable_ordered_dict import UnsortableOrderedDict
+import logging
+import traceback
 import glob
 import os
+import re
 
 def import_k8s(dir_project):
     files = []
@@ -54,7 +59,7 @@ def importprojectdir(dir_project):
     return project
 
 def SF2Kubernetes(sf_data, role):
-    split_role = role.split('_')
+    split_role = role.split('-')
     #print split_role
     vnfd = split_role[0]
     vdu_name = split_role[1]
@@ -69,8 +74,8 @@ def SF2Kubernetes(sf_data, role):
 
 def create_roles(sf_data, name):
     roles=[]
-    roles.append(name + '_create')
-    roles.append(name + '_destroy')
+    roles.append(name + '-create')
+    roles.append(name + '-destroy')
     for vnfd in sf_data['vnfd']:
         vnf = sf_data['vnfd'][vnfd]
         #print vnf['vdu']
@@ -79,15 +84,15 @@ def create_roles(sf_data, name):
             #print vdu
             if 'vduNestedDescType' in vdu:
                 if vdu['vduNestedDescType'] == 'kubernetes':
-                    roles.append(vnfd+'_'+vdu['name'])
+                    roles.append(vnfd+'-'+vdu['name'])
     return roles
 
 def get_k8s_name(sf_data, roles):
     k8s_name = {}
     for role in roles:
-        if "_create" not in role and "_destroy" not in role:
-            vnfd = role.split('_')[0]
-            vdu_name = role.split('_')[1]
+        if "-create" not in role and "-destroy" not in role:
+            vnfd = role.split('-')[0]
+            vdu_name = role.split('-')[1]
             vnf = sf_data["vnfd"][vnfd]
             vdu_list = vnf['vdu']
             for vdu in vdu_list:
@@ -99,17 +104,19 @@ def get_k8s_name(sf_data, roles):
 def generate_playbook(sf_data, name, pb_path):
     ###########################################
     #Temp vars
-    host = "openshift_master"
+    host = "provider-master"    # FIXME: Should be later updated to be taken \
+                                # from the RDCL tool
+                                # (with the proper edge/core nodes names/ips)
 
-    openshift_master_url= "localhost"
-    openshift_master_port = "8443"
-    openshift_admin_username = "admin"
-    openshift_admin_password = "admin"
-    application_name = name
+    # Regex
+    m = re.search('[a-z0-9]([-a-z0-9]*[a-z0-9])?', name.lower())
+    print(m.group(0))
 
-    nc_roles = create_roles(sf_data, name)
+    application_name = m.group(0)
+
+    nc_roles = create_roles(sf_data, application_name)
     roles = list(nc_roles)
-    roles.append("common")
+    #roles.append("common")
     k8s_name = get_k8s_name(sf_data, nc_roles)
 
     ############################################
@@ -118,43 +125,58 @@ def generate_playbook(sf_data, name, pb_path):
         os.makedirs(pb_path)
         os.makedirs(pb_path + 'group_vars/')
         os.makedirs(pb_path + 'roles/')
-        os.makedirs(pb_path + 'roles/common/tasks/')
+        #os.makedirs(pb_path + 'roles/common/tasks/')
     #Roles folders
         for role in nc_roles:
             os.makedirs(pb_path + 'roles/' + role + '/')
-            os.makedirs(pb_path + 'roles/' + role + '/vars/')
             os.makedirs(pb_path + 'roles/' + role + '/tasks/')
-            if '_create' not in role and '_destroy' not in role:
-                os.makedirs(pb_path + 'roles/' + role + '/templates/')
+            if '-create' not in role and '-destroy' not in role:
+                os.makedirs(pb_path + 'roles/' + role + '/vars/')
+                os.makedirs(pb_path + 'roles/' + role + '/files/')
 
     ###########################################
     #Various config files
 
-    #ansible.cfg
-    dstfile = open(pb_path+'ansible.cfg', 'w')
+    #Clean roles
+    roles = [str(roles[x]) for x in range(len(roles))]
 
-    dstfile.write("[defaults]\n")
-    dstfile.write("host_key_checking = False\n")
-    dstfile.write("forks = 500\n")
-    dstfile.write("pipelining = True\n")
-    dstfile.write("timeout = 30\n")
-    dstfile.write("inventory = ./hosts\n")
-    dstfile.write("retry_files_enabled = False")
 
-    dstfile.close()
+    deploy_roles = []
+    undeploy_roles = []
+    for role in roles:
+        if '-destroy' in role:
+            undeploy_roles.append(role)
+        else:
+            deploy_roles.append(role)
 
-    #site
-    site_file = [{"hosts": host, "become": "yes", "become_method": "sudo", "vars_files": ["group_vars/all"], "roles": roles}]
+    # Deploy site file
+    deploy_file = UnsortableOrderedDict([("hosts", host), ("become", "yes"), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", deploy_roles)])
 
-    dstfile = open(pb_path+'site.yaml', 'w')
-    yaml.dump(site_file, dstfile, default_flow_style=False, explicit_start=True)
+    dstfile = open(pb_path + 'site_deploy.yaml', 'w')
+    UnsortableOrderedDict.dump(deploy_file, dstfile)
     dstfile.close
+
+    # Undeploy site file
+    undeploy_file = UnsortableOrderedDict([("hosts", host), ("become", "yes"), ("become_method", "sudo"), ("vars_files", ["group_vars/all"]), ("roles", undeploy_roles)])
+
+    dstfile = open(pb_path + 'site_undeploy.yaml', 'w')
+    yaml.dump(undeploy_file, dstfile, default_flow_style=False, explicit_start=True)
+    dstfile.close
+
+    # #site
+    # site_file = [[{"include": "site_deploy.yaml"}], {"include": "site_undeploy.yaml"}]
+    #
+    # print(site_file)
+    #
+    # dstfile = open(pb_path+'site.yaml', 'w')
+    # yaml.dump(site_file, dstfile, default_flow_style=False, explicit_start=True)
+    # dstfile.close
 
     ###########################################
     #Variables
 
     #Group vars
-    all_file = {"openshift_master_url": openshift_master_url, "openshift_master_port": openshift_master_port, "openshift_admin_username": openshift_admin_username, "openshift_admin_password": openshift_admin_password, "application_name": application_name}
+    all_file = {"application_name": str(application_name)}
 
     dstfile = open(pb_path+'group_vars/all', 'w')
     yaml.dump(all_file, dstfile, default_style='"', default_flow_style=False, explicit_start=True)
@@ -162,12 +184,10 @@ def generate_playbook(sf_data, name, pb_path):
 
     #Role vars
     for role in nc_roles:
-        if '_create' in role:
-            main_file = {"post_args": ""}
-        elif '_destroy' in role:
-            main_file = {"post_args": ""}
+        if '-create' in role or '-destroy' in role:
+            continue
         else:
-            main_file = {"post_args": "", "json_path": "/tmp/"+k8s_name[role]+".json"}
+            main_file = {"json_path": "/tmp/"+k8s_name[role]+".json"}
 
         dstfile = open(pb_path+'roles/'+role+'/vars/main.yaml', 'w')
         yaml.safe_dump(main_file, dstfile, default_flow_style=False, explicit_start=True)
@@ -175,22 +195,15 @@ def generate_playbook(sf_data, name, pb_path):
     #############################################
     #Tasks
 
-    #Common tasks
-    cmd ="oc login {{ openshift_master_url }}:{{ openshift_master_port }} -u{{ openshift_admin_username }} -p{{ openshift_admin_password }} --insecure-skip-tls-verify"
-    main_file = [UnsortableOrderedDict([("name", "oc login"), ("command", cmd)])]
-    dstfile = open(pb_path+'roles/common/tasks/main.yaml', 'w')
-    UnsortableOrderedDict.dump(main_file, dstfile)
-    dstfile.close
-
     #Role tasks
     for role in nc_roles:
-        if '_create' in role:
+        if '-create' in role:
             main_file = [UnsortableOrderedDict([("name", "Create " + str(name) + " project"), ("command", "oc new-project {{ application_name }}")])]
-        elif '_destroy' in role:
+        elif '-destroy' in role:
             main_file = [UnsortableOrderedDict([("name", "Destroy " + str(name) + " project"), ("command", "oc delete project {{ application_name }}")])]
         else:
-            main_file = [{"name": "Fetch json template", "template": UnsortableOrderedDict([("src", str(role)+'.json'), ("dest", "\"{{ json_path }}\"")])}]
-            main_file.append(UnsortableOrderedDict([("name", "Deploy " + str(role.split('_')[0]) + ' ' + str(role.split('_')[1]) + " app"), ("command", "oc create -f {{ json_path }} {{ post_args }}")]))
+            main_file = [UnsortableOrderedDict([("name", "copy json template file"), ("copy", UnsortableOrderedDict([("src", str(role)+'.json'), ("dest", "{{ json_path }}")]))])]
+            main_file.append(UnsortableOrderedDict([("name", "Deploy " + str(role.split('-')[0]) + ' ' + str(role.split('-')[1]) + " app"), ("command", "oc create -f {{ json_path }}")]))
 
         dstfile = open(pb_path+'roles/'+role+'/tasks/main.yaml', 'w')
         UnsortableOrderedDict.dump(main_file, dstfile)
@@ -198,9 +211,9 @@ def generate_playbook(sf_data, name, pb_path):
     ############################################
     #Templates
     for role in nc_roles:
-        if '_create' not in role and '_destroy' not in role:
+        if '-create' not in role and '-destroy' not in role:
             data=SF2Kubernetes(sf_data, role)
-            dstfile = open(pb_path+'roles/'+role+'/templates/'+role+'.json', 'w')
+            dstfile = open(pb_path+'roles/'+role+'/files/'+role+'.json', 'w')
             json.dump(data, dstfile)
             dstfile.close()
 
@@ -211,5 +224,5 @@ project = importprojectdir(project_dir)
 
 for name in project['nsd']:
     pass
-pb_path = 'playbooks/'+name+'/'
+pb_path = 'playbooks/'+name.lower()+'/'
 generate_playbook(project, name, pb_path)
