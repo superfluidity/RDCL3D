@@ -42,4 +42,5 @@ class Parser(object):
         project = {}
         return project
 
-
+    def get_all_ns_descriptors(self, nsd_id, project_data):
+        raise NotImplementedError

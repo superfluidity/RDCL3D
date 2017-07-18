@@ -136,6 +136,7 @@ dreamer.NemoController = (function(global) {
         });
     };
     NemoController.prototype.removeNode = function(self, node, success, error) {
+        log("Nemo removeNode")
         new dreamer.GraphRequests().removeNode(node, null, function() {
             if (success) {
                 success();

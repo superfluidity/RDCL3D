@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+    <li>Push report</li>
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+<div class="row">
+    <div class="col-sm-6">
+      <div class="box box-solid box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Push report</h3>
+          <span class="label label-primary pull-right"><i class="fa fa-code-fork"></i></span>
+        </div><!-- /.box-header -->
+
+          <div class="box-body">
+
+          </div>
+              <!-- /.box-body -->
+          <div class="box-footer">
+          </div>
+      </div><!-- /.box -->
+
+    </div>
+</div>
+
+{% endblock %}

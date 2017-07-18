@@ -29,6 +29,7 @@ from projecthandler.click_model import ClickProject
 from projecthandler.etsi_model import EtsiProject
 from lib.superfluidity.superfluidity_parser import SuperfluidityParser
 from lib.superfluidity.superfluidity_rdcl_graph import SuperfluidityRdclGraph
+from lib.superfluidity.sf_ansible import AnsibleUtility
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -383,3 +384,17 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         in_memory.flush()
         return in_memory
+
+    def get_all_ns_descriptors(self, nsd_id):
+        sf_parser = SuperfluidityParser()
+        result = sf_parser.get_all_ns_descriptors(nsd_id, json.loads(self.data_project))
+        return result
+
+    def push_ns_on_repository(self, nsd_id, repository, **kwargs):
+        report = {}
+        ns_data = self.get_all_ns_descriptors(nsd_id)
+        ansible_util = AnsibleUtility()
+        playbooks_path = kwargs['repo_path']+'/project_' + str(self.id) + '/'+ nsd_id +'/'
+        conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
+        repository.push_repository(msg='update project_'+str(self.id) + ' nsd:'+ nsd_id, branch=kwargs['branch_repo'])
+        return report

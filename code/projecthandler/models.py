@@ -26,6 +26,8 @@ import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 import logging
+from git import Repo
+import os, shutil, git
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
@@ -251,3 +253,46 @@ class Project(models.Model):
     def get_node_overview(self, **kwargs):
         """Returns the node overview"""
         raise NotImplementedError
+
+    def get_all_ns_descriptors(self, nsd_id):
+        raise NotImplementedError
+
+    def push_ns_on_repository(self, nsd_id, repository, **kwargs):
+        raise NotImplementedError
+
+
+class Repository(models.Model):
+    """ Repository
+    """
+    name = models.CharField(max_length=20, default='')
+    base_url = models.TextField(default='')
+    last_update = models.DateTimeField(default=timezone.now)
+
+    def fetch_repository(self):
+        DIR_NAME = "/tmp/git_repo/"
+        # REMOTE_URL = "https://github.com/hasinhayder/LightBulb.git"
+
+        if os.path.isdir(DIR_NAME):
+            shutil.rmtree(DIR_NAME)
+
+        os.mkdir(DIR_NAME)
+        repo = git.Repo.init(DIR_NAME)
+        origin = repo.create_remote('origin', self.base_url)
+        origin.fetch()
+        origin.pull('master')
+        return origin
+
+    def push_repository(self, msg=None, branch=None):
+        DIR_NAME = "/tmp/git_repo/"
+        repo = git.Repo.init(DIR_NAME)
+        origin = repo.remote('origin')
+        repo.git.add('--all')
+        repo.git.commit('-m \'RDCL3D commit\'')
+        origin.push('master')
+
+    def to_json(self):
+        return {
+            'name': self.name,
+            'base_url': self.base_url.rstrip('\/'),
+            'last_update': self.last_update
+        }

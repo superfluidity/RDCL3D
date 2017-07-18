@@ -49,7 +49,8 @@ function initDropOnGraph() {
         var nodetype = e.dataTransfer.getData("text/plain");
         if (nodetype) {
             var type_name = graph_editor.getTypeProperty()[nodetype].name;
-            if (nodetype == 'nodemodel') {
+            console.log("nodetype", nodetype)
+            /*if (nodetype == 'nodemodel') {
                 new dreamer.GraphRequests().getUnusedVnf(group, function(nodemodels) {
                     $('#div_chose_id').hide();
                     $('#div_chose_nodemodel').show();
@@ -101,7 +102,7 @@ function initDropOnGraph() {
                     $('#modal_choose_node_id').modal('show');
                 });
 
-            } else {
+            } else {*/
                 $('#div_chose_id').show();
                 $('#div_chose_nodemodel').hide();
                 $('#input_choose_node_id').val(nodetype + "_" + generateUID());
@@ -117,6 +118,7 @@ function initDropOnGraph() {
                         'x': e.layerX,
                         'y': e.layerY
                     }
+                    console.log(JSON.stringify(node_information))
                     graph_editor.addNode(node_information, function() {
                         $('#modal_choose_node_id').modal('hide');
                     }, function(error){
@@ -125,7 +127,7 @@ function initDropOnGraph() {
                 });
                 $('#modal_choose_node_id').modal('show');
 
-            }
+           // }
         }
 
     }

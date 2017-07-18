@@ -14,14 +14,14 @@
 #   limitations under the License.
 #
 
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 from projecthandler import views
 
 urlpatterns = [
     url(r'^list/', views.user_projects, name='projects_list'),
     url(r'^new/', views.create_new_project, name='new_project'),
     url(r'^(?P<project_id>\d+)/$', views.open_project, name='open_project'),
+    url(r'^(?P<project_id>\d+)/push_project$', views.push_project, name='push_project'),
     url(r'^(?P<project_id>\d+)/delete$', views.delete_project, name='delete_project'),
     url(r'^(?P<project_id>\d+)/graph(/$)', views.graph, name='graph_view'),
     url(r'^(?P<project_id>\d+)/graph/graph_data(/$)', views.graph_data, name='graph_data'),
