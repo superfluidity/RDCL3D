@@ -1,0 +1,2 @@
+CREATE Nodemodel l2-group
+  Property string: ip-prefix, string: location, string: gateway-ip, string: sub-nodes;

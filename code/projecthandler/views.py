@@ -23,10 +23,12 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from lib.util import Util
 from sf_user.models import CustomUser
+import git
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
 from projecthandler.cran_model import CranProject
+from projecthandler.nemo_model import NemoProject
 from projecthandler.toscanfv_model import ToscanfvProject
 from projecthandler.superfluidity_model import SuperfluidityProject
 from projecthandler.oshi_model import OshiProject
@@ -38,12 +40,16 @@ from projecthandler.tosca_model import ToscaProject
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
 Project.add_project_type('cran', CranProject)
+Project.add_project_type('nemo', NemoProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
 Project.add_project_type('superfluidity', SuperfluidityProject)
 Project.add_project_type('oshi', OshiProject)
 Project.add_project_type('etsi', EtsiProject)
 Project.add_project_type('click', ClickProject)
 Project.add_project_type('tosca', ToscaProject)
+
+
+from projecthandler.models import Repository
 
 @login_required
 def home(request):
@@ -180,6 +186,49 @@ def delete_project(request, project_id=None):
             print e
             return render(request, 'error.html', {'error_msg': 'Project not found.'})
 
+@login_required
+def push_project(request, project_id=None):
+    if request.method == 'POST':
+        result = {'project_id': project_id}
+        try:
+            url = None
+            desc_name = request.POST.get('descId', '')
+            start_from = request.POST.get('startfrom')
+            if start_from == 'new':
+                name_repo = request.POST.get('name_repo', '')
+                base_url_repo = request.POST.get('base_url_repo', '')
+                repo = Repository.objects.create(name=name_repo, base_url=base_url_repo)
+            else:
+                repo_id = request.POST.get('repo_id', '')
+                repo = Repository.objects.get(id=repo_id)
+                if repo is None:
+                    raise Exception("Repository Not Found")
+            result['repo'] = repo
+            user = CustomUser.objects.get(id=request.user.id)
+
+            projects = Project.objects.filter(id=project_id).select_subclasses()
+            if len(projects) == 0:
+                raise Exception("Project Not Found")
+            project_overview = projects[0].get_overview_data()
+            result['project_overview_data'] = project_overview
+            prj_token = project_overview['type']
+            url = prj_token + '/' + prj_token + '_push_report.html'
+            repo.fetch_repository()
+            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name})
+            result['report'] = report
+
+        except Exception as e:
+            print e
+            url = 'error.html' if url is None else url
+            error_msg = 'Error push on git repo. \n'
+            if isinstance(e, git.GitCommandError):
+                error_msg += e.stdout + '\n'
+                error_msg += e.stderr + '\n'
+
+            result['error_msg'] = error_msg
+            return __response_handler(request, result, url)
+        return __response_handler(request, result, url, to_redirect=False)
+
 
 @login_required
 def show_descriptors(request, project_id=None, descriptor_type=None):
@@ -211,7 +260,7 @@ def graph(request, project_id=None):
         return render(request, prj_token + '/project_graph.html', {
             'project_id': project_id,
             'project_overview_data': projects[0].get_overview_data(),
-            'collapsed_sidebar': True
+            'collapsed_sidebar': False
         })
 
 
@@ -540,3 +589,54 @@ def custom_action(request, project_id=None, descriptor_id=None, descriptor_type=
         projects = Project.objects.filter(id=project_id).select_subclasses()
         print "Custom action: " + action_name
         return globals()[action_name](request, project_id, projects[0], descriptor_id, descriptor_type)
+
+
+## Repo section
+@login_required
+def repos_list(request):
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
+    url = None
+    result = {}
+    try:
+        options = {}
+        for key in ('name'):
+            value = request.GET.get(key)
+            if value:
+                options[key] = value
+        repos = Repository.objects.filter(**options).values()
+        if 'application/json' in raw_content_types:
+            result = {'repos': list(repos)}
+        else:
+            url = 'repos/repos_list.html'
+            result = {'agents': list(repos)}
+
+    except Exception as e:
+        print e
+        url = 'error.html'
+        result = {'error_msg': 'Agents not found.'}
+    return __response_handler(request, result, url)
+
+@login_required
+def create_new_repo(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name', '')
+            base_url = request.POST.get('base_url', ' ')
+            Repository.objects.create(name=name, base_url=base_url)
+        except Exception as e:
+            print e
+            url = 'error.html'
+            result = {'error_msg': 'Error creating ' + type + ' Repository! Please retry.'}
+            return __response_handler(request, result, url)
+        return redirect('repo:repos_list')
+
+
+def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
+    #print raw_content_types, data_res, url, to_redirect
+    if 'application/json' in raw_content_types:
+        return JsonResponse(data_res)
+    elif to_redirect:
+        return redirect(url, *args, **kwargs)
+    else:
+        return render(request, url, data_res)

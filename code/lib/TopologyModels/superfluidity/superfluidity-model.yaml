@@ -1,0 +1,9 @@
+name: Superfluidity  #Model name
+descriptors:
+	- nsd
+	- vnfd
+	- click
+	- k8s
+deployments: 
+		nsd:
+			- superfluidity-nsd-openvim

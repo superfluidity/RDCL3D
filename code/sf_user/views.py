@@ -30,7 +30,7 @@ def login_view(request):
                     return HttpResponseRedirect(next)
         else:
             error_message = 'Login failed!'
-    return render(request, 'login.html', {'error_message':error_message, 'collapsed_sidebar': True})
+    return render(request, 'login.html', {'error_message':error_message, 'collapsed_sidebar': False})
 
 
 def guest_login(request):
@@ -66,4 +66,4 @@ def register_view(request):
     error_message = ''
     if request.POST:
         print "new user"
-    return render(request, 'register_user.html', {'error_message': error_message, 'collapsed_sidebar': True})
+    return render(request, 'register_user.html', {'error_message': error_message, 'collapsed_sidebar': False})

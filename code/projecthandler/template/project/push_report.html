@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+    <li>Push report</li>
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+<div class="row">
+    <div class="col-sm-6">
+      <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-code-fork"></i>
+          <h3 class="box-title">Push report</h3>
+
+        </div><!-- /.box-header -->
+
+          <div class="box-body">
+            <div class="callout {% if error_msg  %}callout-warning {% else %} callout-info{% endif %}">
+                <h4>{% if error_msg  %} Waring {% else %} Push info{% endif %}</h4>
+
+                <p>{% if error_msg  %}
+                    {{error_msg}}
+                {% else %}
+                    Push flag: {{report.flags}} <br>
+                    Local ref: {{report.local_ref}} <br>
+                    Remote ref: {{report.remote_ref_string}} <br>
+                    Summary: {{report.summary}} <br>
+                {% endif %}</p>
+              </div>
+          </div>
+              <!-- /.box-body -->
+          <div class="box-footer">
+          </div>
+      </div><!-- /.box -->
+
+    </div>
+</div>
+
+{% endblock %}

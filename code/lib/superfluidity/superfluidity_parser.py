@@ -108,3 +108,37 @@ class SuperfluidityParser(Parser):
                         project[desc_type][filename] = json_object
 
         return project
+
+    def get_all_ns_descriptors(cls, nsd_id, project_data):
+        vdu_type_map = {
+            'kubernetes': 'k8s',
+            'click': 'click'
+        }
+        try:
+            descriptor = {
+                'nsd': {},
+                'vnfd': {},
+                #'click': {},
+                #'k8s': {}
+            }
+            #print nsd_id, project_data
+            nsd_to_deploy = project_data['nsd'][nsd_id]
+            descriptor['nsd'][nsd_id] = project_data['nsd'][nsd_id]
+            for vnfdId in nsd_to_deploy['vnfdId']:
+                descriptor['vnfd'][vnfdId] = project_data['vnfd'][vnfdId]
+                for vdu in descriptor['vnfd'][vnfdId]['vdu']:
+                    if 'vduNestedDescType' in vdu:
+                        desc_type = vdu_type_map[str(vdu['vduNestedDescType'])] if str(vdu['vduNestedDescType']) in vdu_type_map else str(vdu['vduNestedDescType'])
+                        if desc_type and vdu['vduNestedDesc'] and desc_type in project_data  \
+                                and vdu['vduNestedDesc'] in project_data[desc_type]:
+                            vduNestedDescType = str(vdu['vduNestedDescType'])
+                            if vduNestedDescType not in descriptor:
+                                descriptor[vduNestedDescType] = {}
+                            print "vduNestedDescType", desc_type, vduNestedDescType, str(vdu['vduNestedDesc'])
+                            descriptor[vduNestedDescType][str(vdu['vduNestedDesc'])] = project_data[desc_type][vdu['vduNestedDesc']]
+        except Exception as e:
+            print "Exception male male"
+            log.exception(e)
+            return {}
+
+        return descriptor

@@ -26,6 +26,8 @@ import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 import logging
+from git import Repo
+import os, shutil, git
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
@@ -251,3 +253,54 @@ class Project(models.Model):
     def get_node_overview(self, **kwargs):
         """Returns the node overview"""
         raise NotImplementedError
+
+    def get_all_ns_descriptors(self, nsd_id):
+        raise NotImplementedError
+
+    def push_ns_on_repository(self, nsd_id, repository, **kwargs):
+        raise NotImplementedError
+
+
+class Repository(models.Model):
+    """ Repository
+    """
+    name = models.CharField(max_length=20, default='')
+    base_url = models.TextField(default='')
+    last_update = models.DateTimeField(default=timezone.now)
+    DIR_NAME = "/tmp/git_repo/"
+
+    def fetch_repository(self):
+        """
+        :return: git.remote.FetchInfo object
+        """
+        if os.path.isdir(self.DIR_NAME):
+            shutil.rmtree(self.DIR_NAME)
+
+        os.mkdir(self.DIR_NAME)
+        repo = git.Repo.init(self.DIR_NAME)
+        origin = repo.create_remote('origin', self.base_url)
+        origin.fetch()
+        fetch_info = origin.pull('master')[0]
+        return fetch_info
+
+    def push_repository(self, msg=None):
+        """
+        :param msg: Commit message
+        :return: git.remote.PushInfo object
+        """
+        repo = git.Repo.init(self.DIR_NAME)
+        origin = repo.remote('origin')
+        repo.git.add('--all')
+        repo.git.commit('-m \'RDCL3D commit ' + msg + '\'')
+        push_info = origin.push('master')[0]
+        return push_info
+
+    def to_json(self):
+        """
+        :return: JSON data of object
+        """
+        return {
+            'name': self.name,
+            'base_url': self.base_url.rstrip('\/'),
+            'last_update': self.last_update
+        }

@@ -34,12 +34,13 @@ def user_deployments(request):
     options = {
         'creator_id': request.user.id
     }
-    for key in ('project_id', 'name', 'deployment_agent', 'project_name'):
+    for key in ('project_id', 'name', 'deployment_agent', 'project_name'):  # allowed filters
         value = request.GET.get(key)
         if value:
             options[key] = value
 
     deployments = Deployment.objects.filter(**options)
+
     result.update({'deployments': list(deployments)})
     return __response_handler(request, result, 'deployments_list.html')
 
@@ -63,8 +64,7 @@ def open_deployment(request, deployment_id=None):
                 deployment = json.dumps(deployment.to_json())
 
             result = {'deployment': deployment,
-                      #'deployment_descriptor': json.dumps(deployment.deployment_descriptor),
-                      'collapsed_sidebar': True}
+                      'collapsed_sidebar': False}
         else:
             url = 'error.html'
             result = {'error_msg': 'Error: Deployment not found.'}
@@ -91,24 +91,23 @@ def new_deployment(request):
                 agent = DeployAgent.objects.create(name=name_agent, base_url=base_url_agent, type=type_agent)
             else:
                 agent_id = request.POST.get('agent_id', '')
-                agents = DeployAgent.objects.filter(id=agent_id)
-                if len(agents) == 0:
+                agent = DeployAgent.objects.get(id=agent_id)
+                if agent is None:
                     raise Exception("Agent Not Found")
-                agent = agents[0]
-                name_agent = agent.name
-                base_url_agent = agent.base_url
-                type_agent = agent.type
+
             user = CustomUser.objects.get(id=request.user.id)
             profile = {}
-            project_name = request.POST.get('project_name', '')
             project_id = request.POST.get('project_id')
+            projects = Project.objects.filter(id=project_id).select_subclasses()
+            if len(projects) == 0:
+                raise Exception("Project Not Found")
             descriptors = request.POST.getlist('descId[]')
 
             creator_id = user.id
             status = 'not started'
-            new_deployment = Deployment.objects.create(name=name, project_name=project_name, project_id=project_id,
-                                                       profile=profile, descriptors_id=descriptors,
-                                                        creator_id=creator_id, status=status,
+            new_deployment = Deployment.objects.create(name=name, project_id=project_id, project_name=projects[0].name,
+                                                       project_type=projects[0].get_type(), profile=profile,
+                                                       descriptors_id=descriptors, creator_id=creator_id, status=status,
                                                        deployment_agent=agent.to_json())
             # new_deployment.deployment_agent = agent
             new_deployment.save()
@@ -141,7 +140,7 @@ def monitoring_deployment(request, deployment_id=None):
             agent_type = agent['type']
             url = agent_type + '/' + agent_type + '_deployment_monitoring.html'
             result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
-                      'collapsed_sidebar': True}
+                      'collapsed_sidebar': False}
         else:
             url = 'error.html'
             result = monitor_result

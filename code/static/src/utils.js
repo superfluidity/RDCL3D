@@ -15,7 +15,8 @@ function loadDataOptionsSelector(args){
             contentType: "application/json;charset=utf-8",
             success: function(result) {
 
-                $.each(result.agents, function (i, item) {
+                $.each(result[args.expect], function (i, item) {
+                    console.log(item)
                     select.append($('<option>', {
                         value: item[value_key],
                         text : item[text_key]
@@ -47,6 +48,16 @@ function openModalDeployment(descId){
     descId.forEach(function(id){
         $('#desc_list').append('<input type="hidden" class="form-control"  name="descId[]" value="'+id+'">')
     });
+    //show modal
+    $('#'+modalId).modal('show')
+}
+
+function openModalPush(descId){
+    var modalId = "modal_launch_push";
+    $("input[name='descId']").remove()
+    //descId.forEach(function(id){
+    $('#desc_list_push').append('<input type="hidden" class="form-control"  name="descId" value="'+descId+'">')
+    //});
     //show modal
     $('#'+modalId).modal('show')
 }

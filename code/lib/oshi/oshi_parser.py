@@ -14,6 +14,10 @@
 #   limitations under the License.
 #
 
+import os
+
+#print os.environ
+
 import json
 import pyaml
 import yaml
@@ -81,3 +85,5 @@ class OshiParser(Parser):
                     project[desc_type][os.path.splitext(file.name)[0]] = json.loads(file.read())
 
         return project
+
+

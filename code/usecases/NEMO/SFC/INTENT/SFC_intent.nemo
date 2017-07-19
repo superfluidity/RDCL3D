@@ -1,0 +1,15 @@
+IMPORT Node server1 Type host;
+IMPORT Node server2 Type host;
+IMPORT Node vm1 Type host;
+IMPORT Node vm2 Type host;
+
+CREATE Node headquarter Type ext-grup Property location: "openflow:4:2", ac-info-network: "layer3", ac-info-protocol: "static", "ip-prefix": "192.168.11.0/24";
+CREATE Node site Type ext-grup Property location: "openflow:3:4", ac-info-network: "layer3", ac-info-protocol: "static", "ip-prefix": "192.168.12.0/24";
+CREATE Node fw1 Type fw Property location: openflow:1:1, operating-mode: layer3;
+CREATE Node cache2 Type fw Property location: openflow:2:2, operating-mode: layer3;
+CREATE Node chain1 Type chain-group Contain fw1, cache2;
+CREATE Connection c1 Endnodes headquarter, site;
+CREATE Connection c2 Endnodes headquarter, chain1;
+CREATE Connection c3 Endnodes chain1, site;
+CREATE Flow f1 Match src-ip: 192.168.12.0/24, dst-ip: 192.168.11.0/24;
+CREATE Operation o1 Priority 0 Target f1 Action go-through: chain1;
