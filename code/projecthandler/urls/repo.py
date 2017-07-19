@@ -14,32 +14,10 @@
 #   limitations under the License.
 #
 
-import json
-import pyaml
-import yaml
-from lib.util import Util
-import logging
-import traceback
-import glob
-import os
+from django.conf.urls import url
+from projecthandler import views
 
-
-class Parser(object):
-    """Parser methods base class
-
-    """
-
-    def __init__(self):
-        pass
-    
-    @classmethod        
-    def importprojectdir(cls,dir_project, type):
-        """Imports all files under a given folder
-
-        Returns an empty project
-        """
-
-        project = {}
-        return project
-
-
+urlpatterns = [
+    url(r'^list/', views.repos_list, name='repos_list'),
+    url(r'^new/', views.create_new_repo, name='new_repo'),
+]
