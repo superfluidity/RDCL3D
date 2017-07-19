@@ -270,6 +270,9 @@ class Repository(models.Model):
     DIR_NAME = "/tmp/git_repo/"
 
     def fetch_repository(self):
+        """
+        :return: git.remote.FetchInfo object
+        """
         if os.path.isdir(self.DIR_NAME):
             shutil.rmtree(self.DIR_NAME)
 
@@ -277,10 +280,14 @@ class Repository(models.Model):
         repo = git.Repo.init(self.DIR_NAME)
         origin = repo.create_remote('origin', self.base_url)
         origin.fetch()
-        origin.pull('master')
-        return origin
+        fetch_info = origin.pull('master')[0]
+        return fetch_info
 
     def push_repository(self, msg=None):
+        """
+        :param msg: Commit message
+        :return: git.remote.PushInfo object
+        """
         repo = git.Repo.init(self.DIR_NAME)
         origin = repo.remote('origin')
         repo.git.add('--all')
@@ -288,8 +295,10 @@ class Repository(models.Model):
         push_info = origin.push('master')[0]
         return push_info
 
-
     def to_json(self):
+        """
+        :return: JSON data of object
+        """
         return {
             'name': self.name,
             'base_url': self.base_url.rstrip('\/'),

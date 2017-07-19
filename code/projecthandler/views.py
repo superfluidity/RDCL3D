@@ -216,10 +216,6 @@ def push_project(request, project_id=None):
             repo.fetch_repository()
             report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name})
             result['report'] = report
-            print result['report'].summary
-            print result['report'].flags
-            print result['report'].local_ref
-            print result['report'].remote_ref_string
 
         except Exception as e:
             print e

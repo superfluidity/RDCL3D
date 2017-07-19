@@ -389,13 +389,9 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def push_ns_on_repository(self, nsd_id, repository, **kwargs):
-        #report = {}
         ns_data = self.get_all_ns_descriptors(nsd_id)
         ansible_util = AnsibleUtility()
         playbooks_path = kwargs['repo_path']+'/project_' + str(self.id) + '/'+ nsd_id +'/'
         conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
         push_result = repository.push_repository(msg='update project_'+str(self.id) + ' nsd:'+ nsd_id)
-        #print 'ns_on_repo', push_result['summary']
-        #report['summary'] = push_result.summary
-        #report['flags'] = push_result.flags
         return push_result
