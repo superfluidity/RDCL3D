@@ -177,8 +177,6 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         result = False
         element_type = request.POST.get('element_type')
         parameters = request.POST.dict()
-        print "get_add_element", parameters
-        print 'get_add_element', element_type
         if element_type in etsi_elements:
             result = EtsiProject.get_add_element(self, request)
         elif element_type in sf_elements:
@@ -391,10 +389,13 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def push_ns_on_repository(self, nsd_id, repository, **kwargs):
-        report = {}
+        #report = {}
         ns_data = self.get_all_ns_descriptors(nsd_id)
         ansible_util = AnsibleUtility()
         playbooks_path = kwargs['repo_path']+'/project_' + str(self.id) + '/'+ nsd_id +'/'
         conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
-        repository.push_repository(msg='update project_'+str(self.id) + ' nsd:'+ nsd_id, branch=kwargs['branch_repo'])
-        return report
+        push_result = repository.push_repository(msg='update project_'+str(self.id) + ' nsd:'+ nsd_id)
+        #print 'ns_on_repo', push_result['summary']
+        #report['summary'] = push_result.summary
+        #report['flags'] = push_result.flags
+        return push_result

@@ -23,7 +23,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from lib.util import Util
 from sf_user.models import CustomUser
-import os
+import git
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
@@ -189,8 +189,9 @@ def delete_project(request, project_id=None):
 @login_required
 def push_project(request, project_id=None):
     if request.method == 'POST':
+        result = {'project_id': project_id}
         try:
-            url = ''
+            url = None
             desc_name = request.POST.get('descId', '')
             start_from = request.POST.get('startfrom')
             if start_from == 'new':
@@ -202,23 +203,33 @@ def push_project(request, project_id=None):
                 repo = Repository.objects.get(id=repo_id)
                 if repo is None:
                     raise Exception("Repository Not Found")
-
+            result['repo'] = repo
             user = CustomUser.objects.get(id=request.user.id)
 
             projects = Project.objects.filter(id=project_id).select_subclasses()
             if len(projects) == 0:
                 raise Exception("Project Not Found")
             project_overview = projects[0].get_overview_data()
+            result['project_overview_data'] = project_overview
             prj_token = project_overview['type']
-            git_repo = repo.fetch_repository()
-
-            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name, 'branch_repo': git_repo})
             url = prj_token + '/' + prj_token + '_push_report.html'
-            result = {'project_id': project_id, 'repo': repo, 'project_overview_data': project_overview}
+            repo.fetch_repository()
+            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name})
+            result['report'] = report
+            print result['report'].summary
+            print result['report'].flags
+            print result['report'].local_ref
+            print result['report'].remote_ref_string
+
         except Exception as e:
             print e
-            url = 'error.html'
-            result = {'error_msg': 'Error push on git repo.'}
+            url = 'error.html' if url is None else url
+            error_msg = 'Error push on git repo. \n'
+            if isinstance(e, git.GitCommandError):
+                error_msg += e.stdout + '\n'
+                error_msg += e.stderr + '\n'
+
+            result['error_msg'] = error_msg
             return __response_handler(request, result, url)
         return __response_handler(request, result, url, to_redirect=False)
 
@@ -626,7 +637,7 @@ def create_new_repo(request):
 
 def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):
     raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
-    print raw_content_types, data_res, url, to_redirect
+    #print raw_content_types, data_res, url, to_redirect
     if 'application/json' in raw_content_types:
         return JsonResponse(data_res)
     elif to_redirect:

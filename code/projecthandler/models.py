@@ -267,28 +267,27 @@ class Repository(models.Model):
     name = models.CharField(max_length=20, default='')
     base_url = models.TextField(default='')
     last_update = models.DateTimeField(default=timezone.now)
+    DIR_NAME = "/tmp/git_repo/"
 
     def fetch_repository(self):
-        DIR_NAME = "/tmp/git_repo/"
-        # REMOTE_URL = "https://github.com/hasinhayder/LightBulb.git"
+        if os.path.isdir(self.DIR_NAME):
+            shutil.rmtree(self.DIR_NAME)
 
-        if os.path.isdir(DIR_NAME):
-            shutil.rmtree(DIR_NAME)
-
-        os.mkdir(DIR_NAME)
-        repo = git.Repo.init(DIR_NAME)
+        os.mkdir(self.DIR_NAME)
+        repo = git.Repo.init(self.DIR_NAME)
         origin = repo.create_remote('origin', self.base_url)
         origin.fetch()
         origin.pull('master')
         return origin
 
-    def push_repository(self, msg=None, branch=None):
-        DIR_NAME = "/tmp/git_repo/"
-        repo = git.Repo.init(DIR_NAME)
+    def push_repository(self, msg=None):
+        repo = git.Repo.init(self.DIR_NAME)
         origin = repo.remote('origin')
         repo.git.add('--all')
-        repo.git.commit('-m \'RDCL3D commit\'')
-        origin.push('master')
+        repo.git.commit('-m \'RDCL3D commit ' + msg + '\'')
+        push_info = origin.push('master')[0]
+        return push_info
+
 
     def to_json(self):
         return {

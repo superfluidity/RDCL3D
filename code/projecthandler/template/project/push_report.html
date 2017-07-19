@@ -18,14 +18,26 @@
   	{{ block.super }}
 <div class="row">
     <div class="col-sm-6">
-      <div class="box box-solid box-primary">
+      <div class="box box-default">
         <div class="box-header with-border">
+            <i class="fa fa-code-fork"></i>
           <h3 class="box-title">Push report</h3>
-          <span class="label label-primary pull-right"><i class="fa fa-code-fork"></i></span>
+
         </div><!-- /.box-header -->
 
           <div class="box-body">
+            <div class="callout {% if error_msg  %}callout-warning {% else %} callout-info{% endif %}">
+                <h4>{% if error_msg  %} Waring {% else %} Push info{% endif %}</h4>
 
+                <p>{% if error_msg  %}
+                    {{error_msg}}
+                {% else %}
+                    Push flag: {{report.flags}} <br>
+                    Local ref: {{report.local_ref}} <br>
+                    Remote ref: {{report.remote_ref_string}} <br>
+                    Summary: {{report.summary}} <br>
+                {% endif %}</p>
+              </div>
           </div>
               <!-- /.box-body -->
           <div class="box-footer">
