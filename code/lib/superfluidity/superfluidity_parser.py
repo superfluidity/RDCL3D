@@ -30,6 +30,7 @@ import os
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('SuperfluidityParser')
 
+
 class SuperfluidityParser(Parser):
     """Parser methods for superfluidity project type
 
@@ -62,14 +63,9 @@ class SuperfluidityParser(Parser):
         print etsi_project
         project['nsd'] = etsi_project['nsd']
         project['vnfd'] = etsi_project['vnfd']
-        project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/' , 'click')['click']
+        project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/', 'click')['click']
         # FIXME import k8s descriptors
-        for k8s_filename in glob.glob(os.path.join(dir_project + '/K8S/', '*.yaml')):
-            log.info(k8s_filename)
-            yaml_object = Util().loadyamlfile(k8s_filename)
-            json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
-            filename = os.path.splitext(os.path.basename(str(k8s_filename)))[0]
-            project['k8s'][filename] = json_object
+        project['k8s'] = cls.import_kubernetes_from_dir_project(dir_project)
 
         for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':
@@ -78,6 +74,17 @@ class SuperfluidityParser(Parser):
         print project
 
         return project
+
+    @classmethod
+    def import_kubernetes_from_dir_project(cls, dir_project):
+        result = {'k8s': {}}
+        for k8s_filename in glob.glob(os.path.join(dir_project,'K8S', '*.yaml')):
+            log.info(k8s_filename)
+            yaml_object = Util().loadyamlfile(k8s_filename)
+            json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
+            filename = os.path.splitext(os.path.basename(str(k8s_filename)))[0]
+            result['k8s'][filename] = json_object
+        return result
 
     @classmethod
     def importprojectfiles(cls, file_dict):

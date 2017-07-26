@@ -393,5 +393,6 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         ansible_util = AnsibleUtility()
         playbooks_path = kwargs['repo_path']+'/project_' + str(self.id) + '/'+ nsd_id +'/'
         conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
-        push_result = repository.push_repository(msg='update project_'+str(self.id) + ' nsd:'+ nsd_id)
+        commit_msg = kwargs['commit_msg'] if ('commit_msg' in kwargs and kwargs['commit_msg'] != '') else 'update project_'+str(self.id) + ' nsd:'+ nsd_id
+        push_result = repository.push_repository(msg=commit_msg)
         return push_result

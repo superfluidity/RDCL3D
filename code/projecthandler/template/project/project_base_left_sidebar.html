@@ -3,11 +3,13 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu tree" data-widget="tree">
             <li class="header">MAIN NAVIGATION</li>
             <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href='{% url "projects:projects_list" %}'><i class="fa fa-code fa-fw"></i><span>Projects</span></a></li>
+            <li><a href='{% url "deployment:deployments_list" %}'><i class="fa fa-terminal fa-fw"></i><span>Deployments</span></a></li>
             <li class="header">PROJECT</li>
-            <li><a href='/projects/{{project_id}}/'><i class="fa fa-file-text fa-fw"></i><span>Overview</span></a>
+            <li><a href='{% url "projects:open_project"  project_id=project_id%}'><i class="fa fa-file-text fa-fw"></i><span>Overview</span></a>
             </li>
             {% block li_list %}
 

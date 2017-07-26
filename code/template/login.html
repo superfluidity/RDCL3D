@@ -9,7 +9,8 @@
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
 
-        <form action="../auth/" method="post">
+        <form action="../auth/" method="post" onsubmit="">
+            <input id="next_input" type="hidden" name="next" class="form-control">
             {% csrf_token %}
             <div class="form-group has-feedback">
                 <input type="username" name="username" class="form-control" placeholder="Username">
@@ -48,14 +49,12 @@
 
 {% block resource_block %}
 <script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' // optional
+    $(document).ready(function () {
+        var next_value = getUrlParameter('next');
+        console.log('next_value', next_value);
+        if(next_value)
+            $('#next_input').val(next_value);
     });
-  });
-
 </script>
 {% endblock %}
 

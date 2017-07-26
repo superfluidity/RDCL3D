@@ -61,6 +61,8 @@
 {% block content_body %}
 {{ block.super }}
 {% csrf_token %}
+<div class="row">
+
 
 <div class="col-md-12">
 
@@ -120,7 +122,7 @@
         </div>
     </div>
 </div>
-
+</div>
 
 {% include 'agents/agent_create_modal.html' %}
 

@@ -20,4 +20,5 @@ from projecthandler import views
 urlpatterns = [
     url(r'^list/', views.repos_list, name='repos_list'),
     url(r'^new/', views.create_new_repo, name='new_repo'),
+    url(r'^(?P<repo_id>\d+)/delete/', views.delete_repo, name='delete_repo'),
 ]
