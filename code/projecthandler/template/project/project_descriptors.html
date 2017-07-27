@@ -16,7 +16,7 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
-
+    <li><a href="{% url 'projects:projects_list' %}">Projects</a></li>
 {% endblock %}
 
 {% block content_body %}

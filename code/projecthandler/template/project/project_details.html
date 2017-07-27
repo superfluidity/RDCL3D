@@ -24,6 +24,7 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
+    <li><a href="{% url 'projects:projects_list' %}">Projects</a></li>
     <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview.name}}</a></li>
 {% endblock %}
 

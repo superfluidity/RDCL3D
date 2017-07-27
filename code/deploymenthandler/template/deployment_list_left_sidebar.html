@@ -1,0 +1,12 @@
+{% extends "left_sidebar_base.html" %}
+
+{% block left_sidebar_base %}
+
+   		<li class="header">Deployment Agents</li>
+    {% url "agent:agents_list"   as  agent_list_url %}
+        <li {% if request.get_full_path == agent_list_url %} class="active" {% endif %} ><a href='{% url "agent:agents_list" %}'><i class="fa fa-dot-circle-o fa-fw"></i><span>Registered Agents</span></a></li>
+
+
+{% endblock %}
+
+

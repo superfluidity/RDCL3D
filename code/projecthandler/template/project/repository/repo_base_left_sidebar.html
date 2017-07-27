@@ -1,0 +1,12 @@
+{% extends "left_sidebar_base.html" %}
+
+{% block left_sidebar_base %}
+    <li class="header">REPOSITORY</li>
+    {% url "repos:repos_list" as  repo_list_url %}
+    <li {% if request.get_full_path == repo_list_url %} class="active" {% endif %}><a href='{% url "repos:repos_list" %}'><i class="fa fa-git fa-fw"></i><span>Ropository Registered</span></a></li>
+
+    {% block li_list %}
+
+
+    {% endblock %}
+{% endblock %}

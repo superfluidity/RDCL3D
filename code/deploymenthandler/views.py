@@ -42,7 +42,7 @@ def user_deployments(request):
     deployments = Deployment.objects.filter(**options)
 
     result.update({'deployments': list(deployments)})
-    return __response_handler(request, result, 'deployments_list.html')
+    return __response_handler(request, result, 'deployment_list.html')
 
 
 @login_required
