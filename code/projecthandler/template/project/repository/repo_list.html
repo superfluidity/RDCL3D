@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+
+<style type="text/css">
+
+  input:required:invalid, input:focus:invalid {
+
+    background-position: right top;
+    background-repeat: no-repeat;
+  }
+  input:required:valid {
+
+    background-position: right top;
+    background-repeat: no-repeat;
+  }
+
+.form-control.select2-hidden-accessible {
+    top: 30px;
+}
+
+
+</style>
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+<!-- Left side column. contains the sidebar -->
+{% include "repository/repo_base_left_sidebar.html" %}
+{% endblock %}
+
+
+{% block breadcrumb_body %}
+{{ block.super }}
+
+{% endblock %}
+
+{% block content_body %}
+{{ block.super }}
+{% csrf_token %}
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Registered Repository</h3>
+                    <div class="box-tools">
+                        <a href="#" class="btn btn-block btn-primary btn-sm" data-toggle="modal"
+                           data-target="#modal_new_repository"><i
+                                class="fa fa-plus"></i><span> New Repository</span></a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table id="deployments_table" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Url</th>
+                            <th>Last Update</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for repo in repos %}
+                            <tr>
+
+                                <td>
+                                    {{ repo.name }}
+                                </td>
+                                <td>
+                                    {{ repo.base_url }}
+                                </td>
+                                <td>{{ repo.last_update }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default"><i class="fa fa-cog"
+                                                                                         aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li class='disabled'><a href='#'><i class="fa fa-edit fa-fw"></i>Edit</a>
+                                            </li>
+                                            <li><a href='{% url "repos:delete_repo" repo_id=repo.id %}'>
+                                                <i class="fa fa-trash fa-fw"></i>Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% include 'repository/repo_create_modal.html' %}
+
+{% endblock %}
+
+{% block resource_block %}
+{{ block.super }}
+
+
+
+{% endblock %}

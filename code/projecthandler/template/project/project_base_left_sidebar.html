@@ -1,20 +1,14 @@
-<!-- Left side column. contains the sidebar -->
-<aside class="main-sidebar" id="globalmenu">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-        <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
-            <li class="header">MAIN NAVIGATION</li>
-            <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li class="header">PROJECT</li>
-            <li><a href='/projects/{{project_id}}/'><i class="fa fa-file-text fa-fw"></i><span>Overview</span></a>
-            </li>
-            {% block li_list %}
+{% extends "left_sidebar_base.html" %}
+
+{% block left_sidebar_base %}
+    <li class="header">PROJECT</li>
+    {% url "projects:open_project"  project_id=project_id as  project_url %}
+    <li {% if request.get_full_path == project_url %} class="active" {% endif %} ><a href='{% url "projects:open_project"  project_id=project_id%}'><i class="fa fa-file-text fa-fw"></i><span>Overview</span></a>
+    </li>
+    {% block li_list %}
 
 
-            {% endblock %}
-             <li><a href="/projects/{{project_id}}/download"><i class="fa fa-download fa-fw"></i><span>Export</span></a></li>
-        </ul>
-    </section>
-    <!-- /.sidebar -->
-</aside>
+    {% endblock %}
+    {% url "projects:download_page"  project_id=project_id as  download_url %}
+    <li {% if request.get_full_path == download_url %} class="active" {% endif %} ><a href='{% url "projects:download_page"  project_id=project_id%}'><i class="fa fa-download fa-fw"></i><span>Export</span></a></li>
+{% endblock %}

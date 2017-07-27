@@ -291,7 +291,7 @@ class Repository(models.Model):
         repo = git.Repo.init(self.DIR_NAME)
         origin = repo.remote('origin')
         repo.git.add('--all')
-        repo.git.commit('-m \'RDCL3D commit ' + msg + '\'')
+        repo.git.commit('-m \'[RDCL3D commit] ' + msg + '\'')
         push_info = origin.push('master')[0]
         return push_info
 

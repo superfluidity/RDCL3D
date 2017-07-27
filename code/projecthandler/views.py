@@ -153,6 +153,7 @@ def open_project(request, project_id=None):
         projects = Project.objects.filter(id=project_id).select_subclasses()
         project_overview = projects[0].get_overview_data()
         prj_token = project_overview['type']
+        print request.COOKIES.keys()
         return render(request, prj_token + '/' + prj_token + '_project_details.html',
                       {'project_overview': project_overview, 'project_id': project_id})
 
@@ -194,6 +195,7 @@ def push_project(request, project_id=None):
             url = None
             desc_name = request.POST.get('descId', '')
             start_from = request.POST.get('startfrom')
+            commit_msg = request.POST.get('commit_msg', '')
             if start_from == 'new':
                 name_repo = request.POST.get('name_repo', '')
                 base_url_repo = request.POST.get('base_url_repo', '')
@@ -214,7 +216,8 @@ def push_project(request, project_id=None):
             prj_token = project_overview['type']
             url = prj_token + '/' + prj_token + '_push_report.html'
             repo.fetch_repository()
-            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name})
+            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name,
+                                                                        'commit_msg': commit_msg if commit_msg is not '' else None})
             result['report'] = report
 
         except Exception as e:
@@ -607,8 +610,8 @@ def repos_list(request):
         if 'application/json' in raw_content_types:
             result = {'repos': list(repos)}
         else:
-            url = 'repos/repos_list.html'
-            result = {'agents': list(repos)}
+            url = 'repository/repo_list.html'
+            result = {'repos': list(repos)}
 
     except Exception as e:
         print e
@@ -628,7 +631,19 @@ def create_new_repo(request):
             url = 'error.html'
             result = {'error_msg': 'Error creating ' + type + ' Repository! Please retry.'}
             return __response_handler(request, result, url)
-        return redirect('repo:repos_list')
+        return redirect('repos:repos_list')
+
+@login_required
+def delete_repo(request, repo_id=None):
+    try:
+        Repository.objects.filter(id=repo_id).delete()
+        url = 'repos:repos_list'
+        result = {}
+    except Exception as e:
+        print e
+        url = 'error.html'
+        result = {'error_msg': 'Error deleting ' + repo_id + ' Repository! Please retry.'}
+    return __response_handler(request, result, url, to_redirect=True)
 
 
 def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):

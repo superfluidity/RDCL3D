@@ -36,7 +36,7 @@
   <![endif]-->
 </head>
 
-{% if collapsed_sidebar == True %}
+{% if request.COOKIES.collapsed_sidebar == '1' %}
 <body class="skin-blue sidebar-mini sidebar-collapse">
 {% else %}
 <body class="hold-transition skin-blue sidebar-mini">
@@ -135,7 +135,7 @@
                 </h1>
                 <ol id="breadcrumb" class="breadcrumb">
                     {% block breadcrumb_body %}
-                    <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i> Home</a></li>
+                        <li><a href='{% url "home" %}'><i class="fa fa-home fa-fw"></i> Home</a></li>
                     {% endblock %}
                 </ol>
             </section>
@@ -143,6 +143,7 @@
           <!-- Main content -->
             <section id="main_content" class="content">
                 {% block content_body %}
+
                 {% endblock %}
             </section>
           <!-- /.content -->
@@ -165,6 +166,8 @@
     <script src="{% static "AdminLTE/plugins/iCheck/icheck.min.js" %}"></script>
     <!-- AdminLTE App -->
     <script src="{% static "AdminLTE/dist/js/app.min.js" %}"></script>
+    <!-- RDCL3D AdminLTE session storage handler -->
+    <script src="{% static "src/adminlte_session_storage.js" %}"></script>
     <!-- Utility JS -->
     <script src="{% static "src/utils.js" %}"></script>
 

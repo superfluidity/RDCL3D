@@ -12,22 +12,24 @@ def login_view(request):
         CustomUser.objects.get(id=request.user.id).delete()
     logout(request)
     extra_data = {}
-    next = ""
+    next_page = ""
     if request.GET:
-        next = request.GET['next']
+        next_page = request.GET['next']
     error_message = ''
     if request.POST:
         print request.POST.get('username')
         print request.POST.get('password')
+        next_page = request.POST.get('next')
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         print "Auth Result: " + str(user) + " -> " + str(user)
         if user and user.is_active:
             if user.is_authenticated():
                 login(request, user)
-                if next == "":
+                print next_page
+                if next_page == "" or next_page is None:
                     return HttpResponseRedirect('/home')
                 else:
-                    return HttpResponseRedirect(next)
+                    return HttpResponseRedirect(next_page)
         else:
             error_message = 'Login failed!'
     return render(request, 'login.html', {'error_message':error_message, 'collapsed_sidebar': False})
