@@ -77,13 +77,13 @@ class SuperfluidityParser(Parser):
 
     @classmethod
     def import_kubernetes_from_dir_project(cls, dir_project):
-        result = {'k8s': {}}
+        result = {}
         for k8s_filename in glob.glob(os.path.join(dir_project,'K8S', '*.yaml')):
             log.info(k8s_filename)
             yaml_object = Util().loadyamlfile(k8s_filename)
             json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
             filename = os.path.splitext(os.path.basename(str(k8s_filename)))[0]
-            result['k8s'][filename] = json_object
+            result[filename] = json_object
         return result
 
     @classmethod

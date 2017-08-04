@@ -19,7 +19,7 @@
 
 {% block breadcrumb_body %}
   	{{ block.super }}
-
+    <li><a href="{% url 'deployment:deployments_list' %}">Deployments</a></li>
 {% endblock %}
 
 {% block content_body %}
