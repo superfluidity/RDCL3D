@@ -43,7 +43,7 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/superfluidity/superfluidity.yaml'
 EXAMPLES_FOLDER = 'usecases/SUPERFLUIDITY/'
 
 etsi_elements = ['ns_cp', 'ns_vl', 'vnf', 'vnf_vl', 'vnf_ext_cp', 'vnf_vdu', 'vnf_vdu_cp', 'vnffg']
-sf_elements = ['vnf_click_vdu', 'vnf_k8s_vdu']
+sf_elements = ['vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'k8s_service_cp']
 click_elements = ['element', 'compound_element', 'class_element']
 
 
@@ -324,32 +324,32 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = False
         return result
 
-
-
     def get_available_nodes(self, args):
         """Returns all available node """
         log.debug('get_available_nodes')
         try:
             result = []
+            categories = {}
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
                 if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
-                    current_data = {
-                        "id": node,
-                        "category_name": model_graph['nodes'][node]['label'],
-                        "types": [
-                            {
-                                "name": "generic",
-                                "id": node
-                            }
-                        ]
-                    }
-                    result.append(current_data)
-
+                    category_name = model_graph['nodes'][node]['type'] if 'type' in model_graph['nodes'][node] else model_graph['nodes'][node]
+                    if category_name not in categories:
+                        categories[category_name] = {
+                            "category_name": category_name,
+                            "types": []
+                        }
+                    categories[category_name]["types"].append({
+                        "name": model_graph['nodes'][node]['label'],
+                        "id": node
+                    })
+                    #result.append(current_data)
+            result = categories.values()
+            print 'result', result
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
-            log.debug(e)
+            log.exception(e)
             result = []
         return result
 
@@ -367,18 +367,21 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         try:
             current_data = json.loads(self.data_project)
             zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
+            print current_data
             for desc_type in current_data:
+                print desc_type
                 for current_desc in current_data[desc_type]:
+                    print desc_type, current_desc
                     if desc_type == 'click':
                         zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
                     elif desc_type == 'k8s':
-                        zip.writestr(current_desc + '.yaml',  yaml.dumps(Util.json2yaml(current_data[desc_type][current_desc])))
+                        zip.writestr(current_desc + '.yaml',  yaml.safe_dump(current_data[desc_type][current_desc]))
                     else:
                         zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
             zip.close()
         except Exception as e:
-            log.debug(e)
+            log.exception(e)
 
         in_memory.flush()
         return in_memory
