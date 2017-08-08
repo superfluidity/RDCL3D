@@ -4,6 +4,7 @@ import os
 import re
 import logging
 from unsortable_ordered_dict import UnsortableOrderedDict
+from superfluidity_parser import SuperfluidityParser
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('AnsibleUtility.py')
@@ -30,23 +31,19 @@ class AnsibleUtility(object):
 
             nc_roles = self.create_roles(sf_data, application_name)
             roles = list(nc_roles)
-            # roles.append("common")
-            k8s_name = self.get_k8s_name(sf_data, nc_roles)
 
+            k8s_name = self.get_k8s_name(sf_data, nc_roles)
+            print 'nc_roles', nc_roles
             ############################################
             # Create folder structure
-            if not os.path.exists(pb_path):
-                os.makedirs(pb_path)
-                os.makedirs(pb_path + 'group_vars/')
-                os.makedirs(pb_path + 'roles/')
-                # os.makedirs(pb_path + 'roles/common/tasks/')
-                # Roles folders
-                for role in nc_roles:
-                    os.makedirs(pb_path + 'roles/' + role + '/')
-                    os.makedirs(pb_path + 'roles/' + role + '/tasks/')
-                    if '-create' not in role and '-destroy' not in role:
-                        os.makedirs(pb_path + 'roles/' + role + '/vars/')
-                        os.makedirs(pb_path + 'roles/' + role + '/files/')
+            self.makedir_p(os.path.join(pb_path, 'group_vars'))
+            self.makedir_p(os.path.join(pb_path, 'roles'))
+            # Roles subfloders
+            for role in nc_roles:
+                self.makedir_p(os.path.join(pb_path, 'roles', role, 'tasks'))
+                if '-create' not in role and '-destroy' not in role:
+                    self.makedir_p(os.path.join(pb_path, 'roles', role, 'vars'))
+                    self.makedir_p(os.path.join(pb_path, 'roles', role, 'files'))
 
             ###########################################
             # Various config files
@@ -69,7 +66,7 @@ class AnsibleUtility(object):
 
             dstfile = open(pb_path + 'site_deploy.yaml', 'w')
             UnsortableOrderedDict.dump(deploy_file, dstfile)
-            dstfile.close
+            dstfile.close()
 
             # Undeploy site file
             undeploy_file = [UnsortableOrderedDict(
@@ -78,7 +75,7 @@ class AnsibleUtility(object):
 
             dstfile = open(pb_path + 'site_undeploy.yaml', 'w')
             yaml.dump(undeploy_file, dstfile, default_flow_style=False, explicit_start=True)
-            dstfile.close
+            dstfile.close()
 
             # #site
             # site_file = [[{"include": "site_deploy.yaml"}], {"include": "site_undeploy.yaml"}]
@@ -108,7 +105,7 @@ class AnsibleUtility(object):
 
                 dstfile = open(pb_path + 'roles/' + role + '/vars/main.yaml', 'w')
                 yaml.safe_dump(main_file, dstfile, default_flow_style=False, explicit_start=True)
-                dstfile.close
+                dstfile.close()
             #############################################
             # Tasks
 
@@ -122,43 +119,47 @@ class AnsibleUtility(object):
                     main_file = [UnsortableOrderedDict([("name", "Destroy " + str(name) + " project"),
                                                         ("command", "oc delete project {{ application_name }}")])]
                 else:
-                    main_file = [UnsortableOrderedDict([("name", "copy json template file"), (
-                        "copy", UnsortableOrderedDict([("src", str(role) + '.json'), ("dest", "{{ json_path }}")]))])]
-                    main_file.append(UnsortableOrderedDict(
+                    main_file = [UnsortableOrderedDict([
+                        ("name", "copy json template file"),
+                        ("copy", UnsortableOrderedDict({
+                            ("src", str(role) + '.json'),
+                            ("dest", "{{ json_path }}")}))
+                    ]), UnsortableOrderedDict(
                         [("name", "Deploy " + str(role.split('-')[0]) + ' ' + str(role.split('-')[1]) + " app"),
-                         ("command", "oc create -f {{ json_path }}")]))
+                         ("command", "oc create -f {{ json_path }}")])]
 
                 dstfile = open(pb_path + 'roles/' + role + '/tasks/main.yaml', 'w')
                 UnsortableOrderedDict.dump(main_file, dstfile)
-                dstfile.close
+                dstfile.close()
             ############################################
             # Templates
             for role in nc_roles:
                 if '-create' not in role and '-destroy' not in role:
                     data = self.sf_kubernetes(sf_data, role)
-                    dstfile = open(pb_path + 'roles/' + role + '/files/' + role + '.json', 'w')
+                    dstfile = open(os.path.join(pb_path, 'roles', role, 'files', role + '.json'), 'w')
                     json.dump(data, dstfile)
                     dstfile.close()
         except Exception as e:
             print "Exception in generate_playbook"
             log.exception(e)
 
-    def create_roles(self, sf_data, name):
-        roles = []
-        roles.append(name + '-create')
-        roles.append(name + '-destroy')
+    @staticmethod
+    def create_roles(sf_data, name):
+        roles = [name + '-create', name + '-destroy']
         for vnfd in sf_data['vnfd']:
             vnf = sf_data['vnfd'][vnfd]
             # print vnf['vdu']
             vdu_list = vnf['vdu']
             for vdu in vdu_list:
-                # print vdu
-                if 'vduNestedDescType' in vdu:
-                    if vdu['vduNestedDescType'] == 'kubernetes':
-                        roles.append(vnfd + '-' + vdu['name'])
+                if 'vduNestedDesc' in vdu:
+                    for vdu_nested_dec_id in vdu['vduNestedDesc']:
+                        vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
+                        if vdu_nested and vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
+                            roles.append(vnfd + '-' + vdu['vduId'])
         return roles
 
-    def sf_kubernetes(self, sf_data, role):
+    @staticmethod
+    def sf_kubernetes(sf_data, role):
         split_role = role.split('-')
         # print split_role
         vnfd = split_role[0]
@@ -166,21 +167,37 @@ class AnsibleUtility(object):
         vnf = sf_data['vnfd'][vnfd]
         vdu_list = vnf['vdu']
         for vdu in vdu_list:
-            if vdu['name'] == vdu_name:
-                k8s_name = str(vdu['vduNestedDesc'])
-                data = sf_data['kubernetes'][k8s_name]
-        return data
+            if vdu['vduId'] == vdu_name:
+                for vdu_nested_dec_id in vdu['vduNestedDesc']:
+                    vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
+                    k8s_name = str(vdu_nested['vduNestedDescriptor'])
+                    data = sf_data['k8s'][k8s_name]
+                    return data
+        return None
 
-    def get_k8s_name(self, sf_data, roles):
+    @staticmethod
+    def get_k8s_name(sf_data, roles):
         k8s_name = {}
         for role in roles:
             if "-create" not in role and "-destroy" not in role:
                 vnfd = role.split('-')[0]
-                vdu_name = role.split('-')[1]
+                vdu_id = role.split('-')[1]
                 vnf = sf_data["vnfd"][vnfd]
                 vdu_list = vnf['vdu']
                 for vdu in vdu_list:
-                    if vdu['name'] == vdu_name:
-                        # k8s_name.push(role)
-                        k8s_name[role] = vdu['vduNestedDesc']
+                    if vdu['vduId'] == vdu_id:
+                        for vdu_nested_dec_id in vdu['vduNestedDesc']:
+                            vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
+                            # k8s_name.push(role)
+                            k8s_name[role] = vdu_nested['vduNestedDescriptor']
         return k8s_name
+
+    @staticmethod
+    def makedir_p(directory):
+        """makedir_p(path)
+
+        Works like mkdirs, except that check if the leaf exist.
+
+        """
+        if not os.path.isdir(directory):
+            os.makedirs(directory)

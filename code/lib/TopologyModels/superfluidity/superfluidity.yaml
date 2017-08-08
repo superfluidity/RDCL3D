@@ -5,22 +5,37 @@ designer: Francesco Lombardo               #Model designer
 nodes:                                  #List of nodes, with id and label used in the gui (We can add more fields)
     vnf:
         label: VNF
+        type: Vnf
     ns_vl:
         label: VL
+        type: VirtualLink
     ns_cp:
         label: SAP
+        type: Cp
     vnf_vl:
         label: intVL
+        type: VirtualLink
     vnf_vdu:
         label: Vdu
+        type: Vdu
     vnf_ext_cp:
         label: ExtCP
+        type: Cp
     vnf_vdu_cp:
         label: VduCp
+        type: Cp
     vnf_click_vdu:
         label: CLick VDU
+        type: Vdu
     vnf_k8s_vdu:
         label: K8s VDU
+        type: Vdu
+    vnf_docker_vdu:
+        label: Docker VDU
+        type: Vdu
+    k8s_service_cp:
+        label: K8s Service
+        type: Cp
     element:
         label: ClickElement
     compound_element:
@@ -117,6 +132,11 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
+            vnf_docker_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
                 #expands : compact
             vnf_ext_cp:
                 addable:
@@ -128,6 +148,11 @@ layer:                                  #List of Layers
                     callback: addVnfVduCp
                 removable:
                     callback: removeVnfVduCp
+            k8s_service_cp:
+                addable:
+                    callback: addK8sServiceCp
+                removable:
+                    callback: removeK8sServiceCp
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf_vl:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
@@ -152,6 +177,13 @@ layer:                                  #List of Layers
                 destination:
                     vnf_vl:
                         callback: linkVltoVduCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            k8s_service_cp:
+                destination:
+                    vbf_vdu_k8s:
+                        callback: linkK8sserviceToK8sVdu
                         direct_edge: false
                         removable:
                             callback: removeLink

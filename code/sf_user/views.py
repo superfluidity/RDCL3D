@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect
 from sf_user.models import CustomUser
+import urllib
 import uuid
 
 
@@ -20,6 +21,7 @@ def login_view(request):
         print request.POST.get('username')
         print request.POST.get('password')
         next_page = request.POST.get('next')
+        next_page = urllib.unquote(next_page).decode('iso-8859-2')
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         print "Auth Result: " + str(user) + " -> " + str(user)
         if user and user.is_active:
