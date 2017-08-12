@@ -182,7 +182,7 @@ layer:                                  #List of Layers
                             callback: removeLink
             k8s_service_cp:
                 destination:
-                    vbf_vdu_k8s:
+                    vnf_k8s_vdu:
                         callback: linkK8sserviceToK8sVdu
                         direct_edge: false
                         removable:

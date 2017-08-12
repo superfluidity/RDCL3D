@@ -52,7 +52,6 @@ class SuperfluidityRdclGraph(RdclGraph):
             if 'vnfd' in json_project:
                 for vnf_id in json_project['vnfd']:
                     vnfd = json_project['vnfd'][vnf_id]
-                    k8s_service_map = {}
                     for vdu in vnfd['vdu']:
                         if 'vduNestedDesc' in vdu:
                             vdu_type = None
@@ -61,11 +60,7 @@ class SuperfluidityRdclGraph(RdclGraph):
                                 if vdu_nested:
                                     if vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
                                         vdu_type = 'vnf_k8s_vdu'
-                                        nest_desc_id = vdu_nested['vduNestedDescriptor']
-                                        if nest_desc_id in k8s_service_map:
-                                            k8s_service_map[nest_desc_id].append(vdu['vduId'])
-                                        else:
-                                            k8s_service_map[nest_desc_id] = [vdu['vduId']]
+
                                     elif vdu_nested['vduNestedDescriptorType'] == 'click':
                                         vdu_type = 'vnf_click_vdu'
                                     elif vdu_nested['vduNestedDescriptorType'] == 'docker':
@@ -82,9 +77,9 @@ class SuperfluidityRdclGraph(RdclGraph):
                         for k8SServiceCpd in vnfd['k8SServiceCpd']:
                             if 'serviceDescriptor' in k8SServiceCpd:
                                 self.add_node(k8SServiceCpd['cpdId'], 'k8s_service_cp', vnf_id, positions, graph_object)
-                            if k8SServiceCpd['serviceDescriptor'] in k8s_service_map:
-                                for ref in k8s_service_map[k8SServiceCpd['serviceDescriptor']]:
-                                    self.add_link(k8SServiceCpd['cpdId'], ref, 'vnf', vnf_id, graph_object)
+                            if 'exposedPod' in k8SServiceCpd:
+                                for pod in k8SServiceCpd['exposedPod']:
+                                         self.add_link(k8SServiceCpd['cpdId'], pod, 'vnf', vnf_id, graph_object)
 
             graph_object['vertices'] += etsi_topology['vertices'] + click_vertices
             graph_object['edges'] += etsi_topology['edges'] + click_edges
