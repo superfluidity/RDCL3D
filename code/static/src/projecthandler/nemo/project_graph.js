@@ -50,59 +50,7 @@ function initDropOnGraph() {
         if (nodetype) {
             var type_name = graph_editor.getTypeProperty()[nodetype].name;
             console.log("nodetype", nodetype)
-            /*if (nodetype == 'nodemodel') {
-                new dreamer.GraphRequests().getUnusedVnf(group, function(nodemodels) {
-                    $('#div_chose_id').hide();
-                    $('#div_chose_nodemodel').show();
-                    $('#input_choose_node_nodemodel').val(nodetype + "_" + generateUID());
-                    $('#selection_chooser_nodemodel').empty();
-                    $('#selection_chooser_nodemodel').append('<option >None</option>');
-                    $('#modal_chooser_title_add_node').text('Add ' + type_name);
-                    for (var i in nodemodels) {
-                        $('#selection_chooser_nodemodel').append('<option id="' + nodemodels[i] + '">' + nodemodels[i] + '</option>');
-                    }
-                    $('#save_choose_node_id').off('click').on('click', function() {
-                        var choice = $("#selection_chooser_vnf option:selected").text();
-                        var name = $('#input_choose_node_vnf').val();
-                        if (choice == 'None') {
-                            var node_information = {
-                                'id': name,
-                                'info': {
-                                    'type': nodetype,
-                                    'group': [group]
-                                },
-                                'x': e.layerX,
-                                'y': e.layerY
-                            }
-                            graph_editor.addNode(node_information, function() {
-                                $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
-                        } else {
-                            var node_information = {
-                                'existing_nodemodel': true,
-                                'id': choice,
-                                'info': {
-                                    'type': nodetype,
-                                    'group': [group]
-                                },
-                                'x': e.layerX,
-                                'y': e.layerY
-                            }
-                            graph_editor.addNode(node_information, function() {
-                                $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
-                        }
 
-                    });
-
-                    $('#modal_choose_node_id').modal('show');
-                });
-
-            } else {*/
                 $('#div_chose_id').show();
                 $('#div_chose_nodemodel').hide();
                 $('#input_choose_node_id').val(nodetype + "_" + generateUID());
@@ -127,7 +75,6 @@ function initDropOnGraph() {
                 });
                 $('#modal_choose_node_id').modal('show');
 
-           // }
         }
 
     }
@@ -154,10 +101,6 @@ function handleForce(el) {
 
     graph_editor.handleForce((el.id == "topology_play") ? true : false);
 
-}
-
-function savePositions(el) {
-    graph_editor.savePositions();
 }
 
 function changeFilter(e, c) {
@@ -187,13 +130,6 @@ function updateBredCrumb(filter_parameters){
      $('#breadcrumb').append(newLi);
 }
 
-
-
-
-
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
-}
 
 function openEditor(project_id) {
     window.location.href = '/projects/' + project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();
@@ -242,7 +178,6 @@ function changeVnffg(e) {
 function newVnffg() {
     var group = graph_editor.getCurrentGroup()
     $('#div_chose_id').show();
-    $('#div_chose_vnf').hide();
     $('#input_choose_node_id').val("vnffg_" + generateUID());
     $('#modal_chooser_title_add_node').text('Add VNFFG');
     $('#save_choose_node_id').off('click').on('click', function() {

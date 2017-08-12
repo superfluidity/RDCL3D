@@ -132,11 +132,11 @@ class CustomUser(AbstractCustomUser):
 
     def get_avatar(self):
         if self.is_admin:
-            return "assets/img/employer.jpg"
+            return "assets/img/employer.png"
         elif self.is_full_operator:
-            return "assets/img/employer.jpg"
+            return "assets/img/employer.png"
         elif self.is_basic_user:
-            return "assets/img/employer.jpg"
+            return "assets/img/employer.png"
         elif self.is_guest_user:
             return "assets/img/account_circle.png"
 

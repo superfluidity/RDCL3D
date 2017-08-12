@@ -7,26 +7,25 @@ var show_all = null;
 initDropOnGraph();
 
 
-
-$(document).ready(function() {
-    var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf';
-    descriptor_type = getUrlParameter('type') == 'click'  ? ['click'] : descriptor_type;
-
-    if(descriptor_type == 'click'){
+$(document).ready(function () {
+    var descriptor_type = getUrlParameter('type') === 'ns' || getUrlParameter('type') === 'nsd' ? 'ns' : 'vnf';
+    descriptor_type = getUrlParameter('type') === 'click' ? ['click'] : descriptor_type;
+    var params = {}
+    if (descriptor_type === 'click') {
         allowed_types = ['element', 'compound_element', 'class_element']
-        var params = {
+        params = {
             node: {
-                type: ['element', 'compound_element', 'class_element'],
+                type: allowed_types,
                 group: [getUrlParameter('id')]
             },
             link: {
                 group: [getUrlParameter('id')],
                 view: ['compact']
             }
-        }
-    }else{
-        var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu'];
-        var params = {
+        };
+    } else {
+        var allowed_types = descriptor_type === 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'k8s_service_cp'];
+        params = {
             node: {
                 type: allowed_types,
                 group: [getUrlParameter('id')]
@@ -35,12 +34,9 @@ $(document).ready(function() {
                 group: [getUrlParameter('id')],
                 view: [descriptor_type]
             }
-        }
+        };
 
     }
-
-
-
 
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
@@ -51,7 +47,7 @@ $(document).ready(function() {
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
         filter_base: params,
-        behaviorsOnEvents:{
+        behaviorsOnEvents: {
             viewBased: false,
             behaviors: buildBehaviorsOnEvents()
         }
@@ -68,131 +64,194 @@ $(document).ready(function() {
 function initDropOnGraph() {
 
     var dropZone = document.getElementById('graph_ed_container');
-    dropZone.ondrop = function(e) {
-        var group = graph_editor.getCurrentGroup()
+    dropZone.ondrop = function (e) {
         e.preventDefault();
+        var group = graph_editor.getCurrentGroup();
         var nodetype = e.dataTransfer.getData("text/plain");
+        var onLoadModal, retriveDataToSend;
         if (nodetype) {
-            var type_name = graph_editor.getTypeProperty()[nodetype].name;
+            var node_information = {
+                'id': '',
+                'info': {
+                    'type': nodetype,
+                    'group': [group],
+                    'desc_id': graph_editor.getCurrentView(),
+                },
+                'x': e.layerX,
+                'y': e.layerY
+            };
+            var vdu_opt_params = {
+                'nested_desc': {
+                    'id': '',
+                    'vduNestedDescriptorType': '',
+                    'vduNestedDescriptor': ''
+                },
+                "vdu_param": {
+                    'vduParent': '',
+                    'vduParentBareMetal': '',
+                    'vduParentMandatory': ''
+                }
+            };
+
             if (nodetype == 'vnf') {
-                new dreamer.GraphRequests().getUnusedVnf(group, function(vnfs) {
-                    $('#div_chose_id').hide();
-                    $('#div_chose_vnf').show();
-                    $('#input_choose_node_vnf').val(nodetype + "_" + generateUID());
+                onLoadModal = new dreamer.GraphRequests().getUnusedVnf(group, function (vnfs) {
+
                     $('#selection_chooser_vnf').empty();
                     $('#selection_chooser_vnf').append('<option >None</option>');
-                    $('#modal_chooser_title_add_node').text('Add ' + type_name);
                     for (var i in vnfs) {
                         $('#selection_chooser_vnf').append('<option id="' + vnfs[i] + '">' + vnfs[i] + '</option>');
                     }
-                    $('#save_choose_node_id').off('click').on('click', function() {
-                        var choice = $("#selection_chooser_vnf option:selected").text();
-                        var name = $('#input_choose_node_vnf').val();
-                        if (choice == 'None') {
-                            var node_information = {
-                                'id': name,
-                                'info': {
-                                    'type': nodetype,
-                                    'group': [group],
-                                    'desc_id': graph_editor.getCurrentView(),
-                                },
-                                'x': e.layerX,
-                                'y': e.layerY
-                            }
-                            graph_editor.addNode(node_information, function() {
-                                $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
-                        } else {
-                            var node_information = {
-                                'existing_element': true,
-                                'id': choice,
-                                'info': {
-                                    'type': nodetype,
-                                    'group': [group],
-                                    'desc_id': graph_editor.getCurrentView(),
-                                },
-                                'x': e.layerX,
-                                'y': e.layerY
-                            }
-                            graph_editor.addNode(node_information, function() {
-                                $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
+
+                });
+
+                retriveDataToSend = function () {
+                    var choice = $("#selection_chooser_vnf option:selected").text();
+                    var vdu_id = $('#input_choose_node_id').val();
+                    if (choice == 'None')
+                        node_information['id'] = vdu_id;
+                    else {
+                        node_information['existing_element'] = true;
+                        node_information['id'] = choice;
+                    }
+                    return node_information;
+                }
+
+            }
+            else if (graph_editor.getCurrentView() == 'compact' || graph_editor.getCurrentView() == 'expandable') {
+                onLoadModal = null;
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+
+                    node_information['id'] = vdu_id;
+                    node_information['desc_id'] = group;
+                    return node_information;
+                };
+
+            }
+            else if (nodetype == 'vnf_k8s_vdu') {
+                onLoadModal = null;/* new dreamer.GraphRequests().getUnusedVnf(group, function (vduNestedDescs) {
+
+                    $('#selection_chooser_vnf_vduNestedDesc').empty();
+                    $('#selection_chooser_vnf_vduNestedDesc').append('<option >None</option>');
+                    for (var i in vduNestedDescs) {
+                        $('#selection_chooser_vnf_vduNestedDesc').append('<option id="' + vduNestedDescs[i] + '">' + vduNestedDescs[i] + '</option>');
+                    }
+
+                });*/
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+                    var vduNestedDesc_id = $('#input_choose_vnf_vduK8sDesc_id').val();
+                    var choice = $("#selection_chooser_vnf_vduNestedDesc option:selected").text();
+                    node_information['id'] = vdu_id;
+                    node_information['opt_params'] = vdu_opt_params;
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'kubernetes'
+                    /*
+                    if (choice == 'None'){*/
+                        node_information['opt_params']['nested_desc']['id'] = vduNestedDesc_id;
+                        node_information['opt_params']['nested_desc']['vduNestedDescriptor'] = vduNestedDesc_id;
+                    /*
+                    }
+                    else {
+
+                    }*/
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
+            }
+            else if (nodetype == 'vnf_click_vdu') {
+                onLoadModal = null;/* new dreamer.GraphRequests().getUnusedVnf(group, function (vduNestedDescs) {
+
+                    $('#selection_chooser_vnf_vduNestedDesc').empty();
+                    $('#selection_chooser_vnf_vduNestedDesc').append('<option >None</option>');
+                    for (var i in vduNestedDescs) {
+                        $('#selection_chooser_vnf_vduNestedDesc').append('<option id="' + vduNestedDescs[i] + '">' + vduNestedDescs[i] + '</option>');
+                    }
+
+                });*/
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+                    var vduNestedDesc_id = $('#input_choose_vnf_vduClickDesc_id').val();
+                    var choice = $("#selection_chooser_vnf_vduNestedDesc option:selected").text();
+                    node_information['id'] = vdu_id;
+                    node_information['opt_params'] = vdu_opt_params;
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'click'
+                    /*
+                    if (choice == 'None'){*/
+                        node_information['opt_params']['nested_desc']['id'] = vduNestedDesc_id;
+                        node_information['opt_params']['nested_desc']['vduNestedDescriptor'] = vduNestedDesc_id;
+                    /*
+                    }
+                    else {
+
+                    }*/
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
+            }
+            else if (nodetype == 'k8s_service_cp') {
+                console.log('K8SServiceCpd')
+                onLoadModal = null;
+                retriveDataToSend = function () {
+                    var node_id = $('#input_choose_node_id').val();
+                    var k8ss = $('#input_choose_k8s_service_cpd_id').val();
+                    node_information['id'] = node_id;
+                    node_information['opt_params'] = {
+                        'k8s_service_cpd': {
+                            'cpdId': node_id,
+                            'serviceDescriptor': k8ss
                         }
 
-                    });
-
-                    $('#modal_choose_node_id').modal('show');
-                });
-
-            }
-            else if(graph_editor.getCurrentView() == 'compact' || graph_editor.getCurrentView() == 'expandable'){
-                $('#div_chose_id').show();
-                $('#div_chose_vnf').hide();
-                $('#input_choose_node_id').val(nodetype + "_" + generateUID());
-                $('#modal_chooser_title_add_node').text('Add ' + type_name);
-                $('#save_choose_node_id').off('click').on('click', function() {
-                    var name = $('#input_choose_node_id').val();
-                    var node_information = {
-                        'id': name,
-                        'info': {
-                            'type': nodetype,
-                            'group': [group],
-                            'desc_id': group,
-                        },
-                        'x': e.layerX,
-                        'y': e.layerY
-                    }
-                    graph_editor.addNode(node_information, function() {
-                        $('#modal_choose_node_id').modal('hide');
-                    }, function(error){
-                        showAlert(error)
-                    });
-                });
-                $('#modal_choose_node_id').modal('show');
+                    };
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
             }
             else {
-                $('#div_chose_id').show();
-                $('#div_chose_vnf').hide();
-                $('#input_choose_node_id').val(nodetype + "_" + generateUID());
-                $('#modal_chooser_title_add_node').text('Add ' + type_name);
-                $('#save_choose_node_id').off('click').on('click', function() {
+                onLoadModal = null;
+                retriveDataToSend = function () {
                     var name = $('#input_choose_node_id').val();
-                    var node_information = {
-                        'id': name,
-                        'info': {
-                            'type': nodetype,
-                            'group': [group],
-                            'desc_id': graph_editor.getCurrentView(),
-                        },
-                        'x': e.layerX,
-                        'y': e.layerY
-                    }
-                    graph_editor.addNode(node_information, function() {
-                        $('#modal_choose_node_id').modal('hide');
-                    }, function(error){
-                        showAlert(error)
-                    });
-                });
-                $('#modal_choose_node_id').modal('show');
+                    node_information['id'] = name;
+                    return node_information;
+                };
 
             }
+            newNodeModalFromType(e, onLoadModal, retriveDataToSend);
         }
 
     }
 
-    dropZone.ondragover = function(ev) {
+    dropZone.ondragover = function (ev) {
         console.log("ondragover");
         return false;
     }
 
-    dropZone.ondragleave = function() {
+    dropZone.ondragleave = function () {
         console.log("ondragleave");
         return false;
     }
+}
+
+function newNodeModalFromType(event, onLoadModal, retriveDataToSend) {
+    //event.preventDefault();
+    var group = graph_editor.getCurrentGroup();
+    var nodetype = event.dataTransfer.getData("text/plain");
+    $('.new-node-section').hide();
+    $('#new_node_section_' + nodetype).show();
+    // fill with random nodeId
+    $('#input_choose_node_id').val(nodetype + "_" + generateUID());
+    // set title based on node type
+    $('#modal_chooser_title_add_node').text('Add ' + nodetype);
+
+    // set action on click save button
+    $('#save_choose_node_id').off('click').on('click', function () {
+        var node_data = retriveDataToSend();
+        graph_editor.addNode(node_data, function () {
+            $('#modal_choose_node_id').modal('hide');
+        }, function (error) {
+            showAlert(error)
+        });
+    });
+    $('#modal_choose_node_id').modal('show');
 }
 
 function handleForce(el) {
@@ -206,10 +265,6 @@ function handleForce(el) {
 
     graph_editor.handleForce((el.id == "topology_play") ? true : false);
 
-}
-
-function savePositions(el) {
-    graph_editor.savePositions();
 }
 
 function changeFilter(e, c) {
@@ -230,29 +285,25 @@ function changeFilter(e, c) {
     updateBredCrumb(c);
 }
 
-var filters = function(e, params) {
+var filters = function (e, params) {
     graph_editor.handleFiltersParams(params);
     $('#' + e).nextAll('li').remove();
 }
 
-function updateBredCrumb(filter_parameters){
-     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
-     $('#breadcrumb').append(newLi);
+function updateBredCrumb(filter_parameters) {
+    var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
+    $('#breadcrumb').append(newLi);
 }
 
-
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
-}
 
 function openEditor(project_id) {
     //FIXME is not a good solution
     var current_view = graph_editor.getCurrentView();
-    if(['expandable', 'compact'].indexOf(current_view) > -1)
+    if (['expandable', 'compact'].indexOf(current_view) > -1)
         current_view = 'click'
     else
-        current_view +='d'
-   window.location.href = '/projects/' + project_id + '/descriptors/' + current_view + '/' + graph_editor.getCurrentGroup();
+        current_view += 'd'
+    window.location.href = '/projects/' + project_id + '/descriptors/' + current_view + '/' + graph_editor.getCurrentGroup();
 
 }
 
@@ -265,7 +316,7 @@ function showChooserModal(title, chooses, callback) {
     }
     $('#modal_chooser_title').text(title)
     var self = this;
-    $('#save_chooser').off('click').on('click', function() {
+    $('#save_chooser').off('click').on('click', function () {
         var choice = $("#selection_chooser option:selected").text();
         callback(choice);
 
@@ -299,10 +350,10 @@ function changeVnffg(e) {
 function newVnffg() {
     var group = graph_editor.getCurrentGroup()
     $('#div_chose_id').show();
-    $('#div_chose_vnf').hide();
+    //$('#div_chose_vnf').hide();
     $('#input_choose_node_id').val("vnffg_" + generateUID());
     $('#modal_chooser_title_add_node').text('Add VNFFG');
-    $('#save_choose_node_id').off('click').on('click', function() {
+    $('#save_choose_node_id').off('click').on('click', function () {
         var name = $('#input_choose_node_id').val();
 
         var node_information = {
@@ -310,13 +361,12 @@ function newVnffg() {
             'element_type': "vnffg",
             'group_id': group,
         }
-        new dreamer.GraphRequests().addVnffg(node_information, function(result) {
+        new dreamer.GraphRequests().addVnffg(node_information, function (result) {
 
             $('#modal_choose_node_id').modal('hide');
             graph_editor.d3_graph.graph_parameters.vnffgIds.push(node_information.id)
             refreshGraphParameters(null, graph_editor.d3_graph.graph_parameters)
         });
-
 
 
     });
@@ -348,7 +398,7 @@ function handleVnffgParameter(vnffgId, class_name) {
 
     if (vnffgId != "Global") {
         selected_vnffgId = vnffgId;
-        graph_editor.setNodeClass(class_name, function(d) {
+        graph_editor.setNodeClass(class_name, function (d) {
             var result = false;
             if (d.info.group.indexOf(vnffgId) < 0) {
                 result = true;
@@ -357,7 +407,7 @@ function handleVnffgParameter(vnffgId, class_name) {
             return result;
         });
 
-        graph_editor.setLinkClass(class_name, function(d) {
+        graph_editor.setLinkClass(class_name, function (d) {
             var result = false;
             if (d.group.indexOf(vnffgId) < 0) {
                 result = true;
@@ -368,73 +418,72 @@ function handleVnffgParameter(vnffgId, class_name) {
 
     } else {
         selected_vnffgId = null;
-        graph_editor.setNodeClass(class_name, function(d) {
+        graph_editor.setNodeClass(class_name, function (d) {
             var result = false;
             return result;
         });
 
-        graph_editor.setLinkClass(class_name, function(d) {
+        graph_editor.setLinkClass(class_name, function (d) {
             var result = false;
             return result;
         });
     }
 
 
-
 }
 
-function buildBehaviorsOnEvents(){
+function buildBehaviorsOnEvents() {
     var contextmenuNodesAction = [{
-            title: 'Show info',
-            action: function(elm, d, i) {
-                console.log('Show NodeInfo', elm, d, i);
-                var nodeData = {
-                    "node": {
-                        "id": d.id
-                    }
-                };
-                new dreamer.SuperfluidityController().getNodeOverview(graph_editor,d, function(result){
-                    console.log(JSON.stringify(result))
-                    graph_editor.showNodeInfo({'node_info': result['node_overview']})
-                }, function(error){
-                    showAlert("Error opening info node.")
-                });
-            },
-            edit_mode: false
-
+        title: 'Show info',
+        action: function (elm, d, i) {
+            console.log('Show NodeInfo', elm, d, i);
+            var nodeData = {
+                "node": {
+                    "id": d.id
+                }
+            };
+            new dreamer.SuperfluidityController().getNodeOverview(graph_editor, d, function (result) {
+                console.log(JSON.stringify(result))
+                graph_editor.showNodeInfo({'node_info': result['node_overview']})
+            }, function (error) {
+                showAlert("Error opening info node.")
+            });
         },
-        {
-                title: 'Show graph',
-                action: function (elm, c_node, i) {
-                    if (c_node.info.type != undefined) {
-                        var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
-                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
-                            if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
-                                var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
-                                graph_editor.handleFiltersParams({
-                                    node: {
-                                        type: Object.keys(graph_editor.model.layer[new_layer].nodes),
-                                        group: [c_node.id]
-                                    },
-                                    link: {
-                                        group: [c_node.id],
-                                        view: [new_layer]
-                                    }
-                                });
+        edit_mode: false
 
-                            }
-                            else{
-                                showAlert('This is not an explorable node.')
-                            }
+    },
+        {
+            title: 'Show graph',
+            action: function (elm, c_node, i) {
+                if (c_node.info.type != undefined) {
+                    var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
+                    if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                        if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
+                            var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
+                            graph_editor.handleFiltersParams({
+                                node: {
+                                    type: Object.keys(graph_editor.model.layer[new_layer].nodes),
+                                    group: [c_node.id]
+                                },
+                                link: {
+                                    group: [c_node.id],
+                                    view: [new_layer]
+                                }
+                            });
+
+                        }
+                        else {
+                            showAlert('This is not an explorable node.')
                         }
                     }
-                },
-                edit_mode: false
+                }
+            },
+            edit_mode: false
         }];
-        var behavioursOnEvents = {
-            'nodes': contextmenuNodesAction,
+    var behavioursOnEvents = {
+        'nodes': contextmenuNodesAction,
 
-        };
+    };
 
     return behavioursOnEvents;
 }

@@ -63,6 +63,7 @@ dreamer.EtsiController = (function (global) {
             'element_id': node.id,
             'element_type': node.info.type,
             'element_desc_id': node.info.desc_id,
+            'opt_params': node.opt_params,
             'x': node.x,
             'y': node.y
         };
@@ -74,11 +75,13 @@ dreamer.EtsiController = (function (global) {
 
 
     EtsiController.prototype.addVnfVdu = function (graph_editor, node, success, error) {
+        console.log('addVnfVdu', JSON.stringify(node))
         var data_to_send = {
             'group_id': node.info.group[0],
             'element_id': node.id,
             'element_type': node.info.type,
             'element_desc_id': node.info.desc_id,
+            'opt_params': node['opt_params'],
             'x': node.x,
             'y': node.y
         };
@@ -90,18 +93,29 @@ dreamer.EtsiController = (function (global) {
                 'element_id': 'vnf_vdu_cp' + "_" + generateUID(),
                 'element_type': 'vnf_vdu_cp',
                 'element_desc_id': node.info.desc_id,
-                'x': node.x - (node.x * 0.1),
-                'y': node.y - (node.y * 0.1),
+                'x': parseFloat(node.x) - (parseFloat(node.x) * 0.1),
+                'y': parseFloat(node.y) - (parseFloat(node.y) * 0.1),
                 'choice': vdu_id
-            }
+            };
             console.log("vnf_vdu_cp", JSON.stringify(vnf_vdu_cp));
             if (success)
                 success();
             new dreamer.GraphRequests().addNode(vnf_vdu_cp, vdu_id, function () {
-                graph_editor.parent.addNode.call(graph_editor, vnf_vdu_cp);
+                var node_vdu_cp = {
+                    'id': vnf_vdu_cp['element_id'],
+                    'info': {
+                        'type': 'vnf_vdu_cp',
+                        'group': [vnf_vdu_cp['group_id']]
+                    },
+
+                    'x': vnf_vdu_cp['x'],
+                    'y': vnf_vdu_cp['y']
+                };
+
+                graph_editor.parent.addNode.call(graph_editor, node_vdu_cp);
                 var link = {
                     source: node.id,
-                    target: vnf_vdu_cp.id,
+                    target: node_vdu_cp.id,
                     view: graph_editor.filter_parameters.link.view[0],
                     group: [node.info.group[0]]
                 };
@@ -166,7 +180,7 @@ dreamer.EtsiController = (function (global) {
             'source': link.source.id,
             'source_type': link.source.info.type,
             'target': link.target.id,
-            'target_type': link.target.info.type,
+            'target_type': link.target.info.type
         };
 
         new dreamer.GraphRequests().addLink(data_to_send, null, function () {
@@ -303,7 +317,7 @@ dreamer.EtsiController = (function (global) {
             'source': link.source.id,
             'source_type': link.source.info.type,
             'target': link.target.id,
-            'target_type': link.target.info.type,
+            'target_type': link.target.info.type
         };
         new dreamer.GraphRequests().addLink(data_to_send, null, function () {
             graph_editor._deselectAllNodes();
@@ -324,6 +338,7 @@ dreamer.EtsiController = (function (global) {
             var cp_node = vdu_links[i].source.info.type == 'vnf_vdu_cp' ? vdu_links[i].source : vdu_links[i].target;
             graph_editor.parent.removeNode.call(graph_editor, cp_node);
         }
+        console.log("removeVnfVdu", node.vduId)
         var data_to_send = {
             'group_id': node.info.group && node.info.group.length > 0 ? node.info.group[0] : undefined,
             'element_id': (node.vduId != undefined) ? node.vduId : node.id,

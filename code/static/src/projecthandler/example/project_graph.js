@@ -58,7 +58,6 @@ dropZone.ondrop = function(e) {
         nodetype = nodetype.replace(/_/g, ".")
         var type_name = graph_editor.getTypeProperty()[nodetype].name;
         $('#div_chose_id').show();
-                $('#div_chose_vnf').hide();
                 $('#input_choose_node_id').val(nodetype.substring(nodetype.lastIndexOf(".")+1) + "_" + generateUID());
                 $('#modal_chooser_title_add_node').text('Add ' + type_name);
                 $('#save_choose_node_id').off('click').on('click', function() {
@@ -108,10 +107,6 @@ function handleForce(el) {
 
 }
 
-function savePositions(el) {
-    graph_editor.savePositions();
-}
-
 function changeFilter(e, c) {
     console.log("changeFilter");
     var type_property = graph_editor.getTypeProperty();
@@ -133,9 +128,6 @@ function updateBredCrumb(filter_parameters){
         $('#breadcrumb').append(newLi);
 }
 
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
-}
 
 function openEditor(project_id){
     window.location.href='/projects/'+project_id+'/descriptors/'+getUrlParameter('type')+'/'+getUrlParameter('id');

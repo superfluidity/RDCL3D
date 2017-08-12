@@ -1,15 +1,16 @@
-{  "vnfdId": "vnf3",
+{
+  "vnfdId": "vnf3",
   "vnfProvider": "netgroup",
   "vnfProductName": "vnf3",
   "vnfSoftwareVersion": "0.1",
   "vnfdVersion": "0.1",
-  "vdu":[
+  "vdu": [
     {
-      "vduId":"vdu31",
+      "vduId": "vdu31",
       "name": "vdu31",
-      "vduNestedDesc" : "k8stemplate1",
-      "vduNestedDescType" : "kubernetes",
-        "intCpd":[
+      "vduNestedDesc": "k8stemplate1",
+      "vduNestedDescType": "kubernetes",
+      "intCpd": [
         {
           "cpdId": "VduCp31",
           "layerProtocol": "E-LAN",
@@ -17,47 +18,44 @@
           "intVirtualLinkDesc": "intVirtualLink31"
         }
       ]
-      }
+    }
   ],
-  "intVirtualLinkDesc":[
+  "intVirtualLinkDesc": [
     {
       "virtualLinkDescId": "intVirtualLink31",
       "virtualLinkDescFlavour": [
         {
-              "flavourId": "flavourId",
-              "bitrateRequirements": {
-                "root": 7,
-                "leaf": 13
-              },
-              "qos": {
-                "latency": 500,
-                "packetDelayVariation": 50,
-                "packetLossRatio": 5,
-                "priority": 1
-            },
-            "connectivityType": {
-              "layerProtocol": "Enum",
-              "flowPattern": ""
-
-            },
-            "testAccess":"",
-            "description": "",
-            "monitoringParameter":  {
-              "id": "id",
-              "name": "name",
-              "performanceMetric": "performanceMetric"
-            }
-
+          "flavourId": "flavourId",
+          "bitrateRequirements": {
+            "root": 7,
+            "leaf": 13
+          },
+          "qos": {
+            "latency": 500,
+            "packetDelayVariation": 50,
+            "packetLossRatio": 5,
+            "priority": 1
+          },
+          "connectivityType": {
+            "layerProtocol": "Enum",
+            "flowPattern": ""
+          },
+          "testAccess": "",
+          "description": "",
+          "monitoringParameter": {
+            "id": "id",
+            "name": "name",
+            "performanceMetric": "performanceMetric"
           }
+        }
       ],
       "connectivityType": {
         "layerProtocol": "Enum",
         "flowPattern": ""
       }
     }
-
   ],
-  "vnfExtCpd":[
+  "vnfExtCpd": [
     {
       "cpdId": "VnfExtCp31",
       "layerProtocol": "E-LAN",
@@ -80,46 +78,44 @@
       "intVirtualLinkDesc": "intVirtualLink31"
     }
   ],
-  "deploymentFlavour":[
+  "deploymentFlavour": [
     {
       "flavourId": "vnfdf3",
       "description": "description",
-      "vduProfile":[
+      "vduProfile": [
         {
           "vduId": "vdu31",
           "minNumberOfInstances": 1,
           "maxNumberOfInstances": 5,
-          "localAffinityOrAntiAffinityRule":[
+          "localAffinityOrAntiAffinityRule": [
             {
               "type": "Enum",
               "scope": "enum"
             }
-
           ],
-          "affinityOrAntiAffinityGroupId":[
+          "affinityOrAntiAffinityGroupId": [
             "affinityOrAntiAffinityGroupId"
           ]
         }
       ],
-      "virtualLinkProfile":[
+      "virtualLinkProfile": [
         {
           "vnfVirtualLinkDescId": "intVirtualLink31",
           "flavourId": "flavourId",
-          "localAffinityOrAntiAffinityRule":[
+          "localAffinityOrAntiAffinityRule": [
             {
               "type": "Enum",
               "scope": "enum"
             }
           ],
-          "affinityOrAntiAffinityGroupId":"affinityOrAntiAffinityGroupId"
-
+          "affinityOrAntiAffinityGroupId": "affinityOrAntiAffinityGroupId"
         }
       ],
-      "instantiationLevel":[
+      "instantiationLevel": [
         {
           "levelId": "",
           "description": "",
-          "vduLevel":[
+          "vduLevel": [
             {
               "vduId": "vduId",
               "numberOfInstances": 5
@@ -131,18 +127,18 @@
           }
         }
       ],
-      "defaultInstantiationLevelId":"defaultInstantiationLevelId",
-      "supportedOperation":[
+      "defaultInstantiationLevelId": "defaultInstantiationLevelId",
+      "supportedOperation": [
         "eum"
       ],
       "vnfLcmOperationsConfiguration": {
         "instantiateVnfOpConfig": {
-          "parameter":[
+          "parameter": [
             ""
           ]
         },
         "scaleVnfOpConfig": {
-          "parameter":[
+          "parameter": [
             ""
           ],
           "scalingByMoreThanOneStepSupported": true
@@ -154,10 +150,10 @@
           "arbitraryTargetLevelsSupported": true
         },
         "healVnfOpConfig": {
-          "parameter":[
+          "parameter": [
             ""
           ],
-          "cause":[
+          "cause": [
             ""
           ]
         },
@@ -167,25 +163,24 @@
         },
         "operateVnfOpConfig": {
           "minGracefulStopTimeout": 1,
-          "maxRecommendedGracefulStopTimeout" : 5
+          "maxRecommendedGracefulStopTimeout": 5
         }
       },
-      "affinityOrAntiAffinityGroup":[
+      "affinityOrAntiAffinityGroup": [
         {
           "groupId": "groupId",
           "type": "Enum",
           "scope": "Enum"
         }
-
       ],
-      "monitoringParameter":[
-         {
+      "monitoringParameter": [
+        {
           "id": "id",
           "name": "name",
           "performanceMetric": "performanceMetric"
         }
       ],
-      "scalingAspect":[
+      "scalingAspect": [
         {
           "id": "id",
           "name": "name",

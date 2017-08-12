@@ -116,6 +116,14 @@ function openEditorEvent(e, id){
     openEditor(id);
 }
 
+function nodeDragStart(event) {
+    event.dataTransfer.setData("Text", event.target.id);
+}
+
+function savePositions(el) {
+    graph_editor.savePositions();
+}
+
 function buildPalette(args) {
     $("#paletteContainer").empty();
     var type_property = graph_editor.getTypeProperty();

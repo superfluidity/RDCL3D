@@ -31,10 +31,8 @@ from lib.superfluidity.superfluidity_parser import SuperfluidityParser
 from lib.superfluidity.superfluidity_rdcl_graph import SuperfluidityRdclGraph
 from lib.superfluidity.sf_ansible import AnsibleUtility
 
-
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('SuperfluidityModel.py')
-
 
 PATH_TO_SCHEMAS = 'lib/superfluidity/schemas/'
 PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/superfluidity/descriptor_template'
@@ -93,7 +91,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         """Returns a descriptor template for a given descriptor type"""
 
         try:
-            schema = Util.loadjsonfile(os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
+            schema = Util.loadjsonfile(
+                os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
             return schema
         except Exception as e:
             log.exception(e)
@@ -132,7 +131,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         rdcl_graph = SuperfluidityRdclGraph()
         project = self.get_dataproject()
         topology = rdcl_graph.build_graph_from_project(project,
-                                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+                                                       model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -149,12 +148,11 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
             elif data_type == 'click':
                 new_descriptor = new_data
-            #elif data_type == 'k8s':
+            # elif data_type == 'k8s':
             #    new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
-
 
             validate = False
             new_descriptor_id = descriptor_name
@@ -162,7 +160,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 current_data[type_descriptor] = {}
             current_data[type_descriptor][new_descriptor_id] = new_descriptor
             self.data_project = current_data
-            self.validated = validate  
+            self.validated = validate
             self.update()
             result = new_descriptor_id
         except Exception as e:
@@ -181,11 +179,17 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = EtsiProject.get_add_element(self, request)
         elif element_type in sf_elements:
             vnf_id = request.POST.get('group_id')
-            vdu_id = request.POST.get('element_id')
-            if element_type == 'vnf_click_vdu':
-                result = self.add_vnf_click_vdu(vnf_id, vdu_id)
-            elif element_type == 'vnf_k8s_vdu':
-                result = self.add_vnf_k8s_vdu(vnf_id, vdu_id)
+            element_id = request.POST.get('element_id')
+            opt_params = request.POST.get('opt_params', {})
+            if opt_params:
+                opt_params = json.loads(opt_params)
+
+            if element_type == 'vnf_click_vdu' or element_type == 'vnf_k8s_vdu':
+
+                result = self.add_vnf_nested_vdu(vnf_id, element_id, **opt_params)
+            elif element_type == 'k8s_service_cp':
+
+                result = self.add_k8s_service_cp(vnf_id, element_id, **opt_params)
 
         elif element_type in click_elements:
             result = ClickProject.get_add_element(self, request)
@@ -193,19 +197,20 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         return result
 
     def get_remove_element(self, request):
-
         result = False
         parameters = request.POST.dict()
-        print "get_remove_element", parameters
         element_type = request.POST.get('element_type')
 
         if element_type in etsi_elements:
             result = EtsiProject.get_remove_element(self, request)
         elif element_type in sf_elements:
+            group_id = request.POST.get('group_id')
+            element_id = request.POST.get('element_id')
             if element_type == 'vnf_k8s_vdu' or element_type == 'vnf_click_vdu':
-                group_id = request.POST.get('group_id')
-                element_id = request.POST.get('element_id')
                 result = EtsiProject.remove_vnf_vdu(self, group_id, element_id)
+            if element_type == 'k8s_service_cp':
+                result = self.remove_k8s_service_cp(group_id, element_id)
+
         elif element_type in click_elements:
             result = ClickProject.get_remove_element(self, request)
 
@@ -214,20 +219,16 @@ class SuperfluidityProject(EtsiProject, ClickProject):
     def get_node_overview(self, **kwargs):
         """Returns the node overview"""
         element_type = kwargs['element_type']
-        #print kwargs
+        # print kwargs
         if element_type == 'vnf':
             return self._vnf_overview(**kwargs)
         return {}
 
     def _vnf_overview(self, **kwargs):
         result = {
-            'vdu':[]
+            'vdu': []
         }
-        # {
-        #     "vduId": "vnf_vdu_testvm",
-        #     "vdutype": "default" | | vduNestedDescType
-        #     "vdusource": swImageDesc.swImage | | vduNestedDesc
-        # }
+
         descriptor = self.get_descriptor(kwargs['element_id'], 'vnfd')
         for vdu in descriptor['vdu']:
             current = {
@@ -241,7 +242,6 @@ class SuperfluidityProject(EtsiProject, ClickProject):
     def get_add_link(self, request):
         result = False
         parameters = request.POST.dict()
-        print "get_add_link", parameters
 
         source_type = parameters['source_type']
         destination_type = parameters['target_type']
@@ -256,7 +256,6 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         result = False
         parameters = request.POST.dict()
-        print "param remove_link", parameters
         source_type = parameters['source_type']
         destination_type = parameters['target_type']
 
@@ -278,21 +277,25 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = None  # TODO maybe we should use False ?
         return result
 
-    def add_vnf_click_vdu(self, vnf_id, vdu_id):
-        log.debug('add_vnf_click_vdu')
+    def add_vnf_nested_vdu(self, vnf_id, vdu_id, **kwargs):
+        log.debug('add_vnf_nested_vdu')
         try:
+            log.debug(kwargs['nested_desc']['id'])
             current_data = json.loads(self.data_project)
-            # utility = Util()
             vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
             vdu_descriptor['vduId'] = vdu_id
             vdu_descriptor['intCpd'] = []
-            vdu_descriptor['vduNestedDesc'] = vdu_id
-            vdu_descriptor['vduNestedDescType'] = 'click'
+            vdu_descriptor['vduNestedDesc'] = [kwargs['nested_desc']['id']]
+
+            if 'vdu_param' in kwargs:
+                vdu_descriptor.update(kwargs['vdu_param'])
+
+            vdu_nested_desc = self.get_descriptor_template('vdunesteddesc')
+
+            vdu_nested_desc.update(kwargs['nested_desc'])
             current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
-            if 'click' not in current_data:
-                current_data['click'] = {}
-            if vdu_id not in current_data['click']:
-                current_data['click'][vdu_id] = ''
+            current_data['vnfd'][vnf_id] = self._append_vdu_nested_desc(vdu_nested_desc, current_data['vnfd'][vnf_id])
+
             self.data_project = current_data
             self.update()
             result = True
@@ -301,21 +304,19 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = False
         return result
 
-    def add_vnf_k8s_vdu(self, vnf_id, vdu_id):
-        log.debug('add_vnf_k8s_vdu')
+    def add_k8s_service_cp(self, vnf_id, element_id, **kwargs):
+        log.debug('add_k8s_service_cp')
         try:
             current_data = json.loads(self.data_project)
-            # utility = Util()
-            vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
-            vdu_descriptor['vduId'] = vdu_id
-            vdu_descriptor['intCpd'] = []
-            vdu_descriptor['vduNestedDesc'] = vdu_id
-            vdu_descriptor['vduNestedDescType'] = 'kubernetes'
-            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
-            if 'k8s' not in current_data:
-                current_data['k8s'] = {}
-            if vdu_id not in current_data['k8s']:
-                current_data['k8s'][vdu_id] = ''
+            k8s_service_cp = self.get_descriptor_template('k8sservicecpd')
+            k8s_service_cp.update(kwargs['k8s_service_cpd'])
+            vnf = current_data['vnfd'][vnf_id]
+            if 'k8SServiceCpd' not in vnf:
+                vnf['k8SServiceCpd'] = []
+            if SuperfluidityParser.find_object_from_list('cpdId', element_id, vnf, 'k8SServiceCpd') is None:
+                vnf['k8SServiceCpd'].append(k8s_service_cp)
+
+
             self.data_project = current_data
             self.update()
             result = True
@@ -323,6 +324,30 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             log.exception(e)
             result = False
         return result
+
+    def remove_k8s_service_cp(self, vnf_id, element_id):
+        log.debug('remove_k8s_service_cp')
+        try:
+            current_data = json.loads(self.data_project)
+            vnf = current_data['vnfd'][vnf_id]
+            k8s_service_cp = next((x for x in vnf['k8SServiceCpd'] if x['cpdId'] == element_id), None)
+            if k8s_service_cp is not None:
+                vnf['k8SServiceCpd'].remove(k8s_service_cp)
+
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def _append_vdu_nested_desc(self, nested_data, vnf):
+        if 'vduNestedDesc' not in vnf:
+            vnf['vduNestedDesc'] = []
+        if SuperfluidityParser.get_nested_vdu_from_id(nested_data['id'], vnf) is None:
+            vnf['vduNestedDesc'].append(nested_data)
+        return vnf
 
     def get_available_nodes(self, args):
         """Returns all available node """
@@ -330,11 +355,13 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         try:
             result = []
             categories = {}
-            #current_data = json.loads(self.data_project)
+            # current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
             for node in model_graph['layer'][args['layer']]['nodes']:
-                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
-                    category_name = model_graph['nodes'][node]['type'] if 'type' in model_graph['nodes'][node] else model_graph['nodes'][node]
+                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and \
+                        model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                    category_name = model_graph['nodes'][node]['type'] if 'type' in model_graph['nodes'][node] else \
+                    model_graph['nodes'][node]
                     if category_name not in categories:
                         categories[category_name] = {
                             "category_name": category_name,
@@ -344,10 +371,9 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                         "name": model_graph['nodes'][node]['label'],
                         "id": node
                     })
-                    #result.append(current_data)
+                    # result.append(current_data)
             result = categories.values()
-            print 'result', result
-            #result = current_data[type_descriptor][descriptor_id]
+            # result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.exception(e)
             result = []
@@ -367,15 +393,12 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         try:
             current_data = json.loads(self.data_project)
             zip = zipfile.ZipFile(in_memory, "w", zipfile.ZIP_DEFLATED)
-            print current_data
             for desc_type in current_data:
-                print desc_type
                 for current_desc in current_data[desc_type]:
-                    print desc_type, current_desc
                     if desc_type == 'click':
                         zip.writestr(current_desc + '.click', current_data[desc_type][current_desc])
                     elif desc_type == 'k8s':
-                        zip.writestr(current_desc + '.yaml',  yaml.safe_dump(current_data[desc_type][current_desc]))
+                        zip.writestr(current_desc + '.yaml', yaml.safe_dump(current_data[desc_type][current_desc]))
                     else:
                         zip.writestr(current_desc + '.json', json.dumps(current_data[desc_type][current_desc]))
 
@@ -394,8 +417,11 @@ class SuperfluidityProject(EtsiProject, ClickProject):
     def push_ns_on_repository(self, nsd_id, repository, **kwargs):
         ns_data = self.get_all_ns_descriptors(nsd_id)
         ansible_util = AnsibleUtility()
-        playbooks_path = kwargs['repo_path']+'/project_' + str(self.id) + '/'+ nsd_id +'/'
+        playbooks_path = kwargs['repo_path'] + '/project_' + str(self.id) + '/' + nsd_id + '/'
         conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
-        commit_msg = kwargs['commit_msg'] if ('commit_msg' in kwargs and kwargs['commit_msg'] != '') else 'update project_'+str(self.id) + ' nsd:'+ nsd_id
+        commit_msg = kwargs['commit_msg'] if (
+        'commit_msg' in kwargs and kwargs['commit_msg'] != '') else 'update project_' + str(self.id) + ' nsd:' + nsd_id
         push_result = repository.push_repository(msg=commit_msg)
         return push_result
+
+

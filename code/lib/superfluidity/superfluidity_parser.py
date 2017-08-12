@@ -162,11 +162,22 @@ class SuperfluidityParser(Parser):
         print 'result', result
         return result
 
-    def get_nested_vdu_from_id(cls, nested_vdu_id, vnf_data):
+    @staticmethod
+    def get_nested_vdu_from_id(nested_vdu_id, vnf_data):
         try:
             for nested_vdu in vnf_data['vduNestedDesc']:
                 if nested_vdu['id'] == nested_vdu_id:
                     return nested_vdu
         except Exception as e:
             log.exception(e)
-            return None
+        return None
+
+    @staticmethod
+    def find_object_from_list(key, value, data_dict, key_list):
+        try:
+            for item in data_dict[key_list]:
+                if item[key] == value:
+                    return item
+        except Exception as e:
+            log.exception(e)
+        return None

@@ -1,13 +1,42 @@
 {% extends "descriptor/modal/choose_node_id.html" %}
 
 {% block content_body %}
-<div id="div_chose_vnf">
-    <div>
-        <label>Choose VNF id </label>
+    <div id="new_node_section_vnf" class="new-node-section">
+        <div><label>or select an available VNF </label></div>
+        <select class="form-control" left="20px" id="selection_chooser_vnf">
+        </select>
     </div>
-    <input name="input_choose_node_id" id="input_choose_node_vnf" type="text" size="40" maxlength="20"/>
-    <div><label>or select an available VNF </label></div>
-    <select class="form-control" left="20px" id="selection_chooser_vnf">
-    </select>
-</div>
+
+    <div id="new_node_section_vnf_click_vdu" class="new-node-section">
+        <div><label>Insert data for a new Vdu Nested Descriptor:</label></div>
+        <div id="div_chose_new_vnf_click_vdu">
+            <label>Choose an id </label>
+            <input name="input_choose_vnf_vduClickDesc_id" id="input_choose_vnf_vduClickDesc_id" type="text"
+                   size="40" maxlength="20"/>
+        </div>
+    </div>
+
+    <div id="new_node_section_vnf_k8s_vdu" class="new-node-section">
+        <div><label>Insert data for a new Vdu Nested Descriptor:</label></div>
+        <div id="div_chose_new_vnf_k8s_vdu">
+            <label>Choose an id </label>
+            <input name="input_choose_vnf_vduK8sDesc_id" id="input_choose_vnf_vduK8sDesc_id" type="text"
+                   size="40" maxlength="20"/>
+        </div>
+
+    </div>
+
+    <div id="new_node_section_vnf_docker_vdu" class="new-node-section">
+
+    </div>
+    <div id="new_node_section_k8s_service_cp" class="new-node-section">
+        <label>K8s service descriptor</label>
+        <input name="input_choose_k8s_service_cpd_id" id="input_choose_k8s_service_cpd_id" type="text" size="40" maxlength="20"/>
+    </div>
+    <div id="new_node_section_available_nested" class="new-node-section">
+        <div><label>Or select an available Vdu Nested Descriptor from this VNF </label></div>
+        <select class="form-control" left="20px" id="selection_chooser_vnf_vduNestedDesc" disabled>
+        </select>
+    </div>
+
 {% endblock %}

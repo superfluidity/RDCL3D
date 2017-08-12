@@ -25,7 +25,7 @@ nodes:                                  #List of nodes, with id and label used i
         label: VduCp
         type: Cp
     vnf_click_vdu:
-        label: CLick VDU
+        label: Click VDU
         type: Vdu
     vnf_k8s_vdu:
         label: K8s VDU
@@ -132,11 +132,11 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
-            vnf_docker_vdu:
-                addable:
-                    callback: addVnfVdu
-                removable:
-                    callback: removeVnfVdu
+            #vnf_docker_vdu:
+            #    addable:
+            #        callback: addVnfVdu
+            #    removable:
+            #        callback: removeVnfVdu
                 #expands : compact
             vnf_ext_cp:
                 addable:
@@ -150,9 +150,9 @@ layer:                                  #List of Layers
                     callback: removeVnfVduCp
             k8s_service_cp:
                 addable:
-                    callback: addK8sServiceCp
+                    callback: addNode
                 removable:
-                    callback: removeK8sServiceCp
+                    callback: removeNode
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf_vl:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections
