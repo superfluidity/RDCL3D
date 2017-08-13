@@ -749,7 +749,6 @@ class EtsiProject(Project):
         try:
             current_data = json.loads(self.data_project)
             vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == vdu_id), None)
-            # TODO non capisco queste due righe qui sotto
             intcp_descriptor = next((x for x in vdu_descriptor['intCpd'] if x['cpdId'] == vducp_id), None)
             intcp_descriptor['intVirtualLinkDesc'] = intvl_id
             self.data_project = current_data

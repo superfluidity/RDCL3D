@@ -116,6 +116,14 @@ function openEditorEvent(e, id){
     openEditor(id);
 }
 
+function nodeDragStart(event) {
+    event.dataTransfer.setData("Text", event.target.id);
+}
+
+function savePositions(el) {
+    graph_editor.savePositions();
+}
+
 function buildPalette(args) {
     $("#paletteContainer").empty();
     var type_property = graph_editor.getTypeProperty();
@@ -136,14 +144,12 @@ function buildPalette(args) {
             category.types.forEach(function (type) {
                 console.log(graph_editor.get_name_from_d3_symbol(d3.symbolCircle))
                 var type_id = type.id.replace(/[\s.*+?^${}()|[\]\\]/g, "_");
-                var palette_node_icon = //(type_property[category.id].image) ? '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image || "") + ')"></div>' :
-                    '<div class="palette-node-icon" style="background-color:' + type_property[category.id].color + '"></div>';
-
-                if(type_property[category.id].image && type_property[category.id].image != ''){
-                    palette_node_icon = '<div class="palette-node-icon" style="background-image: url(' + (type_property[category.id].image || "") + ')"></div>';
+                var palette_node_icon;
+                if(type_property[type.id] && type_property[type.id].image && type_property[type.id].image != ''){
+                    palette_node_icon = '<div class="palette-node-icon" style="background-image: url(' + (type_property[type.id].image || "") + ')"></div>';
                 }
-                else if(type_property[category.id].shape){
-                    palette_node_icon = buildHtmlShape({shape: type_property[category.id].shape, color: type_property[category.id].color});
+                else if(type_property[type.id] && type_property[type.id].shape){
+                    palette_node_icon = buildHtmlShape({shape: type_property[type.id].shape, color: type_property[type.id].color});
 
                 }
                 else{//#1F77B4

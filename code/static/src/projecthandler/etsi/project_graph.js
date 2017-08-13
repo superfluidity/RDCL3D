@@ -58,7 +58,7 @@ function initDropOnGraph() {
                 new dreamer.GraphRequests().getUnusedVnf(group, function(vnfs) {
                     $('#div_chose_id').hide();
                     $('#div_chose_vnf').show();
-                    $('#input_choose_node_vnf').val(nodetype + "_" + generateUID());
+                    $('#input_choose_node_id').val(nodetype + "_" + generateUID());
                     $('#selection_chooser_vnf').empty();
                     $('#selection_chooser_vnf').append('<option >None</option>');
                     $('#modal_chooser_title_add_node').text('Add ' + type_name);
@@ -67,7 +67,7 @@ function initDropOnGraph() {
                     }
                     $('#save_choose_node_id').off('click').on('click', function() {
                         var choice = $("#selection_chooser_vnf option:selected").text();
-                        var name = $('#input_choose_node_vnf').val();
+                        var name = $('#input_choose_node_id').val();
                         if (choice == 'None') {
                             var node_information = {
                                 'id': name,
@@ -159,10 +159,6 @@ function handleForce(el) {
 
 }
 
-function savePositions(el) {
-    graph_editor.savePositions();
-}
-
 function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     if (c.link.view == 'ns') {
@@ -190,13 +186,6 @@ function updateBredCrumb(filter_parameters){
      $('#breadcrumb').append(newLi);
 }
 
-
-
-
-
-function nodeDragStart(event){
-    event.dataTransfer.setData("Text", event.target.id);
-}
 
 function openEditor(project_id) {
     window.location.href = '/projects/' + project_id + '/descriptors/' + graph_editor.getCurrentView() + 'd/' + graph_editor.getCurrentGroup();

@@ -26,10 +26,10 @@ dreamer.SuperfluidityController = (function(global) {
 
     SuperfluidityController.prototype.addVnfVdu = function(graph_editor, node, success, error) {
         SuperfluidityController.etsiController.addVnfVdu(graph_editor, node, success, error);
-    }
+    };
 
     SuperfluidityController.prototype.addVnfVduCp = function(graph_editor, node, success, error) {
-         var vnf_id = node.info.group[0];
+        var vnf_id = node.info.group[0];
         var vnf_vdus = $.grep(graph_editor.d3_graph.nodes, function(e) {
             return (e.info.group.indexOf(vnf_id) >= 0 && (e.info.type == 'vnf_vdu' || sf_vnf_vdu.indexOf(e.info.type) > -1 ));
         });
@@ -72,15 +72,15 @@ dreamer.SuperfluidityController = (function(global) {
 
     SuperfluidityController.prototype.nsCpExclusiveConnection = function(graph_editor, link, success, error) {
         SuperfluidityController.etsiController.nsCpExclusiveConnection(graph_editor, link, success, error);
-    }
+    };
 
     SuperfluidityController.prototype.linkVnftoNsVl = function(graph_editor, link, success, error) {
         SuperfluidityController.etsiController.linkVnftoNsVl(graph_editor, link, success, error);
-    }
+    };
 
     SuperfluidityController.prototype.linkVnftoNsCp = function(graph_editor, link, success, error) {
         SuperfluidityController.etsiController.linkVnftoNsCp(graph_editor, link, success, error);
-    }
+    };
 
     SuperfluidityController.prototype.linkVltoVduCp = function(graph_editor, link, success, error) {
         var s = link.source;
@@ -133,15 +133,15 @@ dreamer.SuperfluidityController = (function(global) {
                 success();
             }
         });
-    }
+    };
 
    SuperfluidityController.prototype.linkVnfVltoExpCp = function(graph_editor, link, success, error) {
         SuperfluidityController.etsiController.linkVnfVltoExpCp(graph_editor, link, success, error);
-   }
+   };
 
    SuperfluidityController.prototype.removeVnfVdu = function(graph_editor, node, success, error) {
         SuperfluidityController.etsiController.removeVnfVdu(graph_editor, node, success, error);
-   }
+   };
 
     SuperfluidityController.prototype.removeVnfVduCp = function(graph_editor, node, success, error) {
         var vdu_links = $.grep(graph_editor.d3_graph.links, function(e) {
@@ -171,7 +171,7 @@ dreamer.SuperfluidityController = (function(global) {
                 success();
             }
         });
-    }
+    };
 
     SuperfluidityController.prototype.addNode = function(graph_editor, node, success, error) {
         console.log("add node in view", JSON.stringify(graph_editor.getCurrentView()))
@@ -188,7 +188,7 @@ dreamer.SuperfluidityController = (function(global) {
         if(current_view != 'compact' && current_view != 'expandable' ){
             SuperfluidityController.etsiController.addToCurrentVNFFG(graph_editor, args, error);
         }
-    }
+    };
 
     SuperfluidityController.prototype.removeNode = function(graph_editor, node, success, error) {
         var current_view = graph_editor.getCurrentView();

@@ -15,15 +15,11 @@
 #
 
 import json
-import pyaml
-import yaml
-
 from lib.clickparser import click_parser
 from lib.etsi.etsi_parser import EtsiParser
 from lib.util import Util
 from lib.parser import Parser
 import logging
-import traceback
 import glob
 import os
 
@@ -36,31 +32,36 @@ class SuperfluidityParser(Parser):
 
     """
 
+    vdu_type_map = {
+        'kubernetes': 'k8s',
+        'click': 'click'
+    }
+
     def __init__(self):
         super(SuperfluidityParser, self).__init__()
 
     @classmethod
-    def importprojectdir(cls,dir_project, file_type):
+    def importprojectdir(cls, dir_project, file_type):
         """Imports all descriptor files under a given folder
 
         this method is specific for Superfluidity project type
         """
 
         project = {
-            'nsd':{},
+            'nsd': {},
 
-            'vnfd':{},
+            'vnfd': {},
 
-            'click':{},
+            'click': {},
 
             'k8s': {},
 
             'positions': {}
         }
 
-        nfv_path = dir_project+"/NFV/"
-        etsi_project = EtsiParser.importprojectdir( nfv_path + '/JSON', 'json')
-        print etsi_project
+        nfv_path = dir_project + "/NFV/"
+        etsi_project = EtsiParser.importprojectdir(nfv_path + '/JSON', 'json')
+        #print etsi_project
         project['nsd'] = etsi_project['nsd']
         project['vnfd'] = etsi_project['vnfd']
         project['click'] = click_parser.importprojectdir(dir_project + '/CLICK/', 'click')['click']
@@ -71,14 +72,14 @@ class SuperfluidityParser(Parser):
             if os.path.basename(vertices_file) == 'vertices.json':
                 project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 
-        print project
+        #print project
 
         return project
 
     @classmethod
     def import_kubernetes_from_dir_project(cls, dir_project):
         result = {}
-        for k8s_filename in glob.glob(os.path.join(dir_project,'K8S', '*.yaml')):
+        for k8s_filename in glob.glob(os.path.join(dir_project, 'K8S', '*.yaml')):
             log.info(k8s_filename)
             yaml_object = Util().loadyamlfile(k8s_filename)
             json_object = Util.json_loads_byteified(Util.yaml2json(yaml_object))
@@ -106,7 +107,7 @@ class SuperfluidityParser(Parser):
             if desc_type in file_dict:
                 files_desc_type = file_dict[desc_type]
                 for file in files_desc_type:
-                    if(desc_type != 'k8s'):
+                    if desc_type != 'k8s':
                         project[desc_type][os.path.splitext(file.name)[0]] = json.loads(file.read())
                     else:
                         yaml_object = Util().loadyamlfile(file)
@@ -117,35 +118,66 @@ class SuperfluidityParser(Parser):
         return project
 
     def get_all_ns_descriptors(cls, nsd_id, project_data):
-        vdu_type_map = {
-            'kubernetes': 'k8s',
-            'click': 'click'
-        }
+
         try:
             descriptor = {
                 'nsd': {},
                 'vnfd': {},
-                #'click': {},
-                #'k8s': {}
+                # 'click': {},
+                # 'k8s': {}
             }
-            #print nsd_id, project_data
+            # print nsd_id, project_data
             nsd_to_deploy = project_data['nsd'][nsd_id]
             descriptor['nsd'][nsd_id] = project_data['nsd'][nsd_id]
             for vnfdId in nsd_to_deploy['vnfdId']:
                 descriptor['vnfd'][vnfdId] = project_data['vnfd'][vnfdId]
                 for vdu in descriptor['vnfd'][vnfdId]['vdu']:
-                    if 'vduNestedDescType' in vdu:
-                        desc_type = vdu_type_map[str(vdu['vduNestedDescType'])] if str(vdu['vduNestedDescType']) in vdu_type_map else str(vdu['vduNestedDescType'])
-                        if desc_type and vdu['vduNestedDesc'] and desc_type in project_data  \
-                                and vdu['vduNestedDesc'] in project_data[desc_type]:
-                            vduNestedDescType = str(vdu['vduNestedDescType'])
-                            if vduNestedDescType not in descriptor:
-                                descriptor[vduNestedDescType] = {}
-                            print "vduNestedDescType", desc_type, vduNestedDescType, str(vdu['vduNestedDesc'])
-                            descriptor[vduNestedDescType][str(vdu['vduNestedDesc'])] = project_data[desc_type][vdu['vduNestedDesc']]
+                    if 'vduNestedDesc' in vdu:
+                        for vdu_nested_desc in vdu['vduNestedDesc']:
+                            #print 'vdu_nested_desc', vdu_nested_desc
+                            descriptor.update(cls.get_nested_vdu_descriptor(vdu_nested_desc, project_data['vnfd'][vnfdId], project_data))
         except Exception as e:
             print "Exception male male"
             log.exception(e)
             return {}
 
         return descriptor
+
+    def get_nested_vdu_descriptor(cls, nested_vdu_id, vnf_data, project_data):
+        result = {}
+        try:
+            nested_vdu = cls.get_nested_vdu_from_id(nested_vdu_id,vnf_data)
+            if nested_vdu:
+                vdu_nested_desc_type = cls.vdu_type_map[nested_vdu['vduNestedDescriptorType']]
+                vdu_nested_descriptor = nested_vdu['vduNestedDescriptor']
+                if vdu_nested_desc_type not in result:
+                    result[vdu_nested_desc_type] = {}
+                print 'get_nested_vdu_descriptor', vdu_nested_desc_type, vdu_nested_descriptor
+                if vdu_nested_desc_type in project_data and vdu_nested_descriptor in project_data[vdu_nested_desc_type]:
+                    print vdu_nested_desc_type, vdu_nested_descriptor
+                    result[vdu_nested_desc_type][vdu_nested_descriptor] = project_data[vdu_nested_desc_type][vdu_nested_descriptor]
+        except Exception as e:
+            log.exception(e)
+            return {}
+        print 'result', result
+        return result
+
+    @staticmethod
+    def get_nested_vdu_from_id(nested_vdu_id, vnf_data):
+        try:
+            for nested_vdu in vnf_data['vduNestedDesc']:
+                if nested_vdu['id'] == nested_vdu_id:
+                    return nested_vdu
+        except Exception as e:
+            log.exception(e)
+        return None
+
+    @staticmethod
+    def find_object_from_list(key, value, data_dict, key_list):
+        try:
+            for item in data_dict[key_list]:
+                if item[key] == value:
+                    return item
+        except Exception as e:
+            log.exception(e)
+        return None
