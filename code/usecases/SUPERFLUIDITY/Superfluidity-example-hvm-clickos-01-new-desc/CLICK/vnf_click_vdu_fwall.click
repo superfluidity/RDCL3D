@@ -12,7 +12,7 @@ fwc :: Classifier(
 fwsource0 -> fwc;
 fwc[0] -> fwsink0;
 fwc[1] -> fwsink0;
-fwc[2] -> Print -> Discard;
+fwc[2] -> fwprint :: Print -> Discard;
 
 fwsource1 -> Null -> fwsink1;
 

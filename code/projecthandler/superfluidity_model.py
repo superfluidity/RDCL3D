@@ -228,7 +228,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         result = {
             'vdu': []
         }
-
+        # FIXME adattare a nuovo descrittore
         descriptor = self.get_descriptor(kwargs['element_id'], 'vnfd')
         for vdu in descriptor['vdu']:
             current = {
