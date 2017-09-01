@@ -153,7 +153,9 @@ dreamer.SuperfluidityController = (function(global) {
             vdu_id = vdu_links[0].source.id;
         }else if(vdu_links[0].target.info.type == 'vnf_vdu' ){
             vdu_id = vdu_links[0].target.id;
-        }else if(vdu_links[0].source.info.type == 'vnf_click_vdu'  || vdu_links[0].source.info.type == 'vnf_k8s_vdu'){
+        }else if(vdu_links[0].source.info.type == 'vnf_click_vdu'
+            || vdu_links[0].source.info.type == 'vnf_k8s_vdu'
+            || vdu_links[0].source.info.type == 'vnf_docker_vdu'){
             vdu_id = vdu_links[0].source.vduId;
         }else{
             vdu_id = vdu_links[0].target.vduId;

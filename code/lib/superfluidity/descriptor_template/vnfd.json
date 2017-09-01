@@ -58,7 +58,7 @@
       "vduParent": null,
       "vduParentBareMetal": null,
       "vduParentMandatory": false,
-      "vduNestedDesc": []
+      "vduNestedDesc": null
     }
   ],
   "virtualComputeDesc": [

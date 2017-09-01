@@ -24,7 +24,7 @@ $(document).ready(function () {
             }
         };
     } else {
-        var allowed_types = descriptor_type === 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'k8s_service_cp'];
+        var allowed_types = descriptor_type === 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'k8s_service_cp'];
         params = {
             node: {
                 type: allowed_types,

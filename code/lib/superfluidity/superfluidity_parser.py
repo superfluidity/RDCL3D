@@ -133,9 +133,9 @@ class SuperfluidityParser(Parser):
                 descriptor['vnfd'][vnfdId] = project_data['vnfd'][vnfdId]
                 for vdu in descriptor['vnfd'][vnfdId]['vdu']:
                     if 'vduNestedDesc' in vdu:
-                        for vdu_nested_desc in vdu['vduNestedDesc']:
-                            #print 'vdu_nested_desc', vdu_nested_desc
-                            descriptor.update(cls.get_nested_vdu_descriptor(vdu_nested_desc, project_data['vnfd'][vnfdId], project_data))
+                        vdu_nested_desc = vdu['vduNestedDesc']
+                        descriptor.update(
+                            cls.get_nested_vdu_descriptor(vdu_nested_desc, project_data['vnfd'][vnfdId], project_data))
         except Exception as e:
             print "Exception male male"
             log.exception(e)
@@ -165,6 +165,7 @@ class SuperfluidityParser(Parser):
     @staticmethod
     def get_nested_vdu_from_id(nested_vdu_id, vnf_data):
         try:
+
             for nested_vdu in vnf_data['vduNestedDesc']:
                 if nested_vdu['id'] == nested_vdu_id:
                     return nested_vdu

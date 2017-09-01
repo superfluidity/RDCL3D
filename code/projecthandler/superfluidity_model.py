@@ -285,7 +285,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             vdu_descriptor = self.get_descriptor_template('vnfd')['vdu'][0]
             vdu_descriptor['vduId'] = vdu_id
             vdu_descriptor['intCpd'] = []
-            vdu_descriptor['vduNestedDesc'] = [kwargs['nested_desc']['id']]
+            vdu_descriptor['vduNestedDesc'] = kwargs['nested_desc']['id']
 
             if 'vdu_param' in kwargs:
                 vdu_descriptor.update(kwargs['vdu_param'])
