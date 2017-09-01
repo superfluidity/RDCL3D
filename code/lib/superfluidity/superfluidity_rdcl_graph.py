@@ -53,18 +53,17 @@ class SuperfluidityRdclGraph(RdclGraph):
                 for vnf_id in json_project['vnfd']:
                     vnfd = json_project['vnfd'][vnf_id]
                     for vdu in vnfd['vdu']:
-                        if 'vduNestedDesc' in vdu:
+                        if 'vduNestedDesc' in vdu and vdu['vduNestedDesc'] is not None:
                             vdu_type = None
-                            for vdu_nested_dec_id in vdu['vduNestedDesc']:
-                                vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnfd)
-                                if vdu_nested:
-                                    if vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
-                                        vdu_type = 'vnf_k8s_vdu'
-
-                                    elif vdu_nested['vduNestedDescriptorType'] == 'click':
-                                        vdu_type = 'vnf_click_vdu'
-                                    elif vdu_nested['vduNestedDescriptorType'] == 'docker':
-                                        vdu_type = 'vnf_docker_vdu'
+                            vdu_nested_desc_id = vdu['vduNestedDesc']
+                            vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_desc_id, vnfd)
+                            if vdu_nested:
+                                if vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
+                                    vdu_type = 'vnf_k8s_vdu'
+                                elif vdu_nested['vduNestedDescriptorType'] == 'click':
+                                    vdu_type = 'vnf_click_vdu'
+                                elif vdu_nested['vduNestedDescriptorType'] == 'docker':
+                                    vdu_type = 'vnf_docker_vdu'
 
                             vertice = next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
                             if vertice is not None:
@@ -72,6 +71,16 @@ class SuperfluidityRdclGraph(RdclGraph):
                                     vertice['info']['type'] = vdu_type
                                 vertice['group'] = [vdu['vduNestedDesc']]
                                 vertice['vduId'] = vdu['vduId']
+                        elif 'swImageDesc' in vdu and 'docker' in vdu['swImageDesc']['supportedVirtualisationEnvironment']:
+                            vdu_type = 'vnf_docker_vdu'
+                            vertice = next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
+                            if vertice is not None:
+                                #print "trovata docker", vdu_type
+                                if vdu_type:
+                                    vertice['info']['type'] = vdu_type
+                                vertice['group'] = vdu['swImageDesc']['swImage']
+                                vertice['vduId'] = vdu['vduId']
+
                     # create vertices and edges related to k8SServiceCpd
                     if 'k8SServiceCpd' in vnfd:
                         for k8SServiceCpd in vnfd['k8SServiceCpd']:

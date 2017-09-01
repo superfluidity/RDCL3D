@@ -82,7 +82,7 @@ var example_gui_properties = {
                 "image": "docker.png",
                 //"color": "#50A7CC",
                 "color": "#f44250",
-                "size": 18,
+                "size": 36,
                 "name": "Docker VDU"
             },
             "element": {

@@ -132,11 +132,11 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
-            #vnf_docker_vdu:
-            #    addable:
-            #        callback: addVnfVdu
-            #    removable:
-            #        callback: removeVnfVdu
+            vnf_docker_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
                 #expands : compact
             vnf_ext_cp:
                 addable:

@@ -151,11 +151,11 @@ class AnsibleUtility(object):
             # print vnf['vdu']
             vdu_list = vnf['vdu']
             for vdu in vdu_list:
-                if 'vduNestedDesc' in vdu:
-                    for vdu_nested_dec_id in vdu['vduNestedDesc']:
-                        vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
-                        if vdu_nested and vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
-                            roles.append(vnfd + '-' + vdu['vduId'])
+                if 'vduNestedDesc' in vdu and vdu['vduNestedDesc'] is not None:
+                    vdu_nested_desc_id = vdu['vduNestedDesc']
+                    vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_desc_id, vnf)
+                    if vdu_nested and vdu_nested['vduNestedDescriptorType'] == 'kubernetes':
+                        roles.append(vnfd + '-' + vdu['vduId'])
         return roles
 
     @staticmethod
@@ -168,8 +168,9 @@ class AnsibleUtility(object):
         vdu_list = vnf['vdu']
         for vdu in vdu_list:
             if vdu['vduId'] == vdu_name:
-                for vdu_nested_dec_id in vdu['vduNestedDesc']:
-                    vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
+                if 'vduNestedDesc' in vdu and vdu['vduNestedDesc'] is not None:
+                    vdu_nested_desc_id = vdu['vduNestedDesc']
+                    vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_desc_id, vnf)
                     k8s_name = str(vdu_nested['vduNestedDescriptor'])
                     data = sf_data['k8s'][k8s_name]
                     return data
@@ -186,8 +187,9 @@ class AnsibleUtility(object):
                 vdu_list = vnf['vdu']
                 for vdu in vdu_list:
                     if vdu['vduId'] == vdu_id:
-                        for vdu_nested_dec_id in vdu['vduNestedDesc']:
-                            vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_dec_id, vnf)
+                        if 'vduNestedDesc' in vdu and vdu['vduNestedDesc'] is not None:
+                            vdu_nested_desc_id = vdu['vduNestedDesc']
+                            vdu_nested = SuperfluidityParser().get_nested_vdu_from_id(vdu_nested_desc_id, vnf)
                             # k8s_name.push(role)
                             k8s_name[role] = vdu_nested['vduNestedDescriptor']
         return k8s_name
