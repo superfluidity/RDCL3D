@@ -250,6 +250,12 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             result = EtsiProject.get_add_link(self, request)
         elif source_type in click_elements and destination_type in click_elements:
             result = ClickProject.get_add_link(self, request)
+        elif source_type in sf_elements and destination_type in sf_elements:
+            if (source_type, destination_type) in [('vnf_k8s_vdu', 'k8s_service_cp'), ('k8s_service_cp', 'vnf_k8s_vdu')]:
+                result = self.link_k8sscp_k8_vdu(parameters)
+            else:
+                result = False
+
         return result
 
     def get_remove_link(self, request):
@@ -261,6 +267,9 @@ class SuperfluidityProject(EtsiProject, ClickProject):
 
         if source_type in etsi_elements and destination_type in etsi_elements:
             result = EtsiProject.get_remove_link(self, request)
+        elif source_type in sf_elements and destination_type in sf_elements:
+            if (source_type, destination_type) in [('vnf_k8s_vdu', 'k8s_service_cp'), ('k8s_service_cp', 'vnf_k8s_vdu')]:
+                result = self.unlink_k8sscp_k8_vdu(parameters)
 
         return result
 
@@ -334,6 +343,44 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             if k8s_service_cp is not None:
                 vnf['k8SServiceCpd'].remove(k8s_service_cp)
 
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def link_k8sscp_k8_vdu(self, link_data):
+        try:
+            current_data = json.loads(self.data_project)
+            vnf_id = link_data['group_id']
+            k8vdu_id = link_data['source'] if link_data['source_type'] == 'vnf_k8s_vdu' else link_data['target']
+            k8s_service_cp_id = link_data['source'] if link_data['source_type'] == 'k8s_service_cp' else link_data['target']
+            #k8_vdu_descriptor = next((x for x in current_data['vnfd'][vnf_id]['vdu'] if x['vduId'] == k8vdu_id), None)
+            k8s_service_cp_descriptor = next((x for x in current_data['vnfd'][vnf_id]['k8SServiceCpd'] if x['cpdId'] == k8s_service_cp_id), None)
+            if k8vdu_id not in k8s_service_cp_descriptor['exposedPod']:
+                k8s_service_cp_descriptor['exposedPod'].append(k8vdu_id)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def unlink_k8sscp_k8_vdu(self, link_data):
+        try:
+            current_data = json.loads(self.data_project)
+            vnf_id = link_data['group_id']
+            k8vdu_id = link_data['source'] if link_data['source_type'] == 'vnf_k8s_vdu' else link_data['target']
+            k8s_service_cp_id = link_data['source'] if link_data['source_type'] == 'k8s_service_cp' else link_data['target']
+            print k8s_service_cp_id, k8vdu_id, link_data['source'], link_data['target']
+            k8s_service_cp_descriptor = next(
+                (x for x in current_data['vnfd'][vnf_id]['k8SServiceCpd'] if x['cpdId'] == k8s_service_cp_id), None)
+            print "k8s_service_cp_descriptor", k8s_service_cp_descriptor
+            if k8vdu_id in k8s_service_cp_descriptor['exposedPod']:
+                k8s_service_cp_descriptor['exposedPod'].remove(k8vdu_id)
             self.data_project = current_data
             self.update()
             result = True

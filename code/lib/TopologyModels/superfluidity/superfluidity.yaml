@@ -180,6 +180,13 @@ layer:                                  #List of Layers
                         direct_edge: false
                         removable:
                             callback: removeLink
+            vnf_k8s_vdu:
+                destination:
+                    k8s_service_cp:
+                        callback: linkK8sserviceToK8sVdu
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
             k8s_service_cp:
                 destination:
                     vnf_k8s_vdu:
@@ -319,6 +326,9 @@ callback:                             #List of callbacks used
       file: sf_controller.js
       class: SuperfluidityController
   linkVnfVltoExpCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkK8sserviceToK8sVdu:
       file: sf_controller.js
       class: SuperfluidityController
   removeNode:

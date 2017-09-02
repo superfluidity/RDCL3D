@@ -264,6 +264,7 @@ dreamer.ModelGraphEditor = (function (global) {
 
             if (self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
+                console.log(callback, self.model.callback)
                 var direct_edge = 'direct_edge' in self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type] ? self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]['direct_edge'] : false;
                 link.directed_edge = direct_edge;
                 var c = self.model.callback[callback].class;
