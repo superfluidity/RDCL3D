@@ -19,19 +19,40 @@
     <div id="new_node_section_vnf_k8s_vdu" class="new-node-section">
         <div><label>Insert data for a new Vdu Nested Descriptor:</label></div>
         <div id="div_chose_new_vnf_k8s_vdu">
-            <label>Choose an id </label>
-            <input name="input_choose_vnf_vduK8sDesc_id" id="input_choose_vnf_vduK8sDesc_id" type="text"
+            <label>K8s pod descriptor </label>
+            <input name="input_choose_vnf_vduK8sDesc_id" id="input_choose_vnf_vduK8sDesc_id"
                    size="40" maxlength="20"/>
         </div>
 
     </div>
 
     <div id="new_node_section_vnf_docker_vdu" class="new-node-section">
-
+        <div id="div_chose_new_vnf_docker_vdu_image_name">
+            <label>Docker image name</label>
+            <input name="input_choose_vnf_docker_vdu_image" id="input_choose_vnf_docker_vdu_image"
+                   size="40" maxlength="20"/>
+        </div>
+        <div id="div_chose_new_vnf_docker_vdu_env_name">
+            <label>envVars file</label>
+            <input name="input_choose_vnf_vdu_envVars" id="input_choose_vnf_vdu_envVars"
+                   size="40" maxlength="20"/>
+        </div>
+    </div>
+    <div id="new_node_section_vnf_ansibledocker_vdu" class="new-node-section">
+        <div id="div_chose_new_vnf_ansibledocker_vdu_image_name">
+            <label>Docker image name</label>
+            <input name="input_choose_vnf_ansibledocker_vdu_image" id="input_choose_vnf_ansibledocker_vdu_image"
+                   size="40" maxlength="20"/>
+        </div>
+        <div id="div_chose_new_vnf_docker_ansibledocker_vdu_env_name">
+            <label>envVasr file</label>
+            <input name="input_choose_vnf_ansibledocker_vdu_envVars" id="input_choose_vnf_ansibledocker_vdu_envVars"
+                   size="40" maxlength="20"/>
+        </div>
     </div>
     <div id="new_node_section_k8s_service_cp" class="new-node-section">
         <label>K8s service descriptor</label>
-        <input name="input_choose_k8s_service_cpd_id" id="input_choose_k8s_service_cpd_id" type="text" size="40" maxlength="20"/>
+        <input name="input_choose_k8s_service_cpd_id" id="input_choose_k8s_service_cpd_id"  size="40" maxlength="20"/>
     </div>
     <div id="new_node_section_available_nested" class="new-node-section">
         <div><label>Or select an available Vdu Nested Descriptor from this VNF </label></div>

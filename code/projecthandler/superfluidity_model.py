@@ -91,8 +91,11 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         """Returns a descriptor template for a given descriptor type"""
 
         try:
-            schema = Util.loadjsonfile(
-                os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
+            if type_descriptor != "resource":
+                schema = Util.loadjsonfile(
+                    os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
+            else:
+                schema = ""
             return schema
         except Exception as e:
             log.exception(e)
@@ -122,6 +125,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
             'click': len(current_data['click'].keys()) if 'click' in current_data else 0,
             'k8s': len(current_data['k8s'].keys()) if 'k8s' in current_data else 0,
+            'resource': len(current_data['resource'].keys()) if 'resource' in current_data else 0,
             'validated': self.validated
         }
 
@@ -148,8 +152,10 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 new_descriptor = json.loads(Util.yaml2json(yaml_object))
             elif data_type == 'click':
                 new_descriptor = new_data
-            # elif data_type == 'k8s':
-            #    new_descriptor = new_data
+            elif data_type == 'k8s':
+                new_descriptor = new_data
+            elif data_type == 'resource':
+                new_descriptor = new_data
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
@@ -180,17 +186,16 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type in sf_elements:
             vnf_id = request.POST.get('group_id')
             element_id = request.POST.get('element_id')
-            opt_params = request.POST.get('opt_params', {})
-            if opt_params:
+            opt_params = request.POST.get('opt_params')
+            if 'opt_params' in parameters:
+                print parameters['opt_params']
                 opt_params = json.loads(opt_params)
-
-            if element_type == 'vnf_click_vdu' or element_type == 'vnf_k8s_vdu':
-
+            if element_type == 'vnf_click_vdu' or element_type == 'vnf_k8s_vdu' or element_type == 'vnf_ansibledocker_vdu':
                 result = self.add_vnf_nested_vdu(vnf_id, element_id, **opt_params)
+            elif element_type == 'vnf_docker_vdu':
+                result = self.add_vnf_docker_vdu(vnf_id, element_id, **opt_params)
             elif element_type == 'k8s_service_cp':
-
                 result = self.add_k8s_service_cp(vnf_id, element_id, **opt_params)
-
         elif element_type in click_elements:
             result = ClickProject.get_add_element(self, request)
 
@@ -206,7 +211,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         elif element_type in sf_elements:
             group_id = request.POST.get('group_id')
             element_id = request.POST.get('element_id')
-            if element_type == 'vnf_k8s_vdu' or element_type == 'vnf_click_vdu':
+            if element_type == 'vnf_k8s_vdu' or element_type == 'vnf_click_vdu' or element_type == 'vnf_docker_vdu':
                 result = EtsiProject.remove_vnf_vdu(self, group_id, element_id)
             if element_type == 'k8s_service_cp':
                 result = self.remove_k8s_service_cp(group_id, element_id)
@@ -312,6 +317,32 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             log.exception(e)
             result = False
         return result
+
+    def add_vnf_docker_vdu(self, vnf_id, vdu_id, **kwargs):
+        log.debug('add_vnf_docker_vdu')
+        try:
+            current_data = json.loads(self.data_project)
+            if 'docker_image_name' in kwargs:
+                vdu_descriptor = self.get_descriptor_template('vdu_docker_image')
+                vdu_descriptor['swImageDesc']['id'] = kwargs['docker_image_name']
+                if 'envVar' in kwargs:
+                    vdu_descriptor['swImageDesc']['envVars'] = kwargs['envVar']
+            elif 'docker_file_name' in kwargs:
+                vdu_descriptor = self.get_descriptor_template('vdu_with_nested_desc')
+                if 'envVars' in kwargs:
+                    vdu_descriptor['envVars'] = kwargs['envVars']
+            else:
+                return False
+            vdu_descriptor['vduId'] = vdu_id
+            current_data['vnfd'][vnf_id]['vdu'].append(vdu_descriptor)
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
 
     def add_k8s_service_cp(self, vnf_id, element_id, **kwargs):
         log.debug('add_k8s_service_cp')

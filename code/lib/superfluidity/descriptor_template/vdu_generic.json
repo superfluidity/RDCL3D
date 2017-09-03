@@ -1,0 +1,44 @@
+{
+  "vduId": null,
+  "name": "",
+  "description": "",
+  "intCpd": [
+  ],
+  "virtualComputeDesc": "id",
+  "virtualStorageDesc": "id",
+  "bootOrder": [
+  ],
+  "swImageDesc": {
+    "id": "id",
+    "name": "Name",
+    "version": "0.1",
+    "checksum": "checksum",
+    "containerFormat": "containerFormat",
+    "diskFormat": "Fat32",
+    "minDisk": 500,
+    "minRam": 1,
+    "size": 300,
+    "swImage": "Reference to a SwImage",
+    "operatingSystem": "operatingSystem",
+    "supportedVirtualisationEnvironment": [
+      ""
+    ]
+  },
+  "nfviConstraint": [
+    ""
+  ],
+  "monitoringParameter": [
+    {
+      "id": "id",
+      "name": "name",
+      "performanceMetric": "performanceMetric"
+    }
+  ],
+  "configurableProperties": {
+    "additionalVnfcConfigurableProperty": [
+    ]
+  },
+  "vduParent": null,
+  "vduParentBareMetal": null,
+  "vduParentMandatory": false
+}

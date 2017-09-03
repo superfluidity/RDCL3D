@@ -35,16 +35,7 @@
             <i class="fa fa-save"></i> Save
         </button>
     </li>
-    <li class="pull-right">
-        <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm"
-                onclick="update(this.id)"><i class="fa fa-save"></i> Save and Show Graph
-        </button>
-    </li>
-    <li class="pull-right">
-        <button type="button" class="btn btn-block btn-primary btn-sm" onclick="goToGraph()"><i
-                class="fa fa-sitemap"></i> Show Graph
-        </button>
-    </li>{% endblock %}
+{% endblock %}
 
 {% block tab_pane_list %}
     {{ block.super }}
@@ -62,9 +53,9 @@
     {{ block.super }}
 
     <script>
-        var editorClick;
+        var editorResource;
 
-        var click_editor_settings = {
+        var resource_editor_settings = {
             mode: "text",
             showCursorWhenSelecting: true,
             autofocus: true,
@@ -92,13 +83,13 @@
 
         $(document).ready(function () {
             var myTextArea = document.getElementById("code_editor");
-            editorClick = CodeMirror(function (elt) {
+            editorResource = CodeMirror(function (elt) {
                 myTextArea.parentNode.replaceChild(elt, myTextArea);
-            }, click_editor_settings);
+            }, resource_editor_settings);
 
 
-            editorClick.setValue({{ descriptor_strings.descriptor_string_json |safe }});
-            editorClick.setOption("autoRefresh", true);
+            editorResource.setValue({{ descriptor_strings.descriptor_string_json |safe }});
+            editorResource.setOption("autoRefresh", true);
 
 
         });
@@ -107,7 +98,7 @@
         function update(e) {
             console.log(e);
             var type, text;
-            text = editorClick.getValue();
+            text = editorResource.getValue();
             $.ajax({
                 url: "/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{descriptor_id}}/",
                 type: 'POST',
@@ -118,11 +109,9 @@
                     'text': text
                 },
                 success: function (result) {
-                    if (e == 'save') {
-                        window.location.href = "/projects/{{project_id}}/descriptors/{{descriptor_type}}"
-                    } else {
-                        goToGraph();
-                    }
+
+                    window.location.href = "/projects/{{project_id}}/descriptors/{{descriptor_type}}";
+
                 },
                 error: function (result) {
                     showAlert(result);
@@ -130,9 +119,6 @@
             });
         }
 
-        function goToGraph() {
-            window.location.href = '/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{descriptor_id}}'
-        }
 
     </script>
 {% endblock %}

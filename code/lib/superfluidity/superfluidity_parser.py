@@ -34,7 +34,9 @@ class SuperfluidityParser(Parser):
 
     vdu_type_map = {
         'kubernetes': 'k8s',
-        'click': 'click'
+        'click': 'click',
+        'docker': 'docker',
+        'ansibledocker': 'ansibledocker'
     }
 
     def __init__(self):
@@ -55,6 +57,8 @@ class SuperfluidityParser(Parser):
             'click': {},
 
             'k8s': {},
+
+            'resource': {},
 
             'positions': {}
         }

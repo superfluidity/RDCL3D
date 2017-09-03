@@ -89,7 +89,8 @@ function initDropOnGraph() {
                 "vdu_param": {
                     'vduParent': '',
                     'vduParentBareMetal': '',
-                    'vduParentMandatory': ''
+                    'vduParentMandatory': '',
+                    'envVars': ''
                 }
             };
 
@@ -128,16 +129,24 @@ function initDropOnGraph() {
                 };
 
             }
+            else if (nodetype == 'vnf_docker_vdu') {
+                onLoadModal = null;
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+                    var docker_image = $('#input_choose_vnf_docker_vdu_image').val();
+                    var envVars = $('#input_choose_vnf_vdu_envVars').val();
+                    //var choice = $("#selection_chooser_vnf_vduNestedDesc option:selected").text();
+                    node_information['id'] = vdu_id;
+                    node_information['opt_params'] = {};
+                    node_information['opt_params']['docker_image_name'] = docker_image;
+                    node_information['opt_params']['envVars'] = envVars;
+
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
+            }
             else if (nodetype == 'vnf_k8s_vdu') {
-                onLoadModal = null;/* new dreamer.GraphRequests().getUnusedVnf(group, function (vduNestedDescs) {
-
-                    $('#selection_chooser_vnf_vduNestedDesc').empty();
-                    $('#selection_chooser_vnf_vduNestedDesc').append('<option >None</option>');
-                    for (var i in vduNestedDescs) {
-                        $('#selection_chooser_vnf_vduNestedDesc').append('<option id="' + vduNestedDescs[i] + '">' + vduNestedDescs[i] + '</option>');
-                    }
-
-                });*/
+                onLoadModal = null;
                 retriveDataToSend = function () {
                     var vdu_id = $('#input_choose_node_id').val();
                     var vduNestedDesc_id = $('#input_choose_vnf_vduK8sDesc_id').val();
