@@ -33,6 +33,9 @@ nodes:                                  #List of nodes, with id and label used i
     vnf_docker_vdu:
         label: Docker VDU
         type: Vdu
+    vnf_ansibledocker_vdu:
+        label: Ansible Docker VDU
+        type: Vdu
     k8s_service_cp:
         label: K8s Service
         type: Cp
@@ -128,6 +131,11 @@ layer:                                  #List of Layers
                     callback: removeVnfVdu
                 expands : compact
             vnf_k8s_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
+            vnf_ansibledocker_vdu:
                 addable:
                     callback: addVnfVdu
                 removable:

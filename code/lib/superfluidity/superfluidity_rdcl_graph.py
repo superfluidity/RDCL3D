@@ -64,6 +64,8 @@ class SuperfluidityRdclGraph(RdclGraph):
                                     vdu_type = 'vnf_click_vdu'
                                 elif vdu_nested['vduNestedDescriptorType'] == 'docker':
                                     vdu_type = 'vnf_docker_vdu'
+                                elif vdu_nested['vduNestedDescriptorType'] == 'ansibledocker':
+                                    vdu_type = 'vnf_ansibledocker_vdu'
 
                             vertice = next((x for x in etsi_topology['vertices'] if x['id'] == vdu['vduId']), None)
                             if vertice is not None:

@@ -85,6 +85,13 @@ var example_gui_properties = {
                 "size": 36,
                 "name": "Docker VDU"
             },
+            "vnf_ansibledocker_vdu": {
+                "image": "docker.png",
+                //"color": "#50A7CC",
+                "color": "#f44250",
+                "size": 36,
+                "name": "Ansible Docker VDU"
+            },
             "element": {
                 "shape": "square",
                 "color": "#196B90",
