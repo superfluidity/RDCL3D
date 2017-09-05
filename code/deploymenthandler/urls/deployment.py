@@ -20,6 +20,7 @@ from deploymenthandler import views
 urlpatterns = [
     url(r'^list/', views.user_deployments, name='deployments_list'),
     url(r'^new/', views.new_deployment, name='new_deployment'),
+    url(r'^types/', views.deployments_type_list, name='deployments_type_list'),
     url(r'^(?P<deployment_id>\d+)/$', views.open_deployment, name='open_deployment'),
     url(r'^(?P<deployment_id>\d+)/delete$', views.delete_deployment, name='delete_deployment'),
     url(r'^(?P<deployment_id>\d+)/monitoring$', views.monitoring_deployment, name='monitoring_deployment'),
