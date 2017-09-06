@@ -32,14 +32,14 @@ class DeployAgent(models.Model):
     """
     name = models.CharField(max_length=20, default='')
     base_url = models.TextField(default='')
-    type = models.CharField(max_length=20, default='')
+    #type = models.CharField(max_length=20, default='')
     last_update = models.DateTimeField(default=timezone.now)
 
     def to_json(self):
         return {
             'name': self.name,
             'base_url': self.base_url.rstrip('\/'),
-            'type': self.type,
+            #'type': self.type,
             'last_update': self.last_update
         }
 
@@ -57,6 +57,7 @@ class Deployment(models.Model):
     creator = models.ForeignKey('sf_user.CustomUser', db_column='creator_id')
     created_date = models.DateTimeField(default=timezone.now)
     last_update = models.DateTimeField(default=timezone.now)
+    type = models.CharField(max_length=20, default='')
     status = models.CharField(max_length=20, default='')
     descriptors_id = jsonfield.JSONField(default=[])
     deployment_agent = jsonfield.JSONField(default={})
@@ -123,10 +124,8 @@ class Deployment(models.Model):
         return deploy.node_info(self.id, node_id)
 
     def _getHelperClass(self):
-        type_agent = self.deployment_agent['type']
-        print "type_agent", type_agent
-        my_module = importlib.import_module("deploymenthandler.helpers."+type_agent)
-        HelperClass = getattr(my_module, type_agent.capitalize() + "Helper")
+        my_module = importlib.import_module("deploymenthandler.helpers."+self.type)
+        HelperClass = getattr(my_module,  "DeploymentHelper")
 
         return HelperClass
 
@@ -134,6 +133,7 @@ class Deployment(models.Model):
         return {
             'name': self.name,
             'profile': self.profile,
+            'type': self.type,
             'project_id': self.project_id,
             'project_name': self.project_name,
             'project_type': self.project_name,

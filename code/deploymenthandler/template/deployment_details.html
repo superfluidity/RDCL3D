@@ -56,6 +56,8 @@ Details
                     <li><a href='{% url "projects:open_project" project_id=deployment.project_id %}'><b>Project Id:</b>
                         <span
                                 class="pull-right">{{deployment.project_id}}</span></a></li>
+                    <li><a><b>Type:</b> <span class="pull-right">{{deployment.type}}</span></a>
+                    </li>
                     <li><a><b>Last updated:</b> <span class="pull-right">{{deployment.last_update}}</span></a>
                     </li>
                     <li><a><b>Owner:</b> <span

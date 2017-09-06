@@ -9,7 +9,7 @@ dreamer.SuperfluidityController = (function(global) {
     var DEBUG = true;
 
     SuperfluidityController.prototype.constructor = SuperfluidityController;
-    var sf_vnf_vdu = ['vnf_click_vdu', 'vnf_k8s_vdu']
+    var sf_vnf_vdu = ['vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu']
 
     /**
      * Constructor
@@ -80,6 +80,37 @@ dreamer.SuperfluidityController = (function(global) {
 
     SuperfluidityController.prototype.linkVnftoNsCp = function(graph_editor, link, success, error) {
         SuperfluidityController.etsiController.linkVnftoNsCp(graph_editor, link, success, error);
+    };
+
+    SuperfluidityController.prototype.linkK8sserviceToK8sVdu = function (graph_editor, link, success, error) {
+        var source_id = link.source.id;
+        var target_id = link.target.id;
+        var source_type = link.source.info.type;
+        var destination_type = link.target.info.type;
+        var vnf_vdu_cp_id = source_type == 'vnf_k8s_vdu' ? source_id : target_id;
+        var old_link = $.grep(graph_editor.d3_graph.links, function(e) {
+            return (e.source.id == vnf_vdu_cp_id && e.target.info.type =='k8s_service_cp') || (e.target.id == vnf_vdu_cp_id && e.source.info.type == 'k8s_service_cp')
+        });
+
+        var data_to_send = {
+            'group_id': link.group[0],
+            'view_id': link.view,
+            'element_desc_id': link.desc_id,
+            'source': link.source.id,
+            'source_type': link.source.info.type,
+            'target': link.target.id,
+            'target_type': link.target.info.type,
+        };
+
+        new dreamer.GraphRequests().addLink(data_to_send,  null, function() {
+            graph_editor._deselectAllNodes();
+            if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {
+                graph_editor.parent.removeLink.call(graph_editor, old_link[0].index);
+            }
+            if (success) {
+                success();
+            }
+        });
     };
 
     SuperfluidityController.prototype.linkVltoVduCp = function(graph_editor, link, success, error) {

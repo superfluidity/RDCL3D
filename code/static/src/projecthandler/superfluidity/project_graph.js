@@ -24,7 +24,7 @@ $(document).ready(function () {
             }
         };
     } else {
-        var allowed_types = descriptor_type === 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'k8s_service_cp'];
+        var allowed_types = descriptor_type === 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'vnf_ansibledocker_vdu', 'k8s_service_cp'];
         params = {
             node: {
                 type: allowed_types,
@@ -87,9 +87,10 @@ function initDropOnGraph() {
                     'vduNestedDescriptor': ''
                 },
                 "vdu_param": {
-                    'vduParent': '',
-                    'vduParentBareMetal': '',
-                    'vduParentMandatory': ''
+                    'vduParent': null,
+                    'vduParentBareMetal': null,
+                    'vduParentMandatory': null,
+                    'envVars': ''
                 }
             };
 
@@ -128,16 +129,40 @@ function initDropOnGraph() {
                 };
 
             }
+            else if (nodetype == 'vnf_docker_vdu') {
+                onLoadModal = null;
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+                    var docker_image = $('#input_choose_vnf_docker_vdu_image').val();
+                    var envVars = $('#input_choose_vnf_vdu_envVars').val();
+                    //var choice = $("#selection_chooser_vnf_vduNestedDesc option:selected").text();
+                    node_information['id'] = vdu_id;
+                    node_information['opt_params'] = {};
+                    node_information['opt_params']['docker_image_name'] = docker_image;
+                    node_information['opt_params']['envVars'] = envVars;
+
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
+            }
+            else if(nodetype == 'vnf_ansibledocker_vdu'){
+                onLoadModal = null;
+                retriveDataToSend = function () {
+                    var vdu_id = $('#input_choose_node_id').val();
+                    var vduNestedDesc_id = $('#input_choose_vnf_ansibledocker_vdu_role').val();
+                    var envVars = $('#input_choose_vnf_ansibledocker_vdu_envVars').val();
+                    node_information['id'] = vdu_id;
+                    node_information['opt_params'] = vdu_opt_params;
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'ansibledocker'
+                    node_information['opt_params']['nested_desc']['id'] = vduNestedDesc_id;
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptor'] = vduNestedDesc_id;
+                    node_information['opt_params']['vdu_param']['envVars'] = envVars;
+                    node_information['opt_params'] = JSON.stringify(node_information['opt_params']);
+                    return node_information;
+                };
+            }
             else if (nodetype == 'vnf_k8s_vdu') {
-                onLoadModal = null;/* new dreamer.GraphRequests().getUnusedVnf(group, function (vduNestedDescs) {
-
-                    $('#selection_chooser_vnf_vduNestedDesc').empty();
-                    $('#selection_chooser_vnf_vduNestedDesc').append('<option >None</option>');
-                    for (var i in vduNestedDescs) {
-                        $('#selection_chooser_vnf_vduNestedDesc').append('<option id="' + vduNestedDescs[i] + '">' + vduNestedDescs[i] + '</option>');
-                    }
-
-                });*/
+                onLoadModal = null;
                 retriveDataToSend = function () {
                     var vdu_id = $('#input_choose_node_id').val();
                     var vduNestedDesc_id = $('#input_choose_vnf_vduK8sDesc_id').val();

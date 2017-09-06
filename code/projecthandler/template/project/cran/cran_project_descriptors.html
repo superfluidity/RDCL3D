@@ -59,7 +59,15 @@ $('#modal_launch_deploy').on('shown.bs.modal', function (e) {
         'text_key': 'name',
         'value_key': 'id'
     });
-})
+    loadDataOptionsSelector({
+            'select_container': $('#type_select_container'),
+            'select': $('#type_selected'),
+            'url': '{% url 'deployment:deployments_type_list' %}',
+            'expect': 'deployment_type',
+            'text_key': 'name',
+            'value_key': 'id'
+        });
+});
 
     window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){

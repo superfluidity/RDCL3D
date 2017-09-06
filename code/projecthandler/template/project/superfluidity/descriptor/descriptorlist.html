@@ -61,6 +61,8 @@
                 </table>
             {% elif descriptor_type == 'k8s' %}
                 {% include 'superfluidity/descriptor/descriptorlist_k8s.html' %}
+            {% elif descriptor_type == 'resource' %}
+                {% include 'superfluidity/descriptor/descriptorlist_resource.html' %}
             {% endif %}
 
 

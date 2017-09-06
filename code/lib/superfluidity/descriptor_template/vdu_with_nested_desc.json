@@ -1,0 +1,29 @@
+{
+  "vduId": null,
+  "name": "",
+  "description": "",
+  "intCpd": [
+  ],
+  "virtualComputeDesc": "id",
+  "virtualStorageDesc": "id",
+  "bootOrder": [
+  ],
+  "nfviConstraint": [
+  ],
+  "monitoringParameter": [
+    {
+      "id": "id",
+      "name": "name",
+      "performanceMetric": "performanceMetric"
+    }
+  ],
+  "configurableProperties": {
+    "additionalVnfcConfigurableProperty": [
+    ]
+  },
+  "vduParent": null,
+  "vduParentBareMetal": null,
+  "vduParentMandatory": false,
+  "vduNestedDesc": null,
+  "envVars": null
+}

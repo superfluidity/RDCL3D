@@ -7,6 +7,8 @@
     {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_click.html' %}
 {% elif descriptor_type == 'k8s' %}
     {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_k8s.html' %}
+{% elif descriptor_type == 'resource' %}
+    {% include 'superfluidity/descriptor/descriptor_view/descriptor_view_resource.html' %}
 {% endif %}
 
 

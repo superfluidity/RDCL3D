@@ -33,6 +33,9 @@ nodes:                                  #List of nodes, with id and label used i
     vnf_docker_vdu:
         label: Docker VDU
         type: Vdu
+    vnf_ansibledocker_vdu:
+        label: Ansible Docker VDU
+        type: Vdu
     k8s_service_cp:
         label: K8s Service
         type: Cp
@@ -132,6 +135,11 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
+            vnf_ansibledocker_vdu:
+                addable:
+                    callback: addVnfVdu
+                removable:
+                    callback: removeVnfVdu
             vnf_docker_vdu:
                 addable:
                     callback: addVnfVdu
@@ -177,6 +185,13 @@ layer:                                  #List of Layers
                 destination:
                     vnf_vl:
                         callback: linkVltoVduCp
+                        direct_edge: false
+                        removable:
+                            callback: removeLink
+            vnf_k8s_vdu:
+                destination:
+                    k8s_service_cp:
+                        callback: linkK8sserviceToK8sVdu
                         direct_edge: false
                         removable:
                             callback: removeLink
@@ -319,6 +334,9 @@ callback:                             #List of callbacks used
       file: sf_controller.js
       class: SuperfluidityController
   linkVnfVltoExpCp:
+      file: sf_controller.js
+      class: SuperfluidityController
+  linkK8sserviceToK8sVdu:
       file: sf_controller.js
       class: SuperfluidityController
   removeNode:
