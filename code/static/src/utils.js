@@ -14,9 +14,9 @@ function loadDataOptionsSelector(args){
             dataType: "json",
             contentType: "application/json;charset=utf-8",
             success: function(result) {
-
+                console.log(args.expect + "--" +JSON.stringify(result))
                 $.each(result[args.expect], function (i, item) {
-                    console.log(item)
+                    console.log(i, item)
                     select.append($('<option>', {
                         value: item[value_key],
                         text : item[text_key]

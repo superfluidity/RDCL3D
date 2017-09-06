@@ -57,9 +57,9 @@ def open_deployment(request, deployment_id=None):
             deployment = res_search[0]
             info_result = deployment.get_info()
             #FIXME usare info_result
-            agent = deployment.deployment_agent
-            agent_type = agent['type']
-            url = agent_type + '/' + agent_type + '_deployment_details.html'
+            #agent = deployment.deployment_agent
+            project_type = deployment.project_type
+            url = project_type + '/' + project_type + '_deployment_details.html'
             if 'application/json' in raw_content_types:
                 deployment = json.dumps(deployment.to_json())
 
@@ -87,8 +87,7 @@ def new_deployment(request):
             if start_from == 'new':
                 name_agent = request.POST.get('name_agent', '')
                 base_url_agent = request.POST.get('base_url_agent', ' ')
-                type_agent = request.POST.get('type_agent', '')
-                agent = DeployAgent.objects.create(name=name_agent, base_url=base_url_agent, type=type_agent)
+                agent = DeployAgent.objects.create(name=name_agent, base_url=base_url_agent)
             else:
                 agent_id = request.POST.get('agent_id', '')
                 agent = DeployAgent.objects.get(id=agent_id)
@@ -105,10 +104,13 @@ def new_deployment(request):
 
             creator_id = user.id
             status = 'not started'
+            deployment_type = request.POST.get('type_selected')
+
+            print 'deployment_type', deployment_type
             new_deployment = Deployment.objects.create(name=name, project_id=project_id, project_name=projects[0].name,
                                                        project_type=projects[0].get_type(), profile=profile,
                                                        descriptors_id=descriptors, creator_id=creator_id, status=status,
-                                                       deployment_agent=agent.to_json())
+                                                       deployment_agent=agent.to_json(), type=deployment_type)
             # new_deployment.deployment_agent = agent
             new_deployment.save()
             new_deployment.launch()
@@ -136,9 +138,9 @@ def monitoring_deployment(request, deployment_id=None):
             if topology:
                 topology_data = json.dumps(topology)
                 nodes = topology['vertices'] if 'vertices' in topology else []
-            agent = deployment.deployment_agent
-            agent_type = agent['type']
-            url = agent_type + '/' + agent_type + '_deployment_monitoring.html'
+
+            project_type = deployment.project_type
+            url = project_type + '/' + project_type + '_deployment_monitoring.html'
             result = {'deployment': deployment, 'topology_data': topology_data, 'nodes': nodes,
                       'collapsed_sidebar': False}
         else:
@@ -202,6 +204,26 @@ def delete_deployment(request, deployment_id=None):
             print e
             return render(request, 'error.html', {'error_msg': 'Deployment not found.'})
 
+@login_required
+@permission_required('deploymenthandler', raise_exception=False)
+def deployments_type_list(request):
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
+    url = None
+    result = {}
+    try:
+
+        if 'application/json' in raw_content_types:
+            result = {'deployment_type': [
+                {'id': 0, 'name': 'oshi-mininet'},
+                {'id': 1, 'name': 'superfluidity-openvim'},
+                {'id': 2, 'name': 'cran-cran'},
+            ]}
+
+    except Exception as e:
+        print e
+        url = 'error.html'
+        result = {'error_msg': 'Agents not found.'}
+    return __response_handler(request, result, url)
 
 # Agent Section #####
 
@@ -213,7 +235,7 @@ def agents_list(request):
     result = {}
     try:
         options = {}
-        for key in ('type', 'name'):
+        for key in ('base_url', 'name', 'last_update'):
             value = request.GET.get(key)
             if value:
                 options[key] = value

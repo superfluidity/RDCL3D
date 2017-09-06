@@ -10,8 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('superfluidity.py')
 
 
-class SuperfluidityHelper(Helper):
-
+class DeploymentHelper(Helper):
     def launch(self, deployment):
         log.debug("Superfluidity DeploymentHelper launching deployment %d %s", deployment.id, deployment.descriptors_id)
         url = self.agent['base_url'] + "/deployments"
@@ -19,8 +18,10 @@ class SuperfluidityHelper(Helper):
         descriptor = projects[0].get_deployment_descriptor(nsdId=deployment.descriptors_id[0])
         deployment.deployment_descriptor = descriptor
         deployment.save()
-        r = self._send_post(url, json.dumps({'deployment_descriptor': descriptor, 'deployment_id': deployment.id}),
-                         headers={'Content-type': 'application/json'})
+        r = self._send_post(url, json.dumps({'deployment_descriptor': descriptor,
+                                             'project_type': 'superfluidity', 'deployment_type': deployment.type,
+                                             'deployment_id': deployment.id}),
+                            headers={'Content-type': 'application/json'})
         return r
 
     def stop(self, deployment_id=None):
@@ -40,4 +41,3 @@ class SuperfluidityHelper(Helper):
             joined = "".join(splitted)
             r['node_info'] = Util.yaml2json(yaml.load(joined))
         return r
-
