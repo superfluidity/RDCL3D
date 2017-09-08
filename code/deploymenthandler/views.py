@@ -244,10 +244,8 @@ def agents_list(request):
 
             result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None}
         else:
-            project_types = Project.get_project_types()
             url = 'agents/agents_list.html'
-            result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None,
-                      'data_type_selector': project_types}
+            result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None}
 
     except Exception as e:
         print e
@@ -264,12 +262,11 @@ def new_agent(request):
         try:
             name = request.POST.get('name', '')
             base_url = request.POST.get('base_url', ' ')
-            type = request.POST.get('type', '')
-            DeployAgent.objects.create(name=name, base_url=base_url, type=type)
+            DeployAgent.objects.create(name=name, base_url=base_url)
         except Exception as e:
             print e
             url = 'error.html'
-            result = {'error_msg': 'Error creating ' + type + ' Agent! Please retry.'}
+            result = {'error_msg': 'Error creating Agent! Please retry.'}
             return __response_handler(request, result, url)
         return redirect('agent:agents_list')
 
