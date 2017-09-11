@@ -26,6 +26,7 @@ from deploymenthandler.models import DeployAgent, Deployment
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('deploymenthandler/view.py')
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def user_deployments(request):
@@ -151,6 +152,7 @@ def monitoring_deployment(request, deployment_id=None):
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def monitoring_node_openshell(request, deployment_id=None, node_id=None):
@@ -163,6 +165,7 @@ def monitoring_node_openshell(request, deployment_id=None, node_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
+
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
@@ -177,6 +180,7 @@ def monitoring_node_info(request, deployment_id=None, node_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
+
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
@@ -204,6 +208,7 @@ def delete_deployment(request, deployment_id=None):
             print e
             return render(request, 'error.html', {'error_msg': 'Deployment not found.'})
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def deployments_type_list(request):
@@ -227,6 +232,7 @@ def deployments_type_list(request):
 
 # Agent Section #####
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def agents_list(request):
@@ -244,10 +250,8 @@ def agents_list(request):
 
             result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None}
         else:
-            project_types = Project.get_project_types()
             url = 'agents/agents_list.html'
-            result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None,
-                      'data_type_selector': project_types}
+            result = {'agents': list(agents), 'agent_type': options['type'] if 'type' in options else None}
 
     except Exception as e:
         print e
@@ -264,12 +268,11 @@ def new_agent(request):
         try:
             name = request.POST.get('name', '')
             base_url = request.POST.get('base_url', ' ')
-            type = request.POST.get('type', '')
-            DeployAgent.objects.create(name=name, base_url=base_url, type=type)
+            DeployAgent.objects.create(name=name, base_url=base_url)
         except Exception as e:
             print e
             url = 'error.html'
-            result = {'error_msg': 'Error creating ' + type + ' Agent! Please retry.'}
+            result = {'error_msg': 'Error creating Agent! Please retry.'}
             return __response_handler(request, result, url)
         return redirect('agent:agents_list')
 
