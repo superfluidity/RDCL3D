@@ -90,8 +90,11 @@ class Deployment(models.Model):
         return deploy.stop(deployment_id=self.id)
 
     def delete(self, *args, **kwargs):
-        print "delete Deployment"
-        self.stop()
+        log.debug("delete Deployment")
+        try:
+            self.stop()
+        except Exception as e:
+            log.exception(e)
         super(Deployment, self).delete(*args, **kwargs)
 
     def get_status(self):
@@ -124,9 +127,12 @@ class Deployment(models.Model):
         return deploy.node_info(self.id, node_id)
 
     def _getHelperClass(self):
-        my_module = importlib.import_module("deploymenthandler.helpers."+self.type)
-        HelperClass = getattr(my_module,  "DeploymentHelper")
-
+        try:
+            print self.type
+            my_module = importlib.import_module("deploymenthandler.helpers."+self.type)
+            HelperClass = getattr(my_module,  "DeploymentHelper")
+        except Exception as e:
+            log.exception(e)
         return HelperClass
 
     def to_json(self):

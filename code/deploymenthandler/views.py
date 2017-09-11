@@ -26,6 +26,7 @@ from deploymenthandler.models import DeployAgent, Deployment
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('deploymenthandler/view.py')
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def user_deployments(request):
@@ -151,6 +152,7 @@ def monitoring_deployment(request, deployment_id=None):
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def monitoring_node_openshell(request, deployment_id=None, node_id=None):
@@ -163,6 +165,7 @@ def monitoring_node_openshell(request, deployment_id=None, node_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
+
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
@@ -177,6 +180,7 @@ def monitoring_node_info(request, deployment_id=None, node_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error data monitoring not found.'}
     return __response_handler(request, result, url)
+
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
@@ -204,6 +208,7 @@ def delete_deployment(request, deployment_id=None):
             print e
             return render(request, 'error.html', {'error_msg': 'Deployment not found.'})
 
+
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
 def deployments_type_list(request):
@@ -226,6 +231,7 @@ def deployments_type_list(request):
     return __response_handler(request, result, url)
 
 # Agent Section #####
+
 
 @login_required
 @permission_required('deploymenthandler', raise_exception=False)
