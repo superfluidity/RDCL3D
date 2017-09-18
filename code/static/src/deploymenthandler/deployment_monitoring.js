@@ -10,7 +10,7 @@ function getNodeShell(args){
     getDeploymentNodeConsole({
         'nodeId': args['node']['id']
     }, function(result){
-        console.log(result);
+        //console.log(result);
         args['console_info'] = result['console_info']
         openShellTab(args)
     }, function(error){
@@ -24,8 +24,8 @@ function getNodeInfo(args){
     getDeploymentNodeInfo({
         'nodeId': args['node']['id']
     }, function(result){
-        console.log("getNodeInfo")
-        console.log(result);
+        //console.log("getNodeInfo")
+        //console.log(result);
         //args['console_info'] = result['console_info']
         //openShellTab(args)
         openNodeModalInfo(result);
@@ -38,8 +38,8 @@ function openShellTab(shellData){
     var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'_'+name+'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
     var html_tab_iframe = '<iframe name='+name+' src="'+ shellData['console_info']['url'] +'" class="shellIframe"></iframe>';
     var html_tab_content = '<div class="tab-pane" id="tab_pane_' + shellData['node']['id'] +'_'+name+'">' + html_tab_iframe + '</div>';
-    console.log(html_tab)
-    console.log(html_tab_content)
+    //console.log(html_tab)
+    //console.log(html_tab_content)
     $('#deploymentTab').append(html_tab);
     $('#tab_pane_container').append(html_tab_content);
 }
@@ -51,7 +51,7 @@ function buildBehaviorsOnEvents(){
     var contextmenuNodesAction = [{
             title: 'Show info',
             action: function(elm, d, i) {
-                console.log('Show NodeInfo', elm, d, i);
+                //console.log('Show NodeInfo', elm, d, i);
                 var nodeData = {
                     "node": {
                         "id": d.id
@@ -64,7 +64,7 @@ function buildBehaviorsOnEvents(){
         },{
             title: 'Open Console',
             action: function(elm, d, i) {
-                console.log('Open Console from menu', elm, d, i);
+                //console.log('Open Console from menu', elm, d, i);
                 var shellData = {
                     "node": {
                         "id": d.id,

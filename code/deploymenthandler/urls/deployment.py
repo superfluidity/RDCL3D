@@ -24,8 +24,8 @@ urlpatterns = [
     url(r'^(?P<deployment_id>\d+)/$', views.open_deployment, name='open_deployment'),
     url(r'^(?P<deployment_id>\d+)/delete$', views.delete_deployment, name='delete_deployment'),
     url(r'^(?P<deployment_id>\d+)/monitoring$', views.monitoring_deployment, name='monitoring_deployment'),
-    url(r'^(?P<deployment_id>\d+)/monitoring/node/(?P<node_id>\w+)/$', views.monitoring_node_info, name='monitoring_node_info'),
-    url(r'^(?P<deployment_id>\d+)/monitoring/node/(?P<node_id>\w+)/shell', views.monitoring_node_openshell, name='monitoring_node_openshell'),
+    url(r'^(?P<deployment_id>\d+)/monitoring/node/(?P<node_id>[-\w]+)/$', views.monitoring_node_info, name='monitoring_node_info'),
+    url(r'^(?P<deployment_id>\d+)/monitoring/node/(?P<node_id>[-\w]+)/shell', views.monitoring_node_openshell, name='monitoring_node_openshell'),
     #url(r'^(?P<deployment_id>\d+)/monitoring/node/(?P<node_id>\w+)/action/(?P<action_name>[-\w]+)',views.monitoring_node_custom_action, name='custom_action'),
 
 ]
