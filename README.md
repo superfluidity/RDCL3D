@@ -1,3 +1,5 @@
+<p align="center"><img height="80" src="https://github.com/superfluidity/RDCL3D/blob/master/code/static/assets/img/rdcl3dlogo0.png"/></p>
+
 # RDCL 3D - RFB Description and Composition Languages Design, Deploy and Direct 
 
 RDCL 3D is a web framework for the design of NFV services and components. The framework allows editing,
