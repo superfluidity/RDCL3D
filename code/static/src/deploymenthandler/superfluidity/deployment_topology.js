@@ -3,7 +3,7 @@ var graph_editor = new dreamer.ModelGraphEditor();
 var show_all = null;
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     var params = {
         node: {
             type: [],
@@ -16,15 +16,16 @@ $(document).ready(function() {
     }
     graph_editor.addListener("refresh_graph_parameters", refreshGraphParameters);
 
-    console.log(example_gui_properties)
+
     // graph_editor initialization
     graph_editor.init({
         width: $('#graph_ed_container').width(),
         height: $('#graph_ed_container').height(),
         graph_data: topology_data,
         gui_properties: example_gui_properties,
+        filter_base: params,
         edit_mode: false,
-        behaviorsOnEvents:{
+        behaviorsOnEvents: {
             viewBased: false,
             behaviors: buildBehaviorsOnEvents()
         }
@@ -33,7 +34,7 @@ $(document).ready(function() {
     graph_editor.handleFiltersParams(params);
 });
 
-var filters = function(e, params) {
+var filters = function (e, params) {
     graph_editor.handleFiltersParams(params);
     $('#' + e).nextAll('li').remove();
 }
@@ -53,7 +54,6 @@ function handleForce(el) {
 }
 
 
-
 function refreshGraphParameters(e, graphParameters) {
 
     var self = $(this);
@@ -63,15 +63,14 @@ function refreshGraphParameters(e, graphParameters) {
 }
 
 
-
-function clickView(){
+function clickView() {
     if ($("#view_box").is(':visible'))
         $("#view_box").hide();
     else
         $("#view_box").show();
 }
 
-function changeView(e){
+function changeView(e) {
     var viewId = e.value;
     console.log("viewId", viewId)
     var params = {
@@ -87,9 +86,9 @@ function changeView(e){
     graph_editor.handleFiltersParams(params);
 }
 
-function openNodeModalInfo(args){
+function openNodeModalInfo(args) {
     console.log("openNodeModalInfo")
-   // $('#modal_alert_text').text(alert_msg);
+    // $('#modal_alert_text').text(alert_msg);
     //$('#modal_node_info').modal('show');
     console.log(typeof args['node_info'])
     args['node_info'] = (typeof args['node_info'] == 'string') ? JSON.parse(args['node_info'])['server'] : args['node_info']['server'];
