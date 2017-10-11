@@ -121,8 +121,13 @@ class Srv6_net_progProject(Project):
     def get_graph_data_json_topology(self, descriptor_id):
         rdcl_graph = Srv6_net_progRdclGraph()
         project = self.get_dataproject()
-        topology = rdcl_graph.build_graph_from_project(project,
-                                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        for desc_type in project:
+            if descriptor_id in project[desc_type]:
+                descriptor_data = project[desc_type][descriptor_id]
+        positions = project['positions'] if 'positions' in project else {}
+        topology = rdcl_graph.build_graph_from_descriptor(descriptor_data, positions=positions,
+                                                               model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -163,7 +168,35 @@ class Srv6_net_progProject(Project):
 
     def get_add_element(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
+            print parameters
+            new_node = {
+                "info": {
+                    "group": [],
+                    "property": {
+                        "custom_label": ""
+                    },
+                    "type": parameters['element_type']
+                },
+                "id": parameters['element_id']
+            }
 
+            current_data = json.loads(self.data_project)
+            print "current"
+            print current_data,current_data['srv6_net_prog'], parameters['element_desc_id'], current_data['srv6_net_prog'][parameters['element_desc_id']]
+            if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
+                print "entro"
+                current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
+                if 'vertices' not in current_descriptor:
+                    current_descriptor['vertices'] = []
+                current_descriptor['vertices'].append(new_node)
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_element(self, request):

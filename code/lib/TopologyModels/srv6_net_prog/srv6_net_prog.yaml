@@ -1,5 +1,5 @@
-name: Oshi                #Model name
-description: oshi             #Model description
+name: Srv6-net-prog                #Model name
+description: srv6-net-prog             #Model description
 version: 1.0              #Model version
 designer: Alessandro Masci         #Model designer
 nodes:                  #List of nodes, with id and label used in the gui (We can add more fields)

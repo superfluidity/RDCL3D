@@ -277,6 +277,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
     prj_token = project_overview['type']
 
     topology = projects[0].get_graph_data_json_topology(descriptor_id)
+    print "topology", topology, "enyfgydfytd"
     response = HttpResponse(topology, content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
 
