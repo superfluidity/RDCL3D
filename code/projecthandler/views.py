@@ -27,6 +27,7 @@ import git
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
+from projecthandler.srv6_net_prog_model import Srv6_net_progProject
 from projecthandler.cran_model import CranProject
 from projecthandler.nemo_model import NemoProject
 from projecthandler.toscanfv_model import ToscanfvProject
@@ -39,6 +40,7 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
+Project.add_project_type('srv6_net_prog', Srv6_net_progProject)
 Project.add_project_type('cran', CranProject)
 Project.add_project_type('nemo', NemoProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
