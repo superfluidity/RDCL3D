@@ -170,7 +170,7 @@ class Srv6_net_progProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            print parameters
+           #print parameters
             new_node = {
                 "info": {
                     "group": [],
@@ -183,10 +183,10 @@ class Srv6_net_progProject(Project):
             }
 
             current_data = json.loads(self.data_project)
-            print "current"
-            print current_data,current_data['srv6_net_prog'], parameters['element_desc_id'], current_data['srv6_net_prog'][parameters['element_desc_id']]
+            #print "current"
+            #print current_data,current_data['srv6_net_prog'], parameters['element_desc_id'], current_data['srv6_net_prog'][parameters['element_desc_id']]
             if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
-                print "entro"
+                #print "entro"
                 current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
                 if 'vertices' not in current_descriptor:
                     current_descriptor['vertices'] = []
@@ -223,7 +223,7 @@ class Srv6_net_progProject(Project):
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
-            print model_graph
+            #print model_graph
             for node in model_graph['layer'][args['layer']]['nodes']:
 
                 current_data = {
