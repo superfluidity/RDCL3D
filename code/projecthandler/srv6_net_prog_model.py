@@ -201,13 +201,52 @@ class Srv6_net_progProject(Project):
 
     def get_remove_element(self, request):
         result = False
-        
+        try:
+            parameters = request.POST.dict()
+            current_data = json.loads(self.data_project)
+            if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
+
+                current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
+
+                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if
+                                                  n['id'] != parameters['element_id']]
+                #current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                #                               e['source'] != parameters['element_id'] and e['target'] != parameters[
+                #                                   'element_id']]
+
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_add_link(self, request):
 
         result = False
+        try:
+            parameters = request.POST.dict()
 
+            new_link = {
+                "source": parameters['source'],
+                "group": parameters['group'] if 'group' in parameters else [],
+                "target": parameters['target'],
+                "view": parameters['view'] if 'view' in parameters else []
+            }
+            current_data = json.loads(self.data_project)
+            if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
+
+                current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
+                if 'edges' not in current_descriptor:
+                    current_descriptor['edges'] = []
+                current_descriptor['edges'].append(new_link)
+                self.data_project = current_data
+                self.update()
+                result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
 
     def get_remove_link(self, request):
