@@ -208,11 +208,8 @@ class Srv6_net_progProject(Project):
 
                 current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
 
-                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if
-                                                  n['id'] != parameters['element_id']]
-                #current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
-                #                               e['source'] != parameters['element_id'] and e['target'] != parameters[
-                #                                   'element_id']]
+                current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if n['id'] != parameters['element_id']]
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if e['source'] != parameters['element_id'] and e['target'] != parameters['element_id']]
 
                 self.data_project = current_data
                 self.update()
@@ -223,11 +220,10 @@ class Srv6_net_progProject(Project):
         return result
 
     def get_add_link(self, request):
-
         result = False
         try:
             parameters = request.POST.dict()
-
+            #print "PARAMETRI", parameters
             new_link = {
                 "source": parameters['source'],
                 "group": parameters['group'] if 'group' in parameters else [],
@@ -235,6 +231,7 @@ class Srv6_net_progProject(Project):
                 "view": parameters['view'] if 'view' in parameters else []
             }
             current_data = json.loads(self.data_project)
+            #print  "NEW LINK", new_link
             if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
 
                 current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
@@ -251,9 +248,28 @@ class Srv6_net_progProject(Project):
 
     def get_remove_link(self, request):
         result = False
+        try:
+            parameters = request.POST.dict()
 
+            print "PARAMETRI POST REMOVE LINK", parameters
+
+            source_id = parameters['source']
+            target_id = parameters['target']
+            link_view = parameters['view']
+            current_data = json.loads(self.data_project)
+
+            if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
+                current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
+
+                current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
+                                               (e['source'] == source_id and e['target'] == target_id and e['view'] == link_view) == False]
+            self.data_project = current_data
+            self.update()
+            result = True
+        except Exception as e:
+            log.exception(e)
+            result = False
         return result
-
 
     def get_available_nodes(self, args):
         """Returns all available node """

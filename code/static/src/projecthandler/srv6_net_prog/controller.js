@@ -46,7 +46,7 @@ dreamer.Srv6_net_progController = (function(global) {
             'view': link.view,
             'group': link.group
         };
-        new dreamer.GraphRequests().addLink(link, null, function() {
+        new dreamer.GraphRequests().addLink(data_to_send, null, function() {
             graph_editor._deselectAllNodes();
 
             if (typeof old_link !== 'undefined' && old_link.length > 0 && old_link[0].index !== 'undefined') {

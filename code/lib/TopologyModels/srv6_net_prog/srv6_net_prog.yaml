@@ -29,6 +29,13 @@ layer:
             direct_edge: false
             removable:
               callback: removeLink
+      Router:
+        destination:
+          Router:
+            callback: addLink
+            direct_edge: false
+            removable:
+              callback: removeLink
       Host:
         destination:
           Router:

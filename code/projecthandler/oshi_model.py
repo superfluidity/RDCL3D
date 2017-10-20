@@ -224,6 +224,8 @@ class OshiProject(Project):
                 "target": parameters['target'],
                 "view": parameters['view'] if 'view' in parameters else []
             }
+
+
             current_data = json.loads(self.data_project)
             if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
 

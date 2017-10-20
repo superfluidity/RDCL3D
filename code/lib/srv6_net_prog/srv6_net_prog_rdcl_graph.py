@@ -32,7 +32,7 @@ class Srv6_net_progRdclGraph(RdclGraph):
     def build_graph_from_project(self, json_project, model={}):
         """Creates a single graph for a whole project"""
 
-        #print "json_project ",json_project
+        #print "BUILD GRAPH FROM PROJECT "
         graph_object = {
             'vertices': [],
             'edges': [],
@@ -52,7 +52,7 @@ class Srv6_net_progRdclGraph(RdclGraph):
 
     def build_graph_from_descriptor(self, json_data, positions={}, model={}):
         """Creates a single graph from descriptor"""
-
+        #print "BUILD GRAPH FROM DESCRIPTOR "
         try:
             graph_object = json_data
             for node in graph_object['vertices']:
