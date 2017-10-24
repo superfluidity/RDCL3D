@@ -76,7 +76,7 @@ dreamer.Srv6_net_progController = (function(global) {
     Srv6_net_progController.prototype.removeLink = function(graph_editor, link, success, error) {
         log('removeLink');
         var data_to_send = {
-            'desc_id': link.desc_id,
+            'desc_id': getUrlParameter('id'),
             'source': link.source.id,
             'source_type': link.source.info.type,
             'target': link.target.id,

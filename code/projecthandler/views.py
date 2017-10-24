@@ -439,7 +439,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
 
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = Util.json2yaml(descriptor)
-        # print descriptor
+        #print "METODO GET DESCRIPTOR", descriptor_id
         return render(request, page, {
             'project_id': project_id,
             'descriptor_id': descriptor_id,

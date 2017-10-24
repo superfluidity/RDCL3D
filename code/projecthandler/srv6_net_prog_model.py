@@ -233,8 +233,8 @@ class Srv6_net_progProject(Project):
             current_data = json.loads(self.data_project)
             #print  "NEW LINK", new_link
             if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
-
                 current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
+                #print "DESC ID IMPOSTATO", current_descriptor
                 if 'edges' not in current_descriptor:
                     current_descriptor['edges'] = []
                 current_descriptor['edges'].append(new_link)
@@ -251,7 +251,7 @@ class Srv6_net_progProject(Project):
         try:
             parameters = request.POST.dict()
 
-            print "PARAMETRI POST REMOVE LINK", parameters
+            #print "PARAMETRI POST REMOVE LINK", parameters
 
             source_id = parameters['source']
             target_id = parameters['target']

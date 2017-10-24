@@ -44,7 +44,6 @@ class Srv6_net_progParser(Parser):
 
         project = {
             'srv6_net_prog':{},
-
             'positions': {}
         }
 
