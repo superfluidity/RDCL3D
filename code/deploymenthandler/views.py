@@ -222,6 +222,7 @@ def deployments_type_list(request):
                 {'id': 0, 'name': 'oshi-mininet'},
                 {'id': 1, 'name': 'superfluidity-openvim'},
                 {'id': 2, 'name': 'cran-cran'},
+                {'id': 3, 'name': 'srv6_net_prog-mininet'},
             ]}
 
     except Exception as e:

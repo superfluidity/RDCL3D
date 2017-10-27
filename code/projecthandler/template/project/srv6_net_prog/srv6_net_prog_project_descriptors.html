@@ -49,6 +49,25 @@
 
 
 $(document).ready(function () {
+    $('#modal_launch_deploy').on('shown.bs.modal', function (e) {
+
+    loadDataOptionsSelector({
+        'select_container': $('#agent_select_container'),
+        'select': $('#agent_selected'),
+        'url': '{% url 'agent:agents_list' %}',
+        'expect': 'agents',
+        'text_key': 'name',
+        'value_key': 'id'
+    });
+    loadDataOptionsSelector({
+            'select_container': $('#type_select_container'),
+            'select': $('#type_selected'),
+            'url': '{% url 'deployment:deployments_type_list' %}',
+            'expect': 'deployment_type',
+            'text_key': 'name',
+            'value_key': 'name'
+        });
+})
     window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove();
@@ -56,7 +75,6 @@ $(document).ready(function () {
 }, 4000);
 
 });
-
 
 
     </script>
