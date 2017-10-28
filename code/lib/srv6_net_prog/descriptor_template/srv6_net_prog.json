@@ -1,0 +1,64 @@
+{
+	"edges": [
+		{
+			"source": "Host_gpiq",
+			"group": "",
+			"target": "Router_iot5",
+			"view": "Data"
+		},
+		{
+			"source": "Router_iot5",
+			"group": "",
+			"target": "Router_rcci",
+			"view": "Data"
+		},
+		{
+			"source": "Host_r5x5",
+			"group": "",
+			"target": "Router_rcci",
+			"view": "Data"
+		}
+	],
+	"vertices": [
+		{
+			"info": {
+				"type": "Router",
+				"property": {
+					"custom_label": ""
+				},
+				"group": []
+			},
+			"id": "Router_iot5"
+		},
+		{
+			"info": {
+				"type": "Host",
+				"property": {
+					"custom_label": ""
+				},
+				"group": []
+			},
+			"id": "Host_gpiq"
+		},
+		{
+			"info": {
+				"type": "Router",
+				"property": {
+					"custom_label": ""
+				},
+				"group": []
+			},
+			"id": "Router_rcci"
+		},
+		{
+			"info": {
+				"group": [],
+				"property": {
+					"custom_label": ""
+				},
+				"type": "Host"
+			},
+			"id": "Host_r5x5"
+		}
+	]
+}
