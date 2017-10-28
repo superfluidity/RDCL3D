@@ -52,11 +52,11 @@
 		},
 		{
 			"info": {
-				"group": [],
+				"type": "Host",
 				"property": {
 					"custom_label": ""
 				},
-				"type": "Host"
+                "group": []
 			},
 			"id": "Host_r5x5"
 		}
