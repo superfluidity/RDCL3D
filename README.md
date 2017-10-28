@@ -21,7 +21,9 @@ Please find [below](#installation) the instructions on how to install and run yo
 
 Documentation is available in the docs folder of this repository. 
 
-S.Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari Melazzi, "RDCL 3D, a Model Agnostic Web Framework for the Design of Superfluid NFV Services and Components", Submitted paper, February 2017 ([pdf on Arxiv](https://arxiv.org/pdf/1702.08242))
+SS. Salsano, F. Lombardo, C. Pisa, P. Greto, N. Blefari-Melazzi,
+“RDCL 3D, a Model Agnostic Web Framework for the Design and Composition of NFV Services”,
+3rd IEEE International Workshop on Orchestration for Software Defined Infrastructures, O4SDI at IEEE NFV-SDN conference, Berlin, 6-8 November 2017 ([pdf on Arxiv](https://arxiv.org/pdf/1702.08242))
 
 ## Community
 
