@@ -91,9 +91,10 @@ def create_new_project(request):
             elif start_from == 'example':
                 print 'from example'
                 data_project = project_class.data_project_from_example(request)
+                #print(data_project)
 
             project = project_class.create_project(name, user, False, info, data_project)
-            # print project.get_dataproject()
+            #print project.get_dataproject()
 
 
         except Exception as e:
@@ -277,7 +278,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
     prj_token = project_overview['type']
 
     topology = projects[0].get_graph_data_json_topology(descriptor_id)
-    print "topology", topology, "enyfgydfytd"
+    #print "topology", topology, "enyfgydfytd"
     response = HttpResponse(topology, content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
 

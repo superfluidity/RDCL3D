@@ -62,7 +62,7 @@ class Srv6_net_progProject(Project):
     @classmethod
     def data_project_from_example(cls, request):
         srv6_net_prog_id = request.POST.get('example-srv6_net_prog-id', '')
-        data_project = Srv6_net_progParser.importprojectdir(EXAMPLES_FOLDER + srv6_net_prog_id + '/JSON', 'yaml')
+        data_project = Srv6_net_progParser.importprojectdir(EXAMPLES_FOLDER + srv6_net_prog_id, 'json')
         return data_project
 
     @classmethod

@@ -47,19 +47,18 @@ class Srv6_net_progParser(Parser):
             'positions': {}
         }
 
-
         for desc_type in project:
             cur_type_path = os.path.join(dir_project, desc_type.upper())
             log.debug(cur_type_path)
             if os.path.isdir(cur_type_path):
                 for file in glob.glob(os.path.join(cur_type_path, '*.'+file_type)):
-                    if file_type == 'json':
+                    if file_type == 'json' and os.path.basename(file) != 'vertices.json':
                         project[desc_type][os.path.basename(file).split('.')[0]] = Util.loadjsonfile(file)
                     elif file_type == 'yaml':
                         project[desc_type][os.path.basename(file).split('.')[0]] = Util.loadyamlfile(file)
 
 
-        for vertices_file in glob.glob(os.path.join(dir_project, '*.json')):
+        for vertices_file in glob.glob(os.path.join(dir_project, "SRV6_NET_PROG", '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':
                 project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 

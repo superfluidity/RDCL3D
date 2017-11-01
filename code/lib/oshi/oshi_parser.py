@@ -51,7 +51,6 @@ class OshiParser(Parser):
             'positions': {}
         }
 
-
         for desc_type in project:
             cur_type_path = os.path.join(dir_project, desc_type.upper())
             log.debug(cur_type_path)
