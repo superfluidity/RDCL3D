@@ -530,17 +530,6 @@
 				"type": "Host",
 				"property": {
 					"custom_label": "",
-                    "mgmtip":"2000::f/64"
-				},
-				"group": [2]
-			},
-			"id": "hsea"
-     },
-     {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
                     "mgmtip":"2000::d/64"
 				},
 				"group": [2]

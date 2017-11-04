@@ -228,7 +228,8 @@ class Srv6_net_progProject(Project):
                 "source": parameters['source'],
                 "group": parameters['group'] if 'group' in parameters else [],
                 "target": parameters['target'],
-                "view": parameters['view'] if 'view' in parameters else []
+                "view": parameters['view'] if 'view' in parameters else [],
+                "type": parameters['type']
             }
             current_data = json.loads(self.data_project)
             #print  "NEW LINK", new_link
@@ -256,6 +257,7 @@ class Srv6_net_progProject(Project):
             source_id = parameters['source']
             target_id = parameters['target']
             link_view = parameters['view']
+            #type = parameters['type']
             current_data = json.loads(self.data_project)
 
             if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:

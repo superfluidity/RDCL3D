@@ -59,6 +59,7 @@ class Srv6_net_progRdclGraph(RdclGraph):
                 if positions and 'vertices' in positions and node['id'] in positions['vertices'] and 'x' in positions['vertices'][node['id']] and 'y' in positions['vertices'][node['id']]:
                     node['fx'] = positions['vertices'][node['id']]['x']
                     node['fy'] = positions['vertices'][node['id']]['y']
+
             graph_object['model'] = model
         except Exception as e:
             log.exception('Exception in build_graph_from_project')

@@ -9,12 +9,16 @@ log = logging.getLogger('srv6_net_prog.py')
 
 class DeploymentHelper(Helper):
     def launch(self, deployment):
-        log.debug("SRV6_NET_PROG DeploymentHelper launching deployment %d %s", deployment.id, deployment.descriptors_id)
+        log.debug("SRV6 DeploymentHelper launching deployment %d %s", deployment.id, deployment.descriptors_id)
         url = self.agent['base_url'] + "/deployments"
         projects = Project.objects.filter(id=deployment.project_id).select_subclasses()
         descriptor = projects[0].get_descriptor(deployment.descriptors_id[0], 'srv6_net_prog')
         deployment.deployment_descriptor = descriptor;
         deployment.save()
+
+       # with open('data.txt', 'w') as outfile:
+       #     json.dump(descriptor, outfile)
+
         r = self._send_post(url, json.dumps({'deployment_descriptor': descriptor,
                                              'project_type': 'srv6_net_prog', 'deployment_type': deployment.type,
                                              'deployment_id': deployment.id}),

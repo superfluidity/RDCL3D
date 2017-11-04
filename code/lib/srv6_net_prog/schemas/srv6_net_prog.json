@@ -24,13 +24,18 @@
                "view":{
                   "type":"string",
                   "default":"data"
+               },
+               "type":{
+                  "type":"string",
+                  "default":"linktype"
                }
             },
             "required":[
                "source",
                "group",
                "target",
-               "view"
+               "view",
+               "type"
             ]
          }
       },

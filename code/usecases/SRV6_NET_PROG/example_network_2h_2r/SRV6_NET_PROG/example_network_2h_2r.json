@@ -4,19 +4,22 @@
 			"source": "Host_gpiq",
 			"group": "",
 			"target": "Router_iot5",
-			"view": "Data"
+			"view": "Data",
+			"type": "Edge"
 		},
 		{
 			"source": "Router_iot5",
 			"group": "",
 			"target": "Router_rcci",
-			"view": "Data"
+			"view": "Data",
+			"type": "Core"
 		},
 		{
 			"source": "Host_r5x5",
 			"group": "",
 			"target": "Router_rcci",
-			"view": "Data"
+			"view": "Data",
+			"type": "Edge"
 		}
 	],
 	"vertices": [
