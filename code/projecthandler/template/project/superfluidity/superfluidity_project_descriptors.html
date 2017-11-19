@@ -79,7 +79,15 @@ $(document).ready(function () {
             'text_key': 'name',
             'value_key': 'id'
         });
-    })
+        loadDataOptionsSelector({
+            'select_container': $('#translator_select_container'),
+            'select': $('#translator_selected'),
+            'url': '{% url 'translator:translators_type_list' %}',
+            'expect': 'translator_type',
+            'text_key': 'name',
+            'value_key': 't_id'
+        });
+    });
     window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove();
