@@ -227,7 +227,7 @@ def deployments_type_list(request):
     except Exception as e:
         print e
         url = 'error.html'
-        result = {'error_msg': 'Agents not found.'}
+        result = {'error_msg': 'Unknown error.'}
     return __response_handler(request, result, url)
 
 # Agent Section #####
