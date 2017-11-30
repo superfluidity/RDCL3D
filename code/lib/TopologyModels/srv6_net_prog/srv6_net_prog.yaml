@@ -5,8 +5,8 @@ designer: Alessandro Masci         #Model designer
 nodes:                  #List of nodes, with id and label used in the gui (We can add more fields)
   Router:
     label: router
-  Host:
-    label: host
+  Server:
+    label: server
 
 layer:
   Data:
@@ -16,7 +16,7 @@ layer:
           callback: addNode
         removable:
           callback: removeNode
-      Host:
+      Server:
         addable:
           callback: addNode
         removable:
@@ -24,7 +24,7 @@ layer:
     allowed_edges:
       Router:
         destination:      #List of edge's destination with the list of controls callback id to call when there is a connections
-          Host:
+          Server:
             callback: addLink
             direct_edge: false
             removable:
@@ -36,7 +36,7 @@ layer:
             direct_edge: false
             removable:
               callback: removeLink
-      Host:
+      Server:
         destination:
           Router:
             callback: addLink

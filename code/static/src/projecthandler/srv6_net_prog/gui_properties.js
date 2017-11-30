@@ -9,14 +9,14 @@ var example_gui_properties = {
     },
     "nodes": {
       "Router": {
-        //"image" : "router.png",
+        "image" : "router.png",
         "shape": "circle",
         "color": "#196B90",
         "size": 30,
         "name": "CR"
       },
-      "Host": {
-        "image" : "host.png",
+      "Server": {
+        "image" : "server.png",
         "shape": "square",
         "color": "#F27220",
         "size": 30,

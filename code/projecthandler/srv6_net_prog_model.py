@@ -175,7 +175,7 @@ class Srv6_net_progProject(Project):
                 "info": {
                     "group": [],
                     "property": {
-                        "custom_label": ""
+                        "vnf": 0
                     },
                     "type": parameters['element_type']
                 },

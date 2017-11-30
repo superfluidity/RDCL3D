@@ -177,246 +177,224 @@
    ],
    "vertices":[
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::4/64"
-				},
-				"group": [200]
-			},
-			"id": "sea"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "sea"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::b/64"
-				},
-				"group": [200]
-			},
-			"id": "ind"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "ind"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::d/64"
-				},
-				"group": [2]
-			},
-			"id": "hchi"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 2
+        },
+        "group": [2]
+      },
+      "id": "hchi"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::15/64"
-				},
-				"group": [100]
-			},
-			"id": "hatl"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 0
+        },
+        "group": [100]
+      },
+      "id": "hatl"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::10/64"
-				},
-				"group": [3]
-			},
-			"id": "hsun"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 3
+        },
+        "group": [3]
+      },
+      "id": "hsun"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::5/64"
-				},
-				"group": [200]
-			},
-			"id": "sun"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "sun"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::9/64"
-				},
-				"group": [200]
-			},
-			"id": "hou"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "hou"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::16/64"
-				},
-				"group": [100]
-			},
-			"id": "hind"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 0
+        },
+        "group": [100]
+      },
+      "id": "hind"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::1/64"
-				},
-				"group": [200]
-			},
-			"id": "nyc"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "nyc"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::f/64"
-				},
-				"group": [2]
-			},
-			"id": "hsea"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 2
+        },
+        "group": [2]
+      },
+      "id": "hsea"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::6/64"
-				},
-				"group": [200]
-			},
-			"id": "lan"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "lan"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::8/64"
-				},
-				"group": [200]
-			},
-			"id": "kan"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "kan"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::c/64"
-				},
-				"group": [100]
-			},
-			"id": "hnyc"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 0
+        },
+        "group": [100]
+      },
+      "id": "hnyc"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::13/64"
-				},
-				"group": [100]
-			},
-			"id": "hkan"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 0
+        },
+        "group": [100]
+      },
+      "id": "hkan"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::3/64"
-				},
-				"group": [200]
-			},
-			"id": "wdc"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "wdc"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::a/64"
-				},
-				"group": [200]
-			},
-			"id": "atl"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "atl"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::14/64"
-				},
-				"group": [4]
-			},
-			"id": "hhou"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 4
+        },
+        "group": [4]
+      },
+      "id": "hhou"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::7/64"
-				},
-				"group": [200]
-			},
-			"id": "den"
+      "info": {
+        "type": "Router",
+        "property": {
+           "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "den"
      },
      {
-			"info": {
-				"type": "Router",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::2/64"
-				},
-				"group": [200]
-			},
-			"id": "chi"
+      "info": {
+        "type": "Router",
+        "property": {
+          "vnf": 0
+        },
+        "group": [200]
+      },
+      "id": "chi"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::12/64"
-				},
-				"group": [4]
-			},
-			"id": "hden"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 4
+        },
+        "group": [4]
+      },
+      "id": "hden"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::e/64"
-				},
-				"group": [3]
-			},
-			"id": "hwdc"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 3
+        },
+        "group": [3]
+      },
+      "id": "hwdc"
      },
      {
-			"info": {
-				"type": "Host",
-				"property": {
-					"custom_label": "",
-                    "mgmtip":"2000::11/64"
-				},
-				"group": [4]
-			},
-			"id": "hlan"
+      "info": {
+        "type": "Server",
+        "property": {
+          "vnf": 4
+        },
+        "group": [4]
+      },
+      "id": "hlan"
      }
 
    ],

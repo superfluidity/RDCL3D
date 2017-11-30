@@ -54,13 +54,13 @@
                      "property":{
                         "type":"object",
                         "properties":{
-                           "custom_label":{
-                              "type":"string",
-                              "default":""
+                           "vnf":{
+                              "type":"integer",
+                              "default": 0
                            }
                         },
                         "required":[
-                           "custom_label"
+                           "vnf"
                         ]
                      },
                      "group":{

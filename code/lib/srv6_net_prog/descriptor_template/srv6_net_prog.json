@@ -1,23 +1,23 @@
 {
 	"edges": [
 		{
-			"source": "Host_gpiq",
+			"source": "S1",
 			"group": "",
-			"target": "Router_iot5",
+			"target": "R1",
 			"view": "Data",
 			"type": "Edge"
 		},
 		{
-			"source": "Router_iot5",
+			"source": "R1",
 			"group": "",
-			"target": "Router_rcci",
+			"target": "R2",
 			"view": "Data",
 			"type": "Core"
 		},
 		{
-			"source": "Host_r5x5",
+			"source": "S2",
 			"group": "",
-			"target": "Router_rcci",
+			"target": "R2",
 			"view": "Data",
 			"type": "Edge"
 		}
@@ -27,41 +27,48 @@
 			"info": {
 				"type": "Router",
 				"property": {
-					"custom_label": ""
+					"vnf": 0
 				},
 				"group": []
 			},
-			"id": "Router_iot5"
+			"id": "R1"
 		},
 		{
 			"info": {
-				"type": "Host",
+				"type": "Server",
 				"property": {
-					"custom_label": ""
+					"vnf": 1
 				},
 				"group": []
 			},
-			"id": "Host_gpiq"
+			"id": "S1"
 		},
 		{
 			"info": {
 				"type": "Router",
 				"property": {
-					"custom_label": ""
+					"vnf": 0
 				},
 				"group": []
 			},
-			"id": "Router_rcci"
+			"id": "R2"
 		},
 		{
 			"info": {
-				"type": "Host",
+				"type": "Server",
 				"property": {
-					"custom_label": ""
+					"vnf": 1
 				},
                 "group": []
 			},
-			"id": "Host_r5x5"
+			"id": "S2"
 		}
-	]
+	],
+   "graph_parameters":{
+        "tunneling":"OPENVPN",
+        "vlan":0,
+        "generated":false,
+        "mapped":false,
+        "testbed":"MININET"
+     }
 }

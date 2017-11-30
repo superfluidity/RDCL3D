@@ -7,7 +7,7 @@ var show_all = null;
 initDropOnGraph();
 
 var type_view = {
-    "Data": ["Router", "Host"],
+    "Data": ["Router", "Server"],
 };
 
 $(document).ready(function() {
@@ -154,7 +154,7 @@ function buildViewSelector(){
     for (var i in views) {
         var view = views[i]
         var child = $('<option value="' + view + '">' + view + '</option>');
-        $("#selection_view").append(child)
+        $("#selection_view").append(child);
     }
 }
 
