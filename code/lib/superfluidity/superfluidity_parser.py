@@ -76,8 +76,6 @@ class SuperfluidityParser(Parser):
             if os.path.basename(vertices_file) == 'vertices.json':
                 project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 
-        #print project
-
         return project
 
     @classmethod
@@ -130,40 +128,43 @@ class SuperfluidityParser(Parser):
                 # 'click': {},
                 # 'k8s': {}
             }
-            # print nsd_id, project_data
             nsd_to_deploy = project_data['nsd'][nsd_id]
             descriptor['nsd'][nsd_id] = project_data['nsd'][nsd_id]
             for vnfdId in nsd_to_deploy['vnfdId']:
                 descriptor['vnfd'][vnfdId] = project_data['vnfd'][vnfdId]
                 for vdu in descriptor['vnfd'][vnfdId]['vdu']:
-                    if 'vduNestedDesc' in vdu:
+                    if 'vduNestedDesc' in vdu and vdu['vduNestedDesc'] is not None:
                         vdu_nested_desc = vdu['vduNestedDesc']
-                        descriptor.update(
-                            cls.get_nested_vdu_descriptor(vdu_nested_desc, project_data['vnfd'][vnfdId], project_data))
+
+                        nested_vdu_descriptor = cls.get_nested_vdu_descriptor(vdu_nested_desc, project_data['vnfd'][vnfdId], project_data)
+
+                        if nested_vdu_descriptor['type']:
+                            if nested_vdu_descriptor['type'] not in descriptor:
+                                descriptor[nested_vdu_descriptor['type']] = {}
+                            descriptor[nested_vdu_descriptor['type']].update(nested_vdu_descriptor['descriptor'])
+
         except Exception as e:
-            print "Exception male male"
             log.exception(e)
             return {}
 
         return descriptor
 
     def get_nested_vdu_descriptor(cls, nested_vdu_id, vnf_data, project_data):
-        result = {}
+        result = {
+            'type': None,
+            'descriptor': {}
+        }
         try:
             nested_vdu = cls.get_nested_vdu_from_id(nested_vdu_id,vnf_data)
             if nested_vdu:
                 vdu_nested_desc_type = cls.vdu_type_map[nested_vdu['vduNestedDescriptorType']]
                 vdu_nested_descriptor = nested_vdu['vduNestedDescriptor']
-                if vdu_nested_desc_type not in result:
-                    result[vdu_nested_desc_type] = {}
-                print 'get_nested_vdu_descriptor', vdu_nested_desc_type, vdu_nested_descriptor
+                result['type'] = vdu_nested_desc_type
                 if vdu_nested_desc_type in project_data and vdu_nested_descriptor in project_data[vdu_nested_desc_type]:
-                    print vdu_nested_desc_type, vdu_nested_descriptor
-                    result[vdu_nested_desc_type][vdu_nested_descriptor] = project_data[vdu_nested_desc_type][vdu_nested_descriptor]
+                    result['descriptor'][vdu_nested_descriptor] = project_data[vdu_nested_desc_type][vdu_nested_descriptor]
         except Exception as e:
             log.exception(e)
             return {}
-        print 'result', result
         return result
 
     @staticmethod
