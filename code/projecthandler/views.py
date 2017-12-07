@@ -134,17 +134,10 @@ def user_projects(request):
     user = CustomUser.objects.get(id=request.user.id)
     projects = Project.objects.filter(owner=user).select_subclasses()
 
-    # print list(projects)
-    #html = render_to_string('projectlist.html', {
-    #    'projects': list(projects),
-    #    'csrf_token': csrf_token_value
-    #})
-    # if request.is_ajax():
     return render(request, 'projectlist.html', {
         'projects': list(projects),
         'csrf_token': csrf_token_value
     })
-    #return JsonResponse({'html': html});
 
 
 @login_required
@@ -187,15 +180,18 @@ def delete_project(request, project_id=None):
             print e
             return render(request, 'error.html', {'error_msg': 'Project not found.'})
 
+
 @login_required
-def push_project(request, project_id=None):
+def translate_push(request, project_id=None):
     if request.method == 'POST':
         result = {'project_id': project_id}
         try:
+            #result = {}
             url = None
             desc_name = request.POST.get('descId', '')
             start_from = request.POST.get('startfrom')
             commit_msg = request.POST.get('commit_msg', '')
+            translator_id = request.POST.get('translator_id', '')
             if start_from == 'new':
                 name_repo = request.POST.get('name_repo', '')
                 base_url_repo = request.POST.get('base_url_repo', '')
@@ -216,9 +212,9 @@ def push_project(request, project_id=None):
             prj_token = project_overview['type']
             url = prj_token + '/' + prj_token + '_push_report.html'
             repo.fetch_repository()
-            report = projects[0].push_ns_on_repository(desc_name, repo, **{'repo_path':'/tmp/git_repo/'+repo.name,
-                                                                        'commit_msg': commit_msg if commit_msg is not '' else None})
-            result['report'] = report
+            report = projects[0].translate_push_ns_on_repository(translator_id, desc_name, repo, **{'repo_path': '/tmp/git_repo/' + repo.name,
+                                                                           'commit_msg': commit_msg if commit_msg is not '' else None})
+            #result['report'] = report
 
         except Exception as e:
             print e
@@ -230,8 +226,8 @@ def push_project(request, project_id=None):
 
             result['error_msg'] = error_msg
             return __response_handler(request, result, url)
-        return __response_handler(request, result, url, to_redirect=False)
-
+        print url
+    return __response_handler(request, result, url, to_redirect=False)
 
 @login_required
 def show_descriptors(request, project_id=None, descriptor_type=None):
@@ -644,6 +640,25 @@ def delete_repo(request, repo_id=None):
         url = 'error.html'
         result = {'error_msg': 'Error deleting ' + repo_id + ' Repository! Please retry.'}
     return __response_handler(request, result, url, to_redirect=True)
+
+
+def translators_type_list(request):
+    raw_content_types = request.META.get('HTTP_ACCEPT', '*/*').split(',')
+    url = None
+    result = {}
+    try:
+
+        if 'application/json' in raw_content_types:
+            result = {'translator_type': [
+                {'id': 0, 'name': 'Heat Orchestration Template', 't_id': 'sf2heat'},
+                {'id': 1, 'name': 'Ansible playbook', 't_id': 'ansible'},
+            ]}
+
+    except Exception as e:
+        print e
+        url = 'error.html'
+        result = {'error_msg': 'Unknown error.'}
+    return __response_handler(request, result, url)
 
 
 def __response_handler(request, data_res, url=None, to_redirect=None, *args, **kwargs):

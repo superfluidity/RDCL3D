@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^register', user_views.register_view, name='register_user'),
     url(r'^projects/', include('projecthandler.urls.project', namespace='projects'), name='projects_base'),
     url(r'^repos/', include('projecthandler.urls.repo', namespace='repos'), name='repos_base'),
+    url(r'^translator/', include('projecthandler.urls.translator', namespace='translator'), name='translator_base'),
     url(r'^deployments/', include('deploymenthandler.urls.deployment', namespace='deployment'), name='deployments_base'),
     url(r'^agents/', include('deploymenthandler.urls.agent', namespace='agent'), name='agents_base'),
     url(r'^$', views.home, name='home'),

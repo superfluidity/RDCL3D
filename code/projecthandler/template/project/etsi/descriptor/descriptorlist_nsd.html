@@ -33,8 +33,7 @@
                     <li class="divider"></li>
                     {% if not user.is_guest and project_type == "superfluidity" %}
                                 <li><a href="javascript:openModalPush('{{ k }}')"><i
-                                        class="fa fa-git fa-fw" ></i>Push on repo</a></li>
-                                <li class="divider"></li>
+                                        class="fa fa-git fa-fw" ></i>Translate and push on Git</a></li>
                     {% endif %}
                     {% if not user.is_guest and project_type == "superfluidity" %}
                                 <li><a href="javascript:openModalDeployment(['{{ k }}'])"><i

@@ -257,7 +257,7 @@ class Project(models.Model):
     def get_all_ns_descriptors(self, nsd_id):
         raise NotImplementedError
 
-    def push_ns_on_repository(self, nsd_id, repository, **kwargs):
+    def translate_push_ns_on_repository(self, translator, nsd_id, repository, **kwargs):
         raise NotImplementedError
 
 
