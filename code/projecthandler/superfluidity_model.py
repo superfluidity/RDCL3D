@@ -192,7 +192,6 @@ class SuperfluidityProject(EtsiProject, ClickProject):
                 print parameters['opt_params']
                 opt_params = json.loads(opt_params)
             if element_type == 'vnf_click_vdu' or element_type == 'vnf_k8s_vdu' or element_type == 'vnf_ansibledocker_vdu':
-                print "aggiuuuuu"
                 result = self.add_vnf_nested_vdu(vnf_id, element_id, **opt_params)
             elif element_type == 'vnf_docker_vdu':
                 result = self.add_vnf_docker_vdu(vnf_id, element_id, **opt_params)

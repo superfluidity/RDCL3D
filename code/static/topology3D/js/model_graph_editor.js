@@ -171,7 +171,7 @@ dreamer.ModelGraphEditor = (function (global) {
      */
     ModelGraphEditor.prototype.addNode = function (node, success, error) {
         var self = this;
-        var current_layer = self.getCurrentView()
+        var current_layer = self.getCurrentView();
         var node_type = node.info.type;
 
         if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].addable) {

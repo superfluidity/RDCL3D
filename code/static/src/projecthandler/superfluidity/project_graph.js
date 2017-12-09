@@ -12,7 +12,7 @@ $(document).ready(function () {
     descriptor_type = getUrlParameter('type') === 'click' ? ['click'] : descriptor_type;
     var params = {}
     if (descriptor_type === 'click') {
-        allowed_types = ['element', 'compound_element', 'class_element']
+        allowed_types = ['element', 'compound_element', 'class_element'];
         params = {
             node: {
                 type: allowed_types,
@@ -231,6 +231,31 @@ function initDropOnGraph() {
                     return node_information;
                 };
             }
+            else if (nodetype == 'vnf_vdu_cp'){
+                console.log("nodetype vnf_vdu_cp")
+                onLoadModal = null;
+                    var vnf_vdus = $.grep(graph_editor.d3_graph.nodes, function (e) {
+                        console.log(group, e.info.type, e.info.group);
+
+                        return (e.info.group.indexOf(group) >= 0 && ['vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'vnf_ansibledocker_vdu'].indexOf( e.info.type) >= 0);
+                    });
+                    console.log("CI SIAMO", vnf_vdus)
+                    $('#selection_chooser_vdu').empty();
+                    for (var i in vnf_vdus) {
+                        console.log(vnf_vdus[i].id)
+                        $('#selection_chooser_vdu').append('<option id="' + vnf_vdus[i].id + '">' + vnf_vdus[i].id + '</option>');
+                    }
+
+                retriveDataToSend = function () {
+                    var name = $('#input_choose_node_id').val();
+                    var vdu = $("#selection_chooser_vdu option:selected").text();
+                    node_information['id'] = name;
+                    node_information['opt_params'] = {
+                        'vdu': vdu
+                    };
+                    return node_information;
+                };
+            }
             else {
                 onLoadModal = null;
                 retriveDataToSend = function () {
@@ -243,12 +268,12 @@ function initDropOnGraph() {
             newNodeModalFromType(e, onLoadModal, retriveDataToSend);
         }
 
-    }
+    };
 
     dropZone.ondragover = function (ev) {
         console.log("ondragover");
         return false;
-    }
+    };
 
     dropZone.ondragleave = function () {
         console.log("ondragleave");
@@ -299,7 +324,6 @@ function changeFilter(e, c) {
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     } else {
-
         $("#title_header").text("VNF Graph Editor");
         $("#vnffg_box").hide();
         $("#vnffg_options").prop("disabled", true);
@@ -385,7 +409,7 @@ function newVnffg() {
             'element_id': name,
             'element_type': "vnffg",
             'group_id': group,
-        }
+        };
         new dreamer.GraphRequests().addVnffg(node_information, function (result) {
 
             $('#modal_choose_node_id').modal('hide');
