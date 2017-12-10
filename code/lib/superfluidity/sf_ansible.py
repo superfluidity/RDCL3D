@@ -77,14 +77,6 @@ class AnsibleUtility(object):
             yaml.dump(undeploy_file, dstfile, default_flow_style=False, explicit_start=True)
             dstfile.close()
 
-            # #site
-            # site_file = [[{"include": "site_deploy.yaml"}], {"include": "site_undeploy.yaml"}]
-            #
-            # print(site_file)
-            #
-            # dstfile = open(pb_path+'site.yaml', 'w')
-            # yaml.dump(site_file, dstfile, default_flow_style=False, explicit_start=True)
-            # dstfile.close
 
             ###########################################
             # Variables

@@ -372,6 +372,7 @@ dreamer.GraphEditor = (function (global) {
      * @returns {boolean}
      */
     GraphEditor.prototype.addLink = function (link) {
+        console.log(JSON.stringify(link))
         if (link.source && link.target) {
             this.force.stop();
             this.cleanAll();
