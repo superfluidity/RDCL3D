@@ -125,6 +125,7 @@ class SuperfluidityParser(Parser):
             descriptor = {
                 'nsd': {},
                 'vnfd': {},
+                'resource': {}
                 # 'click': {},
                 # 'k8s': {}
             }
@@ -142,7 +143,10 @@ class SuperfluidityParser(Parser):
                             if nested_vdu_descriptor['type'] not in descriptor:
                                 descriptor[nested_vdu_descriptor['type']] = {}
                             descriptor[nested_vdu_descriptor['type']].update(nested_vdu_descriptor['descriptor'])
-
+            if 'resource' in project_data:
+                for resource in project_data['resource']:
+                    print "RESOURCE", resource
+                    descriptor['resource'][resource] = project_data['resource'][resource]
         except Exception as e:
             log.exception(e)
             return {}
