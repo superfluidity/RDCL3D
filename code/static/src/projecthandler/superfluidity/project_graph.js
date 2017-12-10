@@ -214,7 +214,6 @@ function initDropOnGraph() {
                 };
             }
             else if (nodetype == 'k8s_service_cp') {
-                console.log('K8SServiceCpd')
                 onLoadModal = null;
                 retriveDataToSend = function () {
                     var node_id = $('#input_choose_node_id').val();
@@ -232,17 +231,13 @@ function initDropOnGraph() {
                 };
             }
             else if (nodetype == 'vnf_vdu_cp'){
-                console.log("nodetype vnf_vdu_cp")
                 onLoadModal = null;
                     var vnf_vdus = $.grep(graph_editor.d3_graph.nodes, function (e) {
-                        console.log(group, e.info.type, e.info.group);
 
                         return (e.info.group.indexOf(group) >= 0 && ['vnf_vdu', 'vnf_click_vdu', 'vnf_k8s_vdu', 'vnf_docker_vdu', 'vnf_ansibledocker_vdu'].indexOf( e.info.type) >= 0);
                     });
-                    console.log("CI SIAMO", vnf_vdus)
                     $('#selection_chooser_vdu').empty();
                     for (var i in vnf_vdus) {
-                        console.log(vnf_vdus[i].id)
                         $('#selection_chooser_vdu').append('<option id="' + vnf_vdus[i].id + '">' + vnf_vdus[i].id + '</option>');
                     }
 
@@ -452,7 +447,7 @@ function handleVnffgParameter(vnffgId, class_name) {
             if (d.info.group.indexOf(vnffgId) < 0) {
                 result = true;
             }
-            console.log(result);
+            //console.log(result);
             return result;
         });
 
@@ -461,7 +456,7 @@ function handleVnffgParameter(vnffgId, class_name) {
             if (d.group.indexOf(vnffgId) < 0) {
                 result = true;
             }
-            console.log(result);
+            //console.log(result);
             return result;
         });
 
@@ -485,14 +480,14 @@ function buildBehaviorsOnEvents() {
     var contextmenuNodesAction = [{
         title: 'Show info',
         action: function (elm, d, i) {
-            console.log('Show NodeInfo', elm, d, i);
+           // console.log('Show NodeInfo', elm, d, i);
             var nodeData = {
                 "node": {
                     "id": d.id
                 }
             };
             new dreamer.SuperfluidityController().getNodeOverview(graph_editor, d, function (result) {
-                console.log(JSON.stringify(result))
+               // console.log(JSON.stringify(result))
                 graph_editor.showNodeInfo({'node_info': result['node_overview']})
             }, function (error) {
                 showAlert("Error opening info node.")

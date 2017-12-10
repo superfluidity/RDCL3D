@@ -650,8 +650,8 @@ def translators_type_list(request):
 
         if 'application/json' in raw_content_types:
             result = {'translator_type': [
-                {'id': 0, 'name': 'Heat Orchestration Template', 't_id': 'sf2heat'},
-                {'id': 1, 'name': 'Ansible playbook', 't_id': 'ansible'},
+                {'id': 0, 'name': 'Ansible playbook with Heat', 't_id': 'sf2heat'},
+                {'id': 1, 'name': 'Ansible playbook with K8s', 't_id': 'k8sansible'},
             ]}
 
     except Exception as e:
