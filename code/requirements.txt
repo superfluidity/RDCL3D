@@ -1,3 +1,5 @@
+beautifulsoup4==4.6.0
+bs4==0.0.1
 decorator==4.0.10
 Django==1.10.1
 django-model-utils==2.6
@@ -7,6 +9,7 @@ gitdb2==2.0.2
 GitPython==2.1.5
 jsonfield==1.0.3
 jsonschema==2.5.1
+my-module==1.6.2
 networkx==1.11
 pbr==1.10.0
 publicsuffix==1.1.0
@@ -16,6 +19,7 @@ python-dateutil==2.6.0
 PyYAML==3.12
 redis==2.10.5
 requests==2.12.4
+-e git+https://github.com/superfluidity/sfehat.git@673c408ec896073ca2e55e3ec25c5e323b968127#egg=sf2heat-master
 six==1.10.0
 smmap2==2.0.3
 url==0.2.0
