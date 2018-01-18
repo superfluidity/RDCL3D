@@ -10,7 +10,7 @@ initDropOnGraph();
 $(document).ready(function () {
     var descriptor_type = getUrlParameter('type') === 'ns' || getUrlParameter('type') === 'nsd' ? 'ns' : 'vnf';
     descriptor_type = getUrlParameter('type') === 'click' ? ['click'] : descriptor_type;
-    var params = {}
+    var params = {};
     if (descriptor_type === 'click') {
         allowed_types = ['element', 'compound_element', 'class_element'];
         params = {
@@ -315,7 +315,7 @@ function handleForce(el) {
 function changeFilter(e, c) {
     var type_property = graph_editor.getTypeProperty();
     if (c.link.view == 'ns') {
-        $("#title_header").text("NS Graph Editor")
+        $("#title_header").text("NS Graph Editor");
         $("#vnffg_options").prop("disabled", false);
         graph_editor.refreshGraphParameters();
     } else {
@@ -343,10 +343,11 @@ function updateBredCrumb(filter_parameters) {
 function openEditor(project_id) {
     //FIXME is not a good solution
     var current_view = graph_editor.getCurrentView();
-    if (['expandable', 'compact'].indexOf(current_view) > -1)
-        current_view = 'click'
+    if (['click', 'expandable', 'compact'].indexOf(current_view.toString()) > -1) {
+        current_view = 'click';
+    }
     else
-        current_view += 'd'
+        current_view += 'd';
     window.location.href = '/projects/' + project_id + '/descriptors/' + current_view + '/' + graph_editor.getCurrentGroup();
 
 }
@@ -525,7 +526,7 @@ function buildBehaviorsOnEvents() {
             edit_mode: false
         }];
     var behavioursOnEvents = {
-        'nodes': contextmenuNodesAction,
+        'nodes': contextmenuNodesAction
 
     };
 
