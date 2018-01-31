@@ -436,20 +436,21 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             categories = {}
             # current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
-            for node in model_graph['layer'][args['layer']]['nodes']:
-                if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and \
-                        model_graph['layer'][args['layer']]['nodes'][node]['addable']:
-                    category_name = model_graph['nodes'][node]['type'] if 'type' in model_graph['nodes'][node] else \
-                    model_graph['nodes'][node]
-                    if category_name not in categories:
-                        categories[category_name] = {
-                            "category_name": category_name,
-                            "types": []
-                        }
-                    categories[category_name]["types"].append({
-                        "name": model_graph['nodes'][node]['label'],
-                        "id": node
-                    })
+            if args['layer'] in model_graph['layer']:
+                for node in model_graph['layer'][args['layer']]['nodes']:
+                    if 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and \
+                            model_graph['layer'][args['layer']]['nodes'][node]['addable']:
+                        category_name = model_graph['nodes'][node]['type'] if 'type' in model_graph['nodes'][node] else \
+                        model_graph['nodes'][node]
+                        if category_name not in categories:
+                            categories[category_name] = {
+                                "category_name": category_name,
+                                "types": []
+                            }
+                        categories[category_name]["types"].append({
+                            "name": model_graph['nodes'][node]['label'],
+                            "id": node
+                        })
                     # result.append(current_data)
             result = categories.values()
             # result = current_data[type_descriptor][descriptor_id]
@@ -504,7 +505,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             hot_path = kwargs['repo_path'] + '/project_' + str(self.id) + '/' + nsd_id + '_hot'
             if not os.path.isdir(hot_path):
                 os.makedirs(hot_path)
-            nsd_translator = NSDTranslator(ns_data, hot_path, True)
+            nsd_translator = NSDTranslator(ns_data, hot_path, {'app_name': nsd_id, 'cloud_config_name': nsd_id+ str(self.id)})
             nsd_translator.translate()
         commit_msg = kwargs['commit_msg'] if (
         'commit_msg' in kwargs and kwargs['commit_msg'] != '') else 'update project_' + str(self.id) + ' nsd:' + nsd_id
