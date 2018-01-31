@@ -106,10 +106,10 @@ class AnsibleUtility(object):
                 if '-create' in role:
                     main_file = [UnsortableOrderedDict(
                         [("name", "Create " + str(name) + " project"),
-                         ("command", "oc new-project {{ application_name }}")])]
+                         ("command", "kubectl create namespace {{ application_name }}")])]
                 elif '-destroy' in role:
                     main_file = [UnsortableOrderedDict([("name", "Destroy " + str(name) + " project"),
-                                                        ("command", "oc delete project {{ application_name }}")])]
+                                                        ("command", "kubectl delete {{ application_name }}")])]
                 else:
                     main_file = [UnsortableOrderedDict([
                         ("name", "copy json template file"),
@@ -118,7 +118,7 @@ class AnsibleUtility(object):
                             ("dest", "{{ json_path }}")}))
                     ]), UnsortableOrderedDict(
                         [("name", "Deploy " + str(role.split('-')[0]) + ' ' + str(role.split('-')[1]) + " app"),
-                         ("command", "oc create -f {{ json_path }}")])]
+                         ("command", "kubectl create -f {{ json_path }}")])]
 
                 dstfile = open(pb_path + 'roles/' + role + '/tasks/main.yaml', 'w')
                 UnsortableOrderedDict.dump(main_file, dstfile)
