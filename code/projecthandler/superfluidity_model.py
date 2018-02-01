@@ -505,7 +505,7 @@ class SuperfluidityProject(EtsiProject, ClickProject):
             hot_path = kwargs['repo_path'] + '/project_' + str(self.id) + '/' + nsd_id + '_hot'
             if not os.path.isdir(hot_path):
                 os.makedirs(hot_path)
-            nsd_translator = NSDTranslator(ns_data, hot_path, {'app_name': nsd_id, 'cloud_config_name': nsd_id+ str(self.id)})
+            nsd_translator = NSDTranslator(ns_data, hot_path, {'app_name': nsd_id, 'cloud_config_name': ns_data['nsd'][nsd_id]['nsdName']})
             nsd_translator.translate()
         commit_msg = kwargs['commit_msg'] if (
         'commit_msg' in kwargs and kwargs['commit_msg'] != '') else 'update project_' + str(self.id) + ' nsd:' + nsd_id
