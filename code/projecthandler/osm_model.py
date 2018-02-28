@@ -22,7 +22,7 @@ import os.path
 import yaml
 from lib.util import Util
 import logging
-from projecthandler.models import Project
+from projecthandler.models import ProjectStateless
 
 from lib.osm.osm_parser import OsmParser
 from lib.osm.osm_rdcl_graph import OsmRdclGraph
@@ -39,7 +39,7 @@ GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/osm/osm.yaml'
 EXAMPLES_FOLDER = 'usecases/OSM/'
 
 
-class OsmProject(Project):
+class OsmProject(ProjectStateless):
     """Osm Project class
     The data model has the following descriptors:
         # descrtiptor list in comment #

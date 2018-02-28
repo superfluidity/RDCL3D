@@ -34,6 +34,7 @@ log = logging.getLogger('models.py')
 
 project_types = {}
 
+
 class Project(models.Model):
     """ Base class for project types
 
@@ -69,8 +70,6 @@ class Project(models.Model):
 
     @classmethod
     def create_project(cls, name, user, validated, info, data_project):
-        # project = EtsiProject.objects.create(name=name, owner=user, validated=False, info=info,
-        #                                                  data_project=data_project)
         project = cls.objects.create(name=name, owner=user, validated=False, info=info,
                                                        data_project=data_project)
         return project
@@ -259,6 +258,20 @@ class Project(models.Model):
 
     def translate_push_ns_on_repository(self, translator, nsd_id, repository, **kwargs):
         raise NotImplementedError
+
+
+class ProjectStateless(Project):
+    def get_all_ns_descriptors(self, nsd_id):
+        pass
+
+    def translate_push_ns_on_repository(self, translator, nsd_id, repository, **kwargs):
+        pass
+
+    def get_deployment_descriptor(self, **kwargs):
+        pass
+
+    def get_node_overview(self, **kwargs):
+        pass
 
 
 class Repository(models.Model):
