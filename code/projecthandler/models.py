@@ -92,6 +92,7 @@ class Project(models.Model):
     def get_type(self):
         return "Base"
 
+    @classmethod
     def get_dataproject(self):
         """ Return the python dict representation of the project data
 
@@ -101,6 +102,7 @@ class Project(models.Model):
 
         return current_data
 
+    @classmethod
     def get_overview_data(self):
         result = {
             'owner': self.owner,
@@ -261,6 +263,14 @@ class Project(models.Model):
 
 
 class ProjectStateless(Project):
+
+    def get_descriptors(self, type_descriptor):
+        """Returns all descriptors of a given type"""
+        raise NotImplementedError
+
+    def delete_descriptor(self, type_descriptor, descriptor_id):
+        raise NotImplementedError
+
     def get_all_ns_descriptors(self, nsd_id):
         pass
 
@@ -273,6 +283,11 @@ class ProjectStateless(Project):
     def get_node_overview(self, **kwargs):
         pass
 
+    def get_dataproject(self):
+        raise NotImplementedError
+
+    def get_overview_data(self):
+        raise NotImplementedError
 
 class Repository(models.Model):
     """ Repository

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load get %}
 {% include 'modal/new_descriptor_name.html' %}
 <div class="col-md-12">
 
@@ -7,9 +8,9 @@
             <h3 class="box-title">
             </h3>
             <div class="box-tools">
-                <a href="javascript:createNewDescriptor('{{project_id}}', '{{descriptor_type}}')"
+                <a href="/projects/{{project_id}}/descriptors/{{descriptor_type}}/new"
                    class="btn btn-block btn-primary btn-sm"><i
-                        class="fa fa-plus"></i><span> Create {{descriptor_type}}</span></a>
+                        class="fa fa-upload"></i><span> Onboard {{descriptor_type}}</span></a>
             </div>
         </div>
         <div class="box-body">
@@ -21,9 +22,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for k,v in descriptors.items %}
+                {% for k in descriptors %}
                 <tr>
-                    <td><a href="/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{ k }}">{{ k }}</a></td>
+                    <td><a href="/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{ k|get:"_id" }}">{{ k|get:"short-name" }} </a></td>
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default">Action</button>
@@ -34,15 +35,13 @@
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k }}')"><i
+                                    <a href="javascript:openDescriptorView('{{project_id}}', '{{descriptor_type}}', '{{ k|get:"_id" }}')"><i
                                             class="fa fa-pencil fa-fw"></i>Edit</a></li>
-                                <li><a href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{ k }}'><i
+                                <li><a href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id={{ k|get:"_id" }}'><i
                                         class="fa fa-sitemap fa-fw"></i>Show graph</a></li>
-                                <li>
-                                    <a href="javascript:cloneDescriptor('{{project_id}}', '{{descriptor_type}}', '{{ k }}')"><i
-                                            class="fa fa-clone   fa-fw"></i>Clone</a></li>
+
                                 <li class="divider"></li>
-                                <li><a href="/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{k}}/delete"><i
+                                <li><a href="/projects/{{project_id}}/descriptors/{{descriptor_type}}/{{ k|get:"_id" }}/delete"><i
                                         class="fa fa-trash-o fa-fw"></i>Delete</a></li>
                             </ul>
                         </div>

@@ -26,7 +26,7 @@ from projecthandler.models import ProjectStateless
 
 from lib.osm.osm_parser import OsmParser
 from lib.osm.osm_rdcl_graph import OsmRdclGraph
-
+from lib.osm.osmclient.client import Client
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('OsmModel.py')
@@ -45,6 +45,39 @@ class OsmProject(ProjectStateless):
         # descrtiptor list in comment #
 
     """
+
+    def get_descriptors(self, type_descriptor):
+        """Returns all descriptors of a given type"""
+        log.debug("Get %s descriptors", type_descriptor)
+        try:
+            client = Client()
+            if type_descriptor == 'nsd':
+                result = client.nsd_list()
+                print result
+            elif type_descriptor == 'vnfd':
+                result = client.vnfd_list()
+                #print result
+
+        except Exception as e:
+            log.exception(e)
+            result = {}
+        return result
+
+    def get_descriptor(self, descriptor_id, type_descriptor):
+        """Returns a specific descriptor"""
+        try:
+            client = Client()
+            if type_descriptor == 'nsd':
+                result = client.nsd_get(descriptor_id)
+                print result
+            elif type_descriptor == 'vnfd':
+                result = client.vnfd_get(descriptor_id)
+                print result
+        except Exception as e:
+            log.exception(e)
+            result = {}
+
+        return result
 
     @classmethod
     def data_project_from_files(cls, request):
@@ -108,12 +141,12 @@ class OsmProject(ProjectStateless):
         result = {
             'owner': self.owner.__str__(),
             'name': self.name,
-            'updated_date': self.updated_date.__str__(),
+            'updated_date': self.updated_date.strftime('%Y-%m-%d %H:%M'),
             'info': self.info,
             'type': 'osm',
-            'nsd': len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
+            'nsd': '#',#len(current_data['nsd'].keys()) if 'nsd' in current_data else 0,
 
-            'vnfd': len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
+            'vnfd': '#',#len(current_data['vnfd'].keys()) if 'vnfd' in current_data else 0,
 
             'validated': self.validated
         }
@@ -127,34 +160,43 @@ class OsmProject(ProjectStateless):
                                                      model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
         return json.dumps(topology)
 
-    def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
+    def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type, file_uploaded):
         """Creates a descriptor of a given type from a json or yaml representation
 
         Returns the descriptor id or False
         """
+        log.debug('Create descriptor')
+
         try:
-            current_data = json.loads(self.data_project)
-            if data_type == 'json':
-                new_descriptor = json.loads(new_data)
-            elif data_type == 'yaml':
-                yaml_object = yaml.load(new_data)
-                new_descriptor = json.loads(Util.yaml2json(yaml_object))
+            client = Client()
+            if type_descriptor == 'nsd':
+                result = client.nsd_onboard(file_uploaded)
+            elif type_descriptor == 'vnfd':
+                result = client.vnfd_onboard(file_uploaded)
+
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
 
-            # schema = cls.loadjsonfile("lib/osm/schemas/"+type_descriptor+".json")
-            #reference_schema = self.get_json_schema_by_type(type_descriptor)
-            # validate = Util.validate_json_schema(reference_schema, new_descriptor)
-            validate = False
-            new_descriptor_id = descriptor_name
-            if not type_descriptor in current_data:
-                current_data[type_descriptor] = {}
-            current_data[type_descriptor][new_descriptor_id] = new_descriptor
-            self.data_project = current_data
-            self.validated = validate  
-            self.update()
-            result = new_descriptor_id
+        except Exception as e:
+            log.exception(e)
+            result = False
+        return result
+
+    def delete_descriptor(self, type_descriptor, descriptor_id):
+        log.debug('Delete descriptor')
+
+        try:
+            client = Client()
+            if type_descriptor == 'nsd':
+                result = client.nsd_delete(descriptor_id)
+            elif type_descriptor == 'vnfd':
+                result = client.vnfd_delete(descriptor_id)
+
+            else:
+                log.debug('Create descriptor: Unknown data type')
+                return False
+
         except Exception as e:
             log.exception(e)
             result = False

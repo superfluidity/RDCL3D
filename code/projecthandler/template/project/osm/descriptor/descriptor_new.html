@@ -20,23 +20,11 @@ Create new {{ descriptor_type }} descriptor
 
 {% block tab_pane_button_list %}
 {{ block.super }}
-<li class="active" id="yaml_li"><a href="#yaml" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste YAML</a></li>
-<li id="json_li"><a href="#json" data-toggle="tab"><i class="fa fa-clipboard"></i> Paste JSON</a></li>
-<li id="file_li"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Upload File</a></li>
+<li id="file_li" class="active"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Onboard Package</a></li>
 {% endblock %}
 
 {% block nav_buttons_list %}
 {{ block.super }}
-<li class="pull-right">
-    <button type="button" id="upload_button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i
-            class="fa fa-save"></i> Save
-    </button>
-</li>
-<li class="pull-right">
-    <button id="save_show_graph" type="button" class="btn btn-block btn-primary btn-sm" onclick="create(this.id)"><i
-            class="fa fa-sitemap"></i> Save and Show Graph
-    </button>
-</li>
 <li class="pull-right">
     <button id="cancel" type="button" class="btn btn-block btn-primary btn-sm" onclick="cancel(this.id)"><i
             class="fa fa-times"></i> Cancel
@@ -46,35 +34,26 @@ Create new {{ descriptor_type }} descriptor
 
 {% block tab_pane_list %}
 {{ block.super }}
-<div class="tab-pane active" id="yaml">
-                            <textarea id="code_editor_yaml">
 
-                            </textarea>
-</div>
-<!-- /.tab-pane-->
-
-<div class="tab-pane" id="json">
-                            <textarea id="code_editor_json">
-
-                            </textarea>
-</div>
-
-<div class="tab-pane" id="upload">
+<div class="tab-pane active" id="upload">
 
     <!-- Standar Form -->
-    <h4>Select Project Descriptor File from your computer</h4>
+    <h4>Select package from your computer</h4>
     <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
         <div class="form-inline">
+            {% csrf_token %}
             <div class="form-group">
-                <input type="file" name="files[]" id="js-upload-files" multiple>
+                <input type="file" name="file" id="js-upload-files">
             </div>
+            <button onclick="create(this.id)" class="btn btn-xs btn-primary" id="js-upload-submit"><i
+            class="fa fa-upload"></i> Onboard</button>
         </div>
     </form>
 
     <!-- Drop Zone -->
     <h4>Or drag and drop file below</h4>
     <div class="upload-drop-zone" id="drop-zone">
-        Just drag and drop file here
+            Just drag and drop files here
     </div>
 </div>
 {% endblock %}
@@ -103,40 +82,6 @@ Create new {{ descriptor_type }} descriptor
     }
 
 
-        var editorJSON;
-        var editorYaml;
-        $(document).ready(function () {
-           var myJsonTextArea = document.getElementById("code_editor_json");
-           editorJSON = CodeMirror(function(elt) {
-                            myJsonTextArea.parentNode.replaceChild(elt, myJsonTextArea);
-                        }, json_editor_settings );
-
-            editorJSON.setValue(JSON.stringify({{ descriptor_strings.descriptor_string_json |safe }}, null,"\t"));
-            var that = this;
-            editorJSON.setOption("autoRefresh", true);
-
-
-
-
-           var myYamlTextArea = document.getElementById("code_editor_yaml");
-           editorYaml = CodeMirror(function(elt) {
-                            myYamlTextArea.parentNode.replaceChild(elt, myYamlTextArea);
-                        }, yaml_editor_settings );
-           var des_strings = {{ descriptor_strings|safe }};
-           editorYaml.setValue(des_strings.descriptor_string_yaml);
-           editorYaml.setOption("autoRefresh", true);
-
-
-
-            setTimeout(function() {
-                console.log("YAML/JSON refresh");
-
-                editorYaml.refresh();
-                editorJSON.refresh();
-            },1);
-
-
-        });
 
 
         function create(fs, dropzone){
@@ -145,14 +90,7 @@ Create new {{ descriptor_type }} descriptor
             var type, text ;
             var data = new FormData();
             switch(id) {
-                case 'yaml_li':
-                    type = 'yaml';
-                    text = editorYaml.getValue();
-                    break;
-                case 'json_li':
-                    type = 'json';
-                    text = editorJSON.getValue();
-                    break;
+
                 case 'file_li':
                     type = 'file'
 
@@ -165,9 +103,12 @@ Create new {{ descriptor_type }} descriptor
                       }
                     }
                     console.log(files[0])
-                    var extension =files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                    if(!(extension == 'json' || extension =='yaml')){
-                        alert("The file must be .json or .yaml");
+                    var patt1 = /\.([0-9a-z]+)(?:[\?#]|$)/i;
+                    console.log(files[0].name.match(patt1));
+                    var extension = files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                    console.log(extension)
+                    if(!(extension == 'gz' )){
+                        alert("The file must be .tar.gz");
                         return
                     }
 
@@ -188,12 +129,9 @@ Create new {{ descriptor_type }} descriptor
                     processData: false,
                     success: function(result) {
                         console.log(result)
-                        if(fs =='save_show_graph'){
-                            window.location.href='/projects/{{project_id}}/graph?type={{descriptor_type}}&id='+result.descriptor_id
-                        }else{
-                            window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
 
-                        }
+                        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+
                     },
                     error: function(result) {
                         showAlert(result);
