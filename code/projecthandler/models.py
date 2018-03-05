@@ -92,17 +92,17 @@ class Project(models.Model):
     def get_type(self):
         return "Base"
 
-    @classmethod
+    #@classmethod
     def get_dataproject(self):
         """ Return the python dict representation of the project data
 
         """
-        # current_data = json.loads(self.data_project)
+        #current_data = json.loads(self.data_project)
         current_data = Util.json_loads_byteified(self.data_project)
 
         return current_data
 
-    @classmethod
+    #@classmethod
     def get_overview_data(self):
         result = {
             'owner': self.owner,
