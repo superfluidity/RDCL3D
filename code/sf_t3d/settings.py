@@ -88,6 +88,10 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'sf_t3d.context_processor.conf_constants',
             ],
+            'libraries':{
+                'get': 'sf_t3d.templatetags.get',
+
+            }
         },
     },
 ]
