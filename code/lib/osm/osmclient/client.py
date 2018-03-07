@@ -72,14 +72,14 @@ class Client(object):
 
             headers['Authorization'] = 'Bearer {}'.format(token)
             headers['Content-Type'] = 'application/gzip'
-            headers['Content-File-MD5'] = self.md5file('cirros_2vnf_ns.tar.gz')
-            print self.md5(package.file)
-            print self.md5file('cirros_2vnf_ns.tar.gz')
-            files = {'file': ('cirros_2vnf_ns.tar.gz', open('cirros_2vnf_ns.tar.gz', 'rb'), 'application/gzip')}
+            #headers['Content-File-MD5'] = self.md5file('cirros_2vnf_ns.tar.gz')
+            #print self.md5(package.file)
+            #print self.md5file('cirros_2vnf_ns.tar.gz')
+            #files = {'file': ('cirros_2vnf_ns.tar.gz', open('cirros_2vnf_ns.tar.gz', 'rb'), 'application/gzip')}
             #print headers['Content-File-MD5']
             headers['accept'] = 'application/json'
-            print package.read()
-            print (package.name)
+            #print package.read()
+            #print (package.name)
             with open('/tmp/'+package.name, 'wb+') as destination:
                 for chunk in package.chunks():
                     destination.write(chunk)
@@ -123,10 +123,13 @@ class Client(object):
         if token:
             headers['Authorization'] = 'Bearer {}'.format(token)
             headers['Content-Type'] = 'application/gzip'
-            headers['Content-File-MD5'] = self.md5(package)
             headers['accept'] = 'application/json'
-            return self._send_post("https://40.86.191.138:9999/osm/vnfpkgm/v1/vnf_packages",headers=headers,
-                                   data=package, files={'hackfest_1_vnfd': package})
+            with open('/tmp/'+package.name, 'wb+') as destination:
+                for chunk in package.chunks():
+                    destination.write(chunk)
+            headers['Content-File-MD5'] = self.md5(open('/tmp/'+package.name, 'rb'))
+            return self._send_post("https://40.86.191.138:9999/osm/vnfpkgm/v1/vnf_packages", headers=headers,
+                                   data=open('/tmp/' + package.name, 'rb'))
         return None
 
     def _upload_package(self, filename, package):
