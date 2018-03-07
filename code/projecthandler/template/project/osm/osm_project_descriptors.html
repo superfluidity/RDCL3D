@@ -1,7 +1,11 @@
 {% extends "project_descriptors.html" %}
 
 {% load staticfiles %}
-
+{% block logo_sidebar %}
+    {% with logo_mini="assets/img/osm_small_logo.png" logo="assets/img/osm_logo.png"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
 {% block head_block %}
   	{{ block.super }}
 
@@ -57,8 +61,10 @@ $(document).ready(function () {
 
 });
 
-
-
     </script>
+{% endblock %}
+
+{% block footer %}
+    {% include "footer.html" with proj_name="Lightweight-OSM" %}
 {% endblock %}
 
