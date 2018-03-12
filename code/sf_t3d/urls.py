@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^repos/', include('projecthandler.urls.repo', namespace='repos'), name='repos_base'),
     url(r'^translator/', include('projecthandler.urls.translator', namespace='translator'), name='translator_base'),
     url(r'^deployments/', include('deploymenthandler.urls.deployment', namespace='deployment'), name='deployments_base'),
+    url(r'^webhooks/', include('webhookhandler.urls.hooks', namespace='webhook'), name='webhook_base'),
     url(r'^agents/', include('deploymenthandler.urls.agent', namespace='agent'), name='agents_base'),
     url(r'^$', views.home, name='home'),
     url(r'^home', views.home, name='home'),

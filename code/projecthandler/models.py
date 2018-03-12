@@ -26,7 +26,6 @@ import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 import logging
-from git import Repo
 import os, shutil, git
 
 logging.basicConfig(level=logging.DEBUG)

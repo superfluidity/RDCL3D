@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'sf_user',
     'projecthandler',
     'deploymenthandler',
+    'webhookhandler'
 ]
 
 MIDDLEWARE_CLASSES = [
