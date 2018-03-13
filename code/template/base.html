@@ -148,12 +148,17 @@
     <script src="{% static "AdminLTE/bootstrap/js/bootstrap.min.js" %}"></script>
     <!-- iCheck -->
     <script src="{% static "AdminLTE/plugins/iCheck/icheck.min.js" %}"></script>
+    <!-- iCheck -->
+    <script src="{% static "AdminLTE/plugins/pace/pace.js" %}"></script>
     <!-- AdminLTE App -->
     <script src="{% static "AdminLTE/dist/js/app.min.js" %}"></script>
     <!-- RDCL3D AdminLTE session storage handler -->
     <script src="{% static "src/adminlte_session_storage.js" %}"></script>
     <!-- Utility JS -->
     <script src="{% static "src/utils.js" %}"></script>
+    <script>
+        $(document).ajaxStart(function() { Pace.restart(); });
+    </script>
 
 
     {% block resource_block %}
