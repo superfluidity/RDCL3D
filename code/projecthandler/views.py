@@ -27,7 +27,6 @@ import git
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
-from projecthandler.osm_model import OsmProject
 from projecthandler.cran_model import CranProject
 from projecthandler.nemo_model import NemoProject
 from projecthandler.toscanfv_model import ToscanfvProject
@@ -40,7 +39,6 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
-Project.add_project_type('osm', OsmProject)
 Project.add_project_type('cran', CranProject)
 Project.add_project_type('nemo', NemoProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
