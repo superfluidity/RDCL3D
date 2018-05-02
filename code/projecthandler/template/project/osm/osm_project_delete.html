@@ -1,0 +1,26 @@
+{% extends "project_delete.html" %}
+
+
+{% block logo_sidebar %}
+    {% with logo_mini="assets/img/osm_small_logo.png" logo="assets/img/OSM-logo.png"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block left_sidebar %}
+    {% include 'osm/osm_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block footer %}
+    {% include "footer.html" with proj_name="Lightweight-OSM" %}
+{% endblock %}

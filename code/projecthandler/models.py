@@ -26,13 +26,13 @@ import yaml
 from lib.util import Util
 from model_utils.managers import InheritanceManager
 import logging
-from git import Repo
 import os, shutil, git
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('models.py')
 
 project_types = {}
+
 
 class Project(models.Model):
     """ Base class for project types
@@ -69,8 +69,6 @@ class Project(models.Model):
 
     @classmethod
     def create_project(cls, name, user, validated, info, data_project):
-        # project = EtsiProject.objects.create(name=name, owner=user, validated=False, info=info,
-        #                                                  data_project=data_project)
         project = cls.objects.create(name=name, owner=user, validated=False, info=info,
                                                        data_project=data_project)
         return project
@@ -93,15 +91,17 @@ class Project(models.Model):
     def get_type(self):
         return "Base"
 
+    #@classmethod
     def get_dataproject(self):
         """ Return the python dict representation of the project data
 
         """
-        # current_data = json.loads(self.data_project)
+        #current_data = json.loads(self.data_project)
         current_data = Util.json_loads_byteified(self.data_project)
 
         return current_data
 
+    #@classmethod
     def get_overview_data(self):
         result = {
             'owner': self.owner,
@@ -260,6 +260,33 @@ class Project(models.Model):
     def translate_push_ns_on_repository(self, translator, nsd_id, repository, **kwargs):
         raise NotImplementedError
 
+
+class ProjectStateless(Project):
+
+    def get_descriptors(self, type_descriptor):
+        """Returns all descriptors of a given type"""
+        raise NotImplementedError
+
+    def delete_descriptor(self, type_descriptor, descriptor_id):
+        raise NotImplementedError
+
+    def get_all_ns_descriptors(self, nsd_id):
+        pass
+
+    def translate_push_ns_on_repository(self, translator, nsd_id, repository, **kwargs):
+        pass
+
+    def get_deployment_descriptor(self, **kwargs):
+        pass
+
+    def get_node_overview(self, **kwargs):
+        pass
+
+    def get_dataproject(self):
+        raise NotImplementedError
+
+    def get_overview_data(self):
+        raise NotImplementedError
 
 class Repository(models.Model):
     """ Repository

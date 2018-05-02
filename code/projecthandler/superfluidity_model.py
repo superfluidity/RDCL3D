@@ -499,7 +499,8 @@ class SuperfluidityProject(EtsiProject, ClickProject):
         if translator == 'k8sansible':
             ansible_util = AnsibleUtility()
             playbooks_path = kwargs['repo_path'] + '/project_' + str(self.id) + '/' + nsd_id + '/'
-            conversion_report = ansible_util.generate_playbook(ns_data, nsd_id, playbooks_path)
+            Util.writejsonfile('/tmp/testing', ns_data)
+            ansible_util.generate_playbook(ns_data, nsd_id,playbooks_path)
 
         elif translator == 'sf2heat':
             hot_path = kwargs['repo_path'] + '/project_' + str(self.id) + '/' + nsd_id + '_hot'

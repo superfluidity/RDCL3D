@@ -1,0 +1,159 @@
+{% extends "descriptor/descriptor_view_base.html" %}
+
+{% load staticfiles %}
+
+{% block logo_sidebar %}
+    {% with logo_mini="assets/img/osm_small_logo.png" logo="assets/img/OSM-logo.png"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+Create new {{ descriptor_type }} descriptor
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'osm/osm_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+<li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+<li><a href="{% url 'projects:open_project' project_id=project_id %}descriptors/{{descriptor_type}}">{{ descriptor_type }}  Descriptors</a></li>
+<li>Create Descriptor</li>
+{% endblock %}
+
+{% block tab_pane_button_list %}
+{{ block.super }}
+<li id="file_li" class="active"><a href="#upload" data-toggle="tab"><i class="fa fa-upload"></i> Onboard Package</a></li>
+{% endblock %}
+
+{% block nav_buttons_list %}
+{{ block.super }}
+<li class="pull-right">
+    <button id="cancel" type="button" class="btn btn-block btn-primary btn-sm" onclick="cancel(this.id)"><i
+            class="fa fa-times"></i> Cancel
+    </button>
+</li>
+{% endblock %}
+
+{% block tab_pane_list %}
+{{ block.super }}
+
+<div class="tab-pane active" id="upload">
+
+    <!-- Standar Form -->
+    <h4>Select package from your computer</h4>
+    <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+        <div class="form-inline">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="file" name="file" id="js-upload-files">
+            </div>
+            <button onclick="create(this.id)" class="btn btn-xs btn-primary" id="js-upload-submit"><i
+            class="fa fa-upload"></i> Onboard</button>
+        </div>
+    </form>
+
+    <!-- Drop Zone -->
+    <h4>Or drag and drop file below</h4>
+    <div class="upload-drop-zone" id="drop-zone">
+            Just drag and drop files here
+    </div>
+</div>
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+
+<script>
+
+    var dropZone = document.getElementById('drop-zone');
+    dropZone.ondrop = function(e) {
+        e.preventDefault();
+        this.className = 'upload-drop-zone';
+        create(e.dataTransfer.files, true);
+    }
+
+    dropZone.ondragover = function() {
+        this.className = 'upload-drop-zone drop';
+        return false;
+    }
+
+    dropZone.ondragleave = function() {
+        this.className = 'upload-drop-zone';
+        return false;
+    }
+
+
+
+
+        function create(fs, dropzone){
+            var id = $('.nav-tabs .active').attr('id');
+            if (dropzone) id = 'file_li'
+            var type, text ;
+            var data = new FormData();
+            switch(id) {
+
+                case 'file_li':
+                    type = 'file'
+
+                    var files = dropzone ? fs : document.getElementById('js-upload-files').files;
+                    if (!files || !files.length) {
+                      files = document.getElementById('drop-zone').files
+                      if(!files || !files.length){
+                        alert("Seletc a file")
+                        return
+                      }
+                    }
+                    console.log(files[0])
+                    var patt1 = /\.([0-9a-z]+)(?:[\?#]|$)/i;
+                    console.log(files[0].name.match(patt1));
+                    var extension = files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                    console.log(extension)
+                    if(!(extension == 'gz' )){
+                        alert("The file must be .tar.gz");
+                        return
+                    }
+
+                     data.append('file', files[0]);
+                    break;
+            }
+            data.append('csrfmiddlewaretoken','{{csrf_token}}');
+            data.append('type', type);
+            data.append('text', text);
+            data.append('id', '{{descriptor_id}}');
+            console.log(text);
+            $.ajax({
+                    url: "new",
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(result) {
+                        console.log(result)
+
+                        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+
+                    },
+                    error: function(result) {
+                        showAlert(result);
+                    }
+                });
+        }
+
+    function cancel(id){
+        window.location.href="/projects/{{project_id}}/descriptors/{{descriptor_type}}"
+    }
+
+
+
+</script>
+{% endblock %}
+
+{% block footer %}
+    {% include "footer.html" with proj_name="Lightweight-OSM" %}
+{% endblock %}

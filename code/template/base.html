@@ -3,27 +3,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>{{ SITE_NAME }}</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.6 -->
-  <link rel="stylesheet" href="{% static "AdminLTE/bootstrap/css/bootstrap.min.css" %}">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css" %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static "AdminLTE/dist/css/AdminLTE.min.css" %}">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="{% static "AdminLTE/plugins/iCheck/square/blue.css" %}">
-  <!-- AdminLTE Skins. -->
-  <link rel="stylesheet" href="{% static "AdminLTE/dist/css/skins/skin-blue.min.css" %}">
-    <!-- Pace. -->
-  <link rel="stylesheet" href="{% static "AdminLTE/plugins/pace/pace.min.css" %}">
-
-    <!-- RDCL core CSS -->
-    <link rel="stylesheet" href="{% static "css/rdcl.css" %}">
-
+    {% block head_base %}
+        {% include "head.html" %}
+    {% endblock %}
     {% block head_block %}
 
     {% endblock %}
@@ -36,22 +18,22 @@
   <![endif]-->
 </head>
 
+{% block body %}
+
+
 {% if request.COOKIES.collapsed_sidebar == '1' %}
-<body class="skin-blue sidebar-mini sidebar-collapse">
+<body class="skin-{{ skin|default:"blue" }} sidebar-mini sidebar-collapse">
 {% else %}
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-{{ skin|default:"blue" }} sidebar-mini">
 {% endif %}
     <!-- Site wrapper -->
     <div class="wrapper">
 
       <header class="main-header">
     <!-- Logo -->
-    <a href="#" class="logo" style="background-color: white !important;">
-        <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><img src="{% static "assets/img/sf_small_logo.png" %}"></span>
-        <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><img src="{% static "assets/img/sf_logo.png" %}"></span>
-    </a>
+    {% block logo_sidebar %}
+        {% include "logo_sidebar.html" %}
+    {% endblock %}
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
@@ -149,8 +131,10 @@
           <!-- /.content -->
         {% include "modals/error_alert.html" %}
       </div><!-- /.content-wrapper -->
+        {% block footer %}
+            {% include "footer.html" %}
+        {% endblock %}
 
-        {% include "footer.html" %}
 
     </div><!-- ./wrapper -->
     <!-- =============================================== -->
@@ -164,6 +148,8 @@
     <script src="{% static "AdminLTE/bootstrap/js/bootstrap.min.js" %}"></script>
     <!-- iCheck -->
     <script src="{% static "AdminLTE/plugins/iCheck/icheck.min.js" %}"></script>
+    <!-- iCheck -->
+    <script src="{% static "AdminLTE/plugins/pace/pace.js" %}"></script>
     <!-- AdminLTE App -->
     <script src="{% static "AdminLTE/dist/js/app.min.js" %}"></script>
     <!-- RDCL3D AdminLTE session storage handler -->
@@ -176,4 +162,5 @@
 
     {% endblock %}
 </body>
+{% endblock %}
 </html>

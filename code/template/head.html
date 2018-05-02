@@ -1,0 +1,24 @@
+{% load staticfiles %}
+{% load i18n %}
+
+ <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ SITE_NAME }}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="{% static "AdminLTE/bootstrap/css/bootstrap.min.css" %}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css" %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static "AdminLTE/dist/css/AdminLTE.min.css" %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static "AdminLTE/plugins/iCheck/square/blue.css" %}">
+<!-- pace -->
+  <link rel="stylesheet" href="{% static "AdminLTE/plugins/pace/pace.css" %}">
+  <!-- AdminLTE Skins. -->
+  <link rel="stylesheet" href="{% static  skin_css|default:"AdminLTE/dist/css/skins/skin-blue.min.css"  %}">
+    <!-- Pace. -->
+  <link rel="stylesheet" href="{% static "AdminLTE/plugins/pace/pace.min.css" %}">
+    <!-- RDCL core CSS -->
+    <link rel="stylesheet" href="{% static "css/rdcl.css" %}">

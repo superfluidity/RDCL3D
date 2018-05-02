@@ -1,0 +1,22 @@
+{% block head_base %}
+    {% with skin_css="AdminLTE/dist/css/skins/skin-yellow.min.css"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block body %}
+    {% with skin="yellow"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block logo_sidebar %}
+    {% with logo_mini="assets/img/osm_small_logo.png" logo="assets/img/OSM-logo.png"%}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+
+{% block footer %}
+    {% include "footer.html" with proj_name="Lightweight-OSM" %}
+{% endblock %}
