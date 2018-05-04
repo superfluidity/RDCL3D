@@ -381,7 +381,7 @@ def new_descriptor(request, project_id=None, descriptor_type=None):
             text = file_uploaded.read()
             data_type = file_uploaded.name.split(".")[-1]
             desc_name = file_uploaded.name.split(".")[0]
-            result = projects[0].create_descriptor(desc_name, descriptor_type, text, data_type, file_uploaded)
+            result = projects[0].create_descriptor(desc_name, descriptor_type, text, data_type)
         else:
             text = request.POST.get('text')
             desc_name = request.POST.get('id')

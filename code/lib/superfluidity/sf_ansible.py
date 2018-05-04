@@ -41,16 +41,16 @@ class AnsibleUtility(object):
             self.init_dir(os.path.join(self.BASE, 'roles'))
 
             # APP CREATE ROLE
-            self.init_dir(os.path.join(self.BASE, 'roles', application_name + '_create'))
-            self.add_role_task(application_name + '_create', 'main', [{'name': 'Create project',
+            self.init_dir(os.path.join(self.BASE, 'roles', str(application_name + '_create')))
+            self.add_role_task(str(application_name + '_create'), 'main', [{'name': 'Create project',
                                                                        'command': 'kubectl create namespace {{ application_name }}'}])
-            self.roles_create.append(application_name + '_create')
+            self.roles_create.append(str(application_name + '_create'))
 
             # APP DESTROY ROLE
-            self.init_dir(os.path.join(self.BASE, 'roles', application_name + '_destroy'))
-            self.add_role_task(application_name + '_destroy', 'main', [{'name': 'Destroy project',
+            self.init_dir(os.path.join(self.BASE, 'roles', str(application_name + '_destroy')))
+            self.add_role_task(str(application_name + '_destroy'), 'main', [{'name': 'Destroy project',
                                                                         'command': 'kubectl delete namespace {{ application_name }}'}])
-            self.roles_destroy.append(application_name + '_destroy')
+            self.roles_destroy.append(str(application_name + '_destroy'))
 
             for v in sf_data['vnfd']:
                 vnfd = sf_data['vnfd'][v]
