@@ -762,13 +762,17 @@ dreamer.GraphEditor = (function (global) {
             .attr("y", "20")
             .text(title);
 
-        for (var i in data) {
-            //console.log(i, data, data[i])
-            //var typeofvalue = typeof data[i];
+        if(Object.keys(data).length > 0  ) {
+            for (var i in data) {
             var record = data[i];
             index = this._addRecordToPopup(i, record,index)
 
+            }
         }
+        else{
+            this._addRecordToPopup("Warning", "No info. available",1)
+        }
+
 
     };
 

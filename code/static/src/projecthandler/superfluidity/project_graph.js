@@ -488,7 +488,6 @@ function buildBehaviorsOnEvents() {
                 }
             };
             new dreamer.SuperfluidityController().getNodeOverview(graph_editor, d, function (result) {
-               // console.log(JSON.stringify(result))
                 graph_editor.showNodeInfo({'node_info': result['node_overview']})
             }, function (error) {
                 showAlert("Error opening info node.")
@@ -498,9 +497,11 @@ function buildBehaviorsOnEvents() {
 
     },
         {
-            title: 'Show graph',
+            title: 'Explore',
             action: function (elm, c_node, i) {
                 if (c_node.info.type != undefined) {
+
+
                     var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
                     if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
                         if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {

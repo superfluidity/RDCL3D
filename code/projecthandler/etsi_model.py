@@ -207,7 +207,7 @@ class EtsiProject(Project):
         elif element_type == 'ns_vl':
             result = self.add_ns_vl(group_id, element_id)
         elif element_type == 'vnf':
-            if existing_element == 'true':
+            if existing_element:
                 result = self.add_ns_existing_vnf(group_id, element_id)
             else:
                 result = self.add_ns_vnf(group_id, element_id)
