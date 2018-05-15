@@ -57,6 +57,7 @@ $(document).ready(function () {
     graph_editor.handleFiltersParams(params);
     graph_editor.addListener("filters_changed", changeFilter);
     graph_editor.addListener("edit_descriptor", openEditorEvent);
+    graph_editor.addListener("explore_text", openExploreText);
 
 });
 
@@ -75,7 +76,7 @@ function initDropOnGraph() {
                 'info': {
                     'type': nodetype,
                     'group': [group],
-                    'desc_id': graph_editor.getCurrentView(),
+                    'desc_id': graph_editor.getCurrentView()
                 },
                 'x': e.layerX,
                 'y': e.layerY
@@ -153,7 +154,7 @@ function initDropOnGraph() {
                     var envVars = $('#input_choose_vnf_ansibledocker_vdu_envVars').val();
                     node_information['id'] = vdu_id;
                     node_information['opt_params'] = vdu_opt_params;
-                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'ansibledocker'
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'ansibledocker';
                     node_information['opt_params']['nested_desc']['id'] = vduNestedDesc_id;
                     node_information['opt_params']['nested_desc']['vduNestedDescriptor'] = vduNestedDesc_id;
                     node_information['opt_params']['vdu_param']['envVars'] = envVars;
@@ -169,7 +170,7 @@ function initDropOnGraph() {
                     var choice = $("#selection_chooser_vnf_vduNestedDesc option:selected").text();
                     node_information['id'] = vdu_id;
                     node_information['opt_params'] = vdu_opt_params;
-                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'kubernetes'
+                    node_information['opt_params']['nested_desc']['vduNestedDescriptorType'] = 'kubernetes';
                     /*
                     if (choice == 'None'){*/
                         node_information['opt_params']['nested_desc']['id'] = vduNestedDesc_id;
@@ -352,6 +353,11 @@ function openEditor(project_id) {
 
 }
 
+function openExploreText(event,args){
+    console.log(JSON.stringify(args))
+    //edit_descriptor
+    window.location.href = '/projects/' + args.project_id + '/descriptors/' + args.descriptor_type + '/' + args.descriptor_id;
+}
 
 function showChooserModal(title, chooses, callback) {
     console.log('showchooser')
@@ -359,7 +365,7 @@ function showChooserModal(title, chooses, callback) {
     for (var i in chooses) {
         $('#selection_chooser').append('<option id="' + chooses[i].id + '">' + chooses[i].id + '</option>');
     }
-    $('#modal_chooser_title').text(title)
+    $('#modal_chooser_title').text(title);
     var self = this;
     $('#save_chooser').off('click').on('click', function () {
         var choice = $("#selection_chooser option:selected").text();
@@ -404,7 +410,7 @@ function newVnffg() {
         var node_information = {
             'element_id': name,
             'element_type': "vnffg",
-            'group_id': group,
+            'group_id': group
         };
         new dreamer.GraphRequests().addVnffg(node_information, function (result) {
 
@@ -478,6 +484,7 @@ function handleVnffgParameter(vnffgId, class_name) {
 }
 
 function buildBehaviorsOnEvents() {
+    var self = this;
     var contextmenuNodesAction = [{
         title: 'Show info',
         action: function (elm, d, i) {
@@ -500,8 +507,6 @@ function buildBehaviorsOnEvents() {
             title: 'Explore',
             action: function (elm, c_node, i) {
                 if (c_node.info.type != undefined) {
-
-
                     var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
                     if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
                         if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
@@ -516,6 +521,17 @@ function buildBehaviorsOnEvents() {
                                     view: [new_layer]
                                 }
                             });
+
+                        }
+                        else if(graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands_text){
+                            var type_map = {
+                                "vnf_k8s_vdu": "k8s",
+                                "vnf_docker_vdu": "docker"
+                            };
+                            console.log(JSON.stringify(c_node));
+                            if (c_node.info.nestedDesc){
+                                graph_editor.eventHandler.fire("explore_text", {project_id: graph_editor.project_id, descriptor_id: c_node.info.nestedDesc, descriptor_type: type_map[c_node.info.type]});
+                            }
 
                         }
                         else {
