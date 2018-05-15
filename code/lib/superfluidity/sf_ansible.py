@@ -36,7 +36,7 @@ class AnsibleUtility(object):
             application_name = name.lower() # m.group(0)
 
             self.init_dir(os.path.join(self.BASE, 'group_vars'))
-            self.init_group_vars_file('all', {'application_name': str(application_name)})
+            self.init_group_vars_file('all', {'application_name': str(application_name).replace("_", "-")})
 
             self.init_dir(os.path.join(self.BASE, 'roles'))
 
