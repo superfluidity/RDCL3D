@@ -14,10 +14,6 @@
 #   limitations under the License.
 #
 
-import os
-
-#print os.environ
-
 import json
 import pyaml
 import yaml
@@ -29,25 +25,25 @@ import glob
 import os
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('OshiParser')
+log = logging.getLogger('Srv6_net_progParser')
 
-class OshiParser(Parser):
-    """Parser methods for oshi project type
+class Srv6_net_progParser(Parser):
+    """Parser methods for srv6_net_prog project type
 
     """
 
     def __init__(self):
-        super(OshiParser, self).__init__()
+        super(Srv6_net_progParser, self).__init__()
     
     @classmethod        
     def importprojectdir(cls,dir_project, file_type):
         """Imports all descriptor files under a given folder
 
-        this method is specific for Oshi project type
+        this method is specific for Srv6_net_prog project type
         """
 
         project = {
-            'oshi':{},
+            'srv6_net_prog':{},
             'positions': {}
         }
 
@@ -61,7 +57,8 @@ class OshiParser(Parser):
                     elif file_type == 'yaml':
                         project[desc_type][os.path.basename(file).split('.')[0]] = Util.loadyamlfile(file)
 
-        for vertices_file in glob.glob(os.path.join(dir_project, "OSHI", '*.json')):
+
+        for vertices_file in glob.glob(os.path.join(dir_project, "SRV6_NET_PROG", '*.json')):
             if os.path.basename(vertices_file) == 'vertices.json':
                 project['positions']['vertices'] = Util.loadjsonfile(vertices_file)
 
@@ -74,8 +71,9 @@ class OshiParser(Parser):
         The keys in the dictionary are the file types
         """
         project = {
-            'oshi': {},
+            'srv6_net_prog':{},
             'positions': {}
+
         }
         for desc_type in project:
             if desc_type in file_dict:
@@ -84,5 +82,3 @@ class OshiParser(Parser):
                     project[desc_type][os.path.splitext(file.name)[0]] = json.loads(file.read())
 
         return project
-
-

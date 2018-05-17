@@ -7,8 +7,7 @@ var show_all = null;
 initDropOnGraph();
 
 
-
-$(document).ready(function() {
+$(document).ready(function () {
     var descriptor_type = getUrlParameter('type') == 'ns' || getUrlParameter('type') == 'nsd' ? 'ns' : 'vnf'
     var allowed_types = descriptor_type == 'ns' ? ['vnf', 'ns_cp', 'ns_vl'] : ['vnf_vl', 'vnf_ext_cp', 'vnf_vdu_cp', 'vnf_vdu'];
     var params = {
@@ -31,7 +30,7 @@ $(document).ready(function() {
         height: $('#graph_ed_container').height(),
         gui_properties: example_gui_properties,
         filter_base: params,
-        behaviorsOnEvents:{
+        behaviorsOnEvents: {
             viewBased: false,
             behaviors: buildBehaviorsOnEvents()
         }
@@ -48,14 +47,14 @@ $(document).ready(function() {
 function initDropOnGraph() {
 
     var dropZone = document.getElementById('graph_ed_container');
-    dropZone.ondrop = function(e) {
+    dropZone.ondrop = function (e) {
         var group = graph_editor.getCurrentGroup()
         e.preventDefault();
         var nodetype = e.dataTransfer.getData("text/plain");
         if (nodetype) {
             var type_name = graph_editor.getTypeProperty()[nodetype].name;
             if (nodetype == 'vnf') {
-                new dreamer.GraphRequests().getUnusedVnf(group, function(vnfs) {
+                new dreamer.GraphRequests().getUnusedVnf(group, function (vnfs) {
                     $('#div_chose_id').hide();
                     $('#div_chose_vnf').show();
                     $('#input_choose_node_id').val(nodetype + "_" + generateUID());
@@ -65,7 +64,7 @@ function initDropOnGraph() {
                     for (var i in vnfs) {
                         $('#selection_chooser_vnf').append('<option id="' + vnfs[i] + '">' + vnfs[i] + '</option>');
                     }
-                    $('#save_choose_node_id').off('click').on('click', function() {
+                    $('#save_choose_node_id').off('click').on('click', function () {
                         var choice = $("#selection_chooser_vnf option:selected").text();
                         var name = $('#input_choose_node_id').val();
                         if (choice == 'None') {
@@ -78,11 +77,11 @@ function initDropOnGraph() {
                                 'x': e.layerX,
                                 'y': e.layerY
                             }
-                            graph_editor.addNode(node_information, function() {
+                            graph_editor.addNode(node_information, function () {
                                 $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
+                            }, function (error) {
+                                showAlert(error)
+                            });
                         } else {
                             var node_information = {
                                 'existing_element': true,
@@ -94,11 +93,11 @@ function initDropOnGraph() {
                                 'x': e.layerX,
                                 'y': e.layerY
                             }
-                            graph_editor.addNode(node_information, function() {
+                            graph_editor.addNode(node_information, function () {
                                 $('#modal_choose_node_id').modal('hide');
-                            }, function(error){
-                        showAlert(error)
-                    });
+                            }, function (error) {
+                                showAlert(error)
+                            });
                         }
 
                     });
@@ -111,7 +110,7 @@ function initDropOnGraph() {
                 $('#div_chose_vnf').hide();
                 $('#input_choose_node_id').val(nodetype + "_" + generateUID());
                 $('#modal_chooser_title_add_node').text('Add ' + type_name);
-                $('#save_choose_node_id').off('click').on('click', function() {
+                $('#save_choose_node_id').off('click').on('click', function () {
                     var name = $('#input_choose_node_id').val();
                     var node_information = {
                         'id': name,
@@ -122,9 +121,9 @@ function initDropOnGraph() {
                         'x': e.layerX,
                         'y': e.layerY
                     }
-                    graph_editor.addNode(node_information, function() {
+                    graph_editor.addNode(node_information, function () {
                         $('#modal_choose_node_id').modal('hide');
-                    }, function(error){
+                    }, function (error) {
                         showAlert(error)
                     });
                 });
@@ -135,12 +134,12 @@ function initDropOnGraph() {
 
     }
 
-    dropZone.ondragover = function(ev) {
+    dropZone.ondragover = function (ev) {
         console.log("ondragover");
         return false;
     }
 
-    dropZone.ondragleave = function() {
+    dropZone.ondragleave = function () {
         console.log("ondragleave");
         return false;
     }
@@ -172,18 +171,18 @@ function changeFilter(e, c) {
         $("#vnffg_options").prop("disabled", true);
     }
 
-   new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
-   updateBredCrumb(c);
+    new dreamer.GraphRequests().getAvailableNodes({layer: c.link.view[0]}, buildPalette, showAlert);
+    updateBredCrumb(c);
 }
 
-var filters = function(e, params) {
+var filters = function (e, params) {
     graph_editor.handleFiltersParams(params);
     $('#' + e).nextAll('li').remove();
 }
 
-function updateBredCrumb(filter_parameters){
-     var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
-     $('#breadcrumb').append(newLi);
+function updateBredCrumb(filter_parameters) {
+    var newLi = $("<li id=" + JSON.stringify(graph_editor.getCurrentGroup()) + "><a href='javascript:filters(" + JSON.stringify(graph_editor.getCurrentGroup()) + "," + JSON.stringify(filter_parameters) + ")'>" + graph_editor.getCurrentGroup() + "</a></li>");
+    $('#breadcrumb').append(newLi);
 }
 
 
@@ -200,7 +199,7 @@ function showChooserModal(title, chooses, callback) {
     }
     $('#modal_chooser_title').text(title)
     var self = this;
-    $('#save_chooser').off('click').on('click', function() {
+    $('#save_chooser').off('click').on('click', function () {
         var choice = $("#selection_chooser option:selected").text();
         callback(choice);
 
@@ -237,7 +236,7 @@ function newVnffg() {
     $('#div_chose_vnf').hide();
     $('#input_choose_node_id').val("vnffg_" + generateUID());
     $('#modal_chooser_title_add_node').text('Add VNFFG');
-    $('#save_choose_node_id').off('click').on('click', function() {
+    $('#save_choose_node_id').off('click').on('click', function () {
         var name = $('#input_choose_node_id').val();
         var node_information = {
             'element_id': name,
@@ -245,13 +244,12 @@ function newVnffg() {
             'group_id': group,
         }
         console.log(JSON.stringify(node_information))
-        new dreamer.GraphRequests().addVnffg(node_information, function(result) {
+        new dreamer.GraphRequests().addVnffg(node_information, function (result) {
 
             $('#modal_choose_node_id').modal('hide');
             graph_editor.d3_graph.graph_parameters.vnffgIds.push(node_information.id)
             refreshGraphParameters(null, graph_editor.d3_graph.graph_parameters)
         });
-
 
 
     });
@@ -283,7 +281,7 @@ function handleVnffgParameter(vnffgId, class_name) {
 
     if (vnffgId != "Global") {
         selected_vnffgId = vnffgId;
-        graph_editor.setNodeClass(class_name, function(d) {
+        graph_editor.setNodeClass(class_name, function (d) {
             var result = false;
             if (d.info.group.indexOf(vnffgId) < 0) {
                 result = true;
@@ -292,7 +290,7 @@ function handleVnffgParameter(vnffgId, class_name) {
             return result;
         });
 
-        graph_editor.setLinkClass(class_name, function(d) {
+        graph_editor.setLinkClass(class_name, function (d) {
             var result = false;
             if (d.group.indexOf(vnffgId) < 0) {
                 result = true;
@@ -303,52 +301,52 @@ function handleVnffgParameter(vnffgId, class_name) {
 
     } else {
         selected_vnffgId = null;
-        graph_editor.setNodeClass(class_name, function(d) {
+        graph_editor.setNodeClass(class_name, function (d) {
             var result = false;
             return result;
         });
 
-        graph_editor.setLinkClass(class_name, function(d) {
+        graph_editor.setLinkClass(class_name, function (d) {
             var result = false;
             return result;
         });
     }
 }
 
-function buildBehaviorsOnEvents(){
+function buildBehaviorsOnEvents() {
     var contextmenuNodesAction = [
         {
-                title: 'Show graph',
-                action: function (elm, c_node, i) {
-                    if (c_node.info.type != undefined) {
-                        var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
-                        if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
-                            if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
-                                var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
-                                graph_editor.handleFiltersParams({
-                                    node: {
-                                        type: Object.keys(graph_editor.model.layer[new_layer].nodes),
-                                        group: [c_node.id]
-                                    },
-                                    link: {
-                                        group: [c_node.id],
-                                        view: [new_layer]
-                                    }
-                                });
+            title: 'Show graph',
+            action: function (elm, c_node, i) {
+                if (c_node.info.type != undefined) {
+                    var current_layer_nodes = Object.keys(graph_editor.model.layer[graph_editor.getCurrentView()].nodes);
+                    if (current_layer_nodes.indexOf(c_node.info.type) >= 0) {
+                        if (graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands) {
+                            var new_layer = graph_editor.model.layer[graph_editor.getCurrentView()].nodes[c_node.info.type].expands;
+                            graph_editor.handleFiltersParams({
+                                node: {
+                                    type: Object.keys(graph_editor.model.layer[new_layer].nodes),
+                                    group: [c_node.id]
+                                },
+                                link: {
+                                    group: [c_node.id],
+                                    view: [new_layer]
+                                }
+                            });
 
-                            }
-                            else{
-                                showAlert('This is not an explorable node.')
-                            }
+                        }
+                        else {
+                            showAlert('This is not an explorable node.')
                         }
                     }
-                },
-                edit_mode: false
+                }
+            },
+            edit_mode: false
         }];
-        var behavioursOnEvents = {
-            'nodes': contextmenuNodesAction,
+    var behavioursOnEvents = {
+        'nodes': contextmenuNodesAction
 
-        };
+    };
 
     return behavioursOnEvents;
 }

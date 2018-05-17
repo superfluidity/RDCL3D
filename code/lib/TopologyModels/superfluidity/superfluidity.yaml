@@ -135,6 +135,7 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
+                expands_text: true
             vnf_ansibledocker_vdu:
                 addable:
                     callback: addVnfVdu
@@ -145,7 +146,6 @@ layer:                                  #List of Layers
                     callback: addVnfVdu
                 removable:
                     callback: removeVnfVdu
-                #expands : compact
             vnf_ext_cp:
                 addable:
                     callback: addNode
@@ -161,6 +161,7 @@ layer:                                  #List of Layers
                     callback: addNode
                 removable:
                     callback: removeNode
+                expands_text: true
         allowed_edges:                  #List of allowed edges between the layer's nodes
             vnf_vl:                        #Edge's source
                 destination:            #List of edge's destination with the list of controls callback id to call when there is a connections

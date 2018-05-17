@@ -72,6 +72,7 @@ class SuperfluidityRdclGraph(RdclGraph):
                                 if vdu_type:
                                     vertice['info']['type'] = vdu_type
                                 vertice['group'] = [vdu['vduNestedDesc']]
+                                vertice['info']['nestedDesc'] = vdu['vduNestedDesc']
                                 vertice['vduId'] = vdu['vduId']
                         elif 'swImageDesc' in vdu and 'docker' in vdu['swImageDesc']['supportedVirtualisationEnvironment']:
                             vdu_type = 'vnf_docker_vdu'

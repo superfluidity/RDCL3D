@@ -1,0 +1,82 @@
+{% extends "project_descriptors.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+  	{{ block.super }}
+
+{% endblock %}
+
+{% block title_header_big %}
+    {{ block.super }}
+  {% if descriptor_type  %}
+     {{ descriptor_type }}
+  {% else%}
+    Undefined
+  {% endif %} Descriptors
+{% endblock %}
+
+{% block left_sidebar %}
+    {% include 'srv6_net_prog/srv6_net_prog_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+  	{{ block.super }}
+    <li><a href="{% url 'projects:open_project' project_id=project_id %}">{{project_overview_data.name}}</a></li>
+    <li><a> {% if descriptor_type  %}
+     {{ descriptor_type }}
+  {% else%}
+    Undefined
+  {% endif %} Descriptors</a></li>
+
+{% endblock %}
+
+{% block content_body %}
+  	{{ block.super }}
+
+<div class="row">
+    {% include "srv6_net_prog/descriptor/descriptorlist.html" %}
+</div>
+{% endblock %}
+
+
+
+
+{% block resource_block %}
+  	{{ block.super }}
+
+    <script>
+
+
+$(document).ready(function () {
+    $('#modal_launch_deploy').on('shown.bs.modal', function (e) {
+
+    loadDataOptionsSelector({
+        'select_container': $('#agent_select_container'),
+        'select': $('#agent_selected'),
+        'url': '{% url 'agent:agents_list' %}',
+        'expect': 'agents',
+        'text_key': 'name',
+        'value_key': 'id'
+    });
+    loadDataOptionsSelector({
+            'select_container': $('#type_select_container'),
+            'select': $('#type_selected'),
+            'url': '{% url 'deployment:deployments_type_list' %}',
+            'expect': 'deployment_type',
+            'text_key': 'name',
+            'value_key': 'name'
+        });
+})
+    window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove();
+    });
+}, 4000);
+
+});
+
+
+    </script>
+{% endblock %}
+

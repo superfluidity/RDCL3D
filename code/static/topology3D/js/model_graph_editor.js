@@ -16,7 +16,6 @@
 if (typeof dreamer === 'undefined') {
     var dreamer = {};
 }
-var level = {}
 
 dreamer.ModelGraphEditor = (function (global) {
     'use strict';
@@ -57,18 +56,18 @@ dreamer.ModelGraphEditor = (function (global) {
 
         Object.keys(args.gui_properties["nodes"]).forEach(function (key, index) {
             this.type_property[key] = args.gui_properties["nodes"][key];
-            if ( this.type_property[key]['property'] != undefined){
-                for(var c_prop in this.type_property[key]){
-                    if(c_prop != 'property'){
+            if (this.type_property[key]['property'] != undefined) {
+                for (var c_prop in this.type_property[key]) {
+                    if (c_prop != 'property') {
 
                         this.type_property[key][c_prop]['shape'] = this.parent.get_d3_symbol(this.type_property[key][c_prop]['shape']);
-                        if(this.type_property[key][c_prop]["image"] != undefined){
+                        if (this.type_property[key][c_prop]["image"] != undefined) {
                             this.type_property[key][c_prop]["image"] = IMAGE_PATH + this.type_property[key][c_prop]["image"]
                         }
                     }
                 }
             }
-            else{
+            else {
                 this.type_property[key]["shape"] = this.parent.get_d3_symbol(this.type_property[key]["shape"]);
                 if (this.type_property[key]["image"] != undefined) {
                     this.type_property[key]["image"] = IMAGE_PATH + this.type_property[key]["image"];
@@ -76,31 +75,30 @@ dreamer.ModelGraphEditor = (function (global) {
             }
 
 
-
         }, this);
-        if(args.gui_properties["edges"]){
+        if (args.gui_properties["edges"]) {
             this.type_property_link = args.gui_properties["edges"];
             var self = this;
             var link_types = ['unrecognized'].concat(Object.keys(self.type_property_link))
-                this.defs.selectAll("marker")
-                    .data(link_types)
-                    .enter()
-                    .append("svg:marker")    // This section adds in the arrows
-                    .attr("id", function(d){
-                        return d;
-                    })
-                    .attr("viewBox", "-5 -5 10 10")
-                    .attr("refX", 13) /*must be smarter way to calculate shift*/
-                    .attr("refY", 0)
-                    .attr("markerUnits", "userSpaceOnUse")
-                    .attr("markerWidth", 12)
-                    .attr("markerHeight", 12)
-                    .attr("orient", "auto")
-                    .append("path")
-                    .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
-                    .attr('fill', function(d){
-                        return self.type_property_link[d].color;
-                    });
+            this.defs.selectAll("marker")
+                .data(link_types)
+                .enter()
+                .append("svg:marker")    // This section adds in the arrows
+                .attr("id", function (d) {
+                    return d;
+                })
+                .attr("viewBox", "-5 -5 10 10")
+                .attr("refX", 13) /*must be smarter way to calculate shift*/
+                .attr("refY", 0)
+                .attr("markerUnits", "userSpaceOnUse")
+                .attr("markerWidth", 12)
+                .attr("markerHeight", 12)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M 0,0 m -5,-5 L 5,0 L -5,5 Z")
+                .attr('fill', function (d) {
+                    return self.type_property_link[d].color;
+                });
         }
 
         this.customBehavioursOnEvents = args.behaviorsOnEvents || undefined;
@@ -109,9 +107,9 @@ dreamer.ModelGraphEditor = (function (global) {
         var data_url = (args.data_url) ? args.data_url : "graph_data/";
         if (!args.graph_data) {
             d3.json(data_url, function (error, data) {
-                //console.log(JSON.stringify(data))
+                console.log(JSON.stringify(data.vertices))
                 self.d3_graph.nodes = data.vertices;
-                self.d3_graph.links = data.edges;
+                self.d3_graph.links = data.edges ? data.edges : [];
                 self.d3_graph.graph_parameters = data.graph_parameters;
                 self.model = data.model;
                 self.refreshGraphParameters(self.d3_graph.graph_parameters);
@@ -120,17 +118,7 @@ dreamer.ModelGraphEditor = (function (global) {
                 //if(args.filter_base != undefined)
 
                 setTimeout(function () {
-                    //self.handleForce(self.forceSimulationActive);
-                    //var f_t = {"node":{"type":[],"group":["vlan_r3u0"]},"link":{"group":["vlan_r3u0"],"view":[""]}}
-                    //var f_t ={"node":{"type":["vnf_vl","vnf_ext_cp","vnf_vdu_cp","vnf_vdu","vnf_click_vdu"],"group":["vlan_r3u0"]},"link":{"group":["vlan_r3u0"],"view":["vnf"]}}
                     self.handleFiltersParams(args.filter_base);
-                    //self.handleFiltersParams(f_t);
-                    //console.log(JSON.stringify(args.filter_base))
-                    //console.log(self.d3_graph.nodes.length)
-                    //console.log(JSON.stringify(self.d3_graph.nodes))
-                    //self.d3_graph.nodes.forEach(function(key, index){
-                    //console.log(key, index);
-                    //})
                 }, 500);
 
             });
@@ -145,7 +133,7 @@ dreamer.ModelGraphEditor = (function (global) {
      * @returns {boolean}
      */
     ModelGraphEditor.prototype.updateData = function (args) {
-        console.log("updateData")
+        console.log("updateData");
         this.d3_graph.nodes = args.graph_data.vertices;
         this.d3_graph.links = args.graph_data.edges;
         this.d3_graph.graph_parameters = args.graph_parameters;
@@ -153,16 +141,13 @@ dreamer.ModelGraphEditor = (function (global) {
         this.refreshGraphParameters(this.d3_graph.graph_parameters);
         this.refresh();
         this.startForce();
-        //if(args.filter_base != undefined)
 
-        //if(args.filter_base){
         var self = this;
         setTimeout(function () {
             self.handleForce(true);
             self.handleFiltersParams(args.filter_base);
         }, 500);
-        //}
-    }
+    };
 
     /**
      * Add a new node to the graph.
@@ -196,7 +181,6 @@ dreamer.ModelGraphEditor = (function (global) {
     };
 
 
-
     /**
      * Update the data properties of the node
      * @param {Object} Required. An object that specifies tha data of the node.
@@ -217,7 +201,7 @@ dreamer.ModelGraphEditor = (function (global) {
         var self = this;
         var current_layer = self.getCurrentView();
         var node_type = node.info.type;
-        if (node.info.desc_id == undefined){
+        if (node.info.desc_id == undefined) {
             node.info.desc_id = self.desc_id;
         }
         if (self.model.layer[current_layer] && self.model.layer[current_layer].nodes[node_type] && self.model.layer[current_layer].nodes[node_type].removable) {
@@ -264,7 +248,6 @@ dreamer.ModelGraphEditor = (function (global) {
 
             if (self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback) {
                 var callback = self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type].callback;
-                console.log(callback, self.model.callback)
                 var direct_edge = 'direct_edge' in self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type] ? self.model.layer[current_layer].allowed_edges[source_type].destination[destination_type]['direct_edge'] : false;
                 link.directed_edge = direct_edge;
                 var c = self.model.callback[callback].class;
@@ -329,9 +312,9 @@ dreamer.ModelGraphEditor = (function (global) {
 
 
     ModelGraphEditor.prototype.savePositions = function (data) {
-        var vertices = {}
+        var vertices = {};
         this.node.each(function (d) {
-            vertices[d.id] = {}
+            vertices[d.id] = {};
             vertices[d.id]['x'] = d.x;
             vertices[d.id]['y'] = d.y;
         });
@@ -339,7 +322,7 @@ dreamer.ModelGraphEditor = (function (global) {
             'vertices': vertices
         });
 
-    }
+    };
 
     /**
      *  Internal functions
@@ -361,30 +344,30 @@ dreamer.ModelGraphEditor = (function (global) {
             edit_mode: true
         }];
         var contextMenuNodesAction = [{
-                title: 'Edit',
-                action: function (elm, d, i) {
-                    if (d.info.type != undefined) {
-                        self.eventHandler.fire("edit_descriptor", self.project_id, d);
-                    }
-                },
-                nodes: [],
-                edit_mode: true
+            title: 'Edit',
+            action: function (elm, d, i) {
+                if (d.info.type != undefined) {
+                    self.eventHandler.fire("edit_descriptor", self.project_id, d);
+                }
             },
+            nodes: [],
+            edit_mode: true
+        },
             {
                 title: 'Delete',
                 action: function (elm, d, i) {
                     self.removeNode(d, null, showAlert);
                 },
                 edit_mode: true
-            },
+            }
 
         ];
-        if(this.customBehavioursOnEvents){
+        if (this.customBehavioursOnEvents) {
             contextMenuNodesAction = contextMenuNodesAction.concat(this.customBehavioursOnEvents['behaviors'].nodes);
         }
 
 
-        if ( self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
+        if (self.model && self.model.layer && self.model.layer[layer] && self.model.layer[layer].action && self.model.layer[layer].action.node) {
             for (var i in self.model.layer[layer].action.node) {
                 var action = self.model.layer[layer].action.node[i]
                 contextMenuNodesAction.push({
@@ -397,11 +380,11 @@ dreamer.ModelGraphEditor = (function (global) {
                             elm: elm,
                             d: d,
                             i: i
-                        }
+                        };
 
                         controller[callback](self, args);
                     },
-                    edit_mode: (action.edit_mode != undefined) ? action.edit_mode: undefined
+                    edit_mode: (action.edit_mode != undefined) ? action.edit_mode : undefined
                 });
             }
         }
@@ -468,12 +451,10 @@ dreamer.ModelGraphEditor = (function (global) {
 
     ModelGraphEditor.prototype.getAvailableNodes = function () {
         log('getAvailableNodes');
-        log(this.model)
         if (this.model && this.model.layer[this.getCurrentView()] != undefined)
             return this.model.layer[this.getCurrentView()].nodes;
         return [];
-    }
-
+    };
 
     ModelGraphEditor.prototype.exploreLayer = function (args) {
 
@@ -486,12 +467,13 @@ dreamer.ModelGraphEditor = (function (global) {
     ModelGraphEditor.prototype.getCurrentGroup = function () {
         return this.filter_parameters.node.group[0];
 
-    }
+    };
 
     ModelGraphEditor.prototype.getCurrentView = function () {
         return this.filter_parameters.link.view[0];
 
-    }
+    };
+
     /**
      * Log utility
      */
@@ -499,7 +481,6 @@ dreamer.ModelGraphEditor = (function (global) {
         if (DEBUG)
             console.log("::ModelGraphEditor::", text);
     }
-
 
 
     return ModelGraphEditor;

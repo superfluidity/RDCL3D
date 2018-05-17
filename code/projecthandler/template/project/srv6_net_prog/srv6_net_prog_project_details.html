@@ -1,0 +1,12 @@
+{% extends "project_details.html" %}
+
+
+{% block left_sidebar %}
+    {% include 'srv6_net_prog/srv6_net_prog_project_left_sidebar.html' %}
+{% endblock %}
+
+{% block content_descritors_col %}
+{{ block.super }}
+<div class="row"><div class="col-md-6 "><div class="small-box bg-aqua"><div class="inner"><h3>{{project_overview.srv6_net_prog}}</h3><p>Srv6_net_prog type</p></div><div class="icon"><i class="fa fa-file-code-o"></i></div><a href="/projects/{{project_id}}/descriptors/srv6_net_prog" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a></div></div></div>
+
+{% endblock %}

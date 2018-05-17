@@ -36,22 +36,23 @@ class AnsibleUtility(object):
             application_name = name.lower() # m.group(0)
 
             self.init_dir(os.path.join(self.BASE, 'group_vars'))
-            self.init_group_vars_file('all', {'application_name': str(application_name)})
+            self.init_group_vars_file('all', {'application_name': str(application_name).replace("_", "-")})
 
             self.init_dir(os.path.join(self.BASE, 'roles'))
 
             # APP CREATE ROLE
-            self.init_dir(os.path.join(self.BASE, 'roles', application_name + '_create'))
-            self.add_role_task(application_name + '_create', 'main', [{'name': 'Create project',
+            self.init_dir(os.path.join(self.BASE, 'roles', str(application_name + '_create')))
+            self.add_role_task(str(application_name + '_create'), 'main', [{'name': 'Create project',
                                                                        'command': 'kubectl create namespace {{ application_name }}'}])
-            self.roles_create.append(application_name + '_create')
+
+            self.roles_create.append(str(application_name + '_create'))
 
             # APP DESTROY ROLE
-            self.init_dir(os.path.join(self.BASE, 'roles', application_name + '_destroy'))
-            self.add_role_task(application_name + '_destroy', 'main', [{'name': 'Destroy project',
+            self.init_dir(os.path.join(self.BASE, 'roles', str(application_name + '_destroy')))
+            self.add_role_task(str(application_name + '_destroy'), 'main', [{'name': 'Destroy project',
                                                                         'command': 'kubectl delete namespace {{ application_name }}'}])
-            self.roles_destroy.append(application_name + '_destroy')
-
+            self.roles_destroy.append(str(application_name + '_destroy'))
+            roles_create_order = []
             for v in sf_data['vnfd']:
                 vnfd = sf_data['vnfd'][v]
                 for vdu in vnfd['vdu']:
@@ -65,16 +66,19 @@ class AnsibleUtility(object):
                             data = sf_data['k8s'][k8s_name]
                             log.info("Generate role %s", role_name)
                             self.add_role_template(role_name, k8s_name, data)
-                            role_vars['template_path_' + k8s_name] = '/tmp/' + k8s_name + '.j2'
+                            role_vars['template_path_' + k8s_name] = '/tmp/' + k8s_name + '.yml'
                             main_tasks = []
                             podDependecies = self._get_properties_from_metadata(role_name, 'podDependencies', vnfd)
                             for dep in podDependecies:
                                 for pod in podDependecies[dep]:
                                     main_tasks.append(self.get_commands_k8s_pod_property(dep, pod))
                             #k8s_pod_property
+                            pause_sec = self._get_properties_from_metadata(role_name, 'deploymentPause', vnfd)
+                            if pause_sec and isinstance(pause_sec, int):
+                                main_tasks.append(self.get_commands_pause(pause_sec))
 
-                            main_tasks.append({'name': 'Create the json file from template', 'template': {'dst': '{{template_path_' + k8s_name + '}}',
-                                                                                            'src': k8s_name + '.j2'}})
+                            main_tasks.append({'name': 'Create the json file from template', 'template': {'dest': '{{template_path_' + k8s_name + '}}',
+                                                                                            'src': k8s_name + '.yml'}})
                             main_tasks.append({'name': 'Deploy ' + k8s_name,
                                  'command': 'kubectl create -f {{template_path_' + k8s_name + '}} --namespace={{application_name}}'
                                  })
@@ -82,14 +86,28 @@ class AnsibleUtility(object):
                             self.add_role_task(role_name, 'main', main_tasks)
 
                             self.add_role_var(role_name, 'main', role_vars)
-                            self.roles_create.append(str(role_name))
-            self.add_playbook_file('site_app_create', [{'hosts': 'provider-master', 'vars_files': ['group_vars/all'], 'roles': self.roles_create}])
+                            deployment_order = self._get_properties_from_metadata(role_name, 'deploymentOrder', vnfd)
+                            if deployment_order and isinstance(deployment_order, int):
+                                roles_create_order.append((deployment_order, str(role_name)))
+                            print ("Depl order: ", deployment_order)
+                            #self.roles_create.append(str(role_name))
+            print roles_create_order
+            roles_create_order_sorted = sorted(roles_create_order, key=lambda x: x[0])
+            roles_create_order = [r[1] for r in roles_create_order_sorted]
+            self.roles_create = self.roles_create + roles_create_order
+
+            self.add_playbook_file('site_app_create', [{'hosts': 'provider-master', 'vars_files': ['group_vars/all'], 'roles': self.roles_create,
+                                                       'become': 'yes', 'become_user': 'bilal', 'become_method': 'su'}])
             self.add_playbook_file('site_app_destroy', [{'hosts': 'provider-master', 'vars_files': ['group_vars/all'], 'roles': self.roles_destroy}])
 
         except Exception as e:
             print "Exception in generate_playbook"
             log.exception(e)
 
+    def get_commands_pause(self, sec):
+        return {'name': "Pause",
+                'pause': {"seconds": sec}
+                }
     def get_commands_k8s_pod_property(self, property, pod_name):
         if property == 'podIP':
             return {'name': "Getting {0} from {1}".format(property, pod_name),
@@ -107,6 +125,7 @@ class AnsibleUtility(object):
         group_var_path = os.path.join(self.BASE, 'group_vars', group_name)
         yaml.dump(vars_data, open(group_var_path, 'w'), default_flow_style=False, explicit_start=True,
                   width=float("inf"))
+
 
     def add_role_task(self, role_name, task_name, task_data):
         log.info('Add %s task to %s role', task_name, role_name)
@@ -127,7 +146,7 @@ class AnsibleUtility(object):
     def add_role_template(self, role_name, template_name, template_data):
         log.info('Add %s template to %s role', template_name, role_name)
         templates_path = os.path.join(self.BASE, 'roles', role_name, 'templates')
-        template_path = os.path.join(templates_path, template_name + '.j2')
+        template_path = os.path.join(templates_path, template_name + '.yml')
         self.makedir_p(templates_path)
         yaml.safe_dump(yaml.load(json.dumps(template_data)), open(template_path, 'w'), default_flow_style=False,
                        width=float("inf"))

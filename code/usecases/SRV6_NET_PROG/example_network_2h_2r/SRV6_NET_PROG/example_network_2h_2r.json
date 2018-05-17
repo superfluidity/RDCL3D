@@ -1,0 +1,74 @@
+{
+	"edges": [
+		{
+			"source": "S1",
+			"group": "",
+			"target": "R1",
+			"view": "Data",
+			"type": "Edge"
+		},
+		{
+			"source": "R1",
+			"group": "",
+			"target": "R2",
+			"view": "Data",
+			"type": "Core"
+		},
+		{
+			"source": "S2",
+			"group": "",
+			"target": "R2",
+			"view": "Data",
+			"type": "Edge"
+		}
+	],
+	"vertices": [
+		{
+			"info": {
+				"type": "Router",
+				"property": {
+					"vnf": 0
+				},
+				"group": []
+			},
+			"id": "R1"
+		},
+		{
+			"info": {
+				"type": "Server",
+				"property": {
+					"vnf": 1
+				},
+				"group": []
+			},
+			"id": "S1"
+		},
+		{
+			"info": {
+				"type": "Router",
+				"property": {
+					"vnf": 0
+				},
+				"group": []
+			},
+			"id": "R2"
+		},
+		{
+			"info": {
+				"type": "Server",
+				"property": {
+					"vnf": 1
+				},
+                "group": []
+			},
+			"id": "S2"
+		}
+	],
+   "graph_parameters":{
+        "tunneling":"OPENVPN",
+        "vlan":0,
+        "generated":false,
+        "mapped":false,
+        "testbed":"MININET"
+     }
+}

@@ -24,23 +24,23 @@ from lib.util import Util
 import logging
 from projecthandler.models import Project
 
-from lib.oshi.oshi_parser import OshiParser
-from lib.oshi.oshi_rdcl_graph import OshiRdclGraph
+from lib.srv6_net_prog.srv6_net_prog_parser import Srv6_net_progParser
+from lib.srv6_net_prog.srv6_net_prog_rdcl_graph import Srv6_net_progRdclGraph
 
 
 logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('OshiModel.py')
+log = logging.getLogger('Srv6_net_progModel.py')
 
 
-PATH_TO_SCHEMAS = 'lib/oshi/schemas/'
-PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/oshi/descriptor_template'
+PATH_TO_SCHEMAS = 'lib/srv6_net_prog/schemas/'
+PATH_TO_DESCRIPTORS_TEMPLATES = 'lib/srv6_net_prog/descriptor_template'
 DESCRIPTOR_TEMPLATE_SUFFIX = '.json'
-GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/oshi/oshi.yaml'
-EXAMPLES_FOLDER = 'usecases/OSHI/'
+GRAPH_MODEL_FULL_NAME = 'lib/TopologyModels/srv6_net_prog/srv6_net_prog.yaml'
+EXAMPLES_FOLDER = 'usecases/SRV6_NET_PROG/'
 
 
-class OshiProject(Project):
-    """Oshi Project class
+class Srv6_net_progProject(Project):
+    """Srv6_net_prog Project class
     The data model has the following descriptors:
         # descrtiptor list in comment #
 
@@ -53,24 +53,25 @@ class OshiProject(Project):
         for my_key in request.FILES.keys():
             file_dict[my_key] = request.FILES.getlist(my_key)
 
+        log.debug(file_dict)
 
-        data_project = OshiParser.importprojectfiles(file_dict)
+        data_project = Srv6_net_progParser.importprojectfiles(file_dict)
 
         return data_project
 
     @classmethod
     def data_project_from_example(cls, request):
-        oshi_id = request.POST.get('example-oshi-id', '')
-        data_project = OshiParser.importprojectdir(EXAMPLES_FOLDER + oshi_id , 'json')
+        srv6_net_prog_id = request.POST.get('example-srv6_net_prog-id', '')
+        data_project = Srv6_net_progParser.importprojectdir(EXAMPLES_FOLDER + srv6_net_prog_id, 'json')
         return data_project
 
     @classmethod
     def get_example_list(cls):
-        """Returns a list of directories, in each directory there is a project oshi"""
+        """Returns a list of directories, in each directory there is a project srv6_net_prog"""
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-        return {'oshi': dirs}
+        return {'srv6_net_prog': dirs}
 
     @classmethod
     def get_new_descriptor(cls, descriptor_type, request_id):
@@ -88,7 +89,7 @@ class OshiProject(Project):
             return schema
         except Exception as e:
             log.exception(e)
-            return
+            return False
 
     @classmethod
     def get_clone_descriptor(cls, descriptor, type_descriptor, new_descriptor_id):
@@ -97,7 +98,7 @@ class OshiProject(Project):
         return new_descriptor
 
     def get_type(self):
-        return "oshi"
+        return "srv6_net_prog"
 
     def __str__(self):
         return self.name
@@ -109,8 +110,8 @@ class OshiProject(Project):
             'name': self.name,
             'updated_date': self.updated_date.__str__(),
             'info': self.info,
-            'type': 'oshi',
-            'oshi': len(current_data['oshi'].keys()) if 'oshi' in current_data else 0,
+            'type': 'srv6_net_prog',
+            'srv6_net_prog': len(current_data['srv6_net_prog'].keys()) if 'srv6_net_prog' in current_data else 0,
 
             'validated': self.validated
         }
@@ -118,15 +119,15 @@ class OshiProject(Project):
         return result
 
     def get_graph_data_json_topology(self, descriptor_id):
-        rdcl_graph = OshiRdclGraph()
-        descriptor_data = {}
+        rdcl_graph = Srv6_net_progRdclGraph()
         project = self.get_dataproject()
         for desc_type in project:
             if descriptor_id in project[desc_type]:
                 descriptor_data = project[desc_type][descriptor_id]
         positions = project['positions'] if 'positions' in project else {}
-        topology = rdcl_graph.build_graph_from_oshi_descriptor(descriptor_data, positions=positions,
-                                                     model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+        topology = rdcl_graph.build_graph_from_descriptor(descriptor_data, positions=positions,
+                                                               model=self.get_graph_model(GRAPH_MODEL_FULL_NAME))
+
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
@@ -145,7 +146,7 @@ class OshiProject(Project):
                 log.debug('Create descriptor: Unknown data type')
                 return False
 
-            # schema = cls.loadjsonfile("lib/oshi/schemas/"+type_descriptor+".json")
+            # schema = cls.loadjsonfile("lib/srv6_net_prog/schemas/"+type_descriptor+".json")
             #reference_schema = self.get_json_schema_by_type(type_descriptor)
             # validate = Util.validate_json_schema(reference_schema, new_descriptor)
             validate = False
@@ -169,11 +170,12 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
+           #print parameters
             new_node = {
                 "info": {
                     "group": [],
                     "property": {
-                        "custom_label": ""
+                        "vnf": 0
                     },
                     "type": parameters['element_type']
                 },
@@ -181,8 +183,11 @@ class OshiProject(Project):
             }
 
             current_data = json.loads(self.data_project)
-            if(current_data['oshi'][parameters['element_desc_id']]):
-                current_descriptor = current_data['oshi'][parameters['element_desc_id']]
+            #print "current"
+            #print current_data,current_data['srv6_net_prog'], parameters['element_desc_id'], current_data['srv6_net_prog'][parameters['element_desc_id']]
+            if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
+                #print "entro"
+                current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
                 if 'vertices' not in current_descriptor:
                     current_descriptor['vertices'] = []
                 current_descriptor['vertices'].append(new_node)
@@ -199,8 +204,9 @@ class OshiProject(Project):
         try:
             parameters = request.POST.dict()
             current_data = json.loads(self.data_project)
-            if (current_data['oshi'][parameters['element_desc_id']]):
-                current_descriptor = current_data['oshi'][parameters['element_desc_id']]
+            if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
+
+                current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
 
                 current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if n['id'] != parameters['element_id']]
                 current_descriptor['edges'] = [e for e in current_descriptor['edges'] if e['source'] != parameters['element_id'] and e['target'] != parameters['element_id']]
@@ -217,19 +223,19 @@ class OshiProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-
+            #print "PARAMETRI", parameters
             new_link = {
                 "source": parameters['source'],
                 "group": parameters['group'] if 'group' in parameters else [],
                 "target": parameters['target'],
-                "view": parameters['view'] if 'view' in parameters else []
+                "view": parameters['view'] if 'view' in parameters else [],
+                "type": parameters['type']
             }
-
-
             current_data = json.loads(self.data_project)
-            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
-
-                current_descriptor = current_data['oshi'][parameters['desc_id']]
+            #print  "NEW LINK", new_link
+            if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
+                current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
+                #print "DESC ID IMPOSTATO", current_descriptor
                 if 'edges' not in current_descriptor:
                     current_descriptor['edges'] = []
                 current_descriptor['edges'].append(new_link)
@@ -246,14 +252,19 @@ class OshiProject(Project):
         try:
             parameters = request.POST.dict()
 
+            #print "PARAMETRI POST REMOVE LINK", parameters
+
             source_id = parameters['source']
             target_id = parameters['target']
             link_view = parameters['view']
+            #type = parameters['type']
             current_data = json.loads(self.data_project)
-            if 'desc_id' in parameters and current_data['oshi'][parameters['desc_id']]:
-                current_descriptor = current_data['oshi'][parameters['desc_id']]
+
+            if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
+                current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
+
                 current_descriptor['edges'] = [e for e in current_descriptor['edges'] if
-                                               (e['source'] == source_id and e['target'] == target_id and e['view'] == link_view) == False ]
+                                               (e['source'] == source_id and e['target'] == target_id and e['view'] == link_view) == False]
             self.data_project = current_data
             self.update()
             result = True
@@ -269,21 +280,23 @@ class OshiProject(Project):
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
+            #print model_graph
             for node in model_graph['layer'][args['layer']]['nodes']:
-                if model_graph['layer'][args['layer']]['nodes'][node] is not None and 'addable' in model_graph['layer'][args['layer']]['nodes'][node] and model_graph['layer'][args['layer']]['nodes'][node]['addable']:
-                    current_data = {
-                        "id": node,
-                        "category_name": model_graph['nodes'][node]['label'],
-                        "types": [
-                            {
-                                "name": "generic",
-                                "id": node
-                            }
-                        ]
-                    }
-                    result.append(current_data)
+
+                current_data = {
+                    "id": node,
+                    "category_name": model_graph['nodes'][node]['label'],
+                    "types": [
+                        {
+                            "name": "generic",
+                            "id": node
+                        }
+                    ]
+                }
+                result.append(current_data)
+
+            #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
             result = []
         return result
-

@@ -28,7 +28,7 @@ dreamer.EtsiController = (function (global) {
             'y': node.y
         };
         if (node.existing_element) {
-
+            data_to_send['existing_element'] = true;
             new dreamer.GraphRequests().addNode(data_to_send, null, function () {
                 if (success)
                     success();
