@@ -27,6 +27,7 @@ import git
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Models #
+from projecthandler.srv6_net_prog_model import Srv6_net_progProject
 from projecthandler.cran_model import CranProject
 from projecthandler.nemo_model import NemoProject
 from projecthandler.toscanfv_model import ToscanfvProject
@@ -39,6 +40,7 @@ from projecthandler.tosca_model import ToscaProject
 
 # DO NOT REMOVE THIS COMMENT #
 # Project Model Type declarations #
+Project.add_project_type('srv6_net_prog', Srv6_net_progProject)
 Project.add_project_type('cran', CranProject)
 Project.add_project_type('nemo', NemoProject)
 Project.add_project_type('toscanfv', ToscanfvProject)
@@ -89,9 +91,10 @@ def create_new_project(request):
             elif start_from == 'example':
                 print 'from example'
                 data_project = project_class.data_project_from_example(request)
+                #print(data_project)
 
             project = project_class.create_project(name, user, False, info, data_project)
-            # print project.get_dataproject()
+            #print project.get_dataproject()
 
 
         except Exception as e:
@@ -272,6 +275,7 @@ def graph_data(request, project_id=None, descriptor_id=None):
     prj_token = project_overview['type']
 
     topology = projects[0].get_graph_data_json_topology(descriptor_id)
+    #print "topology", topology, "enyfgydfytd"
     response = HttpResponse(topology, content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
 
@@ -435,7 +439,7 @@ def edit_descriptor(request, project_id=None, descriptor_id=None, descriptor_typ
 
         descriptor_string_json = json.dumps(descriptor)
         descriptor_string_yaml = Util.json2yaml(descriptor)
-        # print descriptor
+        #print "METODO GET DESCRIPTOR", descriptor_id
         return render(request, page, {
             'project_id': project_id,
             'descriptor_id': descriptor_id,

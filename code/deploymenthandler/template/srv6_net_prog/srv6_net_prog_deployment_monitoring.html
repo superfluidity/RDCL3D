@@ -1,0 +1,52 @@
+{% extends "deployment_monitoring.html" %}
+
+{% load staticfiles %}
+
+{% block head_block %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block title_header_big %}
+{{ block.super }}
+{% endblock %}
+
+{% block left_sidebar %}
+{% include 'srv6_net_prog/srv6_net_prog_deployment_left_sidebar.html' %}
+{% endblock %}
+
+{% block breadcrumb_body %}
+{{ block.super }}
+
+{% endblock %}
+
+
+
+
+{% block tab_pane_button_list %}
+{{ block.super }}
+{% endblock %}
+
+{% block nav_buttons_list %}
+{{ block.super }}
+{% endblock %}
+
+{% block tab_pane_list %}
+{{ block.super }}
+{% endblock %}
+
+{% block details_table_nodes %}
+{{ block.super }}
+{% include 'srv6_net_prog/srv6_net_prog_deployment_monitoring_table_nodes.html' %}
+{% endblock %}
+
+
+{% block resource_block %}
+{{ block.super }}
+
+<script src="{% static "src/deploymenthandler/srv6_net_prog/gui_properties.js" %}"></script>
+<script src="{% static "src/deploymenthandler/srv6_net_prog/deployment_topology.js" %}"></script>
+
+{% endblock %}
+
