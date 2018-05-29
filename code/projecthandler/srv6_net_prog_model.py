@@ -40,10 +40,10 @@ EXAMPLES_FOLDER = 'usecases/SRV6_NET_PROG/'
 
 
 class Srv6_net_progProject(Project):
-    """Srv6_net_prog Project class
+    """
+    Srv6_net_prog Project class
     The data model has the following descriptors:
         # descrtiptor list in comment #
-
     """
 
     @classmethod
@@ -67,7 +67,9 @@ class Srv6_net_progProject(Project):
 
     @classmethod
     def get_example_list(cls):
-        """Returns a list of directories, in each directory there is a project srv6_net_prog"""
+        """
+        Returns a list of directories, in each directory there is a project srv6_net_prog
+        """
 
         path = EXAMPLES_FOLDER
         dirs = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
@@ -82,7 +84,9 @@ class Srv6_net_progProject(Project):
 
     @classmethod
     def get_descriptor_template(cls, type_descriptor):
-        """Returns a descriptor template for a given descriptor type"""
+        """
+        Returns a descriptor template for a given descriptor type
+        """
 
         try:
             schema = Util.loadjsonfile(os.path.join(PATH_TO_DESCRIPTORS_TEMPLATES, type_descriptor + DESCRIPTOR_TEMPLATE_SUFFIX))
@@ -131,10 +135,11 @@ class Srv6_net_progProject(Project):
         return json.dumps(topology)
 
     def create_descriptor(self, descriptor_name, type_descriptor, new_data, data_type):
-        """Creates a descriptor of a given type from a json or yaml representation
-
+        """
+        Creates a descriptor of a given type from a json or yaml representation
         Returns the descriptor id or False
         """
+
         try:
             current_data = json.loads(self.data_project)
             if data_type == 'json':
@@ -145,9 +150,8 @@ class Srv6_net_progProject(Project):
             else:
                 log.debug('Create descriptor: Unknown data type')
                 return False
-
             # schema = cls.loadjsonfile("lib/srv6_net_prog/schemas/"+type_descriptor+".json")
-            #reference_schema = self.get_json_schema_by_type(type_descriptor)
+            # reference_schema = self.get_json_schema_by_type(type_descriptor)
             # validate = Util.validate_json_schema(reference_schema, new_descriptor)
             validate = False
             new_descriptor_id = descriptor_name
@@ -170,23 +174,16 @@ class Srv6_net_progProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-           #print parameters
             new_node = {
                 "info": {
                     "group": [],
-                    "property": {
-                        "vnf": 0
-                    },
+                    "property": {},
                     "type": parameters['element_type']
                 },
                 "id": parameters['element_id']
             }
-
             current_data = json.loads(self.data_project)
-            #print "current"
-            #print current_data,current_data['srv6_net_prog'], parameters['element_desc_id'], current_data['srv6_net_prog'][parameters['element_desc_id']]
             if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
-                #print "entro"
                 current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
                 if 'vertices' not in current_descriptor:
                     current_descriptor['vertices'] = []
@@ -205,12 +202,9 @@ class Srv6_net_progProject(Project):
             parameters = request.POST.dict()
             current_data = json.loads(self.data_project)
             if current_data['srv6_net_prog'][parameters['element_desc_id']] != None:
-
                 current_descriptor = current_data['srv6_net_prog'][parameters['element_desc_id']]
-
                 current_descriptor['vertices'] = [n for n in current_descriptor['vertices'] if n['id'] != parameters['element_id']]
                 current_descriptor['edges'] = [e for e in current_descriptor['edges'] if e['source'] != parameters['element_id'] and e['target'] != parameters['element_id']]
-
                 self.data_project = current_data
                 self.update()
                 result = True
@@ -223,19 +217,21 @@ class Srv6_net_progProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-            #print "PARAMETRI", parameters
             new_link = {
                 "source": parameters['source'],
-                "group": parameters['group'] if 'group' in parameters else [],
                 "target": parameters['target'],
-                "view": parameters['view'] if 'view' in parameters else [],
-                "type": parameters['type']
+                "info": {
+                    "property": {
+                        "bw": 1000,
+                        "delay": 0
+                    },
+                    "group": parameters['group'] if 'group' in parameters else [],
+                },
+                "view": parameters['view'] if 'view' in parameters else []
             }
             current_data = json.loads(self.data_project)
-            #print  "NEW LINK", new_link
             if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
                 current_descriptor = current_data['srv6_net_prog'][parameters['desc_id']]
-                #print "DESC ID IMPOSTATO", current_descriptor
                 if 'edges' not in current_descriptor:
                     current_descriptor['edges'] = []
                 current_descriptor['edges'].append(new_link)
@@ -251,13 +247,9 @@ class Srv6_net_progProject(Project):
         result = False
         try:
             parameters = request.POST.dict()
-
-            #print "PARAMETRI POST REMOVE LINK", parameters
-
             source_id = parameters['source']
             target_id = parameters['target']
             link_view = parameters['view']
-            #type = parameters['type']
             current_data = json.loads(self.data_project)
 
             if 'desc_id' in parameters and current_data['srv6_net_prog'][parameters['desc_id']]:
@@ -274,15 +266,16 @@ class Srv6_net_progProject(Project):
         return result
 
     def get_available_nodes(self, args):
-        """Returns all available node """
+        """
+        Returns all available node
+        """
+
         log.debug('get_available_nodes')
         try:
             result = []
             #current_data = json.loads(self.data_project)
             model_graph = self.get_graph_model(GRAPH_MODEL_FULL_NAME)
-            #print model_graph
             for node in model_graph['layer'][args['layer']]['nodes']:
-
                 current_data = {
                     "id": node,
                     "category_name": model_graph['nodes'][node]['label'],
@@ -294,7 +287,6 @@ class Srv6_net_progProject(Project):
                     ]
                 }
                 result.append(current_data)
-
             #result = current_data[type_descriptor][descriptor_id]
         except Exception as e:
             log.debug(e)
