@@ -33,15 +33,16 @@ function getNodeInfo(args){
         showAlert("Error opening info node.")
     })
 }
+
 function openShellTab(shellData){
     var name = generateUID();
     var html_tab = '<li><a href="#tab_pane_' + shellData['node']['id'] +'_'+name+'" data-toggle="tab"><i class="fa fa-terminal"></i> ' + shellData['node']['label'] +' <span><i class="fa fa-times closeTab" onClick="closeTab(this)" style="cursor: pointer; padding-left: 10px;"></i></span></a></li>';
     var html_tab_iframe = '<iframe name='+name+' src="'+ shellData['console_info']['url'] +'" class="shellIframe"></iframe>';
-    var html_tab_content = '<div id="tab_pane_' + shellData['node']['id'] +'_'+name+'">' + html_tab_iframe + '</div>';
-    //console.log(html_tab)
-    //console.log(html_tab_content)
-    $('#deploymentTab').append(html_tab);
+    var html_tab_content = '<div id="tab_pane_' + shellData['node']['id'] +'_'+name+'" class="tab-pane">' + html_tab_iframe + '</div>';
+
     $('#tab_pane_container').append(html_tab_content);
+    $('#deploymentTab').append(html_tab);
+    $('a[href="'+'#tab_pane_' + shellData['node']['id'] +'_'+name+'"]').tab('show');
 }
 
 
